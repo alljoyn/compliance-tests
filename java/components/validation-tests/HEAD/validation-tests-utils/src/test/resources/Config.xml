@@ -1,0 +1,8 @@
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.alljoyn.org/schemas/introspect.xsd">
+    <interface name="org.alljoyn.Config">
+        <property name="Version" type="q" access="read" />
+    </interface>
+    <interface name="org.alljoyn.Notification">
+        <property name="Version" type="q" access="read" />
+    </interface>
+</node>

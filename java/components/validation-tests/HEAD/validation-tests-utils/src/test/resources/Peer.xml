@@ -1,0 +1,5 @@
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.alljoyn.org/schemas/introspec t.xsd">
+    <interface name="org.alljoyn.Bus.Peer.Authentication">
+        <annotation name="org.alljoyn.Bus.Secure" value="off"/>
+    </interface>
+</node>

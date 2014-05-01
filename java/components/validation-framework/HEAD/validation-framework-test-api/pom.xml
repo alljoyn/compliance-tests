@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--  Copyright (c) 2013 - 2014, AllSeen Alliance. All rights reserved.
+
+    Permission to use, copy, modify, and/or distribute this software for any
+    purpose with or without fee is hereby granted, provided that the above
+    copyright notice and this permission notice appear in all copies.
+
+    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.alljoyn.validation.validation-framework</groupId>
+        <artifactId>validation-framework</artifactId>
+        <version>1.0.0.09-SNAPSHOT</version>
+    </parent>
+    <artifactId>validation-framework-test-api</artifactId>
+    <name>${project.artifactId}</name>
+    <description>AllJoyn Validation Test Framework API</description>
+    <dependencies>
+        <dependency>
+            <groupId>org.alljoyn</groupId>
+            <artifactId>alljoyn</artifactId>
+            <classifier>${alljoyn.classifier}</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.alljoyn</groupId>
+            <artifactId>liballjoyn_java</artifactId>
+            <classifier>${alljoyn.classifier}</classifier>
+            <scope>runtime</scope>
+            <type>so</type>
+        </dependency>
+        <dependency>
+            <groupId>org.alljoyn</groupId>
+            <artifactId>about</artifactId>
+            <classifier>android-rel</classifier>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

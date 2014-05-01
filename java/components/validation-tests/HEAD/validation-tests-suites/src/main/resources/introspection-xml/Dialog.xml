@@ -1,0 +1,25 @@
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://allseenalliance.org/schemas/introspect.xsd">
+    <interface name="org.alljoyn.ControlPanel.Dialog">
+        <property name="Message" type="s" access="read" />
+        <property name="NumActions" type="q" access="read" />
+        <property name="OptParams" type="a{qv}" access="read" />
+        <property name="States" type="u" access="read" />
+        <property name="Version" type="q" access="read" />
+        <signal name="MetadataChanged" />
+        <method name="Action1" />
+        <method name="Action2" />
+        <method name="Action3" />
+    </interface>
+    <interface name="org.alljoyn.ControlPanel.SecuredDialog">
+        <property name="Message" type="s" access="read" />
+        <property name="NumActions" type="q" access="read" />
+        <property name="OptParams" type="a{qv}" access="read" />
+        <property name="States" type="u" access="read" />
+        <property name="Version" type="q" access="read" />
+        <signal name="MetadataChanged" />
+        <method name="Action1" />
+        <method name="Action2" />
+        <method name="Action3" />
+        <annotation name="org.alljoyn.Bus.Secure" value="true"/>
+    </interface>
+</node>

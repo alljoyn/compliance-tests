@@ -1,0 +1,43 @@
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://allseenalliance.org/schemas/introspect.xsd">
+    <interface name="org.alljoyn.ControlPanel.ListProperty">
+        <property name="OptParams" type="a{qv}" access="read" />
+        <property name="States" type="u" access="read" />
+        <property name="Value" type="a(qs)" access="read" />
+        <property name="Version" type="q" access="read" />
+        <method name="Add" />
+        <method name="Confirm" />
+        <method name="Cancel" />
+        <method name="Delete">
+            <arg name="recordID" type="q" direction="in" />
+        </method>
+        <method name="View">
+            <arg name="recordID" type="q" direction="in" />
+        </method>
+        <method name="Update">
+            <arg name="recordID" type="q" direction="in" />
+        </method>
+        <signal name="MetadataChanged" />
+        <signal name="ValueChanged" />
+    </interface>
+    <interface name="org.alljoyn.ControlPanel.SecuredListProperty">
+        <property name="OptParams" type="a{qv}" access="read" />
+        <property name="States" type="u" access="read" />
+        <property name="Value" type="a(qs)" access="read" />
+        <property name="Version" type="q" access="read" />
+        <method name="Add" />
+        <method name="Confirm" />
+        <method name="Cancel" />
+        <method name="Delete">
+            <arg name="recordID" type="q" direction="in" />
+        </method>
+        <method name="View">
+            <arg name="recordID" type="q" direction="in" />
+        </method>
+        <method name="Update">
+            <arg name="recordID" type="q" direction="in" />
+        </method>
+        <signal name="MetadataChanged" />
+        <signal name="ValueChanged" />
+        <annotation name="org.alljoyn.Bus.Secure" value="true"/>
+    </interface>
+</node>

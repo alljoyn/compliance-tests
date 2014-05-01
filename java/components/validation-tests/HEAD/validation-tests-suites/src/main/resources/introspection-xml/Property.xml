@@ -1,0 +1,24 @@
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://allseenalliance.org/schemas/introspect.xsd">
+    <interface name="org.alljoyn.ControlPanel.Property">
+        <property name="OptParams" type="a{qv}" access="read" />
+        <property name="States" type="u" access="read" />
+        <property name="Value" type="v" access="readwrite" />
+        <property name="Version" type="q" access="read" />
+        <signal name="MetadataChanged" />
+        <signal name="ValueChanged">
+            <arg type="v" />
+        </signal>
+    </interface>
+    <interface name="org.alljoyn.ControlPanel.SecuredProperty">
+        <property name="OptParams" type="a{qv}" access="read" />
+        <property name="States" type="u" access="read" />
+        <property name="Value" type="v" access="readwrite" />
+        <property name="Version" type="q" access="read" />
+        <signal name="MetadataChanged">
+        </signal>
+        <signal name="ValueChanged">
+            <arg type="v" direction="out" />
+        </signal>
+        <annotation name="org.alljoyn.Bus.Secure" value="true" />
+    </interface>
+</node>

@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--  Copyright (c) 2013 - 2014, AllSeen Alliance. All rights reserved.
+
+    Permission to use, copy, modify, and/or distribute this software for any
+    purpose with or without fee is hereby granted, provided that the above
+    copyright notice and this permission notice appear in all copies.
+
+    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.alljoyn.validation.validation-tests</groupId>
+		<artifactId>validation-tests</artifactId>
+		<version>1.0.0.09-SNAPSHOT</version>
+	</parent>
+	<artifactId>validation-tests-it</artifactId>
+	<name>validation-tests-it</name>
+	<packaging>apk</packaging>
+	<dependencies>
+		<dependency>
+			<groupId>com.google.android</groupId>
+			<artifactId>android</artifactId>
+			<classifier>${android.release}</classifier>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.android</groupId>
+			<artifactId>android-test</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.alljoyn.validation.validation-tests</groupId>
+			<artifactId>validation-tests-suites</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.alljoyn.validation.validation-tests</groupId>
+			<artifactId>validation-tests-simulator</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.alljoyn.validation.validation-framework</groupId>
+			<artifactId>validation-framework-test-utils</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.alljoyn</groupId>
+			<artifactId>liballjoyn_java</artifactId>
+			<classifier>${alljoyn.classifier}</classifier>
+			<scope>runtime</scope>
+			<type>so</type>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-module-junit4</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-api-mockito</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.robolectric</groupId>
+			<artifactId>robolectric</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-remote-resources-plugin</artifactId>
+				<version>1.5</version>
+				<configuration>
+					<resourceBundles>
+						<resourceBundle>org.alljoyn.validation.validation-tests:validation-tests-suites:${project.version}</resourceBundle>
+					</resourceBundles>
+					<attached>false</attached>
+					<outputDirectory>${project.basedir}/target/shared</outputDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>process</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+				<artifactId>android-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.alljoyn</groupId>
+									<artifactId>liballjoyn_java</artifactId>
+									<version>${alljoyn.version}</version>
+									<classifier>${alljoyn.classifier}</classifier>
+									<type>so</type>
+									<destFileName>liballjoyn_java.so</destFileName>
+									<overWrite>true</overWrite>
+								</artifactItem>
+							</artifactItems>
+							<outputDirectory>${project.basedir}/target/libs/armeabi</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<profiles>
+		<profile>
+			<id>int-test</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+						<artifactId>android-maven-plugin</artifactId>
+						<configuration>
+							<test>
+								<skip>false</skip>
+								<classes>
+									<class>org.alljoyn.validation.testing.it.RunAboutAnnouncementMismatchTestSuiteIT</class>
+									<class>org.alljoyn.validation.testing.it.RunTestSuitesIT</class>
+								</classes>
+							</test>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>sample-test</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+						<artifactId>android-maven-plugin</artifactId>
+						<configuration>
+							<test>
+								<skip>false</skip>
+								<classes>
+									<class>org.alljoyn.validation.testing.suites.SampleTest</class>
+								</classes>
+							</test>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>instrument-test</id>
+			<properties>
+				<android-maven-plugin.version>3.8.2</android-maven-plugin.version>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+						<artifactId>android-maven-plugin</artifactId>
+						<configuration>
+							<test>
+								<skip>false</skip>
+								<instrumentationArgs>
+									<instrumentationArg>appId 5b7a70f0-fd5b-49be-8e0a-9640f49cd597</instrumentationArg>
+									<instrumentationArg>deviceId 5b7a70f0-fd5b-49be-8e0a-9640f49cd597</instrumentationArg>
+									<instrumentationArg>userInputTimeoutValueInMS 5000</instrumentationArg>
+									<instrumentationArg>testSuiteList org.alljoyn.validation.testing.suites.config.ConfigTestSuite,org.alljoyn.validation.testing.suites.about.AboutTestSuite</instrumentationArg>
+									<instrumentationArg>testCaseName About-v1-01,Config-v1-01</instrumentationArg>
+								</instrumentationArgs>
+							</test>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>instrument-test-onboarding</id>
+			<properties>
+				<android-maven-plugin.version>3.8.2</android-maven-plugin.version>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+						<artifactId>android-maven-plugin</artifactId>
+						<configuration>
+							<test>
+								<skip>false</skip>
+								<instrumentationArgs>
+									<instrumentationArg>appId c734260a-8610-99b7-2c2e-e6379de7a82c</instrumentationArg>
+									<instrumentationArg>deviceId C734260A861099B72C2EE6379DE7A82C</instrumentationArg>
+									<instrumentationArg>testSuiteList org.alljoyn.validation.testing.suites.onboarding.OnboardingTestSuite</instrumentationArg>
+									<instrumentationArg>testCaseName Onboarding-v1-01,Onboarding-v1-02</instrumentationArg>
+									<instrumentationArg>org.alljoyn.Onboarding.SoftApSsid AJ_QCA_AC_DE7A82C</instrumentationArg>
+									<instrumentationArg>org.alljoyn.Onboarding.SoftApSecurity NONE</instrumentationArg>
+									<instrumentationArg>org.alljoyn.Onboarding.PersonalApSsid dd-wrt</instrumentationArg>
+									<instrumentationArg>org.alljoyn.Onboarding.PersonalApSecurity WPA2_TKIP</instrumentationArg>
+									<instrumentationArg>org.alljoyn.Onboarding.PersonalApPassphrase pwd</instrumentationArg>
+								</instrumentationArgs>
+							</test>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>

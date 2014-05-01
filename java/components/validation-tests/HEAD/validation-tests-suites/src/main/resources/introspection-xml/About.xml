@@ -1,0 +1,18 @@
+<node name="/About" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://allseenalliance.org/schemas/introspect.xsd">
+    <interface name="org.alljoyn.About">
+        <property name="Version" type="q" access="read" />
+        <method name="GetAboutData">
+            <arg name="languageTag" type="s" direction="in" />
+            <arg name="aboutData" type="a{sv}" direction="out" />
+        </method>
+        <method name="GetObjectDescription">
+            <arg name="objectDescription" type="a(oas)" direction="out" />
+        </method>
+        <signal name="Announce">
+            <arg name="version" type="q" />
+            <arg name="port" type="q" />
+            <arg name="objectDescription" type="a(oas)" />
+            <arg name="aboutData" type="a{sv}" />
+        </signal>
+    </interface>
+</node>

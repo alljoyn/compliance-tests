@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--  Copyright (c) 2013 - 2014, AllSeen Alliance. All rights reserved.
+
+    Permission to use, copy, modify, and/or distribute this software for any
+    purpose with or without fee is hereby granted, provided that the above
+    copyright notice and this permission notice appear in all copies.
+
+    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.alljoyn.validation.validation-framework</groupId>
+        <artifactId>validation-framework</artifactId>
+        <version>1.0.0.09-SNAPSHOT</version>
+    </parent>
+    <artifactId>validation-framework-test-utils</artifactId>
+    <name>${project.artifactId}</name>
+    <description>AllJoyn Validation Test Framework Utilities</description>
+    <dependencies>
+        <dependency>
+            <groupId>org.alljoyn.validation.validation-framework</groupId>
+            <artifactId>validation-framework-test-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.android</groupId>
+            <artifactId>android</artifactId>
+            <classifier>${android.release}</classifier>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.alljoyn</groupId>
+            <artifactId>alljoyn</artifactId>
+            <classifier>${alljoyn.classifier}</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.alljoyn</groupId>
+            <artifactId>liballjoyn_java</artifactId>
+            <classifier>${alljoyn.classifier}</classifier>
+            <scope>runtime</scope>
+            <type>so</type>
+        </dependency>
+        <dependency>
+            <groupId>org.alljoyn</groupId>
+            <artifactId>about</artifactId>
+            <classifier>android-rel</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.alljoyn</groupId>
+            <artifactId>alljoyn_config</artifactId>
+            <classifier>android</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.alljoyn</groupId>
+            <artifactId>alljoyn_app_utils</artifactId>
+            <classifier>android</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.alljoyn</groupId>
+            <artifactId>alljoyn_ns</artifactId>
+            <classifier>android</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.alljoyn</groupId>
+            <artifactId>alljoyn_ns_commons</artifactId>
+            <classifier>android</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.alljoyn</groupId>
+            <artifactId>alljoyn_ns_nativeplatform</artifactId>
+            <classifier>android</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.alljoyn</groupId>
+            <artifactId>onboarding</artifactId>
+            <classifier>android</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.alljoyn</groupId>
+            <artifactId>controlpanel</artifactId>
+            <classifier>android</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.alljoyn</groupId>
+            <artifactId>controlpanel_adapter</artifactId>
+            <classifier>android</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.robolectric</groupId>
+            <artifactId>robolectric</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

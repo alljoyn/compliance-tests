@@ -1,0 +1,6 @@
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://allseenalliance.org/schemas/introspect.xsd">
+    <interface name="org.alljoyn.ControlPanel.NotificationAction">
+        <property name="Version" type="q" access="read" />
+        <signal name="Dismiss" />
+    </interface>
+</node>

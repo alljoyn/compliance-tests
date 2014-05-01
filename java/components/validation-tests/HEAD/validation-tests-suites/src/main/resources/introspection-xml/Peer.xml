@@ -1,0 +1,48 @@
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://allseenalliance.org/schemas/introspect.xsd">
+    <interface name="org.alljoyn.Bus.Peer.HeaderCompression">
+        <method name="GetExpansion">
+            <arg name="token" type="u" direction="in" />
+            <arg name="headerFields" type="a(yv)" direction="out" />
+        </method>
+    </interface>
+    <interface name="org.alljoyn.Bus.Peer.Authentication">
+        <method name="AuthChallenge">
+            <arg name="challenge" type="s" direction="in" />
+            <arg name="response" type="s" direction="out" />
+        </method>
+        <method name="ExchangeGroupKeys">
+            <arg name="localKeyMatter" type="ay" direction="in" />
+            <arg name="remoteKeyMatter" type="ay" direction="out" />
+        </method>
+        <method name="ExchangeGuids">
+            <arg name="localGuid" type="s" direction="in" />
+            <arg name="localVersion" type="u" direction="in" />
+            <arg name="remoteGuid" type="s" direction="out" />
+            <arg name="remoteVersion" type="u" direction="out" />
+        </method>
+        <method name="GenSessionKey">
+            <arg name="localGuid" type="s" direction="in" />
+            <arg name="remoteGuid" type="s" direction="in" />
+            <arg name="localNonce" type="s" direction="in" />
+            <arg name="remoteNonce" type="s" direction="out" />
+            <arg name="verifier" type="s" direction="out" />
+        </method>
+        <property name="Mechanisms" type="s" access="read" />
+        <property name="Version" type="u" access="read" />
+        <annotation name="org.alljoyn.Bus.Secure" value="off"/>
+    </interface>
+    <interface name="org.alljoyn.Bus.Peer.Session">
+        <method name="AcceptSession">
+            <arg name="port" type="q" direction="in" />
+            <arg name="id" type="u" direction="in" />
+            <arg name="src" type="s" direction="in" />
+            <arg name="opts" type="a{sv}" direction="in" />
+            <arg name="accepted" type="b" direction="out" />
+        </method>
+        <signal name="SessionJoined">
+            <arg name="port" type="q" direction="out" />
+            <arg name="id" type="u" direction="out" />
+            <arg name="src" type="s" direction="out" />
+        </signal>
+    </interface>
+</node>

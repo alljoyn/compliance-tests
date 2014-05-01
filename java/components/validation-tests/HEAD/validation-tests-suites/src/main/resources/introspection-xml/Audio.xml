@@ -1,0 +1,89 @@
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://allseenalliance.org/schemas/introspect.xsd">
+    <interface name="org.alljoyn.Stream">
+        <property name="Version" type="q" access="read" />
+        <method name="Open" />
+        <method name="Close" />
+    </interface>
+    <interface name="org.alljoyn.Stream.Port">
+        <property name="Version" type="q" access="read" />
+        <property name="Direction" type="y" access="read" />
+        <property name="Capabilities" type="a(sa{sv})" access="read" />
+        <signal name="OwnershipLost">
+            <arg name="name" type="s" />
+        </signal>
+        <method name="Connect">
+            <arg name="host" type="s" direction="in" />
+            <arg name="path" type="o" direction="in" />
+            <arg name="configuration" type="(sa{sv})" direction="in" />
+        </method>
+    </interface>
+    <interface name="org.alljoyn.Stream.Port.AudioSink">
+        <property name="Version" type="q" access="read" />
+        <property name="FifoSize" type="u" access="read" />
+        <property name="FifoPosition" type="u" access="read" />
+        <property name="Delay" type="(uu)" access="read" />
+        <signal name="FifoPositionChanged" />
+        <signal name="PlayStateChanged">
+            <arg name="oldState" type="y" />
+            <arg name="newState" type="y" />
+        </signal>
+        <method name="Play" />
+        <method name="Pause">
+            <arg name="timeNanos" type="t" direction="in" />
+        </method>
+        <method name="Flush">
+            <arg name="timeNanos" type="t" direction="in" />
+            <arg name="numBytesFlushed" type="u" direction="out" />
+        </method>
+    </interface>
+    <interface name="org.alljoyn.Stream.Port.AudioSource">
+        <property name="Version" type="q" access="read" />
+        <signal name="Data">
+            <arg name="timestamp" type="t" />
+            <arg name="bytes" type="ay" />
+        </signal>
+    </interface>
+    <interface name="org.alljoyn.Stream.Port.ImageSink">
+        <property name="Version" type="q" access="read" />
+    </interface>
+    <interface name="org.alljoyn.Stream.Port.ImageSource">
+        <property name="Version" type="q" access="read" />
+        <signal name="Data">
+            <arg name="bytes" type="ay" />
+        </signal>
+    </interface>
+    <interface name="org.alljoyn.Stream.Port.Application.MetadataSink">
+        <property name="Version" type="q" access="read" />
+    </interface>
+    <interface name="org.alljoyn.Stream.Port.Application.MetadataSource">
+        <property name="Version" type="q" access="read" />
+        <signal name="Data">
+            <arg name="dictionary" type="a{sv}" />
+        </signal>
+    </interface>
+    <interface name="org.alljoyn.Control.Volume">
+        <method name="AdjustVolume">
+            <arg name="delta" type="n" direction="in"/>
+        </method>
+        <signal name="MuteChanged">
+            <arg name="newMute" type="b" direction="out"/>
+        </signal>
+        <signal name="VolumeChanged">
+            <arg name="newVolume" type="n" direction="out"/>
+        </signal>
+        <property name="Mute" type="b" access="readwrite"/>
+        <property name="Version" type="q" access="read"/>
+        <property name="Volume" type="n" access="readwrite"/>
+        <property name="VolumeRange" type="(nnn)" access="read"/>
+    </interface>
+
+    <interface name="org.alljoyn.Stream.Clock">
+        <property name="Version" type="q" access="read" />
+        <method name="SetTime">
+            <arg name="timeNanos" type="t" direction="in" />
+        </method>
+        <method name="AdjustTime">
+            <arg name="adjustNanos" type="x" direction="in" />
+        </method>
+    </interface>
+</node>

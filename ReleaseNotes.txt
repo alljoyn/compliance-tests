@@ -1,0 +1,31 @@
+AllJoyn Validation Tests Version 1.0 Release Notes
+------------------------------------------
+
+Platform Support
+----------------
+
+ 1) Android JellyBean
+
+
+Features added in Version 1.0
+-------------------------------
+
+The AllJoyn service framework implementations must conform to the published service framework interface specifications. Validation tests verify that the behavior of the implementation has been maintained when it is built/ported to a particular device. The AllJoyn validation framework which is part of this contribution provides the set of Java interface definitions and classes required to write tests which can verify an AllJoyn service/interface implementation.   
+
+
+Known Issues
+------------
+1. About test case About-v1-02 is not checking About announcement version
+2. About test case About-v1-05 fails when executed against a device which implements Notification Service 1.1 or higher
+3. Control Panel test case ControlPanel-v1-10 is not joining a new session before calling getVersion on each secured object
+4. Onboarding test case Onboarding-v1-04 is disable (unable to run with latest Onboarding SDK changes)
+
+
+Compatibility
+-------------
+
+
+Change history
+--------------
+
+1.0 - 1st AllSeen Alliance release
