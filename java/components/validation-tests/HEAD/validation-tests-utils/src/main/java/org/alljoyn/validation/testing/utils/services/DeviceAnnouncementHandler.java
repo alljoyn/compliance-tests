@@ -35,6 +35,7 @@ public class DeviceAnnouncementHandler implements AnnouncementHandler
     private String dutDeviceId;
     private UUID dutAppId;
     private LinkedBlockingDeque<AboutAnnouncementDetails> receivedAnnouncements = new LinkedBlockingDeque<AboutAnnouncementDetails>();
+    private LinkedBlockingDeque<String> lostDevices = new LinkedBlockingDeque<String>();
 
     public DeviceAnnouncementHandler(String dutDeviceId, UUID dutAppId)
     {
@@ -48,10 +49,17 @@ public class DeviceAnnouncementHandler implements AnnouncementHandler
         return receivedAnnouncements.poll(timeout, unit);
     }
 
+    public void waitForSessionToClose(long timeout, TimeUnit unit) throws InterruptedException
+    {
+        logger.info(String.format("Waiting for session to close for device: %s", dutDeviceId));
+        lostDevices.poll(timeout, unit);
+    }
+
     @Override
     public void onDeviceLost(String deviceName)
     {
         logger.debug("onDeviceLost: " + deviceName);
+        lostDevices.add(deviceName);
     }
 
     @Override

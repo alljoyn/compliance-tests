@@ -27,7 +27,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,8 +34,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
-import junit.framework.AssertionFailedError;
 
 import org.alljoyn.about.AboutKeys;
 import org.alljoyn.about.client.AboutClient;
@@ -47,11 +44,13 @@ import org.alljoyn.bus.Mutable.StringValue;
 import org.alljoyn.bus.Variant;
 import org.alljoyn.config.ConfigService;
 import org.alljoyn.config.client.ConfigClient;
+import org.alljoyn.onboarding.transport.OnboardingTransport;
 import org.alljoyn.services.common.BusObjectDescription;
 import org.alljoyn.services.common.LanguageNotSupportedException;
 import org.alljoyn.services.common.ServiceAvailabilityListener;
 import org.alljoyn.services.common.utils.TransportUtil;
 import org.alljoyn.validation.framework.AppUnderTestDetails;
+import org.alljoyn.validation.framework.UserInputDetails;
 import org.alljoyn.validation.framework.ValidationTestContext;
 import org.alljoyn.validation.testing.suites.AllJoynErrorReplyCodes;
 import org.alljoyn.validation.testing.suites.BaseTestSuiteTest;
@@ -64,13 +63,14 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.robolectric.annotation.Config;
+
+import android.util.Log;
 
 @RunWith(MyRobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
@@ -101,9 +101,10 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
     private BusAttachment mockBusAttachment;
     @Mock
     private ServiceAvailabilityHandler mockServiceAvailabilityHandler;
+    @Mock
+    private UserInputDetails mockUserInputDetails;
 
     private Thread testThread;
-    private AssertionFailedError assertionFailureThrownByTest;
 
     protected Exception exceptionThrownByTest;
 
@@ -117,12 +118,9 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
     private String deviceName = "deviceName";
     private String defaultLanguage = "en";
     private String serviceName = "serviceName";
-    private String peerGUID = "peerGUID";
     private short PORT = 30;
 
     private AppUnderTestDetails appUnderTestDetails;
-
-    private Map<String, Method> methodMap = new HashMap<String, Method>();
 
     private String[] deviceNameField = new String[]
     { AboutKeys.ABOUT_DEVICE_NAME };
@@ -167,6 +165,11 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
             protected ServiceAvailabilityHandler createServiceAvailabilityHandler()
             {
                 return mockServiceAvailabilityHandler;
+            }
+            @Override
+            protected UserInputDetails createUserInputDetails()
+            {
+                return mockUserInputDetails;
             }
         };
 
@@ -232,12 +235,12 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
         when(mockServiceHelper.isPeerAuthenticationAttempted(deviceAboutAnnouncement)).thenReturn(true);
         when(mockServiceHelper.isPeerAuthenticationSuccessful(deviceAboutAnnouncement)).thenReturn(false);
         // when(mockConfigClient.getVersion()).thenThrow(new BusException());
-        when(mockConfigClient.getConfig("")).thenThrow(new BusException());
+        when(mockConfigClient.getConfig("")).thenReturn(null).thenThrow(new BusException());
 
         executeTestMethod(getTestWrapperFor_v1_02());
 
         // verify(mockConfigClient).getVersion();
-        verify(mockConfigClient).getConfig("");
+        verify(mockConfigClient, times(2)).getConfig("");
         verify(mockServiceHelper).isPeerAuthenticationAttempted(deviceAboutAnnouncement);
         verify(mockServiceHelper).isPeerAuthenticationSuccessful(deviceAboutAnnouncement);
     }
@@ -249,7 +252,7 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
         executeTestMethodFailsAssertion(getTestWrapperFor_v1_02(), "A call to a Config interface method with the wrong passcode must return an error");
 
         // verify(mockConfigClient).getVersion();
-        verify(mockConfigClient).getConfig("");
+        verify(mockConfigClient, times(2)).getConfig("");
     }
 
     @Test
@@ -258,12 +261,12 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
         when(mockServiceHelper.isPeerAuthenticationAttempted(deviceAboutAnnouncement)).thenReturn(false);
         when(mockServiceHelper.isPeerAuthenticationSuccessful(deviceAboutAnnouncement)).thenReturn(false);
         // when(mockConfigClient.getVersion()).thenThrow(new BusException());
-        when(mockConfigClient.getConfig("")).thenThrow(new BusException());
+        when(mockConfigClient.getConfig("")).thenReturn(null).thenThrow(new BusException());
 
         executeTestMethodFailsAssertion(getTestWrapperFor_v1_02(), "A call to a Config interface method must require authentication");
 
         // verify(mockConfigClient).getVersion();
-        verify(mockConfigClient).getConfig("");
+        verify(mockConfigClient, times(2)).getConfig("");
         verify(mockServiceHelper).isPeerAuthenticationAttempted(deviceAboutAnnouncement);
     }
 
@@ -273,12 +276,12 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
         when(mockServiceHelper.isPeerAuthenticationAttempted(deviceAboutAnnouncement)).thenReturn(true);
         when(mockServiceHelper.isPeerAuthenticationSuccessful(deviceAboutAnnouncement)).thenReturn(true);
         // when(mockConfigClient.getVersion()).thenThrow(new BusException());
-        when(mockConfigClient.getConfig("")).thenThrow(new BusException());
+        when(mockConfigClient.getConfig("")).thenReturn(null).thenThrow(new BusException());
 
         executeTestMethodFailsAssertion(getTestWrapperFor_v1_02(), "A call to a Config interface method with the wrong passcode must fail authentication");
 
         // verify(mockConfigClient).getVersion();
-        verify(mockConfigClient).getConfig("");
+        verify(mockConfigClient, times(2)).getConfig("");
         verify(mockServiceHelper).isPeerAuthenticationAttempted(deviceAboutAnnouncement);
         verify(mockServiceHelper).isPeerAuthenticationSuccessful(deviceAboutAnnouncement);
     }
@@ -355,7 +358,7 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
         executeTestMethod(getTestWrapperFor_v1_05());
 
         verify(mockConfigClient).getConfig(defaultLanguage);
-        verify(mockConfigClient).getConfig("");
+        verify(mockConfigClient, times(2)).getConfig("");
     }
 
     @Test
@@ -370,7 +373,7 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
         executeTestMethodFailsAssertion(getTestWrapperFor_v1_05(), "DeviceName does not match expected:<deviceName> but was:<differentName>");
 
         verify(mockConfigClient).getConfig(defaultLanguage);
-        verify(mockConfigClient).getConfig("");
+        verify(mockConfigClient, times(2)).getConfig("");
     }
 
     @Test
@@ -385,7 +388,7 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
         executeTestMethodFailsAssertion(getTestWrapperFor_v1_05(), "DefaultLanguage does not match expected:<en> but was:<fr>");
 
         verify(mockConfigClient).getConfig(defaultLanguage);
-        verify(mockConfigClient).getConfig("");
+        verify(mockConfigClient, times(2)).getConfig("");
     }
 
     @Test
@@ -1063,8 +1066,8 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
         when(mockConfigClient.getConfig(defaultLanguage)).thenReturn(updatedConfigData).thenReturn(configData);
         when(mockAboutClient.getAbout(defaultLanguage)).thenReturn(aboutData).thenReturn(updatedAboutData).thenReturn(aboutData);
 
-        when(mockServiceHelper.waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true))).thenReturn(deviceAboutAnnouncement).thenReturn(updatedAboutAnnouncement)
-                .thenReturn(deviceAboutAnnouncement);
+        when(mockServiceHelper.waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true))).thenReturn(deviceAboutAnnouncement).thenReturn(deviceAboutAnnouncement)
+                .thenReturn(updatedAboutAnnouncement).thenReturn(deviceAboutAnnouncement);
 
         executeTestMethod(getTestWrapperFor_v1_20());
 
@@ -1123,8 +1126,8 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
         when(mockConfigClient.getConfig(defaultLanguage)).thenReturn(updatedConfigData).thenReturn(updatedConfigData);
         when(mockAboutClient.getAbout(defaultLanguage)).thenReturn(aboutData).thenReturn(updatedAboutData).thenReturn(aboutData);
 
-        when(mockServiceHelper.waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true))).thenReturn(deviceAboutAnnouncement).thenReturn(updatedAboutAnnouncement)
-                .thenReturn(deviceAboutAnnouncement);
+        when(mockServiceHelper.waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true))).thenReturn(deviceAboutAnnouncement).thenReturn(deviceAboutAnnouncement)
+                .thenReturn(updatedAboutAnnouncement).thenReturn(deviceAboutAnnouncement);
 
         executeTestMethodFailsAssertion(getTestWrapperFor_v1_20(),
                 "Value for DeviceName retrieved from GetConfigurations() does not match expected value expected:<deviceName> but was:<newDeviceName>");
@@ -1146,8 +1149,8 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
         when(mockConfigClient.getConfig(defaultLanguage)).thenReturn(updatedConfigData).thenReturn(configData);
         when(mockAboutClient.getAbout(defaultLanguage)).thenReturn(aboutData).thenReturn(updatedAboutData).thenReturn(updatedAboutData);
 
-        when(mockServiceHelper.waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true))).thenReturn(deviceAboutAnnouncement).thenReturn(updatedAboutAnnouncement)
-                .thenReturn(deviceAboutAnnouncement);
+        when(mockServiceHelper.waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true))).thenReturn(deviceAboutAnnouncement).thenReturn(deviceAboutAnnouncement)
+                .thenReturn(updatedAboutAnnouncement).thenReturn(deviceAboutAnnouncement);
 
         executeTestMethodFailsAssertion(getTestWrapperFor_v1_20(),
                 "Value for DeviceName retrieved from GetAboutData() does not match expected value expected:<deviceName> but was:<newDeviceName>");
@@ -1204,13 +1207,13 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
         when(mockAboutClient.getAbout(defaultLanguage)).thenReturn(aboutData);
 
         when(mockAboutClient.getAbout("")).thenReturn(aboutData).thenReturn(updatedAboutData).thenReturn(aboutData);
-        when(mockConfigClient.getConfig("")).thenReturn(configData).thenReturn(updatedConfigData).thenReturn(configData);
+        when(mockConfigClient.getConfig("")).thenReturn(configData).thenReturn(configData).thenReturn(updatedConfigData).thenReturn(configData);
 
         executeTestMethod(getTestWrapperFor_v1_22());
 
         verify(mockAboutClient).getAbout(defaultLanguage);
         verify(mockAboutClient, times(3)).getAbout("");
-        verify(mockConfigClient, times(3)).getConfig("");
+        verify(mockConfigClient, times(4)).getConfig("");
         verify(mockServiceHelper, times(3)).waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true));
     }
 
@@ -1309,7 +1312,7 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
 
         verify(mockAboutClient).getAbout(defaultLanguage);
         verify(mockAboutClient, times(2)).getAbout("");
-        verify(mockConfigClient, times(2)).getConfig("");
+        verify(mockConfigClient, times(3)).getConfig("");
         verify(mockServiceHelper, times(2)).waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true));
     }
 
@@ -1333,13 +1336,13 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
         when(mockAboutClient.getAbout(defaultLanguage)).thenReturn(aboutData);
 
         when(mockAboutClient.getAbout("")).thenReturn(aboutData).thenReturn(updatedAboutData);
-        when(mockConfigClient.getConfig("")).thenReturn(configData).thenReturn(updatedConfigData);
+        when(mockConfigClient.getConfig("")).thenReturn(configData).thenReturn(configData).thenReturn(updatedConfigData);
 
         executeTestMethodFailsAssertion(getTestWrapperFor_v1_22(), "Received About announcement did not contain expected DefaultLanguage expected:<[en]> but was:<[fr]>");
 
         verify(mockAboutClient).getAbout(defaultLanguage);
         verify(mockAboutClient, times(2)).getAbout("");
-        verify(mockConfigClient, times(2)).getConfig("");
+        verify(mockConfigClient, times(3)).getConfig("");
         verify(mockServiceHelper, times(3)).waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true));
     }
 
@@ -1363,14 +1366,14 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
         when(mockAboutClient.getAbout(defaultLanguage)).thenReturn(aboutData);
 
         when(mockAboutClient.getAbout("")).thenReturn(aboutData).thenReturn(updatedAboutData).thenReturn(updatedAboutData);
-        when(mockConfigClient.getConfig("")).thenReturn(configData).thenReturn(updatedConfigData).thenReturn(configData);
+        when(mockConfigClient.getConfig("")).thenReturn(configData).thenReturn(configData).thenReturn(updatedConfigData).thenReturn(configData);
 
         executeTestMethodFailsAssertion(getTestWrapperFor_v1_22(),
                 "Value for DefaultLanguage retrieved from GetAboutData() does not match expected value expected:<en> but was:<fr>");
 
         verify(mockAboutClient).getAbout(defaultLanguage);
         verify(mockAboutClient, times(3)).getAbout("");
-        verify(mockConfigClient, times(3)).getConfig("");
+        verify(mockConfigClient, times(4)).getConfig("");
         verify(mockServiceHelper, times(3)).waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true));
     }
 
@@ -1394,14 +1397,14 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
         when(mockAboutClient.getAbout(defaultLanguage)).thenReturn(aboutData);
 
         when(mockAboutClient.getAbout("")).thenReturn(aboutData).thenReturn(updatedAboutData).thenReturn(aboutData);
-        when(mockConfigClient.getConfig("")).thenReturn(configData).thenReturn(updatedConfigData).thenReturn(updatedConfigData);
+        when(mockConfigClient.getConfig("")).thenReturn(configData).thenReturn(configData).thenReturn(updatedConfigData).thenReturn(updatedConfigData);
 
         executeTestMethodFailsAssertion(getTestWrapperFor_v1_22(),
                 "Value for DefaultLanguage retrieved from GetConfigurations() does not match expected value expected:<en> but was:<fr>");
 
         verify(mockAboutClient).getAbout(defaultLanguage);
         verify(mockAboutClient, times(3)).getAbout("");
-        verify(mockConfigClient, times(3)).getConfig("");
+        verify(mockConfigClient, times(4)).getConfig("");
         verify(mockServiceHelper, times(3)).waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true));
     }
 
@@ -1496,10 +1499,10 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
         executeTestMethod(getTestWrapperFor_v1_26());
 
         verify(mockServiceAvailabilityHandler).waitForSessionLost(anyLong(), any(TimeUnit.class));
-        verify(mockServiceHelper, times(2)).waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true));
-        verify(mockServiceHelper, times(2)).connectAboutClient(eq(deviceAboutAnnouncement), any(ServiceAvailabilityListener.class));
+        verify(mockServiceHelper, times(3)).waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true));
+        verify(mockServiceHelper, times(3)).connectAboutClient(eq(deviceAboutAnnouncement), any(ServiceAvailabilityListener.class));
         verify(mockConfigClient).restart();
-        verify(mockServiceHelper).release();
+        verify(mockServiceHelper, times(2)).release();
     }
 
     @Test
@@ -1510,10 +1513,10 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
         executeTestMethodFailsAssertion(getTestWrapperFor_v1_26(), "Timed out waiting for session to be lost");
 
         verify(mockServiceAvailabilityHandler).waitForSessionLost(anyLong(), any(TimeUnit.class));
-        verify(mockServiceHelper).waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true));
-        verify(mockServiceHelper).connectAboutClient(eq(deviceAboutAnnouncement), any(ServiceAvailabilityListener.class));
+        verify(mockServiceHelper, times(2)).waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true));
+        verify(mockServiceHelper, times(2)).connectAboutClient(eq(deviceAboutAnnouncement), any(ServiceAvailabilityListener.class));
         verify(mockConfigClient).restart();
-        verify(mockServiceHelper).release();
+        verify(mockServiceHelper, times(2)).release();
     }
 
     @Test
@@ -1521,15 +1524,16 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
     {
         BusException be = new BusException("Timed out waiting for About announcement");
         when(mockServiceAvailabilityHandler.waitForSessionLost(anyLong(), any(TimeUnit.class))).thenReturn(true);
-        when(mockServiceHelper.waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true))).thenReturn(deviceAboutAnnouncement).thenThrow(be);
+        when(mockServiceHelper.waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true))).thenReturn(deviceAboutAnnouncement).thenReturn(deviceAboutAnnouncement)
+                .thenThrow(be);
 
         executeTestMethodThrowsException(getTestWrapperFor_v1_26(), "Timed out waiting for About announcement");
 
         verify(mockServiceAvailabilityHandler).waitForSessionLost(anyLong(), any(TimeUnit.class));
-        verify(mockServiceHelper, times(2)).waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true));
-        verify(mockServiceHelper).connectAboutClient(any(AboutAnnouncementDetails.class), any(ServiceAvailabilityListener.class));
+        verify(mockServiceHelper, times(3)).waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true));
+        verify(mockServiceHelper, times(2)).connectAboutClient(any(AboutAnnouncementDetails.class), any(ServiceAvailabilityListener.class));
         verify(mockConfigClient).restart();
-        verify(mockServiceHelper).release();
+        verify(mockServiceHelper, times(2)).release();
     }
 
     @Test
@@ -1542,8 +1546,8 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
 
         AboutAnnouncementDetails updatedAboutAnnouncement = createAboutAnnouncement(updatedAboutData);
 
-        when(mockServiceHelper.waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true))).thenReturn(deviceAboutAnnouncement).thenReturn(updatedAboutAnnouncement)
-                .thenReturn(updatedAboutAnnouncement).thenReturn(updatedAboutAnnouncement).thenReturn(deviceAboutAnnouncement);
+        when(mockServiceHelper.waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true))).thenReturn(deviceAboutAnnouncement).thenReturn(deviceAboutAnnouncement)
+                .thenReturn(updatedAboutAnnouncement).thenReturn(updatedAboutAnnouncement).thenReturn(updatedAboutAnnouncement).thenReturn(deviceAboutAnnouncement);
 
         when(mockAboutClient.getAbout(defaultLanguage)).thenReturn(updatedAboutData).thenReturn(updatedAboutData).thenReturn(aboutData);
         when(mockConfigClient.getConfig(defaultLanguage)).thenReturn(updatedConfigData).thenReturn(updatedConfigData).thenReturn(configData);
@@ -1556,12 +1560,12 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
         executeTestMethod(getTestWrapperFor_v1_27());
 
         verify(mockConfigClient).restart();
-        verify(mockServiceHelper).connectAboutClient(eq(deviceAboutAnnouncement), any(ServiceAvailabilityListener.class));
+        verify(mockServiceHelper, times(2)).connectAboutClient(eq(deviceAboutAnnouncement), any(ServiceAvailabilityListener.class));
         verify(mockServiceHelper).connectAboutClient(eq(updatedAboutAnnouncement), any(ServiceAvailabilityListener.class));
         verify(mockServiceHelper).connectConfigClient(eq(updatedAboutAnnouncement));
         verify(mockAboutClient, times(3)).getAbout(defaultLanguage);
         verify(mockConfigClient, times(3)).getConfig(defaultLanguage);
-        verify(mockServiceHelper, times(5)).waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true));
+        verify(mockServiceHelper, times(6)).waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true));
     }
 
     @Test
@@ -1574,7 +1578,8 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
 
         AboutAnnouncementDetails updatedAboutAnnouncement = createAboutAnnouncement(updatedAboutData);
 
-        when(mockServiceHelper.waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true))).thenReturn(deviceAboutAnnouncement).thenReturn(updatedAboutAnnouncement);
+        when(mockServiceHelper.waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true))).thenReturn(deviceAboutAnnouncement).thenReturn(deviceAboutAnnouncement)
+                .thenReturn(updatedAboutAnnouncement);
 
         when(mockAboutClient.getAbout(defaultLanguage)).thenReturn(updatedAboutData);
         when(mockConfigClient.getConfig(defaultLanguage)).thenReturn(updatedConfigData);
@@ -1586,7 +1591,7 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
         verify(mockConfigClient).restart();
         verify(mockAboutClient).getAbout(defaultLanguage);
         verify(mockConfigClient).getConfig(defaultLanguage);
-        verify(mockServiceHelper, times(2)).waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true));
+        verify(mockServiceHelper, times(3)).waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true));
     }
 
     @Test
@@ -1599,8 +1604,8 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
 
         AboutAnnouncementDetails updatedAboutAnnouncement = createAboutAnnouncement(updatedAboutData);
 
-        when(mockServiceHelper.waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true))).thenReturn(deviceAboutAnnouncement).thenReturn(updatedAboutAnnouncement)
-                .thenReturn(deviceAboutAnnouncement);
+        when(mockServiceHelper.waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true))).thenReturn(deviceAboutAnnouncement).thenReturn(deviceAboutAnnouncement)
+                .thenReturn(updatedAboutAnnouncement).thenReturn(deviceAboutAnnouncement);
 
         when(mockAboutClient.getAbout(defaultLanguage)).thenReturn(updatedAboutData);
         when(mockConfigClient.getConfig(defaultLanguage)).thenReturn(updatedConfigData);
@@ -1610,10 +1615,10 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
         executeTestMethodFailsAssertion(getTestWrapperFor_v1_27(),
                 "Received About announcement did not contain expected DeviceName expected:<[newD]eviceName> but was:<[d]eviceName>");
 
-        verify(mockServiceHelper).connectAboutClient(eq(deviceAboutAnnouncement), any(ServiceAvailabilityListener.class));
+        verify(mockServiceHelper, times(2)).connectAboutClient(eq(deviceAboutAnnouncement), any(ServiceAvailabilityListener.class));
         verify(mockAboutClient).getAbout(defaultLanguage);
         verify(mockConfigClient).getConfig(defaultLanguage);
-        verify(mockServiceHelper, times(3)).waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true));
+        verify(mockServiceHelper, times(4)).waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true));
     }
 
     //
@@ -1719,36 +1724,119 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
         verify(mockConfigService).stopConfigClient();
     }// testConfig_v1_31PasscodeChangedSpecialChars
 
+	
+
     @Test
-    @Ignore
     public void testConfig_v1_32PasscodeChangedPersistOnRestart() throws Exception
     {
-        // TODO
+    	when(mockServiceAvailabilityHandler.waitForSessionLost(anyLong(), any(TimeUnit.class))).thenReturn(true);
         executeTestMethod(getTestWrapperFor_v1_32());
+
+        verify(mockServiceAvailabilityHandler).waitForSessionLost(anyLong(), any(TimeUnit.class));
+        verify(mockServiceHelper, Mockito.times(4)).release();
+        verify(mockServiceHelper, Mockito.times(4)).startAboutClient();
+        verify(mockServiceHelper, Mockito.times(4)).startConfigClient();
+        verify(mockServiceHelper, Mockito.times(5)).waitForNextDeviceAnnouncement(anyLong(),any(TimeUnit.class),Mockito.anyBoolean());
+        verify(mockServiceHelper,Mockito.times(4)).enableAuthentication(Mockito.anyString());
+        verify(mockServiceHelper, Mockito.times(3)).clearKeyStore();
+        
+        
+        verify(mockConfigClient, Mockito.times(4)).getConfig(any(String.class));
+        verify(mockConfigClient, Mockito.times(2)).setPasscode(any(String.class), (any(char[].class)));
+        verify(mockAboutClient, Mockito.times(4)).disconnect();
+        verify(mockConfigClient, Mockito.times(4)).disconnect();
+        verify(mockConfigClient, Mockito.times(1)).restart();
+        
     }
 
+
     @Test
-    @Ignore
     public void testConfig_v1_33FactoryResetNoUpdateConfiguratins() throws Exception
     {
-        // TODO
+        when(mockServiceAvailabilityHandler.waitForSessionLost(anyLong(), any(TimeUnit.class))).thenReturn(true);
         executeTestMethod(getTestWrapperFor_v1_33());
+        verify(mockTestContext).waitForUserInput(mockUserInputDetails);
+        verify(mockServiceHelper, Mockito.times(3)).waitForNextDeviceAnnouncement(anyLong(),any(TimeUnit.class),Mockito.anyBoolean());
+        Map<String, Object> configMap=new HashMap<String, Object>();
+        configMap.put(AboutKeys.ABOUT_DEVICE_NAME, "testdevice");
+        configMap.put(AboutKeys.ABOUT_DEFAULT_LANGUAGE, "testdefaultlang");
+        when(mockConfigClient.getConfig("")).thenReturn(configMap);
     }
+    
+    @Test
+    public void testConfig_v1_33FactoryResetNoUpdateConfiguratinsThrowsException() throws Exception
+    {
+        ErrorReplyBusException toBeThrown = new ErrorReplyBusException(AllJoynErrorReplyCodes.FEATURE_NOT_AVAILABLE);
+        doThrow(toBeThrown).when(mockConfigClient).factoryReset();
+
+        executeTestMethod(getTestWrapperFor_v1_33());
+       
+    }
+    
+    @Test
+    public void testConfig_v1_33FactoryResetNoUpdateConfiguratinsRethrowsException() throws Exception
+    {
+        ErrorReplyBusException toBeThrown = new ErrorReplyBusException("");
+        doThrow(toBeThrown).when(mockConfigClient).factoryReset();
+
+        try{
+        executeTestMethod(getTestWrapperFor_v1_33());
+        }catch(ErrorReplyBusException erbe){
+            assertEquals(toBeThrown, erbe);
+            
+        }
+       
+    }
+    
 
     @Test
-    @Ignore
     public void testConfig_v1_34FactoryResetAfterUpdateConfigurations() throws Exception
     {
-        // TODO
+        when(mockServiceAvailabilityHandler.waitForSessionLost(anyLong(), any(TimeUnit.class))).thenReturn(true);
+        
+        Map<String, Object> configMap=new HashMap<String, Object>();
+        configMap.put(AboutKeys.ABOUT_DEVICE_NAME, "deviceName");
+        
+        Map<String, Object> newConfigMap=new HashMap<String, Object>();
+        newConfigMap.put(AboutKeys.ABOUT_DEVICE_NAME, "newDeviceName");
+        newConfigMap.put(AboutKeys.ABOUT_DEFAULT_LANGUAGE, defaultLanguage);
+        
+        when(mockConfigClient.getConfig("")).thenReturn(configMap);
+         when(mockConfigClient.getConfig(defaultLanguage)).thenReturn(newConfigMap);
+         
+         
+         Map<String, Object> aboutMap=new HashMap<String, Object>();
+         aboutMap.put(AboutKeys.ABOUT_DEVICE_NAME, "deviceName");
+         
+         when(mockAboutClient.getAbout("")).thenReturn(aboutMap);
+        
+        AboutAnnouncementDetails newDeviceAboutAnnouncement =Mockito.mock(AboutAnnouncementDetails.class);
+        when(newDeviceAboutAnnouncement.getDeviceName()).thenReturn(NEW_DEVICE_NAME);
+        when(newDeviceAboutAnnouncement.getDefaultLanguage()).thenReturn(defaultLanguage);
+        
+        AboutAnnouncementDetails reconnectDeviceAboutAnnouncement =Mockito.mock(AboutAnnouncementDetails.class);
+        when(reconnectDeviceAboutAnnouncement.getDeviceName()).thenReturn("deviceName");
+        when(reconnectDeviceAboutAnnouncement.getDefaultLanguage()).thenReturn("");
+        
+       when(mockServiceHelper.waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true))).thenReturn(deviceAboutAnnouncement).thenReturn(newDeviceAboutAnnouncement).thenReturn(deviceAboutAnnouncement).thenReturn(deviceAboutAnnouncement);
+        
         executeTestMethod(getTestWrapperFor_v1_34());
+        verify(mockTestContext).waitForUserInput(mockUserInputDetails);
+       
     }
 
     @Test
-    @Ignore
     public void testConfig_v1_35FactoryResetResetsPasscode() throws Exception
     {
-        // TODO
+       
+        when(mockServiceAvailabilityHandler.waitForSessionLost(anyLong(), any(TimeUnit.class))).thenReturn(true);
         executeTestMethod(getTestWrapperFor_v1_35());
+        verify(mockTestContext).waitForUserInput(mockUserInputDetails);
+        verify(mockServiceHelper, Mockito.times(4)).waitForNextDeviceAnnouncement(anyLong(),any(TimeUnit.class),Mockito.anyBoolean());
+        Map<String, Object> configMap=new HashMap<String, Object>();
+        configMap.put(AboutKeys.ABOUT_DEVICE_NAME, "testdevice");
+        configMap.put(AboutKeys.ABOUT_DEFAULT_LANGUAGE, "testdefaultlang");
+        when(mockConfigClient.getConfig("")).thenReturn(configMap);
     }
 
     /**
@@ -1783,24 +1871,6 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
         return aboutAnnouncement;
     }
 
-/**
-	 * Retrieve the {@link ServiceAvailabilityListener} that is provided in the {@link ConfigService#createFeatureConfigClient(String, ServiceAvailabilityListener, short)
-	 * The listener is required to notify a user about session lost event
-	 * @return {@link ServiceAvailabilityListener} 
-	 * @throws Exception 
-	 */
-    private ServiceAvailabilityListener retrieveServiceAvailabilityListener() throws Exception
-    {
-        ArgumentCaptor<ServiceAvailabilityListener> serviceAvailabilityListenerCaptor = ArgumentCaptor.forClass(ServiceAvailabilityListener.class);
-        verify(mockConfigService).createFeatureConfigClient(eq(serviceName), serviceAvailabilityListenerCaptor.capture(), eq(PORT));
-        return serviceAvailabilityListenerCaptor.getValue();
-    }// retrieveServiceAvailabilityListener
-
-    /**
-     * Create Mock of the ConfigClient.setConfig() call
-     * 
-     * @throws BusException
-     */
     private void createSetConfigMock() throws BusException
     {
         // Create mock for the setConfig call. Catch the setConfig arguments and

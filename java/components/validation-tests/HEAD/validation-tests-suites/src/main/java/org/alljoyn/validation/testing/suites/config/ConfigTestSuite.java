@@ -54,10 +54,10 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
     private static final String INVALID_LANGUAGE_CODE = "INVALID";
     private static final int CONFIG_CLIENT_RECONNECT_WAIT_TIME = 10000;
     private static final String BUS_APPLICATION_NAME = "ConfigTestSuite";
-    private static final long ANNOUCEMENT_TIMEOUT_IN_SECONDS = 30;
+    public static final long ANNOUCEMENT_TIMEOUT_IN_SECONDS = 30;
+    private static final long SESSION_CLOSE_TIMEOUT_IN_SECONDS = 5;
 
     private ConfigClient configClient = null;
-    private boolean isClientConnected = false;
     private ServiceHelper serviceHelper;
     private AboutClient aboutClient;
 
@@ -99,6 +99,7 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
             logger.debug(String.format("Running Config test case using KeyStorePath: %s", keyStorePath));
 
             initServiceHelper();
+            resetPasscodeIfNeeded();
 
             logger.debug("test setUp done");
         }
@@ -136,19 +137,17 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
             {
                 aboutClient.disconnect();
                 aboutClient = null;
-                isClientConnected = false;
             }
             if (configClient != null)
             {
 
                 configClient.disconnect();
                 configClient = null;
-                isClientConnected = false;
-
             }
             if (serviceHelper != null)
             {
                 serviceHelper.release();
+                waitForSessionToClose();
                 serviceHelper = null;
             }
         }
@@ -181,6 +180,12 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
         return serviceHelper.waitForNextDeviceAnnouncement(ANNOUCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS, true);
     }
 
+    private void waitForSessionToClose() throws Exception
+    {
+        logger.info("Waiting for session to close");
+        serviceHelper.waitForSessionToClose(SESSION_CLOSE_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
+    }
+
     @Override
     protected void tearDown() throws Exception
     {
@@ -209,8 +214,10 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
     @ValidationTest(name = "Config-v1-02")
     public void testConfig_v1_02ConnectWithWrongPasscode() throws Exception
     {
+        reconnectClients();
         char[] wrongPasscode = "123456".toCharArray();
 
+        serviceHelper.clearKeyStore();
         serviceHelper.setAuthPassword(deviceAboutAnnouncement, wrongPasscode);
 
         boolean exceptionThrown = false;
@@ -623,6 +630,7 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
         String defaultLanguage = deviceAboutAnnouncement.getDefaultLanguage();
 
         callResetConfigurations(defaultLanguage, DEVICE_NAME_FIELD);
+        deviceAboutAnnouncement = waitForNextAnnouncementAndCheckFieldValue(AboutKeys.ABOUT_DEFAULT_LANGUAGE, defaultLanguage);
 
         Map<String, Object> aboutMap = callGetAboutForDefaultLanguage();
         String originalDeviceName = (String) aboutMap.get(AboutKeys.ABOUT_DEVICE_NAME);
@@ -783,6 +791,7 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
     @ValidationTest(name = "Config-v1-26")
     public void testConfig_v1_26DeviceRestart() throws Exception
     {
+        reconnectClients();
         callRestartOnConfig();
 
         assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(ANNOUCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
@@ -795,6 +804,7 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
     @ValidationTest(name = "Config-v1-27")
     public void testConfig_v1_27DeviceRestartRememberConfData() throws Exception
     {
+        reconnectClients();
         String originalDeviceName = deviceAboutAnnouncement.getDeviceName();
 
         updateConfigurationsAndVerifyResult(AboutKeys.ABOUT_DEVICE_NAME, NEW_DEVICE_NAME);
@@ -952,12 +962,11 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
             {
                 assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(ANNOUCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
 
-                UserInputDetails userInputDetails = new UserInputDetails("Onboard DUT (if needed)",
-                        "FactoryReset() has been called on the DUT. Please Onboard the device to the Personal AP (if needed) and then click Continue", "Continue");
+                UserInputDetails userInputDetails = createUserInputDetails();
                 // always continue, we ignore the response here
                 getValidationTestContext().waitForUserInput(userInputDetails);
 
-                deviceAboutAnnouncement = waitForNextDeviceAnnouncement();
+                waitForNextDeviceAnnouncement();
 
                 reconnectClients();
 
@@ -969,6 +978,12 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
                 assertEquals("FactoryReset() set the DefaultLanguage to a different value than ResetConfigurations()", defaultLanguageBeforeReset, defaultLanguageAfterReset);
             }
         }
+    }
+
+    protected UserInputDetails createUserInputDetails()
+    {
+        return new UserInputDetails("Onboard DUT (if needed)",
+                "FactoryReset() has been called on the DUT. Please Onboard the device to the Personal AP (if needed) and then click Continue", "Continue");
     }
 
     @ValidationTest(name = "Config-v1-34")
@@ -1021,8 +1036,7 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
             {
                 assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(ANNOUCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
 
-                UserInputDetails userInputDetails = new UserInputDetails("Onboard DUT (if needed)",
-                        "FactoryReset() has been called on the DUT. Please Onboard the device to the Personal AP (if needed) and then click Continue", "Continue");
+                UserInputDetails userInputDetails = createUserInputDetails();
                 // always continue, we ignore the response here
                 getValidationTestContext().waitForUserInput(userInputDetails);
 
@@ -1040,11 +1054,9 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
     @ValidationTest(name = "Config-v1-35")
     public void testConfig_v1_35FactoryResetResetsPasscode() throws Exception
     {
-        String defaultDeviceName = null;
         if (deviceAboutAnnouncement.supportsInterface(OnboardingTransport.INTERFACE_NAME))
         {
             getValidationTestContext().addNote("The device supports Onboarding so this Test Case is Not Applicable");
-
         }
         else
         {
@@ -1077,8 +1089,7 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
             {
                 assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(ANNOUCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
 
-                UserInputDetails userInputDetails = new UserInputDetails("Onboard DUT (if needed)",
-                        "FactoryReset() has been called on the DUT. Please Onboard the device to the Personal AP (if needed) and then click Continue", "Continue");
+                UserInputDetails userInputDetails = createUserInputDetails();
                 // always continue, we ignore the response here
                 getValidationTestContext().waitForUserInput(userInputDetails);
 
@@ -1137,7 +1148,6 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
     public void connectionLost()
     {
         logger.debug("The connection with the remote device has lost");
-        isClientConnected = false;
     }
 
     private String generateDeviceName(int length)
@@ -1187,55 +1197,6 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
     {
         assertEquals(String.format("Value for %s retrieved from GetAboutData() does not match expected value", key), verifyValue, aboutMap.get(key));
         assertEquals(String.format("Value for %s retrieved from GetConfigurations() does not match expected value", key), verifyValue, configMap.get(key));
-    }
-
-    private void setPasscodeAndVerifyGetConfigMap(String newPasscodeStr) throws Exception
-    {
-        String realm = "";
-        char[] newPasscode = newPasscodeStr.toCharArray();
-
-        try
-        {
-            logger.debug("Call setPasscode for the Realm: '" + realm + "', and the Passcode: '" + newPasscodeStr + "'");
-            configClient.setPasscode(realm, newPasscode);
-        }
-        catch (BusException be)
-        {
-            if (!(be instanceof ErrorReplyBusException))
-            {
-                fail("A BusException has happened during setPasscode() call for a passcode: '" + newPasscodeStr + "'");
-            }
-
-            ErrorReplyBusException erbe = (ErrorReplyBusException) be;
-            if (erbe.getErrorName().equals(AllJoynErrorReplyCodes.FEATURE_NOT_AVAILABLE))
-            {
-                logger.debug("setPasscode feature is not supported");
-                getValidationTestContext().addNote("Set passcode feature is not supported");
-                return;
-            }
-
-        }
-
-        tearDown();
-
-        Thread.sleep(CONFIG_CLIENT_RECONNECT_WAIT_TIME);
-
-        setUp();
-
-        serviceHelper.setAuthPassword(deviceAboutAnnouncement, newPasscode);
-
-        logger.debug("Call getConfig to verify authentication with a new password");
-        try
-        {
-            assertNotNull(configClient.getConfig(deviceAboutAnnouncement.getDefaultLanguage()));
-        }
-        catch (BusException be)
-        {
-            logger.debug("Failed to call getConfig for BusException " + be + " \n" + be.getStackTrace() + " after waiting for reconnect in " + CONFIG_CLIENT_RECONNECT_WAIT_TIME
-                    + " ms");
-            fail("Failed to call getConfig for the defaultLanguage: '" + deviceAboutAnnouncement.getDefaultLanguage() + "'");
-        }
-
     }
 
     private void testFailReset(String exceptionName, String resetLang, String[] fieldsToReset)
@@ -1399,7 +1360,7 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
 
     }
 
-    private AboutAnnouncementDetails waitForNextAnnouncementAndCheckFieldValue(String fieldName, String fieldValue) throws Exception
+    protected AboutAnnouncementDetails waitForNextAnnouncementAndCheckFieldValue(String fieldName, String fieldValue) throws Exception
     {
         logger.info("Waiting for updating About announcement");
         AboutAnnouncementDetails nextDeviceAnnouncement = waitForNextDeviceAnnouncement();
@@ -1436,5 +1397,40 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
     private void releaseResources()
     {
         releaseServiceHelper();
+    }
+
+    private void resetPasscodeIfNeeded() throws Exception
+    {
+        try
+        {
+            callMethodToCheckAuthentication();
+        }
+        catch (Exception exception)
+        {
+            try
+            {
+                setPasscode(NEW_PASSCODE);
+            }
+            catch (Exception e)
+            {
+                try
+                {
+                    setPasscode(SINGLE_CHAR_PASSCODE);
+                }
+                catch (Exception e1)
+                {
+                    setPasscode(SPECIAL_CHARS_PASSCODE);
+                }
+            }
+        }
+    }
+
+    private void setPasscode(char[] pwd) throws Exception
+    {
+        serviceHelper.clearKeyStore();
+        serviceHelper.setAuthPassword(deviceAboutAnnouncement, pwd);
+
+        callMethodToCheckAuthentication();
+        changePasscodeAndReconnect(DEFAULT_PINCODE);
     }
 }

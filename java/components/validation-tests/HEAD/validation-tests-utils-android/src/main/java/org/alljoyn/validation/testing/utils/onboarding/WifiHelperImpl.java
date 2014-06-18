@@ -157,41 +157,24 @@ public class WifiHelperImpl implements WifiHelper
             }
         }
 
-        WifiConfiguration tmpConfig = new WifiConfiguration();
-        tmpConfig.SSID = "\"" + ssid + "\"";
-
-        if (isValidSecurityType(securityType))
-        {
-            tmpConfig.preSharedKey = "\"" + password + "\"";
-        }
-        else if (OnboardingService.AuthType.OPEN.name().equalsIgnoreCase(securityType) || "NONE".equalsIgnoreCase(securityType))
-        {
-            tmpConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-        }
-        else
-        {
-            throw new IllegalArgumentException("Invalid security type: " + securityType);
-        }
-
         if (null == networkId)
         {
+            WifiConfiguration tmpConfig = createWifiConfiguration(ssid, password, securityType);
             logger.debug("Adding Wifi network");
             networkId = wifiManager.addNetwork(tmpConfig);
             saveWifiConfiguration();
         }
-        else
+        else if (recreate)
         {
-            if (recreate)
-            {
-                logger.debug("Removing Wifi network config");
-                tmpConfig.networkId = networkId;
-                removeWifiNetwork(networkId);
+            WifiConfiguration tmpConfig = createWifiConfiguration(ssid, password, securityType);
+            logger.debug("Removing Wifi network config");
+            tmpConfig.networkId = networkId;
+            removeWifiNetwork(networkId);
 
-                saveWifiConfiguration();
-                logger.debug("Adding Wifi network");
-                networkId = wifiManager.addNetwork(tmpConfig);
-                saveWifiConfiguration();
-            }
+            saveWifiConfiguration();
+            logger.debug("Adding Wifi network");
+            networkId = wifiManager.addNetwork(tmpConfig);
+            saveWifiConfiguration();
         }
 
         if (-1 == networkId)
@@ -227,6 +210,27 @@ public class WifiHelperImpl implements WifiHelper
 
         timeRemaining = startTime + timeToWaitInMs - System.currentTimeMillis();
         return waitForConnect(ssid, timeRemaining, TimeUnit.MILLISECONDS);
+    }
+
+    private WifiConfiguration createWifiConfiguration(String ssid, String password, String securityType)
+    {
+        WifiConfiguration tmpConfig = new WifiConfiguration();
+        tmpConfig.SSID = "\"" + ssid + "\"";
+
+        if (isValidSecurityType(securityType))
+        {
+            tmpConfig.preSharedKey = "\"" + password + "\"";
+        }
+        else if (OnboardingService.AuthType.OPEN.name().equalsIgnoreCase(securityType) || "NONE".equalsIgnoreCase(securityType))
+        {
+            tmpConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Invalid security type: " + securityType);
+        }
+
+        return tmpConfig;
     }
 
     private boolean isValidSecurityType(String securityType)

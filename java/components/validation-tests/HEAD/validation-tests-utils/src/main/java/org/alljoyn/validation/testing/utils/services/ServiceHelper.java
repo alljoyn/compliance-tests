@@ -179,6 +179,12 @@ public class ServiceHelper
         return aboutAnnouncementDetails;
     }
 
+    public void waitForSessionToClose(long timeout, TimeUnit unit) throws Exception
+    {
+        deviceAnnouncementHandler.waitForSessionToClose(timeout, unit);
+        deviceAnnouncementHandler = null;
+    }
+
     public AboutClient connectAboutClient(AboutAnnouncementDetails aboutAnnouncementDetails) throws Exception
     {
         return connectAboutClient(aboutAnnouncementDetails, null);
@@ -393,7 +399,7 @@ public class ServiceHelper
             {
                 logger.debug("Stopping aboutClient");
                 aboutService.removeAnnouncementHandler(deviceAnnouncementHandler);
-                deviceAnnouncementHandler = null;
+                // deviceAnnouncementHandler = null;
                 aboutService.stopAboutClient();
             }
             catch (Exception e)
