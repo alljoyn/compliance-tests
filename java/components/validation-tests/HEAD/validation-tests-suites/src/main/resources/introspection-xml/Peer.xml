@@ -12,6 +12,98 @@
     ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE. -->
 <node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://allseenalliance.org/schemas/introspect.xsd">
+    <interface name="org.alljoyn.Bus">
+        <signal name="SessionLost">
+            <arg type="u"/>
+        </signal>
+        <signal name="FoundAdvertisedName">
+          <arg type="s"/>
+          <arg type="q"/>
+          <arg type="s"/>
+        </signal>
+        <signal name="LostAdvertisedName">
+          <arg type="s"/>
+          <arg type="q"/>
+          <arg type="s"/>
+        </signal>
+        <signal name="MPSessionChanged">
+          <arg type="u"/>
+          <arg type="s"/>
+          <arg type="b"/>
+        </signal>
+        <method name="AdvertiseName">
+          <arg type="s" direction="in"/>
+          <arg type="q" direction="in"/>
+          <arg type="u" direction="out"/>
+        </method>
+        <method name="CancelAdvertiseName">
+          <arg type="s" direction="in"/>
+          <arg type="q" direction="in"/>
+          <arg type="u" direction="out"/>
+        </method>
+        <method name="FindAdvertisedName">
+          <arg type="s" direction="in"/>
+          <arg type="u" direction="out"/>
+        </method>
+        <method name="CancelFindAdvertisedName">
+          <arg type="s" direction="in"/>
+        </method>
+        <method name="BindSessionPort">
+          <arg type="q" direction="in"/>
+          <arg type="a{sv}" direction="in"/>
+          <arg type="u" direction="out"/>
+          <arg type="q" direction="out"/>
+        </method>
+        <method name="UnbindSessionPort">
+          <arg type="q" direction="in"/>
+          <arg type="u" direction="out"/>
+        </method>
+        <method name="JoinSession">
+          <arg type="s" direction="in"/>
+          <arg type="q" direction="in"/>
+          <arg type="a{sv}" direction="in"/>
+          <arg type="u" direction="out"/>
+          <arg type="u" direction="out"/>
+          <arg type="a{sv}" direction="out"/>
+        </method>
+        <method name="LeaveSession">
+          <arg type="u" direction="in"/>
+          <arg type="u" direction="out"/>
+        </method>
+        <method name="CancelSessionlessMessage">
+          <arg type="u" direction="in"/>
+          <arg type="u" direction="out"/>
+        </method>
+        <method name="FindAdvertisedNameByTransport">
+          <arg type="s" direction="in"/>
+          <arg type="q" direction="in"/>
+          <arg type="u" direction="out"/>
+        </method>
+        <method name="CancelFindAdvertisedNameByTransport">
+          <arg type="s" direction="in"/>
+          <arg type="q" direction="in"/>
+          <arg type="u" direction="out"/>
+        </method>
+        <method name="SetLinkTimeout">
+          <arg type="u" direction="in"/>
+          <arg type="u" direction="in"/>
+          <arg type="u" direction="out"/>
+          <arg type="u" direction="out"/>
+        </method>
+        <method name="RemoveSessionMember">
+          <arg type="us" direction="in"/>
+          <arg type="u" direction="out"/>
+        </method>
+        <signal name="SessionLostWithReason">
+          <arg type="u"/>
+          <arg type="u"/>
+        </signal>
+        <method name="Ping">
+          <arg type="s" direction="in"/>
+          <arg type="u" direction="in"/>
+          <arg type="u" direction="out"/>
+        </method>
+    </interface>
     <interface name="org.alljoyn.Bus.Peer.HeaderCompression">
         <method name="GetExpansion">
             <arg name="token" type="u" direction="in" />
@@ -33,12 +125,26 @@
             <arg name="remoteGuid" type="s" direction="out" />
             <arg name="remoteVersion" type="u" direction="out" />
         </method>
+        <method name="ExchangeSuites">
+            <arg name="localAuthList" type="au" direction="in"/>
+            <arg name="remoteAuthList" type="au" direction="out"/>
+        </method>
         <method name="GenSessionKey">
             <arg name="localGuid" type="s" direction="in" />
             <arg name="remoteGuid" type="s" direction="in" />
             <arg name="localNonce" type="s" direction="in" />
             <arg name="remoteNonce" type="s" direction="out" />
             <arg name="verifier" type="s" direction="out" />
+        </method>
+        <method name="KeyAuthentication">
+            <arg name="localVerifier" type="v" direction="in"/>
+            <arg name="remoteVerifier" type="v" direction="out"/>
+        </method>
+        <method name="KeyExchange">
+            <arg name="localAuthMask" type="u" direction="in"/>
+            <arg name="localPublicKey" type="v" direction="in"/>
+            <arg name=" remoteAuthMask" type="u" direction="out"/>
+            <arg name=" remotePublicKey" type="v" direction="out"/>
         </method>
         <property name="Mechanisms" type="s" access="read" />
         <property name="Version" type="u" access="read" />

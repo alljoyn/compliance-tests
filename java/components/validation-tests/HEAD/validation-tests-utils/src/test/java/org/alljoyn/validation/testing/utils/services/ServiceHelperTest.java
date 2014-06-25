@@ -228,7 +228,7 @@ public class ServiceHelperTest
 
         verify(mockBusAttachmentMgr).create(myApplicationName, RemoteMessage.Receive);
         verify(mockBusAttachmentMgr).connect();
-        verify(mockAboutServiceImpl).addAnnouncementHandler(mockDeviceAnnouncementHandler);
+        verify(mockAboutServiceImpl).addAnnouncementHandler(mockDeviceAnnouncementHandler, null);
     }
 
     @Test
@@ -327,7 +327,6 @@ public class ServiceHelperTest
     public void testStartAboutClient() throws Exception
     {
         serviceHelper.initialize(myApplicationName, DEVICE_ID, APP_ID);
-        serviceHelper.startAboutClient();
 
         verify(mockAboutServiceImpl).startAboutClient(mockBusAttachment);
     }
@@ -337,7 +336,6 @@ public class ServiceHelperTest
     {
         when(mockAboutServiceImpl.isClientRunning()).thenReturn(true);
         serviceHelper.initialize(myApplicationName, DEVICE_ID, APP_ID);
-        serviceHelper.startAboutClient();
 
         verify(mockAboutServiceImpl).startAboutClient(mockBusAttachment);
         verify(mockAboutServiceImpl).stopAboutClient();
@@ -368,10 +366,9 @@ public class ServiceHelperTest
     {
         doThrow(new Exception()).when(mockAboutServiceImpl).startAboutClient(mockBusAttachment);
 
-        serviceHelper.initialize(myApplicationName, DEVICE_ID, APP_ID);
         try
         {
-            serviceHelper.startAboutClient();
+            serviceHelper.initialize(myApplicationName, DEVICE_ID, APP_ID);
             fail();
         }
         catch (Exception e)
@@ -426,7 +423,6 @@ public class ServiceHelperTest
     public void testWaitForNextDeviceAnnouncement() throws Exception
     {
         serviceHelper.initialize(myApplicationName, DEVICE_ID, APP_ID);
-        serviceHelper.startAboutClient();
 
         AboutAnnouncementDetails aboutAnnouncementDetails = serviceHelper.waitForNextDeviceAnnouncement(10, TimeUnit.MILLISECONDS);
         assertSame(mockAboutAnnouncementDetails, aboutAnnouncementDetails);
@@ -481,7 +477,6 @@ public class ServiceHelperTest
         when(mockDeviceAnnouncementHandler.waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class))).thenReturn(null).thenReturn(null);
 
         serviceHelper.initialize(myApplicationName, DEVICE_ID, APP_ID);
-        serviceHelper.startAboutClient();
 
         serviceHelper.waitForNextDeviceAnnouncement(10, TimeUnit.MILLISECONDS, false);
 
@@ -776,18 +771,21 @@ public class ServiceHelperTest
     @Test
     public void testSetupAuthentication() throws Exception
     {
-        when(mockBusAttachment.registerAuthListener("ALLJOYN_SRP_KEYX ALLJOYN_PIN_KEYX", mockSrpAnonymousKeyListener, KEY_STORE_FILE_NAME)).thenReturn(Status.OK);
+        when(mockSrpAnonymousKeyListener.getAuthMechanismsAsString()).thenReturn("ALLJOYN_SRP_KEYX ALLJOYN_PIN_KEYX ALLJOYN_ECDHE_PSK");
+        when(mockBusAttachment.registerAuthListener("ALLJOYN_SRP_KEYX ALLJOYN_PIN_KEYX ALLJOYN_ECDHE_PSK", mockSrpAnonymousKeyListener, KEY_STORE_FILE_NAME)).thenReturn(Status.OK);
 
         serviceHelper.initialize(myApplicationName, DEVICE_ID, APP_ID);
         serviceHelper.enableAuthentication(KEY_STORE_FILE_NAME);
 
-        verify(mockBusAttachment).registerAuthListener("ALLJOYN_SRP_KEYX ALLJOYN_PIN_KEYX", mockSrpAnonymousKeyListener, KEY_STORE_FILE_NAME);
+        verify(mockBusAttachment).registerAuthListener("ALLJOYN_SRP_KEYX ALLJOYN_PIN_KEYX ALLJOYN_ECDHE_PSK", mockSrpAnonymousKeyListener, KEY_STORE_FILE_NAME);
     }
 
     @Test
     public void testSetupAuthenticationFails() throws Exception
     {
-        when(mockBusAttachment.registerAuthListener("ALLJOYN_SRP_KEYX ALLJOYN_PIN_KEYX", mockSrpAnonymousKeyListener, KEY_STORE_FILE_NAME)).thenReturn(Status.FAIL);
+        when(mockSrpAnonymousKeyListener.getAuthMechanismsAsString()).thenReturn("ALLJOYN_SRP_KEYX ALLJOYN_PIN_KEYX ALLJOYN_ECDHE_PSK");
+        when(mockBusAttachment.registerAuthListener("ALLJOYN_SRP_KEYX ALLJOYN_PIN_KEYX ALLJOYN_ECDHE_PSK", mockSrpAnonymousKeyListener, KEY_STORE_FILE_NAME)).thenReturn(
+                Status.FAIL);
 
         serviceHelper.initialize(myApplicationName, DEVICE_ID, APP_ID);
         try
@@ -799,8 +797,7 @@ public class ServiceHelperTest
             assertEquals("Call to registerAuthListener returned failure: FAIL", e.getMessage());
         }
 
-        verify(mockBusAttachment).registerAuthListener("ALLJOYN_SRP_KEYX ALLJOYN_PIN_KEYX", mockSrpAnonymousKeyListener, KEY_STORE_FILE_NAME);
-
+        verify(mockBusAttachment).registerAuthListener("ALLJOYN_SRP_KEYX ALLJOYN_PIN_KEYX ALLJOYN_ECDHE_PSK", mockSrpAnonymousKeyListener, KEY_STORE_FILE_NAME);
     }
 
     @Test
@@ -848,7 +845,7 @@ public class ServiceHelperTest
     }
 
     @Test
-    public void testGetBusUniqueName() throws BusException
+    public void testGetBusUniqueName() throws Exception
     {
         when(mockBusAttachmentMgr.getBusUniqueName()).thenReturn("busName");
         serviceHelper.initialize(myApplicationName, DEVICE_ID, APP_ID);

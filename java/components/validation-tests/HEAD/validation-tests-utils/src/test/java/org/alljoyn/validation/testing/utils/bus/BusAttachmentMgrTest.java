@@ -34,7 +34,6 @@ import org.alljoyn.bus.SessionOpts;
 import org.alljoyn.bus.Status;
 import org.alljoyn.bus.alljoyn.DaemonInit;
 import org.alljoyn.validation.testing.utils.AllJoynLibraryLoader;
-import org.alljoyn.validation.testing.utils.bus.BusAttachmentMgr;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,8 +62,6 @@ public class BusAttachmentMgrTest
         PowerMockito.mockStatic(Log.class);
         PowerMockito.suppress(PowerMockito.methodsDeclaredIn(Log.class));
         PowerMockito.mockStatic(PasswordManager.class);
-        PowerMockito.when(PasswordManager.class, PowerMockito.method(PasswordManager.class, "setCredentials", String.class, String.class)).withArguments(anyString(), anyString())
-                .thenReturn(Status.OK);
 
         when(mockBusAttachment.connect()).thenReturn(Status.OK);
         when(mockBusAttachment.requestName(anyString(), anyInt())).thenReturn(Status.OK);
@@ -111,10 +108,6 @@ public class BusAttachmentMgrTest
     public void testCreateRelease() throws BusException
     {
         busAttachmentMgr.create(APP_NAME, RemoteMessage.Receive);
-
-        PowerMockito.verifyStatic();
-        PasswordManager.setCredentials("ALLJOYN_PIN_KEYX", "000000");
-
         busAttachmentMgr.release();
 
         verify(mockBusAttachment, times(0)).cancelAdvertiseName("quiet@org.alljoyn.BusNode_myguid", SessionOpts.TRANSPORT_WLAN);
@@ -124,33 +117,11 @@ public class BusAttachmentMgrTest
     }
 
     @Test
-    public void testSetCredentialsReturnsError() throws Exception
-    {
-        PowerMockito.mockStatic(PasswordManager.class);
-        PowerMockito.when(PasswordManager.class, PowerMockito.method(PasswordManager.class, "setCredentials", String.class, String.class)).withArguments(anyString(), anyString())
-                .thenReturn(Status.FAIL);
-        try
-        {
-            busAttachmentMgr.create(APP_NAME, RemoteMessage.Receive);
-            fail();
-        }
-        catch (BusException e)
-        {
-            assertEquals("Failed to set password for daemon, Error: FAIL", e.getMessage());
-        }
-        busAttachmentMgr.release();
-
-        verify(mockBusAttachment, times(0)).cancelAdvertiseName("quiet@org.alljoyn.BusNode_myguid", SessionOpts.TRANSPORT_WLAN);
-        verify(mockBusAttachment, times(0)).releaseName("org.alljoyn.BusNode_myguid");
-        verify(mockBusAttachment, times(0)).release();
-        verify(mockBusAttachment, times(0)).disconnect();
-    }
-
-    @Test
     public void testConnectRelease() throws Exception
     {
         busAttachmentMgr.create(APP_NAME, RemoteMessage.Receive);
         busAttachmentMgr.connect();
+        busAttachmentMgr.advertise();
         verify(mockBusAttachment).connect();
         verify(mockBusAttachment).requestName("org.alljoyn.BusNode_myguid", BusAttachment.ALLJOYN_REQUESTNAME_FLAG_DO_NOT_QUEUE);
         verify(mockBusAttachment).advertiseName("quiet@org.alljoyn.BusNode_myguid", SessionOpts.TRANSPORT_WLAN);
@@ -198,10 +169,11 @@ public class BusAttachmentMgrTest
         when(mockBusAttachment.requestName(anyString(), anyInt())).thenReturn(Status.FAIL);
 
         busAttachmentMgr.create(APP_NAME, RemoteMessage.Receive);
+        busAttachmentMgr.connect();
 
         try
         {
-            busAttachmentMgr.connect();
+            busAttachmentMgr.advertise();
             fail();
         }
         catch (BusException e)
@@ -227,10 +199,11 @@ public class BusAttachmentMgrTest
         when(mockBusAttachment.advertiseName(anyString(), anyShort())).thenReturn(Status.FAIL);
 
         busAttachmentMgr.create(APP_NAME, RemoteMessage.Receive);
+        busAttachmentMgr.connect();
 
         try
         {
-            busAttachmentMgr.connect();
+            busAttachmentMgr.advertise();
             fail();
         }
         catch (BusException e)
@@ -257,6 +230,7 @@ public class BusAttachmentMgrTest
 
         busAttachmentMgr.create(APP_NAME, RemoteMessage.Receive);
         busAttachmentMgr.connect();
+        busAttachmentMgr.advertise();
         busAttachmentMgr.release();
         verify(mockBusAttachment).cancelAdvertiseName("quiet@org.alljoyn.BusNode_myguid", SessionOpts.TRANSPORT_WLAN);
         verify(mockBusAttachment).releaseName("org.alljoyn.BusNode_myguid");
@@ -271,6 +245,7 @@ public class BusAttachmentMgrTest
 
         busAttachmentMgr.create(APP_NAME, RemoteMessage.Receive);
         busAttachmentMgr.connect();
+        busAttachmentMgr.advertise();
         busAttachmentMgr.release();
         verify(mockBusAttachment).cancelAdvertiseName("quiet@org.alljoyn.BusNode_myguid", SessionOpts.TRANSPORT_WLAN);
         verify(mockBusAttachment).releaseName("org.alljoyn.BusNode_myguid");

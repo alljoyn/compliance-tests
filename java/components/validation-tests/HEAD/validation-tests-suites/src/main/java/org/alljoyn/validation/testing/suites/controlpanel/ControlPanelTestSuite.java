@@ -126,7 +126,6 @@ public class ControlPanelTestSuite extends ValidationBaseTestCase
 
             serviceHelper = getServiceHelper();
             serviceHelper.initialize(BUS_APPLICATION_NAME, dutDeviceId, dutAppId);
-            serviceHelper.startAboutClient();
 
             deviceAboutAnnouncement = serviceHelper.waitForNextDeviceAnnouncement(ANNOUCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
             assertNotNull("Timed out waiting for About announcement", deviceAboutAnnouncement);

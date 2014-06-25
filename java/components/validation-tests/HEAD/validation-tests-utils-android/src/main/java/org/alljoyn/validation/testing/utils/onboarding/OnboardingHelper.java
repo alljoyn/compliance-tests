@@ -465,7 +465,6 @@ public class OnboardingHelper
         serviceHelper = getServiceHelper();
 
         serviceHelper.initialize(BUS_APPLICATION_NAME, deviceId, appId);
-        serviceHelper.startAboutClient();
         serviceHelper.startConfigClient();
 
         serviceHelper.enableAuthentication(keyStorePath);

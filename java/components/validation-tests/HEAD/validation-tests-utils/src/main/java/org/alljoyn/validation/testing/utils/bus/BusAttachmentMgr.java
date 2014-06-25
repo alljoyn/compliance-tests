@@ -18,7 +18,6 @@ package org.alljoyn.validation.testing.utils.bus;
 import org.alljoyn.bus.BusAttachment;
 import org.alljoyn.bus.BusException;
 import org.alljoyn.bus.BusObject;
-import org.alljoyn.bus.PasswordManager;
 import org.alljoyn.bus.SessionOpts;
 import org.alljoyn.bus.Status;
 import org.alljoyn.bus.alljoyn.DaemonInit;
@@ -50,16 +49,6 @@ public class BusAttachmentMgr
 
     public void create(String busApplicationName, BusAttachment.RemoteMessage policy) throws BusException
     {
-        logger.debug("Setting password for daemon");
-
-        Status status = PasswordManager.setCredentials("ALLJOYN_PIN_KEYX", "000000");
-        if (status != Status.OK)
-        {
-            String message = "Failed to set password for daemon, Error: " + status;
-            logger.error(message);
-            throw new BusException(message);
-        }
-
         logger.debug("Creating BusAttachment");
         busAttachment = createBusAttachment(busApplicationName, policy);
     }
@@ -68,15 +57,20 @@ public class BusAttachmentMgr
     {
         logger.debug("Connecting BusAttachment");
         Status status = busAttachment.connect();
+
         if (status != Status.OK)
         {
             String message = "Unable to connect busAttachment: " + status;
             logger.error(message);
             throw new BusException(message);
         }
+    }
 
+    public void advertise() throws BusException
+    {
         daemonName = "org.alljoyn.BusNode_" + busAttachment.getGlobalGUIDString();
-        status = busAttachment.requestName(daemonName, BusAttachment.ALLJOYN_REQUESTNAME_FLAG_DO_NOT_QUEUE);
+        Status status = busAttachment.requestName(daemonName, BusAttachment.ALLJOYN_REQUESTNAME_FLAG_DO_NOT_QUEUE);
+
         if (status != Status.OK)
         {
             String message = "Failed to requestName '" + daemonName + "': " + status;
@@ -87,6 +81,7 @@ public class BusAttachmentMgr
 
         advertisedName = "quiet@" + daemonName;
         status = busAttachment.advertiseName(advertisedName, SessionOpts.TRANSPORT_WLAN);
+
         if (status != Status.OK)
         {
             advertisedName = null;

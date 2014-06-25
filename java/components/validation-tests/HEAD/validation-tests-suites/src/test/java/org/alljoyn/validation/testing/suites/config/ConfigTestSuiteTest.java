@@ -44,7 +44,6 @@ import org.alljoyn.bus.Mutable.StringValue;
 import org.alljoyn.bus.Variant;
 import org.alljoyn.config.ConfigService;
 import org.alljoyn.config.client.ConfigClient;
-import org.alljoyn.onboarding.transport.OnboardingTransport;
 import org.alljoyn.services.common.BusObjectDescription;
 import org.alljoyn.services.common.LanguageNotSupportedException;
 import org.alljoyn.services.common.ServiceAvailabilityListener;
@@ -69,8 +68,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.robolectric.annotation.Config;
-
-import android.util.Log;
 
 @RunWith(MyRobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
@@ -166,6 +163,7 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
             {
                 return mockServiceAvailabilityHandler;
             }
+
             @Override
             protected UserInputDetails createUserInputDetails()
             {
@@ -1724,31 +1722,26 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
         verify(mockConfigService).stopConfigClient();
     }// testConfig_v1_31PasscodeChangedSpecialChars
 
-	
-
     @Test
     public void testConfig_v1_32PasscodeChangedPersistOnRestart() throws Exception
     {
-    	when(mockServiceAvailabilityHandler.waitForSessionLost(anyLong(), any(TimeUnit.class))).thenReturn(true);
+        when(mockServiceAvailabilityHandler.waitForSessionLost(anyLong(), any(TimeUnit.class))).thenReturn(true);
         executeTestMethod(getTestWrapperFor_v1_32());
 
         verify(mockServiceAvailabilityHandler).waitForSessionLost(anyLong(), any(TimeUnit.class));
         verify(mockServiceHelper, Mockito.times(4)).release();
-        verify(mockServiceHelper, Mockito.times(4)).startAboutClient();
         verify(mockServiceHelper, Mockito.times(4)).startConfigClient();
-        verify(mockServiceHelper, Mockito.times(5)).waitForNextDeviceAnnouncement(anyLong(),any(TimeUnit.class),Mockito.anyBoolean());
-        verify(mockServiceHelper,Mockito.times(4)).enableAuthentication(Mockito.anyString());
+        verify(mockServiceHelper, Mockito.times(5)).waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), Mockito.anyBoolean());
+        verify(mockServiceHelper, Mockito.times(4)).enableAuthentication(Mockito.anyString());
         verify(mockServiceHelper, Mockito.times(3)).clearKeyStore();
-        
-        
+
         verify(mockConfigClient, Mockito.times(4)).getConfig(any(String.class));
         verify(mockConfigClient, Mockito.times(2)).setPasscode(any(String.class), (any(char[].class)));
         verify(mockAboutClient, Mockito.times(4)).disconnect();
         verify(mockConfigClient, Mockito.times(4)).disconnect();
         verify(mockConfigClient, Mockito.times(1)).restart();
-        
-    }
 
+    }
 
     @Test
     public void testConfig_v1_33FactoryResetNoUpdateConfiguratins() throws Exception
@@ -1756,13 +1749,13 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
         when(mockServiceAvailabilityHandler.waitForSessionLost(anyLong(), any(TimeUnit.class))).thenReturn(true);
         executeTestMethod(getTestWrapperFor_v1_33());
         verify(mockTestContext).waitForUserInput(mockUserInputDetails);
-        verify(mockServiceHelper, Mockito.times(3)).waitForNextDeviceAnnouncement(anyLong(),any(TimeUnit.class),Mockito.anyBoolean());
-        Map<String, Object> configMap=new HashMap<String, Object>();
+        verify(mockServiceHelper, Mockito.times(3)).waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), Mockito.anyBoolean());
+        Map<String, Object> configMap = new HashMap<String, Object>();
         configMap.put(AboutKeys.ABOUT_DEVICE_NAME, "testdevice");
         configMap.put(AboutKeys.ABOUT_DEFAULT_LANGUAGE, "testdefaultlang");
         when(mockConfigClient.getConfig("")).thenReturn(configMap);
     }
-    
+
     @Test
     public void testConfig_v1_33FactoryResetNoUpdateConfiguratinsThrowsException() throws Exception
     {
@@ -1770,70 +1763,72 @@ public class ConfigTestSuiteTest extends BaseTestSuiteTest
         doThrow(toBeThrown).when(mockConfigClient).factoryReset();
 
         executeTestMethod(getTestWrapperFor_v1_33());
-       
+
     }
-    
+
     @Test
     public void testConfig_v1_33FactoryResetNoUpdateConfiguratinsRethrowsException() throws Exception
     {
         ErrorReplyBusException toBeThrown = new ErrorReplyBusException("");
         doThrow(toBeThrown).when(mockConfigClient).factoryReset();
 
-        try{
-        executeTestMethod(getTestWrapperFor_v1_33());
-        }catch(ErrorReplyBusException erbe){
-            assertEquals(toBeThrown, erbe);
-            
+        try
+        {
+            executeTestMethod(getTestWrapperFor_v1_33());
         }
-       
+        catch (ErrorReplyBusException erbe)
+        {
+            assertEquals(toBeThrown, erbe);
+
+        }
+
     }
-    
 
     @Test
     public void testConfig_v1_34FactoryResetAfterUpdateConfigurations() throws Exception
     {
         when(mockServiceAvailabilityHandler.waitForSessionLost(anyLong(), any(TimeUnit.class))).thenReturn(true);
-        
-        Map<String, Object> configMap=new HashMap<String, Object>();
+
+        Map<String, Object> configMap = new HashMap<String, Object>();
         configMap.put(AboutKeys.ABOUT_DEVICE_NAME, "deviceName");
-        
-        Map<String, Object> newConfigMap=new HashMap<String, Object>();
+
+        Map<String, Object> newConfigMap = new HashMap<String, Object>();
         newConfigMap.put(AboutKeys.ABOUT_DEVICE_NAME, "newDeviceName");
         newConfigMap.put(AboutKeys.ABOUT_DEFAULT_LANGUAGE, defaultLanguage);
-        
+
         when(mockConfigClient.getConfig("")).thenReturn(configMap);
-         when(mockConfigClient.getConfig(defaultLanguage)).thenReturn(newConfigMap);
-         
-         
-         Map<String, Object> aboutMap=new HashMap<String, Object>();
-         aboutMap.put(AboutKeys.ABOUT_DEVICE_NAME, "deviceName");
-         
-         when(mockAboutClient.getAbout("")).thenReturn(aboutMap);
-        
-        AboutAnnouncementDetails newDeviceAboutAnnouncement =Mockito.mock(AboutAnnouncementDetails.class);
+        when(mockConfigClient.getConfig(defaultLanguage)).thenReturn(newConfigMap);
+
+        Map<String, Object> aboutMap = new HashMap<String, Object>();
+        aboutMap.put(AboutKeys.ABOUT_DEVICE_NAME, "deviceName");
+
+        when(mockAboutClient.getAbout("")).thenReturn(aboutMap);
+
+        AboutAnnouncementDetails newDeviceAboutAnnouncement = Mockito.mock(AboutAnnouncementDetails.class);
         when(newDeviceAboutAnnouncement.getDeviceName()).thenReturn(NEW_DEVICE_NAME);
         when(newDeviceAboutAnnouncement.getDefaultLanguage()).thenReturn(defaultLanguage);
-        
-        AboutAnnouncementDetails reconnectDeviceAboutAnnouncement =Mockito.mock(AboutAnnouncementDetails.class);
+
+        AboutAnnouncementDetails reconnectDeviceAboutAnnouncement = Mockito.mock(AboutAnnouncementDetails.class);
         when(reconnectDeviceAboutAnnouncement.getDeviceName()).thenReturn("deviceName");
         when(reconnectDeviceAboutAnnouncement.getDefaultLanguage()).thenReturn("");
-        
-       when(mockServiceHelper.waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true))).thenReturn(deviceAboutAnnouncement).thenReturn(newDeviceAboutAnnouncement).thenReturn(deviceAboutAnnouncement).thenReturn(deviceAboutAnnouncement);
-        
+
+        when(mockServiceHelper.waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), eq(true))).thenReturn(deviceAboutAnnouncement).thenReturn(newDeviceAboutAnnouncement)
+                .thenReturn(deviceAboutAnnouncement).thenReturn(deviceAboutAnnouncement);
+
         executeTestMethod(getTestWrapperFor_v1_34());
         verify(mockTestContext).waitForUserInput(mockUserInputDetails);
-       
+
     }
 
     @Test
     public void testConfig_v1_35FactoryResetResetsPasscode() throws Exception
     {
-       
+
         when(mockServiceAvailabilityHandler.waitForSessionLost(anyLong(), any(TimeUnit.class))).thenReturn(true);
         executeTestMethod(getTestWrapperFor_v1_35());
         verify(mockTestContext).waitForUserInput(mockUserInputDetails);
-        verify(mockServiceHelper, Mockito.times(4)).waitForNextDeviceAnnouncement(anyLong(),any(TimeUnit.class),Mockito.anyBoolean());
-        Map<String, Object> configMap=new HashMap<String, Object>();
+        verify(mockServiceHelper, Mockito.times(4)).waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class), Mockito.anyBoolean());
+        Map<String, Object> configMap = new HashMap<String, Object>();
         configMap.put(AboutKeys.ABOUT_DEVICE_NAME, "testdevice");
         configMap.put(AboutKeys.ABOUT_DEFAULT_LANGUAGE, "testdefaultlang");
         when(mockConfigClient.getConfig("")).thenReturn(configMap);

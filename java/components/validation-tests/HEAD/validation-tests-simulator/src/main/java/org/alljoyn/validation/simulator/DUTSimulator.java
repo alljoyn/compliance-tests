@@ -56,6 +56,8 @@ public class DUTSimulator
     private static final short CONTROL_PANEL_SESSION_PORT = 1000;
     public static final short CONTACT_PORT = 20;
     private static String TAG = "DUTSimulator";
+    private static final String[] AUTH_MECHANISMS = new String[]
+    { "ALLJOYN_SRP_KEYX", "ALLJOYN_PIN_KEYX", "ALLJOYN_ECDHE_PSK" };
 
     private BusAttachment busAttachment;
     private DeviceDetails deviceDetails;
@@ -220,8 +222,8 @@ public class DUTSimulator
         if (supportsConfig || controlPanelSupported)
         {
             authPasswordHandler = new DUTSimulatorAuthPasswordHandler(this);
-            authListener = new SrpAnonymousKeyListener(authPasswordHandler, logger);
-            Status authStatus = busAttachment.registerAuthListener("ALLJOYN_SRP_KEYX ALLJOYN_PIN_KEYX", authListener, keyStorePath);
+            authListener = new SrpAnonymousKeyListener(authPasswordHandler, logger, AUTH_MECHANISMS);
+            Status authStatus = busAttachment.registerAuthListener(authListener.getAuthMechanismsAsString(), authListener, keyStorePath);
             logger.debug(TAG, "BusAttachment.registerAuthListener status = " + authStatus);
             if (authStatus != Status.OK)
             {

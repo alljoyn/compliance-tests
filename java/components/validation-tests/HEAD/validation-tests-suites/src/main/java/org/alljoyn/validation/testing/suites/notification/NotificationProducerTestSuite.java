@@ -86,7 +86,6 @@ public class NotificationProducerTestSuite extends ValidationBaseTestCase
             serviceHelper = getServiceHelper();
 
             serviceHelper.initialize(BUS_APPLICATION_NAME, dutDeviceId, dutAppId);
-            serviceHelper.startAboutClient();
 
             notificationValidator = getNotificationValidator();
             serviceHelper.initNotificationReceiver(notificationValidator);

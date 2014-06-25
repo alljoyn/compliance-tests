@@ -100,10 +100,8 @@ public class InterfaceValidator
 
         if (interfaceDetail == null)
         {
-            StringBuilder failureReasonBuilder = new StringBuilder();
-            appendToFailureReason(failureReasonBuilder, "Interface definition does not exist for ");
-            appendToFailureReason(failureReasonBuilder, standardizedIntrospectionInterface.getName());
-            validationResult = new ValidationResult(false, failureReasonBuilder.toString());
+            logger.warn(String.format("Interface definition does not exist for: %s", standardizedIntrospectionInterface.getName()));
+            validationResult = new ValidationResult(true, null);
         }
         else
         {
@@ -143,21 +141,21 @@ public class InterfaceValidator
 
             if (isVersionPropertyMissing(expectedIntrospectionInterface, propertyValidationResult))
             {
-                logger.error(String.format("Ignoring interface property match comparison: %s", propertyValidationResult.getFailureReason()));
+                logger.warn(String.format("Ignoring interface property match comparison: %s", propertyValidationResult.getFailureReason()));
                 validationTestContext.addNote(String.format("Interface definition does not match for %s - %s", standardizedIntrospectionInterface.getName(),
                         propertyValidationResult.getFailureReason()));
                 valid = true;
             }
             if (isUndefinedMethodPresentForConfigInterface(expectedIntrospectionInterface, methodValidationResult))
             {
-                logger.error(String.format("Ignoring interface method match comparison: %s", methodValidationResult.getFailureReason()));
+                logger.warn(String.format("Ignoring interface method match comparison: %s", methodValidationResult.getFailureReason()));
                 validationTestContext.addNote(String.format("Interface definition does not match for %s - %s", standardizedIntrospectionInterface.getName(),
                         methodValidationResult.getFailureReason()));
                 valid = true;
             }
             if (isAnnotationMissingForPeerAuthenticationInterface(expectedIntrospectionInterface, annotationValidationResult))
             {
-                logger.error(String.format("Ignoring interface annotation match comparison: %s", annotationValidationResult.getFailureReason()));
+                logger.warn(String.format("Ignoring interface annotation match comparison: %s", annotationValidationResult.getFailureReason()));
                 valid = true;
             }
             if (!valid)

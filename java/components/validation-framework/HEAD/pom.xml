@@ -35,10 +35,10 @@
         <mockito.version>1.9.0</mockito.version>
         <robolectric.version>2.2</robolectric.version>
         <dexmaker.version>1.0</dexmaker.version>
-        <alljoyn.version>14.02.00</alljoyn.version>
-        <alljoyn-about.version>14.02.00</alljoyn-about.version>
+        <alljoyn.version>14.06.00-SNAPSHOT</alljoyn.version>
+        <alljoyn-about.version>14.06.00-SNAPSHOT</alljoyn-about.version>
         <alljoyn.classifier>android-dbg</alljoyn.classifier>
-        <alljoyn-services.version>14.02.00</alljoyn-services.version>
+        <alljoyn-services.version>14.06.00-SNAPSHOT</alljoyn-services.version>
         <powermock.version>1.4.12</powermock.version>
     </properties>
     <modules>

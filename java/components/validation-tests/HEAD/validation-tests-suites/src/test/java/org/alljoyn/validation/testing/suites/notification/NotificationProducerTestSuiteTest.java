@@ -159,7 +159,6 @@ public class NotificationProducerTestSuiteTest extends BaseTestSuiteTest
 
         verify(mockExecutorService).submit(mockNotificationValidator);
         verify(mockServiceHelper).initialize("NotificationProducerTestSuite", deviceId, appId);
-        verify(mockServiceHelper).startAboutClient();
         verify(mockServiceHelper).waitForNextDeviceAnnouncement(anyLong(), any(TimeUnit.class));
         verify(mockServiceHelper).release();
 

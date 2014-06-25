@@ -202,8 +202,8 @@ public class InterfaceValidatorTest
         when(introspectionInterface.getName()).thenReturn(INVALID_INTERFACE_NAME);
         ValidationResult validationResult = interfaceValidator.validate(interfaceDetail);
 
-        assertFalse(validationResult.isValid());
-        assertEquals("Interface definition does not exist for " + INVALID_INTERFACE_NAME, validationResult.getFailureReason());
+        assertTrue(validationResult.isValid());
+        assertTrue(validationResult.getFailureReason().isEmpty());
     }
 
     @Test

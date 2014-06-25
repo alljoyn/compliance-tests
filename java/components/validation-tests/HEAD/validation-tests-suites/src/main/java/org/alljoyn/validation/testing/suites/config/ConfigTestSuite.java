@@ -118,7 +118,6 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
 
         serviceHelper.initialize(BUS_APPLICATION_NAME, dutDeviceId, dutAppId);
 
-        serviceHelper.startAboutClient();
         serviceHelper.startConfigClient();
 
         deviceAboutAnnouncement = waitForNextDeviceAnnouncement();

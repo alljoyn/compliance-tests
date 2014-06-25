@@ -59,6 +59,8 @@ public class ServiceHelper
     protected static final String TAG = "ServiceHelper";
     private static final Logger logger = LoggerFactory.getLogger(TAG);
     private static final int LINK_TIMEOUT_IN_SECONDS = 120;
+    private static final String[] AUTH_MECHANISMS = new String[]
+    { "ALLJOYN_SRP_KEYX", "ALLJOYN_PIN_KEYX", "ALLJOYN_ECDHE_PSK" };
     private AboutService aboutService;
     private NotificationService notificationService;
     private boolean addedMatch = false;
@@ -76,7 +78,7 @@ public class ServiceHelper
         this.genericLogger = logger;
     }
 
-    public void initialize(String busApplicationName, String deviceId, UUID appId) throws BusException
+    public void initialize(String busApplicationName, String deviceId, UUID appId) throws Exception
     {
         addedMatch = false;
 
@@ -86,15 +88,17 @@ public class ServiceHelper
         authPasswordHandlerImpl = getAuthPasswordHandlerImpl();
 
         busAttachmentMgr.create(busApplicationName, RemoteMessage.Receive);
-
         busAttachmentMgr.connect();
 
         aboutService = getAboutService();
         configService = getConfigService();
+        startAboutClient();
 
         logger.debug("Adding AnnouncementHandler for About");
         deviceAnnouncementHandler = getDeviceAnnouncementHandler(deviceId, appId);
-        aboutService.addAnnouncementHandler(deviceAnnouncementHandler);
+        aboutService.addAnnouncementHandler(deviceAnnouncementHandler, null);
+
+        busAttachmentMgr.advertise();
     }
 
     public void initNotificationReceiver(NotificationReceiver receiver) throws NotificationServiceException
@@ -309,9 +313,9 @@ public class ServiceHelper
     public void enableAuthentication(String keyStoreFileName) throws Exception
     {
         authListener = getSrpAnonymousListener(authPasswordHandlerImpl, genericLogger);
-
         logger.info("Registering an AuthListener");
-        Status status = busAttachmentMgr.getBusAttachment().registerAuthListener("ALLJOYN_SRP_KEYX ALLJOYN_PIN_KEYX", authListener, keyStoreFileName);
+        Status status = busAttachmentMgr.getBusAttachment().registerAuthListener(authListener.getAuthMechanismsAsString(), authListener, keyStoreFileName);
+
         if (status != Status.OK)
         {
             throw new BusException(String.format("Call to registerAuthListener returned failure: %s", status));
@@ -398,8 +402,7 @@ public class ServiceHelper
             try
             {
                 logger.debug("Stopping aboutClient");
-                aboutService.removeAnnouncementHandler(deviceAnnouncementHandler);
-                // deviceAnnouncementHandler = null;
+                aboutService.removeAnnouncementHandler(deviceAnnouncementHandler, null);
                 aboutService.stopAboutClient();
             }
             catch (Exception e)
@@ -509,7 +512,7 @@ public class ServiceHelper
 
     protected SrpAnonymousKeyListener getSrpAnonymousListener(AuthPasswordHandler passwordHandler, GenericLogger genericLogger)
     {
-        return new SrpAnonymousKeyListener(passwordHandler, genericLogger);
+        return new SrpAnonymousKeyListener(passwordHandler, genericLogger, AUTH_MECHANISMS);
     }
 
     protected OnboardingClientImpl getOnboardingClient(String serviceName, BusAttachment bus, ServiceAvailabilityListener serviceAvailabilityListener, short port)

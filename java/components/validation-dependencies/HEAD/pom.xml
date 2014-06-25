@@ -25,9 +25,9 @@
     <name>validation-dependencies</name>
     <packaging>pom</packaging>
     <properties>
-        <alljoyn.version>14.02.00</alljoyn.version>
-        <alljoyn-about.version>14.02.00</alljoyn-about.version>
-        <alljoyn-services.version>14.02.00</alljoyn-services.version>
+        <alljoyn.version>14.06.00-SNAPSHOT</alljoyn.version>
+        <alljoyn-about.version>14.06.00-SNAPSHOT</alljoyn-about.version>
+        <alljoyn-services.version>14.06.00-SNAPSHOT</alljoyn-services.version>
     </properties>
     <build>
         <plugins>
