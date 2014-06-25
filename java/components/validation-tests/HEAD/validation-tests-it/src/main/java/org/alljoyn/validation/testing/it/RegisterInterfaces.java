@@ -31,6 +31,8 @@ import org.alljoyn.bus.annotation.BusMethod;
 import org.alljoyn.bus.annotation.BusProperty;
 import org.alljoyn.bus.annotation.BusSignal;
 import org.alljoyn.bus.annotation.Secure;
+import org.alljoyn.ns.transport.interfaces.NotificationDismisser;
+import org.alljoyn.ns.transport.interfaces.NotificationProducer;
 import org.alljoyn.onboarding.transport.OBLastError;
 import org.alljoyn.onboarding.transport.ScanInfo;
 import org.alljoyn.validation.testing.utils.audio.AudioTransports;
@@ -107,6 +109,16 @@ public class RegisterInterfaces
         status = busAttachment.registerBusObject(busObject, "/Onboarding");
         checkStatus("registerBusObject Onboarding", status, true);
         busObjectSet.add(busObject);
+
+        busObject = new NotificationProducerBusObject();
+        status = busAttachment.registerBusObject(busObject, "/Notification");
+        checkStatus("registerBusObject NotificationProducer", status, true);
+        busObjectSet.add(busObject);
+
+        busObject = new NotificationDismisserBusObject();
+        status = busAttachment.registerBusObject(busObject, "/Notification");
+        checkStatus("registerBusObject NotificationDismisser", status, true);
+        busObjectSet.add(busObject);
     }
 
     private void checkStatus(String msg, Status status, boolean throwException)
@@ -128,6 +140,38 @@ public class RegisterInterfaces
             busAttachment.unregisterBusObject(busObject);
         }
         busObjectSet.clear();
+    }
+
+    public static class NotificationProducerBusObject implements NotificationProducer, BusObject
+    {
+        @Override
+        @BusMethod(name = "Dismiss", signature = "i")
+        public void dismiss(int arg0) throws BusException
+        {
+        }
+
+        @Override
+        @BusProperty(signature = "q")
+        public short getVersion() throws BusException
+        {
+            return 0;
+        }
+    }
+
+    public static class NotificationDismisserBusObject implements NotificationDismisser, BusObject
+    {
+        @Override
+        @BusSignal(signature = "iay", name = "Dismiss")
+        public void dismiss(int arg0, byte[] arg1) throws BusException
+        {
+        }
+
+        @Override
+        @BusProperty(signature = "q")
+        public short getVersion() throws BusException
+        {
+            return 0;
+        }
     }
 
     public static class StreamBusObject implements AudioTransports.Stream, BusObject
