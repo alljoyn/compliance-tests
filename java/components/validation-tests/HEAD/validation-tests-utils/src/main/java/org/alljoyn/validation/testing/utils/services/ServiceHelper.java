@@ -63,7 +63,6 @@ public class ServiceHelper
     { "ALLJOYN_SRP_KEYX", "ALLJOYN_PIN_KEYX", "ALLJOYN_ECDHE_PSK" };
     private AboutService aboutService;
     private NotificationService notificationService;
-    private boolean addedMatch = false;
     private DeviceAnnouncementHandler deviceAnnouncementHandler;
     private GenericLogger genericLogger;
     private SrpAnonymousKeyListener authListener;
@@ -80,8 +79,6 @@ public class ServiceHelper
 
     public void initialize(String busApplicationName, String deviceId, UUID appId) throws Exception
     {
-        addedMatch = false;
-
         busAttachmentMgr = getBusAttachmentMgr();
 
         passwordStore = getPasswordStore();
@@ -163,23 +160,13 @@ public class ServiceHelper
 
     public AboutAnnouncementDetails waitForNextDeviceAnnouncement(long timeout, TimeUnit unit, boolean throwException) throws Exception
     {
-        if (!addedMatch)
-        {
-            String matchRule = "sessionless='t',type='error'";
-            logger.debug(String.format("Adding match rule: %s", matchRule));
-            Status status = busAttachmentMgr.getBusAttachment().addMatch(matchRule);
-            if (status != Status.OK)
-            {
-                throw new BusException(String.format("Call to addMatch rule for sessionsless returned failure: %s", status));
-            }
-            addedMatch = true;
-        }
-
         AboutAnnouncementDetails aboutAnnouncementDetails = deviceAnnouncementHandler.waitForNextDeviceAnnouncement(timeout, unit);
+
         if ((aboutAnnouncementDetails == null) && (throwException))
         {
             throw new BusException("Timed out waiting for About announcement");
         }
+
         return aboutAnnouncementDetails;
     }
 
@@ -359,17 +346,6 @@ public class ServiceHelper
 
     private void disconnectBusAttachment()
     {
-        if (addedMatch)
-        {
-            String matchRule = "sessionless='t',type='error'";
-            logger.debug(String.format("Removing match rule: %s", matchRule));
-            Status status = busAttachmentMgr.getBusAttachment().removeMatch(matchRule);
-            if (status != Status.OK)
-            {
-                logger.warn("Call to removeMatch rule for sessionsless returned failure: " + status);
-            }
-            addedMatch = false;
-        }
         if (busAttachmentMgr != null)
         {
             logger.debug("disconnecting BusAttachment");

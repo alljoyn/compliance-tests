@@ -428,10 +428,8 @@ public class ServiceHelperTest
         assertSame(mockAboutAnnouncementDetails, aboutAnnouncementDetails);
 
         verify(mockAboutServiceImpl).startAboutClient(mockBusAttachment);
-        verify(mockBusAttachment).addMatch("sessionless='t',type='error'");
 
         serviceHelper.release();
-        verify(mockBusAttachment).removeMatch("sessionless='t',type='error'");
     }
 
     @Test
@@ -449,26 +447,6 @@ public class ServiceHelperTest
 
         aboutAnnouncementDetails = serviceHelper.waitForNextDeviceAnnouncement(10, TimeUnit.MILLISECONDS);
         assertSame(mockAboutAnnouncementDetails2, aboutAnnouncementDetails);
-    }
-
-    @Test
-    public void testWaitForNextDeviceAnnouncement_addMatch_Fails() throws Exception
-    {
-        when(mockBusAttachment.addMatch(anyString())).thenReturn(Status.FAIL);
-
-        serviceHelper.initialize(myApplicationName, DEVICE_ID, APP_ID);
-
-        try
-        {
-            serviceHelper.waitForNextDeviceAnnouncement(10, TimeUnit.MILLISECONDS);
-            fail();
-        }
-        catch (BusException e)
-        {
-            assertEquals("Call to addMatch rule for sessionsless returned failure: FAIL", e.getMessage());
-        }
-        serviceHelper.release();
-        verify(mockBusAttachment, times(0)).removeMatch("sessionless='t',type='error'");
     }
 
     @Test
@@ -491,7 +469,6 @@ public class ServiceHelperTest
         }
 
         verify(mockAboutServiceImpl).startAboutClient(mockBusAttachment);
-        verify(mockBusAttachment).addMatch("sessionless='t',type='error'");
 
         serviceHelper.release();
     }
