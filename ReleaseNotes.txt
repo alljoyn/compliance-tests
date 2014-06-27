@@ -15,10 +15,9 @@ The AllJoyn service framework implementations must conform to the published serv
 
 Known Issues
 ------------
-1. About test case About-v1-02 is not checking About announcement version
-2. About test case About-v1-05 fails when executed against a device which implements Notification Service 1.1 or higher
-3. Control Panel test case ControlPanel-v1-10 is not joining a new session before calling getVersion on each secured object
-4. Onboarding test case Onboarding-v1-04 is disable (unable to run with latest Onboarding SDK changes)
+ASACOMP-3: About test case About-v1-02 is not checking About announcement version
+ASACOMP-5: Control Panel test case ControlPanel-v1-10 is not joining a new session before calling getVersion on each secured object
+ASACOMP-6: Onboarding test case Onboarding-v1-04 is disabled (unable to run with latest Onboarding SDK changes)
 
 
 Compatibility
