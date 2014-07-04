@@ -18,11 +18,10 @@
     <parent>
         <groupId>org.alljoyn.validation.validation-base</groupId>
         <artifactId>validation-base</artifactId>
-        <version>1.0.0.09-SNAPSHOT</version>
+        <version>14.02.01-SNAPSHOT</version>
     </parent>
     <groupId>org.alljoyn.validation.validation-framework</groupId>
     <artifactId>validation-framework</artifactId>
-    <version>1.0.0.09-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Alljoyn Validation Test Framework</description>
     <properties>

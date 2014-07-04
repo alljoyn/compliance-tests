@@ -18,11 +18,10 @@
     <parent>
         <groupId>org.alljoyn.validation.validation-base</groupId>
         <artifactId>validation-base</artifactId>
-        <version>1.0.0.09-SNAPSHOT</version>
+        <version>14.02.01-SNAPSHOT</version>
     </parent>
     <groupId>org.alljoyn.validation.validation-tests</groupId>
     <artifactId>validation-tests</artifactId>
-    <version>1.0.0.09-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Alljoyn Validation Tests Module</description>
     <properties>
@@ -40,7 +39,7 @@
         <alljoyn.classifier>android-dbg</alljoyn.classifier>
         <alljoyn-services.version>14.02.00</alljoyn-services.version>
         <alljoyn-about.version>14.02.00</alljoyn-about.version>
-        <validation-framework.version>1.0.0.09-SNAPSHOT</validation-framework.version>
+        <validation-framework.version>14.02.01-SNAPSHOT</validation-framework.version>
         <powermock.version>1.4.12</powermock.version>
     </properties>
     <modules>
