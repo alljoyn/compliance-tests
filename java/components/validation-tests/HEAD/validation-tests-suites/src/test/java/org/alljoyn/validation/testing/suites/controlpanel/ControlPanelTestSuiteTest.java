@@ -17,7 +17,6 @@ package org.alljoyn.validation.testing.suites.controlpanel;
 
 import static org.alljoyn.validation.testing.utils.controlpanel.InterfacePathPattern.ControlPanel;
 import static org.alljoyn.validation.testing.utils.controlpanel.InterfacePathPattern.HttpControl;
-import static org.alljoyn.validation.testing.utils.controlpanel.InterfacePathPattern.NotificationPanel;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -117,8 +116,8 @@ public class ControlPanelTestSuiteTest extends BaseTestSuiteTest
     private static final String CONTROL_PANEL_LABEL_PROPERTY_PATH = "/ControlPanel/unit/panelName/language/objectName";
     private static final String CONTROL_PANEL_ACTION_PATH = "/ControlPanel/unit/panelName/language/objectName";
     private static final String CONTROL_PANEL_LIST_PROPERTY_PATH = "/ControlPanel/unit/panelName/language/objectName";
-    private static final String NOTIFICATION_ACTION_PATH = "/NotificationPanel/unit/panelName";
-    private static final String NOTIFICATION_ACTION_CONTAINER_PATH = "/NotificationPanel/unit/panelName/language/containerName";
+    private static final String NOTIFICATION_ACTION_PATH = CONTROL_PANEL_PATH;
+    private static final String NOTIFICATION_ACTION_CONTAINER_PATH = CONTROL_PANEL_CONTAINER_PATH;
 
     @Mock
     private ValidationTestContext mockTestContext;
@@ -229,19 +228,6 @@ public class ControlPanelTestSuiteTest extends BaseTestSuiteTest
         assertFalse(controlPanelTestSuite.isValidPath(ControlPanel.getValue(), "/ControlPanel/mockUnit/mockPanelName/"));
         assertFalse(controlPanelTestSuite.isValidPath(ControlPanel.getValue(), "/ControlPanel/mockUnit/mockPanelName/language"));
         assertFalse(controlPanelTestSuite.isValidPath(ControlPanel.getValue(), "/ControlPanel/mockUnit/mockPanelName/language/containerName"));
-    }
-
-    @Test
-    public void testValidateNotificationInterfacePath()
-    {
-        assertFalse(controlPanelTestSuite.isValidPath(NotificationPanel.getValue(), ""));
-        assertFalse(controlPanelTestSuite.isValidPath(NotificationPanel.getValue(), "/NotificationPanel"));
-        assertFalse(controlPanelTestSuite.isValidPath(NotificationPanel.getValue(), "/NotificationPanel/mockUnit"));
-        assertTrue(controlPanelTestSuite.isValidPath(NotificationPanel.getValue(), "/NotificationPanel/mockUnit/mockPanelName"));
-        assertFalse(controlPanelTestSuite.isValidPath(NotificationPanel.getValue(), "/NotificationPanel/mockUnit//mockPanelName/"));
-        assertFalse(controlPanelTestSuite.isValidPath(NotificationPanel.getValue(), "/NotificationPanel/mockUnit/mockPanelName/"));
-        assertFalse(controlPanelTestSuite.isValidPath(NotificationPanel.getValue(), "/NotificationPanel/mockUnit/mockPanelName/language"));
-        assertFalse(controlPanelTestSuite.isValidPath(NotificationPanel.getValue(), "/NotificationPanel/mockUnit/mockPanelName/language/containerName"));
     }
 
     @Test
@@ -3190,7 +3176,7 @@ public class ControlPanelTestSuiteTest extends BaseTestSuiteTest
         List<InterfaceDetail> interfaceDetailList = getInterfaceDetailList("invalid_path");
         when(mockIntrospector.getInterfacesExposedOnBusBasedOnName(NOTIFICATION_ACTION_INTERFACE_NAME)).thenReturn(interfaceDetailList);
 
-        executeTestMethodFailsAssertion(getTestWrapperFor_v1_08(), "invalid_path does not match the expected pattern /NotificationPanel/{unit}/{actionPanelName}");
+        executeTestMethodFailsAssertion(getTestWrapperFor_v1_08(), "invalid_path does not match the expected pattern /ControlPanel/{unit}/{actionPanelName}");
     }
 
     @Test
@@ -3213,7 +3199,7 @@ public class ControlPanelTestSuiteTest extends BaseTestSuiteTest
         when(mockIntrospector.getInterface(NOTIFICATION_ACTION_PATH, NotificationAction.class)).thenReturn(notificationAction);
 
         executeTestMethodFailsAssertion(getTestWrapperFor_v1_08(),
-                "No object implementing org.alljoyn.ControlPanel.Container nor org.alljoyn.ControlPanel.SecuredContainer is under path /NotificationPanel/unit/panelName");
+                "No object implementing org.alljoyn.ControlPanel.Container nor org.alljoyn.ControlPanel.SecuredContainer is under path /ControlPanel/unit/panelName");
     }
 
     @Test

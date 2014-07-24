@@ -17,7 +17,7 @@ package org.alljoyn.validation.testing.utils.controlpanel;
 
 public enum InterfacePathPattern
 {
-    ControlPanel("/ControlPanel/[^/]+/[^/]+"), NotificationPanel("/NotificationPanel/[^/]+/[^/]+"), HttpControl("/ControlPanel/[^/]+/HTTPControl");
+    ControlPanel("/ControlPanel/[^/]+/[^/]+"), HttpControl("/ControlPanel/[^/]+/HTTPControl");
 
     private String value;
 

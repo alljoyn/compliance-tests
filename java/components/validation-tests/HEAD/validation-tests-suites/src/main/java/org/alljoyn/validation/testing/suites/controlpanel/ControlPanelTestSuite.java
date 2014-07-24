@@ -17,7 +17,6 @@ package org.alljoyn.validation.testing.suites.controlpanel;
 
 import static org.alljoyn.validation.testing.utils.controlpanel.InterfacePathPattern.ControlPanel;
 import static org.alljoyn.validation.testing.utils.controlpanel.InterfacePathPattern.HttpControl;
-import static org.alljoyn.validation.testing.utils.controlpanel.InterfacePathPattern.NotificationPanel;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -514,7 +513,7 @@ public class ControlPanelTestSuite extends ValidationBaseTestCase
         {
             String path = interfaceDetail.getPath();
             logger.debug(String.format("Validating NotificationAction object at: %s", path));
-            assertTrue(String.format("%s does not match the expected pattern /NotificationPanel/{unit}/{actionPanelName}", path), isValidPath(NotificationPanel.getValue(), path));
+            assertTrue(String.format("%s does not match the expected pattern /ControlPanel/{unit}/{actionPanelName}", path), isValidPath(ControlPanel.getValue(), path));
             validateNotificationActionBusObject(path);
             getValidationTestContext().addInterfaceDetails(NotificationAction.IFNAME, INTERFACE_VERSION, path, null, null);
         }
