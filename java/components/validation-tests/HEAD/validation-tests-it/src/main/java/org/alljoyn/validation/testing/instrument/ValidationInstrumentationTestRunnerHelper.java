@@ -22,6 +22,7 @@ import java.util.List;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.alljoyn.validation.framework.annotation.Disabled;
 import org.alljoyn.validation.framework.annotation.ValidationTest;
 import org.alljoyn.validation.testing.utils.AllJoynLibraryLoader;
 
@@ -114,11 +115,13 @@ public class ValidationInstrumentationTestRunnerHelper
     private void getTestCasesFromClass(TestSuite testSuite, Class<? extends TestCase> clazz, String testCaseKeyword) throws Exception
     {
         Method[] methods = clazz.getMethods();
+
         for (Method method : methods)
         {
             ValidationTest validationTest = method.getAnnotation(ValidationTest.class);
+            Disabled disabled = method.getAnnotation(Disabled.class);
 
-            if (validationTest != null)
+            if (validationTest != null && disabled == null)
             {
                 if (testCaseKeyword == null || (testCaseKeyword != null && testCaseKeyword.equals(validationTest.name())))
                 {
