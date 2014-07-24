@@ -487,30 +487,6 @@ public class ControlPanelTestSuiteTest extends BaseTestSuiteTest
     }
 
     @Test
-    public void testValidateContainerBusObjectsFailsWhenContainerParametersHasMoreThanOneValueForKey2() throws Exception
-    {
-        short[] layoutHints = new short[2];
-        HashMap<Short, Variant> parameters = new HashMap<Short, Variant>();
-        parameters.put((short) 2, new Variant(layoutHints, "aq"));
-        Container container = getMockContainer((short) 1, 0, parameters);
-        setupDataForValidateContainerBusObjectsAndStartTest(container);
-
-        executeTestMethodFailsAssertion(getTestWrapperFor_v1_02(), "Key 2 contains more than one value expected:<1> but was:<2>");
-    }
-
-    @Test
-    public void testValidateContainerBusObjectsFailsWhenSecuredContainerParametersHasMoreThanOneValueForKey2() throws Exception
-    {
-        short[] layoutHints = new short[2];
-        HashMap<Short, Variant> parameters = new HashMap<Short, Variant>();
-        parameters.put((short) 2, new Variant(layoutHints, "aq"));
-        ContainerSecured securedContainer = getMockSecuredContainer((short) 1, 1, parameters);
-        setupDataForValidateContainerBusObjectsAndStartTest(securedContainer);
-
-        executeTestMethodFailsAssertion(getTestWrapperFor_v1_02(), "Key 2 contains more than one value expected:<1> but was:<2>");
-    }
-
-    @Test
     public void testValidateContainerBusObjectsFailsWhenContainerParametersHasInvalidValueForKey2() throws Exception
     {
         short[] layoutHints = new short[1];
@@ -559,6 +535,34 @@ public class ControlPanelTestSuiteTest extends BaseTestSuiteTest
         HashMap<Short, Variant> parameters = new HashMap<Short, Variant>();
         parameters.put((short) 0, new Variant("string"));
         parameters.put((short) 1, new Variant(5, "u"));
+        parameters.put((short) 2, new Variant(layoutHints, "aq"));
+        ContainerSecured securedContainer = getMockSecuredContainer((short) 1, 1, parameters);
+        setupDataForValidateContainerBusObjectsAndStartTest(securedContainer);
+
+        executeTestMethod(getTestWrapperFor_v1_02());
+    }
+
+    @Test
+    public void testValidateContainerBusObjectsPassesWhenContainerParametersHasMoreThanOneValueForKey2() throws Exception
+    {
+        short[] layoutHints = new short[2];
+        layoutHints[0] = 2;
+        layoutHints[1] = 1;
+        HashMap<Short, Variant> parameters = new HashMap<Short, Variant>();
+        parameters.put((short) 2, new Variant(layoutHints, "aq"));
+        Container container = getMockContainer((short) 1, 0, parameters);
+        setupDataForValidateContainerBusObjectsAndStartTest(container);
+
+        executeTestMethod(getTestWrapperFor_v1_02());
+    }
+
+    @Test
+    public void testValidateContainerBusObjectsPassesWhenSecuredContainerParametersHasMoreThanOneValueForKey2() throws Exception
+    {
+        short[] layoutHints = new short[2];
+        layoutHints[0] = 2;
+        layoutHints[1] = 1;
+        HashMap<Short, Variant> parameters = new HashMap<Short, Variant>();
         parameters.put((short) 2, new Variant(layoutHints, "aq"));
         ContainerSecured securedContainer = getMockSecuredContainer((short) 1, 1, parameters);
         setupDataForValidateContainerBusObjectsAndStartTest(securedContainer);

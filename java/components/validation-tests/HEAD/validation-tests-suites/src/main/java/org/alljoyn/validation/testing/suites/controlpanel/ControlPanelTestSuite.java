@@ -960,8 +960,12 @@ public class ControlPanelTestSuite extends ValidationBaseTestCase
         validateLayoutHintsSignature(layoutHintsVariant);
         short[] layoutHints = layoutHintsVariant.getObject(short[].class);
         logger.debug(String.format("LayoutHints: %s", Arrays.toString(layoutHints)));
-        assertEquals("Key 2 contains more than one value", 1, layoutHints.length);
-        assertTrue(String.format("%d does not match expected value of 1 or 2 for key 2", layoutHints[0]), layoutHints[0] == 1 || layoutHints[0] == 2);
+        assertTrue("Key 2 contains no value", layoutHints.length > 0);
+
+        for (short layoutHint : layoutHints)
+        {
+            assertTrue(String.format("%d does not match expected value of 1 or 2 for key 2", layoutHint), layoutHint == 1 || layoutHint == 2);
+        }
     }
 
     private void validatePropertyControlParameterLayoutHints(Map<Short, Variant> parameters, Variant propertyValue) throws BusException
