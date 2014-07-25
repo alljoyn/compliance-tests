@@ -17,7 +17,6 @@ package org.alljoyn.validation.testing.instrument;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -59,17 +58,13 @@ public class ValidationInstrumentationTestRunnerHelper
         ValidationInstrumentationApplication instrumentApp = (ValidationInstrumentationApplication) testRunner.getContext().getApplicationContext();
         String testSuiteList = instrumentApp.getInstrumentParameter(InstrumentationArgKey.TestSuiteList.getValue());
         String testCaseKeyWords = instrumentApp.getInstrumentParameter(InstrumentationArgKey.TestCaseName.getValue());
+        Log.e(TAG, "testCaseKeyWords: " + testCaseKeyWords);
 
         List<Class<? extends TestCase>> testGroupClazzList = getTestGroupFromContext(testSuiteList);
 
         for (Class<? extends TestCase> suiteClazz : testGroupClazzList)
         {
-            List<String> testCaseKeywordList = null;
-
-            if (testCaseKeyWords != null && !testCaseKeyWords.isEmpty())
-            {
-                testCaseKeywordList = Arrays.asList(testCaseKeyWords.split(","));
-            }
+            List<String> testCaseKeywordList = mapToList(testCaseKeyWords);
 
             try
             {
@@ -82,6 +77,28 @@ public class ValidationInstrumentationTestRunnerHelper
         }
 
         return testSuite;
+    }
+
+    private List<String> mapToList(String testCaseKeyWords)
+    {
+        List<String> testCaseKeywordList = null;
+
+        if (testCaseKeyWords != null && !testCaseKeyWords.isEmpty())
+        {
+            String[] testCaseKeyWordArray = testCaseKeyWords.split(",");
+
+            if (testCaseKeyWordArray != null && testCaseKeyWordArray.length > 0)
+            {
+                testCaseKeywordList = new ArrayList<String>();
+
+                for (String testCaseKeyWord : testCaseKeyWordArray)
+                {
+                    testCaseKeywordList.add(testCaseKeyWord.trim());
+                }
+            }
+        }
+
+        return testCaseKeywordList;
     }
 
     @SuppressWarnings("unchecked")
