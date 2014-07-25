@@ -626,8 +626,8 @@ public class OnboardingTestSuite extends ValidationBaseTestCase
 
     private void makeSureDeviceIsInOffboardedState() throws Exception
     {
-        assertNotNull("Soft AP SSID can not be null. You have to provide the soft AP SSID to run the Onboarding tests", softAPssid);
-        assertTrue("Soft AP SSID can not be empty. You have to provide the soft AP SSID to run the Onboarding tests", !softAPssid.equals(""));
+        assertNotNull("Soft AP SSID can not be null. You have to provide the soft AP SSID to run the Onboarding tests", softAPConfig.getSsid());
+        assertTrue("Soft AP SSID can not be empty. You have to provide the soft AP SSID to run the Onboarding tests", !softAPConfig.getSsid().isEmpty());
 
         if (onboardingHelper.isDeviceInOnboardedState())
         {
