@@ -148,7 +148,14 @@ public class AudioTestSuite extends ValidationBaseTestCase
             logger.debug(String.format("Running Audio test case against Device ID: %s", dutDeviceId));
             dutAppId = appUnderTestDetails.getAppId();
             logger.debug(String.format("Running Audio test case against App ID: %s", dutAppId));
+
             streamObjectPath = getValidationTestContext().getTestObjectPath();
+
+            if (streamObjectPath == null || streamObjectPath.isEmpty())
+            {
+                throw new RuntimeException("Audio Stream object path not specified");
+            }
+
             logger.debug(String.format("Executing Audio test against Stream object found at %s", streamObjectPath));
 
             serviceHelper = getServiceHelper();

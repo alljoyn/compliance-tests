@@ -234,6 +234,20 @@ public class AudioTestSuiteTest extends BaseTestSuiteTest
     }
 
     @Test
+    public void testFailsIfAudioStreamObjectPathNotSpecified() throws Exception
+    {
+        mockTestContext = Mockito.mock(ValidationTestContext.class);
+        when(mockTestContext.getAppUnderTestDetails()).thenReturn(appUnderTestDetails);
+        when(mockTestContext.getTestObjectPath()).thenReturn(null);
+        when(mockAboutAnnouncement.supportsInterface(AboutTransport.INTERFACE_NAME)).thenReturn(true);
+        constructAudioTestSuite();
+        setupMockServiceHelper();
+        when(mockIntrospector.getInterface(PATH, Stream.class)).thenReturn(mockStream);
+
+        executeTestMethodThrowsException(getTestWrapperFor_v1_01(), "Audio Stream object path not specified");
+    }
+
+    @Test
     public void testValidateStreamObjectsFailsWhenStreamInterfaceVersionDoesNotMatch() throws Exception
     {
         setupStreamInterfaceDetailListExposedOnBus();

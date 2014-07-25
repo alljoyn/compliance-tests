@@ -139,6 +139,13 @@ public class ValidationInstrumentationTests extends AndroidTestCase
                 }
             });
 
+            String audioStreamObjectPath = instrumentApp.getInstrumentParameter(InstrumentationArgKey.AudioStreamObjectPath.getValue());
+
+            if (audioStreamObjectPath != null && !audioStreamObjectPath.isEmpty())
+            {
+                testContext.setTestObjectPath(audioStreamObjectPath);
+            }
+
             testCase.setValidationTestContext(testContext);
         }
 
