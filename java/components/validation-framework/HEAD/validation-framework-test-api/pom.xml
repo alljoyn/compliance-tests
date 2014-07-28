@@ -18,7 +18,7 @@
     <parent>
         <groupId>org.alljoyn.validation.validation-framework</groupId>
         <artifactId>validation-framework</artifactId>
-        <version>1.0.0.09-SNAPSHOT</version>
+        <version>14.06.01-SNAPSHOT</version>
     </parent>
     <artifactId>validation-framework-test-api</artifactId>
     <name>${project.artifactId}</name>
