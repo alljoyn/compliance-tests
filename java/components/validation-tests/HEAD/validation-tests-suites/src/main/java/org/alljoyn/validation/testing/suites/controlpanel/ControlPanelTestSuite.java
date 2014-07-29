@@ -744,7 +744,7 @@ public class ControlPanelTestSuite extends ValidationBaseTestCase
     {
         NotificationAction notificationAction = busIntrospector.getInterface(path, NotificationAction.class);
         assertEquals("Interface version does not match", INTERFACE_VERSION, notificationAction.getVersion());
-        assertContainerObjectExists(path);
+        assertContainerOrDialogObjectExists(path);
     }
 
     private void validateHttpControlBusObject(String path) throws BusException, IOException, ClientProtocolException
@@ -854,6 +854,25 @@ public class ControlPanelTestSuite extends ValidationBaseTestCase
             assertFalse(String.format("No object implementing org.alljoyn.ControlPanel.Container nor org.alljoyn.ControlPanel.SecuredContainer is under path %s", path),
                     containerInterfaceDetailList.isEmpty());
         }
+    }
+
+    private void assertContainerOrDialogObjectExists(String path) throws BusException, IOException, ParserConfigurationException, SAXException
+    {
+        List<InterfaceDetail> containerInterfaceDetailList = busIntrospector.getInterfacesExposedOnBusUnderSpecifiedPathBasedOnName(path, Container.IFNAME);
+        List<InterfaceDetail> securedContainerInterfaceDetailList = busIntrospector.getInterfacesExposedOnBusUnderSpecifiedPathBasedOnName(path, ContainerSecured.IFNAME);
+        List<InterfaceDetail> dialogInterfaceDetailList = busIntrospector.getInterfacesExposedOnBusUnderSpecifiedPathBasedOnName(path, AlertDialog.IFNAME);
+        List<InterfaceDetail> securedDialogInterfaceDetailList = busIntrospector.getInterfacesExposedOnBusUnderSpecifiedPathBasedOnName(path, AlertDialogSecured.IFNAME);
+
+        assertTrue(String.format("No object implementing org.alljoyn.ControlPanel.Container nor org.alljoyn.ControlPanel.SecuredContainer nor "
+                + "org.alljoyn.ControlPanel.Dialog nor org.alljoyn.ControlPanel.SecuredDialog is found under path %s", path),
+                isRootContainerPresent(containerInterfaceDetailList, securedContainerInterfaceDetailList, dialogInterfaceDetailList, securedDialogInterfaceDetailList));
+    }
+
+    private boolean isRootContainerPresent(List<InterfaceDetail> containerInterfaceDetailList, List<InterfaceDetail> securedContainerInterfaceDetailList,
+            List<InterfaceDetail> dialogInterfaceDetailList, List<InterfaceDetail> securedDialogInterfaceDetailList)
+    {
+        return !(containerInterfaceDetailList.isEmpty() && securedContainerInterfaceDetailList.isEmpty() && dialogInterfaceDetailList.isEmpty() && securedDialogInterfaceDetailList
+                .isEmpty());
     }
 
     private void validateContainerParameters(Map<Short, Variant> parameters) throws AnnotationBusException, BusException

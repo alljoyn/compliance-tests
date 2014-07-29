@@ -3191,15 +3191,15 @@ public class ControlPanelTestSuiteTest extends BaseTestSuiteTest
     }
 
     @Test
-    public void testValidateNotificationActionBusObjectsFailsIfNoContainerObjectExistsUnderPanel() throws Exception
+    public void testValidateNotificationActionBusObjectsFailsIfNoContainerOrDialogObjectExistsUnderPanel() throws Exception
     {
         NotificationAction notificationAction = getMockNotificationAction((short) 1);
         List<InterfaceDetail> interfaceDetailList = getInterfaceDetailList(NOTIFICATION_ACTION_PATH);
         when(mockIntrospector.getInterfacesExposedOnBusBasedOnName(NOTIFICATION_ACTION_INTERFACE_NAME)).thenReturn(interfaceDetailList);
         when(mockIntrospector.getInterface(NOTIFICATION_ACTION_PATH, NotificationAction.class)).thenReturn(notificationAction);
 
-        executeTestMethodFailsAssertion(getTestWrapperFor_v1_08(),
-                "No object implementing org.alljoyn.ControlPanel.Container nor org.alljoyn.ControlPanel.SecuredContainer is under path /ControlPanel/unit/panelName");
+        executeTestMethodFailsAssertion(getTestWrapperFor_v1_08(), "No object implementing org.alljoyn.ControlPanel.Container nor org.alljoyn.ControlPanel.SecuredContainer "
+                + "nor org.alljoyn.ControlPanel.Dialog nor org.alljoyn.ControlPanel.SecuredDialog is found under path /ControlPanel/unit/panelName");
     }
 
     @Test
@@ -3225,6 +3225,33 @@ public class ControlPanelTestSuiteTest extends BaseTestSuiteTest
         List<InterfaceDetail> securedContainerInterfaceDetailList = getInterfaceDetailList(NOTIFICATION_ACTION_CONTAINER_PATH);
         when(mockIntrospector.getInterfacesExposedOnBusUnderSpecifiedPathBasedOnName(NOTIFICATION_ACTION_PATH, SECURED_CONTAINER_INTERFACE_NAME)).thenReturn(
                 securedContainerInterfaceDetailList);
+
+        executeTestMethod(getTestWrapperFor_v1_08());
+    }
+
+    @Test
+    public void testValidateNotificationActionBusObjectsPassesIfValidDialogObjectExistsUnderPanel() throws Exception
+    {
+        NotificationAction notificationAction = getMockNotificationAction((short) 1);
+        List<InterfaceDetail> interfaceDetailList = getInterfaceDetailList(NOTIFICATION_ACTION_PATH);
+        when(mockIntrospector.getInterfacesExposedOnBusBasedOnName(NOTIFICATION_ACTION_INTERFACE_NAME)).thenReturn(interfaceDetailList);
+        when(mockIntrospector.getInterface(NOTIFICATION_ACTION_PATH, NotificationAction.class)).thenReturn(notificationAction);
+        List<InterfaceDetail> dialogInterfaceDetailList = getInterfaceDetailList(NOTIFICATION_ACTION_CONTAINER_PATH);
+        when(mockIntrospector.getInterfacesExposedOnBusUnderSpecifiedPathBasedOnName(NOTIFICATION_ACTION_PATH, DIALOG_INTERFACE_NAME)).thenReturn(dialogInterfaceDetailList);
+
+        executeTestMethod(getTestWrapperFor_v1_08());
+    }
+
+    @Test
+    public void testValidateNotificationActionBusObjectsPassesIfValidSecuredDialogObjectExistsUnderPanel() throws Exception
+    {
+        NotificationAction notificationAction = getMockNotificationAction((short) 1);
+        List<InterfaceDetail> interfaceDetailList = getInterfaceDetailList(NOTIFICATION_ACTION_PATH);
+        when(mockIntrospector.getInterfacesExposedOnBusBasedOnName(NOTIFICATION_ACTION_INTERFACE_NAME)).thenReturn(interfaceDetailList);
+        when(mockIntrospector.getInterface(NOTIFICATION_ACTION_PATH, NotificationAction.class)).thenReturn(notificationAction);
+        List<InterfaceDetail> securedDialogInterfaceDetailList = getInterfaceDetailList(NOTIFICATION_ACTION_CONTAINER_PATH);
+        when(mockIntrospector.getInterfacesExposedOnBusUnderSpecifiedPathBasedOnName(NOTIFICATION_ACTION_PATH, SECURED_DIALOG_INTERFACE_NAME)).thenReturn(
+                securedDialogInterfaceDetailList);
 
         executeTestMethod(getTestWrapperFor_v1_08());
     }
