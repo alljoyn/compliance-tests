@@ -118,12 +118,11 @@ public class AudioTestSuiteManagerTest
         assertEquals(aboutAnnouncement.getServiceName(), validationTestGroup.getAboutAnnouncement().getServiceName());
         assertNull(validationTestGroup.getInterfaceName());
         assertEquals(OBJECT_PATH, validationTestGroup.getObjectPath());
-        assertEquals(0, validationTestGroup.getTestItems().size());
+        validateValidationTestItems(validationTestGroup);
     }
 
     private void validateValidationTestItems(ValidationTestGroup validationTestGroup)
     {
-        // expected test order:
         int[] testIdx =
         { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 25, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 };
 

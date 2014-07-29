@@ -56,7 +56,6 @@ import org.alljoyn.services.android.utils.AndroidLogger;
 import org.alljoyn.services.common.ClientBase;
 import org.alljoyn.validation.framework.AppUnderTestDetails;
 import org.alljoyn.validation.framework.ValidationBaseTestCase;
-import org.alljoyn.validation.framework.annotation.Disabled;
 import org.alljoyn.validation.framework.annotation.ValidationSuite;
 import org.alljoyn.validation.framework.annotation.ValidationTest;
 import org.alljoyn.validation.framework.utils.introspection.BusIntrospector;
@@ -149,7 +148,14 @@ public class AudioTestSuite extends ValidationBaseTestCase
             logger.debug(String.format("Running Audio test case against Device ID: %s", dutDeviceId));
             dutAppId = appUnderTestDetails.getAppId();
             logger.debug(String.format("Running Audio test case against App ID: %s", dutAppId));
+
             streamObjectPath = getValidationTestContext().getTestObjectPath();
+
+            if (streamObjectPath == null || streamObjectPath.isEmpty())
+            {
+                throw new RuntimeException("Audio Stream object path not specified");
+            }
+
             logger.debug(String.format("Executing Audio test against Stream object found at %s", streamObjectPath));
 
             serviceHelper = getServiceHelper();
@@ -187,7 +193,6 @@ public class AudioTestSuite extends ValidationBaseTestCase
     }
 
     @ValidationTest(name = "Audio-v1-01", order = -2)
-    @Disabled
     public void testAudio_v1_01_ValidateStreamObjects() throws Exception
     {
         BusIntrospector busIntrospector = getIntrospector();
@@ -211,14 +216,12 @@ public class AudioTestSuite extends ValidationBaseTestCase
     }
 
     @ValidationTest(name = "Audio-v1-02", order = -2)
-    @Disabled
     public void testAudio_v1_02_OpenStreamObject() throws Exception
     {
         stream.Open();
     }
 
     @ValidationTest(name = "Audio-v1-03", order = -2)
-    @Disabled
     public void testAudio_v1_03_OpenAndCloseStreamObject() throws Exception
     {
         stream.Open();
@@ -226,7 +229,6 @@ public class AudioTestSuite extends ValidationBaseTestCase
     }
 
     @ValidationTest(name = "Audio-v1-04", order = -2)
-    @Disabled
     public void testAudio_v1_04_CloseUnopenedStreamObject() throws Exception
     {
         stream.Open();
@@ -244,7 +246,6 @@ public class AudioTestSuite extends ValidationBaseTestCase
     }
 
     @ValidationTest(name = "Audio-v1-05", order = -2)
-    @Disabled
     public void testAudio_v1_05_VerifyAudioSinkCapabilities() throws Exception
     {
         Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -262,7 +263,6 @@ public class AudioTestSuite extends ValidationBaseTestCase
     }
 
     @ValidationTest(name = "Audio-v1-06", order = -2)
-    @Disabled
     public void testAudio_v1_06_VerifyImageSinkCapabilities() throws Exception
     {
         Port imageSinkPort = getImageSinkPort(streamObjectPath, getIntrospector());
@@ -280,7 +280,6 @@ public class AudioTestSuite extends ValidationBaseTestCase
     }
 
     @ValidationTest(name = "Audio-v1-07", order = -2)
-    @Disabled
     public void testAudio_v1_07_VerifyApplicationMetadataCapabilities() throws Exception
     {
         Port metadataSinkPort = getMetadataSinkPort(streamObjectPath, getIntrospector());
@@ -298,7 +297,6 @@ public class AudioTestSuite extends ValidationBaseTestCase
     }
 
     @ValidationTest(name = "Audio-v1-08", order = -2)
-    @Disabled
     public void testAudio_v1_08_ConfigureAudioSinkPort() throws Exception
     {
         Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -317,7 +315,6 @@ public class AudioTestSuite extends ValidationBaseTestCase
     }
 
     @ValidationTest(name = "Audio-v1-09", order = -2)
-    @Disabled
     public void testAudio_v1_09_ConfigureAudioSinkPortWithInvalidConfiguration() throws Exception
     {
         Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -336,7 +333,6 @@ public class AudioTestSuite extends ValidationBaseTestCase
     }
 
     @ValidationTest(name = "Audio-v1-10", order = -2)
-    @Disabled
     public void testAudio_v1_10_ConfigureAudioSinkPortTwice() throws Exception
     {
         Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -355,7 +351,6 @@ public class AudioTestSuite extends ValidationBaseTestCase
     }
 
     @ValidationTest(name = "Audio-v1-11", order = -2)
-    @Disabled
     public void testAudio_v1_11_CheckOwnershipLostSignal() throws Exception
     {
         Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -376,7 +371,6 @@ public class AudioTestSuite extends ValidationBaseTestCase
     }
 
     @ValidationTest(name = "Audio-v1-12")
-    @Disabled
     public void testAudio_v1_12_PlaybackAudioSink() throws Exception
     {
         Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -405,7 +399,6 @@ public class AudioTestSuite extends ValidationBaseTestCase
     }
 
     @ValidationTest(name = "Audio-v1-13")
-    @Disabled
     public void testAudio_v1_13_PauseAudioSinkPlayback() throws Exception
     {
         Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -434,7 +427,6 @@ public class AudioTestSuite extends ValidationBaseTestCase
     }
 
     @ValidationTest(name = "Audio-v1-14")
-    @Disabled
     public void testAudio_v1_14_FlushPausedAudioSink() throws Exception
     {
         Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -467,7 +459,6 @@ public class AudioTestSuite extends ValidationBaseTestCase
     }
 
     @ValidationTest(name = "Audio-v1-15")
-    @Disabled
     public void testAudio_v1_15_FlushPlayingAudioSink() throws Exception
     {
         Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -497,7 +488,6 @@ public class AudioTestSuite extends ValidationBaseTestCase
     }
 
     @ValidationTest(name = "Audio-v1-16")
-    @Disabled
     public void testAudio_v1_16_VerifyPausedAudioSinkRemainsPausedAfterSendingData() throws Exception
     {
         Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -526,7 +516,6 @@ public class AudioTestSuite extends ValidationBaseTestCase
     }
 
     @ValidationTest(name = "Audio-v1-17")
-    @Disabled
     public void testAudio_v1_17_VerifyPlayingEmptyAudioSinkRemainsIdle() throws Exception
     {
         Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -552,7 +541,6 @@ public class AudioTestSuite extends ValidationBaseTestCase
     }
 
     @ValidationTest(name = "Audio-v1-18")
-    @Disabled
     public void testAudio_v1_18_FlushIdleAudioSink() throws Exception
     {
         Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -578,7 +566,6 @@ public class AudioTestSuite extends ValidationBaseTestCase
     }
 
     @ValidationTest(name = "Audio-v1-19")
-    @Disabled
     public void testAudio_v1_19_SendDataToImageSink() throws Exception
     {
         Port imageSinkPort = getImageSinkPort(streamObjectPath, getIntrospector());
@@ -598,7 +585,6 @@ public class AudioTestSuite extends ValidationBaseTestCase
     }
 
     @ValidationTest(name = "Audio-v1-20")
-    @Disabled
     public void testAudio_v1_20_SendDataToMetadataSink() throws Exception
     {
         Port metadataSinkPort = getMetadataSinkPort(streamObjectPath, getIntrospector());
@@ -618,7 +604,6 @@ public class AudioTestSuite extends ValidationBaseTestCase
     }
 
     @ValidationTest(name = "Audio-v1-21")
-    @Disabled
     public void testAudio_v1_21_VerifyAudioSinkCanBeMutedUnmuted() throws Exception
     {
         Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -644,7 +629,6 @@ public class AudioTestSuite extends ValidationBaseTestCase
     }
 
     @ValidationTest(name = "Audio-v1-22")
-    @Disabled
     public void testAudio_v1_22_VerifyVolumeCanBeSetOnAudioSink() throws Exception
     {
         Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -687,7 +671,6 @@ public class AudioTestSuite extends ValidationBaseTestCase
     }
 
     @ValidationTest(name = "Audio-v1-23")
-    @Disabled
     public void testAudio_v1_23_SetInvalidVolumeOnAudioSink() throws Exception
     {
         Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -721,7 +704,6 @@ public class AudioTestSuite extends ValidationBaseTestCase
     }
 
     @ValidationTest(name = "Audio-v1-24")
-    @Disabled
     public void testAudio_v1_24_VerifyIndependenceOfMuteAndVolumeOnAudioSink() throws Exception
     {
         Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -762,7 +744,6 @@ public class AudioTestSuite extends ValidationBaseTestCase
     }
 
     @ValidationTest(name = "Audio-v1-25", order = -1)
-    @Disabled
     public void testAudio_v1_25_SynchronizeClocksOnAudioSink() throws Exception
     {
         Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());

@@ -17,7 +17,6 @@ package org.alljoyn.validation.testing.suites.controlpanel;
 
 import static org.alljoyn.validation.testing.utils.controlpanel.InterfacePathPattern.ControlPanel;
 import static org.alljoyn.validation.testing.utils.controlpanel.InterfacePathPattern.HttpControl;
-import static org.alljoyn.validation.testing.utils.controlpanel.InterfacePathPattern.NotificationPanel;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -513,7 +512,7 @@ public class ControlPanelTestSuite extends ValidationBaseTestCase
         {
             String path = interfaceDetail.getPath();
             logger.debug(String.format("Validating NotificationAction object at: %s", path));
-            assertTrue(String.format("%s does not match the expected pattern /NotificationPanel/{unit}/{actionPanelName}", path), isValidPath(NotificationPanel.getValue(), path));
+            assertTrue(String.format("%s does not match the expected pattern /ControlPanel/{unit}/{actionPanelName}", path), isValidPath(ControlPanel.getValue(), path));
             validateNotificationActionBusObject(path);
             getValidationTestContext().addInterfaceDetails(NotificationAction.IFNAME, INTERFACE_VERSION, path, null, null);
         }
@@ -959,8 +958,12 @@ public class ControlPanelTestSuite extends ValidationBaseTestCase
         validateLayoutHintsSignature(layoutHintsVariant);
         short[] layoutHints = layoutHintsVariant.getObject(short[].class);
         logger.debug(String.format("LayoutHints: %s", Arrays.toString(layoutHints)));
-        assertEquals("Key 2 contains more than one value", 1, layoutHints.length);
-        assertTrue(String.format("%d does not match expected value of 1 or 2 for key 2", layoutHints[0]), layoutHints[0] == 1 || layoutHints[0] == 2);
+        assertTrue("Key 2 contains no value", layoutHints.length > 0);
+
+        for (short layoutHint : layoutHints)
+        {
+            assertTrue(String.format("%d does not match expected value of 1 or 2 for key 2", layoutHint), layoutHint == 1 || layoutHint == 2);
+        }
     }
 
     private void validatePropertyControlParameterLayoutHints(Map<Short, Variant> parameters, Variant propertyValue) throws BusException

@@ -17,13 +17,16 @@ package org.alljoyn.validation.testing.instrument;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.alljoyn.validation.framework.annotation.Disabled;
 import org.alljoyn.validation.framework.annotation.ValidationTest;
 import org.alljoyn.validation.testing.utils.AllJoynLibraryLoader;
+import org.alljoyn.validation.testing.utils.ValidationTestComparator;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -55,39 +58,47 @@ public class ValidationInstrumentationTestRunnerHelper
         ValidationInstrumentationApplication instrumentApp = (ValidationInstrumentationApplication) testRunner.getContext().getApplicationContext();
         String testSuiteList = instrumentApp.getInstrumentParameter(InstrumentationArgKey.TestSuiteList.getValue());
         String testCaseKeyWords = instrumentApp.getInstrumentParameter(InstrumentationArgKey.TestCaseName.getValue());
+        Log.e(TAG, "testCaseKeyWords: " + testCaseKeyWords);
 
         List<Class<? extends TestCase>> testGroupClazzList = getTestGroupFromContext(testSuiteList);
 
         for (Class<? extends TestCase> suiteClazz : testGroupClazzList)
         {
-            if (testCaseKeyWords == null || testCaseKeyWords.equals(""))
+            List<String> testCaseKeywordList = mapToList(testCaseKeyWords);
+
+            try
             {
-                try
-                {
-                    getTestCasesFromClass(testSuite, suiteClazz, null);
-                }
-                catch (Exception e)
-                {
-                    Log.e(TAG, "exception", e);
-                }
+                getTestCasesFromClass(testSuite, suiteClazz, testCaseKeywordList);
             }
-            else
+            catch (Exception e)
             {
-                String[] testCaseKeywordArray = testCaseKeyWords.split(",");
-                for (String testCaseKeyword : testCaseKeywordArray)
+                Log.e(TAG, "exception", e);
+            }
+        }
+
+        return testSuite;
+    }
+
+    private List<String> mapToList(String testCaseKeyWords)
+    {
+        List<String> testCaseKeywordList = null;
+
+        if (testCaseKeyWords != null && !testCaseKeyWords.isEmpty())
+        {
+            String[] testCaseKeyWordArray = testCaseKeyWords.split(",");
+
+            if (testCaseKeyWordArray != null && testCaseKeyWordArray.length > 0)
+            {
+                testCaseKeywordList = new ArrayList<String>();
+
+                for (String testCaseKeyWord : testCaseKeyWordArray)
                 {
-                    try
-                    {
-                        getTestCasesFromClass(testSuite, suiteClazz, testCaseKeyword.trim());
-                    }
-                    catch (Exception e)
-                    {
-                        Log.e(TAG, "exception", e);
-                    }
+                    testCaseKeywordList.add(testCaseKeyWord.trim());
                 }
             }
         }
-        return testSuite;
+
+        return testCaseKeywordList;
     }
 
     @SuppressWarnings("unchecked")
@@ -111,20 +122,32 @@ public class ValidationInstrumentationTestRunnerHelper
         return testSuiteClassList;
     }
 
-    private void getTestCasesFromClass(TestSuite testSuite, Class<? extends TestCase> clazz, String testCaseKeyword) throws Exception
+    private void getTestCasesFromClass(TestSuite testSuite, Class<? extends TestCase> clazz, List<String> testCaseKeywords) throws Exception
     {
         Method[] methods = clazz.getMethods();
+        List<Method> methodList = new ArrayList<Method>();
+
         for (Method method : methods)
         {
             ValidationTest validationTest = method.getAnnotation(ValidationTest.class);
+            Disabled disabled = method.getAnnotation(Disabled.class);
 
-            if (validationTest != null)
+            if (validationTest != null && disabled == null)
             {
-                if (testCaseKeyword == null || (testCaseKeyword != null && testCaseKeyword.equals(validationTest.name())))
-                {
-                    InstrumentationTestCaseWrapper tcw = new InstrumentationTestCaseWrapper(clazz, method.getName());
-                    testSuite.addTest(tcw);
-                }
+                methodList.add(method);
+            }
+        }
+
+        Collections.sort(methodList, ValidationTestComparator.getInstance());
+
+        for (Method method : methodList)
+        {
+            ValidationTest validationTest = method.getAnnotation(ValidationTest.class);
+
+            if (testCaseKeywords == null || testCaseKeywords.size() == 0 || testCaseKeywords.contains(validationTest.name()))
+            {
+                InstrumentationTestCaseWrapper instrumentationTestCaseWrapper = new InstrumentationTestCaseWrapper(clazz, method.getName());
+                testSuite.addTest(instrumentationTestCaseWrapper);
             }
         }
     }
