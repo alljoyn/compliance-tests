@@ -272,7 +272,7 @@ public class OnboardingTestSuite extends ValidationBaseTestCase
     {
         connectToDUTInOffboardedState();
 
-        short configureWiFiRetval = onboardingHelper.callConfigureWiFi(new WifiNetworkConfig(personalAPConfig.getSsid(), INVALID_NETWORK_PASSPHRASE, "ANY"));
+        short configureWiFiRetval = onboardingHelper.callConfigureWiFi(new WifiNetworkConfig(personalAPConfig.getSsid(), personalAPConfig.getPassphrase(), "ANY"));
 
         verifyConfigureWifiReturnValue(configureWiFiRetval);
 
