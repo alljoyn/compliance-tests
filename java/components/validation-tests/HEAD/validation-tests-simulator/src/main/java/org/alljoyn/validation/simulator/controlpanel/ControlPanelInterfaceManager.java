@@ -27,7 +27,7 @@ public class ControlPanelInterfaceManager
 {
     private static String TAG = "ControlPanelInterfaceManager";
     private static final String HTTP_CONTROL_PATH = "/ControlPanel/unit/HTTPControl";
-    private static final String NOTIFICATION_PANEL_PATH = "/NotificationPanel/unit/notification";
+    private static final String NOTIFICATION_PANEL_PATH = "/ControlPanel/unit/notification";
     private static final String CONTROL_PANEL_PATH = "/ControlPanel/unit/mainPanel";
     private BusAttachment busAttachment;
     private ActionBusObject actionBusObject;
