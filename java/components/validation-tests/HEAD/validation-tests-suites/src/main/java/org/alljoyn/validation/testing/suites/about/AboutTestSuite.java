@@ -69,6 +69,7 @@ import android.graphics.BitmapFactory;
 @ValidationSuite(name = "About-v1")
 public class AboutTestSuite extends ValidationBaseTestCase
 {
+    private static final String INTROSPECTABLE_INTERFACE_NAME = "org.allseen.Introspectable";
     protected static final String TAG = "AboutTestSuite";
     private static final Logger logger = LoggerFactory.getLogger(TAG);
     private static final String BUS_APPLICATION_NAME = "AboutTestSuite";
@@ -194,9 +195,13 @@ public class AboutTestSuite extends ValidationBaseTestCase
         for (String announcementKey : announcementPathInterfaceSet)
         {
             String[] pathAndInterfaces = announcementKey.split(":");
-            String errorMessage = new StringBuilder("AboutAnnouncement advertises interface ").append(pathAndInterfaces[1]).append(" at path ").append(pathAndInterfaces[0])
-                    .append(", but bus does not contain such interface at that path.").toString();
-            assertTrue(errorMessage, busIntrospectPathInterfaceSet.contains(announcementKey));
+
+            if (!pathAndInterfaces[1].equals(INTROSPECTABLE_INTERFACE_NAME))
+            {
+                String errorMessage = new StringBuilder("AboutAnnouncement advertises interface ").append(pathAndInterfaces[1]).append(" at path ").append(pathAndInterfaces[0])
+                        .append(", but bus does not contain such interface at that path.").toString();
+                assertTrue(errorMessage, busIntrospectPathInterfaceSet.contains(announcementKey));
+            }
         }
     }
 
