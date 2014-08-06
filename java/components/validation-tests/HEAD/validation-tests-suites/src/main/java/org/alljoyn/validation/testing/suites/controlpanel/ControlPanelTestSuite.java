@@ -880,7 +880,7 @@ public class ControlPanelTestSuite extends ValidationBaseTestCase
     {
         validateOptionalParameter0(parameters);
         validateOptionalParameter1(parameters);
-        validateContainerParameterLayoutHints(parameters.get((short) 2));
+        validateContainerParameterLayoutHints(parameters);
     }
 
     private void validatePropertyControlParameters(Map<Short, Variant> parameters, Variant propertyValue) throws BusException
@@ -896,21 +896,21 @@ public class ControlPanelTestSuite extends ValidationBaseTestCase
     private void validateLabelPropertyParameters(Map<Short, Variant> parameters) throws BusException
     {
         validateOptionalParameter1(parameters);
-        validateParameterLayoutHints(parameters.get((short) 2));
+        validateParameterLayoutHints(parameters);
     }
 
     private void validateActionParameters(Map<Short, Variant> parameters) throws BusException
     {
         validateOptionalParameter0(parameters);
         validateOptionalParameter1(parameters);
-        validateParameterLayoutHints(parameters.get((short) 2));
+        validateParameterLayoutHints(parameters);
     }
 
     private void validateDialogParameters(Map<Short, Variant> parameters, short numberOfActions) throws BusException
     {
         validateOptionalParameter0(parameters);
         validateOptionalParameter1(parameters);
-        validateParameterLayoutHints(parameters.get((short) 2));
+        validateParameterLayoutHints(parameters);
         validateDialogParameterActionLabelIds(parameters, numberOfActions);
     }
 
@@ -918,7 +918,7 @@ public class ControlPanelTestSuite extends ValidationBaseTestCase
     {
         validateOptionalParameter0(parameters);
         validateOptionalParameter1(parameters);
-        validateParameterLayoutHints(parameters.get((short) 2));
+        validateParameterLayoutHints(parameters);
     }
 
     private void validateOptionalParameter0(Map<Short, Variant> parameters) throws AnnotationBusException
@@ -973,30 +973,37 @@ public class ControlPanelTestSuite extends ValidationBaseTestCase
         }
     }
 
-    private void validateContainerParameterLayoutHints(Variant layoutHintsVariant) throws BusException
+    private void validateContainerParameterLayoutHints(Map<Short, Variant> parameters) throws BusException
     {
-        validateLayoutHintsSignature(layoutHintsVariant);
-        short[] layoutHints = layoutHintsVariant.getObject(short[].class);
-        logger.debug(String.format("LayoutHints: %s", Arrays.toString(layoutHints)));
-        assertTrue("Key 2 contains no value", layoutHints.length > 0);
-
-        for (short layoutHint : layoutHints)
+        if (parameters.containsKey((short) 2))
         {
-            assertTrue(String.format("%d does not match expected value of 1 or 2 for key 2", layoutHint), layoutHint == 1 || layoutHint == 2);
+            Variant layoutHintsVariant = parameters.get((short) 2);
+            validateLayoutHintsSignature(layoutHintsVariant);
+            short[] layoutHints = layoutHintsVariant.getObject(short[].class);
+            logger.debug(String.format("LayoutHints: %s", Arrays.toString(layoutHints)));
+            assertTrue("Key 2 contains no value", layoutHints.length > 0);
+
+            for (short layoutHint : layoutHints)
+            {
+                assertTrue(String.format("%d does not match expected value of 1 or 2 for key 2", layoutHint), layoutHint == 1 || layoutHint == 2);
+            }
         }
     }
 
     private void validatePropertyControlParameterLayoutHints(Map<Short, Variant> parameters, Variant propertyValue) throws BusException
     {
-        Variant layoutHintsVariant = parameters.get((short) 2);
-        validateLayoutHintsSignature(layoutHintsVariant);
-        short[] layoutHints = layoutHintsVariant.getObject(short[].class);
-        logger.debug(String.format("LayoutHints: %s", Arrays.toString(layoutHints)));
-        assertEquals("Key 2 contains more than one value", 1, layoutHints.length);
-        short layoutHintId = layoutHints[0];
-        assertTrue(String.format("%d is not a valid value for key 2", layoutHintId), VALID_PROPERTY_CONTROL_LAYOUT_HINTS_VALUES.contains(layoutHintId));
+        if (parameters.containsKey((short) 2))
+        {
+            Variant layoutHintsVariant = parameters.get((short) 2);
+            validateLayoutHintsSignature(layoutHintsVariant);
+            short[] layoutHints = layoutHintsVariant.getObject(short[].class);
+            logger.debug(String.format("LayoutHints: %s", Arrays.toString(layoutHints)));
+            assertEquals("Key 2 contains more than one value", 1, layoutHints.length);
+            short layoutHintId = layoutHints[0];
+            assertTrue(String.format("%d is not a valid value for key 2", layoutHintId), VALID_PROPERTY_CONTROL_LAYOUT_HINTS_VALUES.contains(layoutHintId));
 
-        validateBasedOnLayoutHintId(parameters, propertyValue, layoutHintId);
+            validateBasedOnLayoutHintId(parameters, propertyValue, layoutHintId);
+        }
     }
 
     private void validateBasedOnLayoutHintId(Map<Short, Variant> parameters, Variant propertyValue, short layoutHintId) throws AnnotationBusException, BusException
@@ -1044,12 +1051,16 @@ public class ControlPanelTestSuite extends ValidationBaseTestCase
         assertEquals(String.format("The first value in the composite type does not match when hint id is %d", layoutHintId), compositeType, propertyWidgetThreeShortAJ.dataType);
     }
 
-    private void validateParameterLayoutHints(Variant layoutHintsVariant) throws BusException
+    private void validateParameterLayoutHints(Map<Short, Variant> parameters) throws BusException
     {
-        validateLayoutHintsSignature(layoutHintsVariant);
-        short[] layoutHints = layoutHintsVariant.getObject(short[].class);
-        assertEquals("Key 2 contains more than one value", 1, layoutHints.length);
-        assertEquals("Value does not match for key 2", 1, layoutHints[0]);
+        if (parameters.containsKey((short) 2))
+        {
+            Variant layoutHintsVariant = parameters.get((short) 2);
+            validateLayoutHintsSignature(layoutHintsVariant);
+            short[] layoutHints = layoutHintsVariant.getObject(short[].class);
+            assertEquals("Key 2 contains more than one value", 1, layoutHints.length);
+            assertEquals("Value does not match for key 2", 1, layoutHints[0]);
+        }
     }
 
     private void validateLayoutHintsSignature(Variant layoutHintsVariant) throws AnnotationBusException
@@ -1100,7 +1111,10 @@ public class ControlPanelTestSuite extends ValidationBaseTestCase
 
     private void validateDialogParameterActionLabelIds(Map<Short, Variant> parameters, short numberOfActions) throws AnnotationBusException
     {
-        validateDialogParameterActionLabelId(parameters.get((short) 6), "6");
+        if (parameters.containsKey((short) 6))
+        {
+            validateDialogParameterActionLabelId(parameters.get((short) 6), "6");
+        }
 
         if (numberOfActions >= 2)
         {
