@@ -409,24 +409,6 @@ public class ControlPanelTestSuiteTest extends BaseTestSuiteTest
     }
 
     @Test
-    public void testValidateContainerBusObjectsFailsWhenContainerParametersIsMissingKey2() throws Exception
-    {
-        Container container = getMockContainer((short) 1, 0, new HashMap<Short, Variant>());
-        setupDataForValidateContainerBusObjectsAndStartTest(container);
-
-        executeTestMethodFailsAssertion(getTestWrapperFor_v1_02(), "Key 2 for LayoutHints is missing");
-    }
-
-    @Test
-    public void testValidateContainerBusObjectsFailsWhenSecuredContainerParametersIsMissingKey2() throws Exception
-    {
-        ContainerSecured securedContainer = getMockSecuredContainer((short) 1, 1, new HashMap<Short, Variant>());
-        setupDataForValidateContainerBusObjectsAndStartTest(securedContainer);
-
-        executeTestMethodFailsAssertion(getTestWrapperFor_v1_02(), "Key 2 for LayoutHints is missing");
-    }
-
-    @Test
     public void testValidateContainerBusObjectsFailsWhenContainerParametersContainsInvalidValueForKey2() throws Exception
     {
         HashMap<Short, Variant> parameters = new HashMap<Short, Variant>();
@@ -557,12 +539,9 @@ public class ControlPanelTestSuiteTest extends BaseTestSuiteTest
     }
 
     @Test
-    public void testValidateContainerBusObjectsPassesWhenContainerIsMissingKey0And1() throws Exception
+    public void testValidateContainerBusObjectsPassesWhenContainerIsMissingKey0And1And2() throws Exception
     {
-        short[] layoutHints = new short[1];
-        layoutHints[0] = 1;
         HashMap<Short, Variant> parameters = new HashMap<Short, Variant>();
-        parameters.put((short) 2, new Variant(layoutHints, "aq"));
         Container container = getMockContainer((short) 1, 0, parameters);
         setupDataForValidateContainerBusObjectsAndStartTest(container);
 
@@ -570,12 +549,9 @@ public class ControlPanelTestSuiteTest extends BaseTestSuiteTest
     }
 
     @Test
-    public void testValidateContainerBusObjectsPassesWhenSecuredContainerIsMissingKey0And1() throws Exception
+    public void testValidateContainerBusObjectsPassesWhenSecuredContainerIsMissingKey0And1And2() throws Exception
     {
-        short[] layoutHints = new short[1];
-        layoutHints[0] = 2;
         HashMap<Short, Variant> parameters = new HashMap<Short, Variant>();
-        parameters.put((short) 2, new Variant(layoutHints, "aq"));
         ContainerSecured securedContainer = getMockSecuredContainer((short) 1, 1, parameters);
         setupDataForValidateContainerBusObjectsAndStartTest(securedContainer);
 
@@ -691,24 +667,6 @@ public class ControlPanelTestSuiteTest extends BaseTestSuiteTest
     }
 
     @Test
-    public void testValidatePropertyBusObjectsFailsWhenPropertyParametersIsMissingKey2() throws Exception
-    {
-        PropertyControl property = getMockProperty((short) 1, 0, new HashMap<Short, Variant>(), new Variant("value"));
-        setupDataForValidatePropertyBusObjectsAndStartTest(property);
-
-        executeTestMethodFailsAssertion(getTestWrapperFor_v1_03(), "Key 2 for LayoutHints is missing");
-    }
-
-    @Test
-    public void testValidatePropertyBusObjectsFailsWhenSecuredPropertyParametersIsMissingKey2() throws Exception
-    {
-        PropertyControlSecured securedProperty = getMockSecuredProperty((short) 1, 1, new HashMap<Short, Variant>(), new Variant("value"));
-        setupDataForValidatePropertyBusObjectsAndStartTest(securedProperty);
-
-        executeTestMethodFailsAssertion(getTestWrapperFor_v1_03(), "Key 2 for LayoutHints is missing");
-    }
-
-    @Test
     public void testValidatePropertyBusObjectsFailsWhenPropertyParametersContainsInvalidValueForKey2() throws Exception
     {
         HashMap<Short, Variant> parameters = new HashMap<Short, Variant>();
@@ -805,12 +763,9 @@ public class ControlPanelTestSuiteTest extends BaseTestSuiteTest
     }
 
     @Test
-    public void testValidatePropertyBusObjectsPassesWhenPropertyIsMissingKey0And1And3And4And5() throws Exception
+    public void testValidatePropertyBusObjectsPassesWhenPropertyIsMissingKey0And1And2And3And4And5() throws Exception
     {
-        short[] layoutHints = new short[1];
-        layoutHints[0] = 1;
         HashMap<Short, Variant> parameters = new HashMap<Short, Variant>();
-        parameters.put((short) 2, new Variant(layoutHints, "aq"));
         PropertyControl property = getMockProperty((short) 1, 0, parameters, new Variant(true));
         setupDataForValidatePropertyBusObjectsAndStartTest(property);
 
@@ -818,12 +773,9 @@ public class ControlPanelTestSuiteTest extends BaseTestSuiteTest
     }
 
     @Test
-    public void testValidatePropertyBusObjectsPassesWhenSecuredPropertyIsMissingKey0And1And3And4And5() throws Exception
+    public void testValidatePropertyBusObjectsPassesWhenSecuredPropertyIsMissingKey0And1And2And3And4And5() throws Exception
     {
-        short[] layoutHints = new short[1];
-        layoutHints[0] = 1;
         HashMap<Short, Variant> parameters = new HashMap<Short, Variant>();
-        parameters.put((short) 2, new Variant(layoutHints, "aq"));
         PropertyControlSecured securedProperty = getMockSecuredProperty((short) 1, 1, parameters, new Variant(true));
         setupDataForValidatePropertyBusObjectsAndStartTest(securedProperty);
 
@@ -1688,15 +1640,6 @@ public class ControlPanelTestSuiteTest extends BaseTestSuiteTest
     }
 
     @Test
-    public void testValidateLabelPropertyBusObjectsFailsWhenParametersIsMissingKey2() throws Exception
-    {
-        Label label = getMockLabel((short) 1, 0, new HashMap<Short, Variant>());
-        setupDataForValidateLabelPropertyBusObjectsAndStartTest(label);
-
-        executeTestMethodFailsAssertion(getTestWrapperFor_v1_04(), "Key 2 for LayoutHints is missing");
-    }
-
-    @Test
     public void testValidateLabelPropertyBusObjectsFailsWhenParametersContainsInvalidValueForKey2() throws Exception
     {
         HashMap<Short, Variant> parameters = new HashMap<Short, Variant>();
@@ -1759,12 +1702,9 @@ public class ControlPanelTestSuiteTest extends BaseTestSuiteTest
     }
 
     @Test
-    public void testValidateLabelPropertyBusObjectsPassesWhenParametersIsMissingKey1() throws Exception
+    public void testValidateLabelPropertyBusObjectsPassesWhenParametersIsMissingKey1AndKey2() throws Exception
     {
-        short[] layoutHints = new short[1];
-        layoutHints[0] = 1;
         HashMap<Short, Variant> parameters = new HashMap<Short, Variant>();
-        parameters.put((short) 2, new Variant(layoutHints, "aq"));
         Label label = getMockLabel((short) 1, 0, parameters);
         setupDataForValidateLabelPropertyBusObjectsAndStartTest(label);
 
@@ -1877,24 +1817,6 @@ public class ControlPanelTestSuiteTest extends BaseTestSuiteTest
         setupDataForValidateActionBusObjectsAndStartTest(securedAction);
 
         executeTestMethodFailsAssertion(getTestWrapperFor_v1_05(), "Signature does not match for key 1 expected:<[u]> but was:<[s]>");
-    }
-
-    @Test
-    public void testValidateActionBusObjectsFailsWhenActionParametersIsMissingKey2() throws Exception
-    {
-        ActionControl action = getMockAction((short) 1, 0, new HashMap<Short, Variant>());
-        setupDataForValidateActionBusObjectsAndStartTest(action);
-
-        executeTestMethodFailsAssertion(getTestWrapperFor_v1_05(), "Key 2 for LayoutHints is missing");
-    }
-
-    @Test
-    public void testValidateActionBusObjectsFailsWhenSecuredActionParametersIsMissingKey2() throws Exception
-    {
-        ActionControlSecured securedAction = getMockSecuredAction((short) 1, 1, new HashMap<Short, Variant>());
-        setupDataForValidateActionBusObjectsAndStartTest(securedAction);
-
-        executeTestMethodFailsAssertion(getTestWrapperFor_v1_05(), "Key 2 for LayoutHints is missing");
     }
 
     @Test
@@ -2024,12 +1946,9 @@ public class ControlPanelTestSuiteTest extends BaseTestSuiteTest
     }
 
     @Test
-    public void testValidateActionBusObjectsPassesWhenActionIsMissingKey0And1() throws Exception
+    public void testValidateActionBusObjectsPassesWhenActionIsMissingKey0And1And2() throws Exception
     {
-        short[] layoutHints = new short[1];
-        layoutHints[0] = 1;
         HashMap<Short, Variant> parameters = new HashMap<Short, Variant>();
-        parameters.put((short) 2, new Variant(layoutHints, "aq"));
         ActionControl action = getMockAction((short) 1, 0, parameters);
         setupDataForValidateActionBusObjectsAndStartTest(action);
 
@@ -2037,12 +1956,9 @@ public class ControlPanelTestSuiteTest extends BaseTestSuiteTest
     }
 
     @Test
-    public void testValidateActionBusObjectsPassesWhenSecuredActionIsMissingKey0And1() throws Exception
+    public void testValidateActionBusObjectsPassesWhenSecuredActionIsMissingKey0And1And2() throws Exception
     {
-        short[] layoutHints = new short[1];
-        layoutHints[0] = 1;
         HashMap<Short, Variant> parameters = new HashMap<Short, Variant>();
-        parameters.put((short) 2, new Variant(layoutHints, "aq"));
         ActionControlSecured securedAction = getMockSecuredAction((short) 1, 1, parameters);
         setupDataForValidateActionBusObjectsAndStartTest(securedAction);
 
@@ -2158,24 +2074,6 @@ public class ControlPanelTestSuiteTest extends BaseTestSuiteTest
     }
 
     @Test
-    public void testValidateDialogBusObjectsFailsWhenDialogParametersIsMissingKey2() throws Exception
-    {
-        AlertDialog dialog = getMockDialog((short) 1, 0, new HashMap<Short, Variant>(), (short) 3);
-        setupDataForValidateDialogBusObjectsAndStartTest(dialog);
-
-        executeTestMethodFailsAssertion(getTestWrapperFor_v1_06(), "Key 2 for LayoutHints is missing");
-    }
-
-    @Test
-    public void testValidateDialogBusObjectsFailsWhenSecuredDialogParametersIsMissingKey2() throws Exception
-    {
-        AlertDialogSecured securedDialog = getMockSecuredDialog((short) 1, 1, new HashMap<Short, Variant>(), (short) 3);
-        setupDataForValidateDialogBusObjectsAndStartTest(securedDialog);
-
-        executeTestMethodFailsAssertion(getTestWrapperFor_v1_06(), "Key 2 for LayoutHints is missing");
-    }
-
-    @Test
     public void testValidateDialogBusObjectsFailsWhenDialogParametersContainsInvalidValueForKey2() throws Exception
     {
         HashMap<Short, Variant> parameters = new HashMap<Short, Variant>();
@@ -2269,32 +2167,6 @@ public class ControlPanelTestSuiteTest extends BaseTestSuiteTest
         setupDataForValidateDialogBusObjectsAndStartTest(securedDialog);
 
         executeTestMethodFailsAssertion(getTestWrapperFor_v1_06(), "Value does not match for key 2 expected:<1> but was:<0>");
-    }
-
-    @Test
-    public void testValidateDialogBusObjectsFailsWhenDialogParametersIsMissingKey6() throws Exception
-    {
-        short[] layoutHints = new short[1];
-        layoutHints[0] = 1;
-        HashMap<Short, Variant> parameters = new HashMap<Short, Variant>();
-        parameters.put((short) 2, new Variant(layoutHints, "aq"));
-        AlertDialog dialog = getMockDialog((short) 1, 0, parameters, (short) 3);
-        setupDataForValidateDialogBusObjectsAndStartTest(dialog);
-
-        executeTestMethodFailsAssertion(getTestWrapperFor_v1_06(), "Key 6 is missing");
-    }
-
-    @Test
-    public void testValidateDialogBusObjectsFailsWhenSecuredDialogParametersIsMissingKey6() throws Exception
-    {
-        short[] layoutHints = new short[1];
-        layoutHints[0] = 1;
-        HashMap<Short, Variant> parameters = new HashMap<Short, Variant>();
-        parameters.put((short) 2, new Variant(layoutHints, "aq"));
-        AlertDialogSecured securedDialog = getMockSecuredDialog((short) 1, 1, parameters, (short) 3);
-        setupDataForValidateDialogBusObjectsAndStartTest(securedDialog);
-
-        executeTestMethodFailsAssertion(getTestWrapperFor_v1_06(), "Key 6 is missing");
     }
 
     @Test
@@ -2698,6 +2570,32 @@ public class ControlPanelTestSuiteTest extends BaseTestSuiteTest
     }
 
     @Test
+    public void testValidateActionBusObjectsPassesWhenActionIsMissingAllKeys() throws Exception
+    {
+        HashMap<Short, Variant> parameters = new HashMap<Short, Variant>();
+        AlertDialog dialog = getMockDialog((short) 1, 1, parameters, (short) 1);
+        ErrorReplyBusException errorReplyBusException = new ErrorReplyBusException("org.alljoyn.Error.MethodNotAllowed", "Method Not Allowed");
+        doThrow(errorReplyBusException).when(dialog).Action2();
+        doThrow(errorReplyBusException).when(dialog).Action3();
+        setupDataForValidateDialogBusObjectsAndStartTest(dialog);
+
+        executeTestMethod(getTestWrapperFor_v1_06());
+    }
+
+    @Test
+    public void testValidateActionBusObjectsPassesWhenSecuredActionIsMissingAllKeys() throws Exception
+    {
+        HashMap<Short, Variant> parameters = new HashMap<Short, Variant>();
+        AlertDialogSecured securedDialog = getMockSecuredDialog((short) 1, 1, parameters, (short) 1);
+        ErrorReplyBusException errorReplyBusException = new ErrorReplyBusException("org.alljoyn.Error.MethodNotAllowed", "Method Not Allowed");
+        doThrow(errorReplyBusException).when(securedDialog).Action2();
+        doThrow(errorReplyBusException).when(securedDialog).Action3();
+        setupDataForValidateDialogBusObjectsAndStartTest(securedDialog);
+
+        executeTestMethod(getTestWrapperFor_v1_06());
+    }
+
+    @Test
     public void testValidateListPropertyBusObjectsAddsNoteWhenNoneFound() throws Exception
     {
         when(mockIntrospector.getInterfacesExposedOnBusBasedOnName(LIST_PROPERTY_INTERFACE_NAME)).thenReturn(new ArrayList<InterfaceDetail>());
@@ -2803,24 +2701,6 @@ public class ControlPanelTestSuiteTest extends BaseTestSuiteTest
         setupDataForValidateListPropertyBusObjectsAndStartTest(securedListProperty);
 
         executeTestMethodFailsAssertion(getTestWrapperFor_v1_07(), "Signature does not match for key 1 expected:<[u]> but was:<[s]>");
-    }
-
-    @Test
-    public void testValidateListPropertyBusObjectsFailsWhenListPropertyParametersIsMissingKey2() throws Exception
-    {
-        ListPropertyControl listProperty = getMockListProperty((short) 1, 0, new HashMap<Short, Variant>());
-        setupDataForValidateListPropertyBusObjectsAndStartTest(listProperty);
-
-        executeTestMethodFailsAssertion(getTestWrapperFor_v1_07(), "Key 2 for LayoutHints is missing");
-    }
-
-    @Test
-    public void testValidateListPropertyBusObjectsFailsWhenSecuredListPropertyParametersIsMissingKey2() throws Exception
-    {
-        ListPropertyControlSecured securedListProperty = getMockSecuredListProperty((short) 1, 1, new HashMap<Short, Variant>());
-        setupDataForValidateListPropertyBusObjectsAndStartTest(securedListProperty);
-
-        executeTestMethodFailsAssertion(getTestWrapperFor_v1_07(), "Key 2 for LayoutHints is missing");
     }
 
     @Test
@@ -3106,12 +2986,9 @@ public class ControlPanelTestSuiteTest extends BaseTestSuiteTest
     }
 
     @Test
-    public void testValidateListPropertyBusObjectsPassesWhenListPropertyIsMissingKey0And1() throws Exception
+    public void testValidateListPropertyBusObjectsPassesWhenListPropertyIsMissingKey0And1And2() throws Exception
     {
-        short[] layoutHints = new short[1];
-        layoutHints[0] = 1;
         HashMap<Short, Variant> parameters = new HashMap<Short, Variant>();
-        parameters.put((short) 2, new Variant(layoutHints, "aq"));
         ListPropertyControl listProperty = getMockListProperty((short) 1, 0, parameters, getListPropertyWidgetRecordAJs());
         setupDataForValidateListPropertyBusObjectsAndStartTest(listProperty);
 
@@ -3119,12 +2996,9 @@ public class ControlPanelTestSuiteTest extends BaseTestSuiteTest
     }
 
     @Test
-    public void testValidateListPropertyBusObjectsPassesWhenSecuredListPropertyIsMissingKey0And1() throws Exception
+    public void testValidateListPropertyBusObjectsPassesWhenSecuredListPropertyIsMissingKey0And1And2() throws Exception
     {
-        short[] layoutHints = new short[1];
-        layoutHints[0] = 1;
         HashMap<Short, Variant> parameters = new HashMap<Short, Variant>();
-        parameters.put((short) 2, new Variant(layoutHints, "aq"));
         ListPropertyControlSecured securedListProperty = getMockSecuredListProperty((short) 1, 1, parameters, getListPropertyWidgetRecordAJs());
         setupDataForValidateListPropertyBusObjectsAndStartTest(securedListProperty);
 
