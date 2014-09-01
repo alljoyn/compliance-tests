@@ -359,6 +359,18 @@ public class RegisterInterfaces
         }
 
         @Override
+        public boolean getEnabled() throws BusException
+        {
+            return false;
+        }
+
+        @Override
+        public void setEnabled(boolean enabled) throws BusException
+        {
+
+        }
+
+        @Override
         public short getVolume() throws BusException
         {
             return 0;
@@ -383,6 +395,12 @@ public class RegisterInterfaces
         }
 
         @Override
+        public void AdjustVolumePercent(double change) throws BusException
+        {
+
+        }
+
+        @Override
         public void MuteChanged(boolean newMute) throws BusException
         {
 
@@ -390,6 +408,12 @@ public class RegisterInterfaces
 
         @Override
         public void VolumeChanged(short newVolume) throws BusException
+        {
+
+        }
+
+        @Override
+        public void EnabledChanged(boolean newEnabled) throws BusException
         {
 
         }
