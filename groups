@@ -1,4 +1,3 @@
 # UUID                                  	Group Name
 #
-d53c87c176980a6c1afd956d2af978a96dc49d42	GitHub Replication for compliance
 ldap:cn=gerrit_compliance_committers,ou=groups,cn=allseen,dc=codeaurora,dc=org	ldap/gerrit_compliance_committers
