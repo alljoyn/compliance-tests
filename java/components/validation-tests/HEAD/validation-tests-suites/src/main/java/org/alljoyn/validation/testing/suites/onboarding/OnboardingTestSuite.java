@@ -184,7 +184,7 @@ public class OnboardingTestSuite extends ValidationBaseTestCase
 
         verifyOnboardingState(OBS_STATE_PERSONAL_AP_NOT_CONFIGURED);
 
-        SoftAPValidator.validateSoftAP(softAPssid, dutDeviceId);
+        SoftAPValidator.validateSoftAP(softAPssid);
     }
 
     @ValidationTest(name = "Onboarding-v1-02", order = 99)

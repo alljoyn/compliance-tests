@@ -15,23 +15,16 @@
  *******************************************************************************/
 package org.alljoyn.validation.testing.utils.onboarding;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import junit.framework.Assert;
 
 public class SoftAPValidator extends Assert
 {
-    private static final String SOFT_AP_ASSERT_MESSAGE = "Soft AP must match pattern AJ_{up to first 7 characters of manufacturer name}_{first 2 characters of device description}_{last 7 digits of deviceId}";
-    private static final String SOFT_AP_PATTERN = "AJ_([^_]+)_([^_]+)_([^_]+)";
+    private static final String SOFT_AP_ASSERT_MESSAGE = "Soft AP name must start with AJ_ or end with _AJ string";
+    private static final String SOFT_AP_PREFIX = "AJ_";
+    private static final String SOFT_AP_SUFFIX = "_AJ";
 
-    public static void validateSoftAP(String softAPName, String deviceId)
+    public static void validateSoftAP(String softAPName)
     {
-        Pattern pattern = Pattern.compile(SOFT_AP_PATTERN);
-        Matcher matcher = pattern.matcher(softAPName);
-
-        assertTrue(SOFT_AP_ASSERT_MESSAGE, matcher.matches());
-
-        assertEquals(SOFT_AP_ASSERT_MESSAGE, deviceId.substring(deviceId.length() - 7), matcher.group(3));
+        assertTrue(SOFT_AP_ASSERT_MESSAGE, softAPName.startsWith(SOFT_AP_PREFIX) || softAPName.endsWith(SOFT_AP_SUFFIX));
     }
 }
