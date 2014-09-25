@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--  Copyright (c) 2013 - 2014, AllSeen Alliance. All rights reserved.
+
+    Permission to use, copy, modify, and/or distribute this software for any
+    purpose with or without fee is hereby granted, provided that the above
+    copyright notice and this permission notice appear in all copies.
+
+    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.alljoyn.validation.validation-tests</groupId>
+		<artifactId>validation-tests</artifactId>
+		<version>14.06.01-SNAPSHOT</version>
+	</parent>
+	<artifactId>validation-tests-it</artifactId>
+	<name>validation-tests-it</name>
+	<packaging>apk</packaging>
+	<dependencies>
+		<dependency>
+			<groupId>com.google.android</groupId>
+			<artifactId>android</artifactId>
+			<classifier>${android.release}</classifier>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.android</groupId>
+			<artifactId>android-test</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.alljoyn.validation.validation-tests</groupId>
+			<artifactId>validation-tests-suites</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.alljoyn.validation.validation-tests</groupId>
+			<artifactId>validation-tests-suites-lighting</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.alljoyn.validation.validation-tests</groupId>
+			<artifactId>validation-tests-simulator</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.alljoyn.validation.validation-framework</groupId>
+			<artifactId>validation-framework-test-utils</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.alljoyn</groupId>
+			<artifactId>liballjoyn_java</artifactId>
+			<classifier>${alljoyn.classifier}</classifier>
+			<scope>runtime</scope>
+			<type>so</type>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-module-junit4</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-api-mockito</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.robolectric</groupId>
+			<artifactId>robolectric</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-remote-resources-plugin</artifactId>
+				<version>1.5</version>
+				<configuration>
+					<resourceBundles>
+						<resourceBundle>org.alljoyn.validation.validation-tests:validation-tests-suites-lighting:${project.version}</resourceBundle>
+					</resourceBundles>
+					<attached>false</attached>
+					<outputDirectory>${project.basedir}/target/shared</outputDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>process</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+				<artifactId>android-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.alljoyn</groupId>
+									<artifactId>liballjoyn_java</artifactId>
+									<version>${alljoyn.version}</version>
+									<classifier>${alljoyn.classifier}</classifier>
+									<type>so</type>
+									<destFileName>liballjoyn_java.so</destFileName>
+									<overWrite>true</overWrite>
+								</artifactItem>
+							</artifactItems>
+							<outputDirectory>${project.basedir}/target/libs/armeabi</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<profiles>
+		<profile>
+			<id>int-test</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+						<artifactId>android-maven-plugin</artifactId>
+						<configuration>
+							<test>
+								<skip>false</skip>
+								<classes>
+									<class>org.alljoyn.validation.testing.it.RunAboutAnnouncementMismatchTestSuiteIT</class>
+									<class>org.alljoyn.validation.testing.it.RunTestSuitesIT</class>
+								</classes>
+							</test>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>sample-test</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+						<artifactId>android-maven-plugin</artifactId>
+						<configuration>
+							<test>
+								<skip>false</skip>
+								<classes>
+									<class>org.alljoyn.validation.testing.suites.SampleTest</class>
+								</classes>
+							</test>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+<profile>
+      <id>lsf-lamp-test-sp140</id>
+      <properties>
+        <android-maven-plugin.version>3.8.2</android-maven-plugin.version>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+            <artifactId>android-maven-plugin</artifactId>
+            <configuration>
+              <test>
+                <skip>false</skip>
+                <instrumentationArgs>
+                  <instrumentationArg>appId fcce6e8d-ef6e-0345-93c9-438c815237b3</instrumentationArg>
+                  <instrumentationArg>deviceId fcce6e8def6e034593c9438c815237b3</instrumentationArg>
+                  <instrumentationArg>userInputTimeoutValueInMS 5000</instrumentationArg>
+                  <instrumentationArg>testSuiteList org.alljoyn.validation.testing.suites.LSF_LampTestSuite</instrumentationArg>
+                  <instrumentationArg>testCaseName LSF_Lamp-v1-01,LSF_Lamp-v1-02,LSF_Lamp-v1-03,LSF_Lamp-v1-04,LSF_Lamp-v1-05,LSF_Lamp-v1-06,LSF_Lamp-v1-07,LSF_Lamp-v1-08,LSF_Lamp-v1-09,LSF_Lamp-v1-10,LSF_Lamp-v1-11,LSF_Lamp-v1-12,LSF_Lamp-v1-13,LSF_Lamp-v1-14,LSF_Lamp-v1-15,LSF_Lamp-v1-16,LSF_Lamp-v1-17,LSF_Lamp-v1-18,LSF_Lamp-v1-19,LSF_Lamp-v1-20,LSF_Lamp-v1-21,LSF_Lamp-v1-22,LSF_Lamp-v1-23,LSF_Lamp-v1-24,LSF_Lamp-v1-25,LSF_Lamp-v1-26,LSF_Lamp-v1-27,LSF_Lamp-v1-28,LSF_Lamp-v1-29,LSF_Lamp-v1-30,LSF_Lamp-v1-31,LSF_Lamp-v1-32,LSF_Lamp-v1-33,LSF_Lamp-v1-34</instrumentationArg>
+                </instrumentationArgs>
+              </test>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+<profile>
+      <id>config-test-sp140</id>
+      <properties>
+        <android-maven-plugin.version>3.8.2</android-maven-plugin.version>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+            <artifactId>android-maven-plugin</artifactId>
+            <configuration>
+              <test>
+                <skip>false</skip>
+                <instrumentationArgs>
+		  <instrumentationArg>appId fcce6e8d-ef6e-0345-93c9-438c815237b3</instrumentationArg>
+                  <instrumentationArg>deviceId fcce6e8def6e034593c9438c815237b3</instrumentationArg>
+                  <instrumentationArg>userInputTimeoutValueInMS 5000</instrumentationArg>
+                  <instrumentationArg>testSuiteList org.alljoyn.validation.testing.suites.config.ConfigTestSuite</instrumentationArg>
+                  <instrumentationArg>testCaseName Config-v1-01,Config-v1-02,Config-v1-03,Config-v1-04,Config-v1-05,Config-v1-06,Config-v1-07,Config-v1-08,Config-v1-09,Config-v1-10,Config-v1-11,Config-v1-12,Config-v1-13,Config-v1-14,Config-v1-15,Config-v1-16,Config-v1-17,Config-v1-18,Config-v1-19,Config-v1-20,Config-v1-21,Config-v1-22,Config-v1-23,Config-v1-24,Config-v1-25,Config-v1-26,Config-v1-27,Config-v1-28,Config-v1-29,Config-v1-30,Config-v1-31,Config-v1-32,Config-v1-33,Config-v1-34,Config-v1-35</instrumentationArg>
+                </instrumentationArgs>
+              </test>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+<profile>
+      <id>config-test-bulb</id>
+      <properties>
+        <android-maven-plugin.version>3.8.2</android-maven-plugin.version>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+            <artifactId>android-maven-plugin</artifactId>
+            <configuration>
+              <test>
+                <skip>false</skip>
+                <instrumentationArgs>
+                  <instrumentationArg>appId 80f4f214-bcb0-183f-1619-e2220be7532d</instrumentationArg>
+                  <instrumentationArg>deviceId 80f4f214bcb0183f1619e2220be7532d</instrumentationArg>
+                  <instrumentationArg>userInputTimeoutValueInMS 5000</instrumentationArg>
+                  <instrumentationArg>testSuiteList org.alljoyn.validation.testing.suites.config.ConfigTestSuite</instrumentationArg>
+                  <instrumentationArg>testCaseName Config-v1-01,Config-v1-02,Config-v1-03,Config-v1-04,Config-v1-05,Config-v1-06,Config-v1-07,Config-v1-08,Config-v1-09,Config-v1-10,Config-v1-11,Config-v1-12,Config-v1-13,Config-v1-14,Config-v1-15,Config-v1-16,Config-v1-17,Config-v1-18,Config-v1-19,Config-v1-20,Config-v1-21,Config-v1-22,Config-v1-23,Config-v1-24,Config-v1-25,Config-v1-26,Config-v1-27,Config-v1-28,Config-v1-29,Config-v1-30,Config-v1-31,Config-v1-32,Config-v1-33,Config-v1-34,Config-v1-35</instrumentationArg>
+                </instrumentationArgs>
+              </test>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+		<profile>
+			<id>about-test-sp140</id>
+			<properties>
+				<android-maven-plugin.version>3.8.2</android-maven-plugin.version>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+						<artifactId>android-maven-plugin</artifactId>
+						<configuration>
+							<test>
+								<skip>false</skip>
+								<instrumentationArgs>
+                  							<instrumentationArg>appId fcce6e8d-ef6e-0345-93c9-438c815237b3</instrumentationArg>
+                  							<instrumentationArg>deviceId fcce6e8def6e034593c9438c815237b3</instrumentationArg>
+									<instrumentationArg>userInputTimeoutValueInMS 5000</instrumentationArg>
+									<instrumentationArg>testSuiteList org.alljoyn.validation.testing.suites.about.AboutTestSuite</instrumentationArg>
+									<instrumentationArg>testCaseName About-v1-01,About-v1-02,About-v1-03,About-v1-04,About-v1-05,About-v1-06,About-v1-07,About-v1-08,About-v1-09,About-v1-10,About-v1-11,</instrumentationArg>
+								</instrumentationArgs>
+							</test>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+<profile>
+      <id>lsf-lamp-test-bulb</id>
+      <properties>
+        <android-maven-plugin.version>3.8.2</android-maven-plugin.version>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+            <artifactId>android-maven-plugin</artifactId>
+            <configuration>
+              <test>
+                <skip>false</skip>
+                <instrumentationArgs>
+		  <instrumentationArg>appId 80f4f214-bcb0-183f-1619-e2220be7532d</instrumentationArg>
+                  <instrumentationArg>deviceId 80f4f214bcb0183f1619e2220be7532d</instrumentationArg>
+                  <instrumentationArg>userInputTimeoutValueInMS 5000</instrumentationArg>
+                  <instrumentationArg>testSuiteList org.alljoyn.validation.testing.suites.LSF_LampTestSuite</instrumentationArg>
+                  <instrumentationArg>testCaseName LSF_Lamp-v1-01,LSF_Lamp-v1-02,LSF_Lamp-v1-03,LSF_Lamp-v1-04,LSF_Lamp-v1-05,LSF_Lamp-v1-06,LSF_Lamp-v1-07,LSF_Lamp-v1-08,LSF_Lamp-v1-09,LSF_Lamp-v1-10,LSF_Lamp-v1-11,LSF_Lamp-v1-12,LSF_Lamp-v1-13,LSF_Lamp-v1-14,LSF_Lamp-v1-15,LSF_Lamp-v1-16,LSF_Lamp-v1-17,LSF_Lamp-v1-18,LSF_Lamp-v1-19,LSF_Lamp-v1-20,LSF_Lamp-v1-21,LSF_Lamp-v1-22,LSF_Lamp-v1-23,LSF_Lamp-v1-24,LSF_Lamp-v1-25,LSF_Lamp-v1-26,LSF_Lamp-v1-27,LSF_Lamp-v1-28,LSF_Lamp-v1-29,LSF_Lamp-v1-30,LSF_Lamp-v1-31,LSF_Lamp-v1-32,LSF_Lamp-v1-33,LSF_Lamp-v1-34</instrumentationArg>
+                </instrumentationArgs>
+              </test>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+<profile>
+      <id>about-test-bulb</id>
+      <properties>
+        <android-maven-plugin.version>3.8.2</android-maven-plugin.version>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+            <artifactId>android-maven-plugin</artifactId>
+            <configuration>
+              <test>
+                <skip>false</skip>
+                <instrumentationArgs>
+                  <instrumentationArg>appId 80f4f214-bcb0-183f-1619-e2220be7532d</instrumentationArg>
+                  <instrumentationArg>deviceId 80f4f214bcb0183f1619e2220be7532d</instrumentationArg>
+                  <instrumentationArg>userInputTimeoutValueInMS 5000</instrumentationArg>
+                  <instrumentationArg>testSuiteList org.alljoyn.validation.testing.suites.about.AboutTestSuite</instrumentationArg>
+		  <instrumentationArg>testCaseName About-v1-01,About-v1-02,About-v1-03,About-v1-04,About-v1-05,About-v1-06,About-v1-07,About-v1-08,About-v1-09,About-v1-10,About-v1-11,</instrumentationArg>
+		</instrumentationArgs>
+              </test>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+		<profile>
+			<id>controlpanel-test-bulb</id>
+			<properties>
+				<android-maven-plugin.version>3.8.2</android-maven-plugin.version>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+						<artifactId>android-maven-plugin</artifactId>
+						<configuration>
+							<test>
+								<skip>false</skip>
+								<instrumentationArgs>
+									<instrumentationArg>appId 80f4f214-bcb0-183f-1619-e2220be7532d</instrumentationArg>
+                  							<instrumentationArg>deviceId 80f4f214bcb0183f1619e2220be7532d</instrumentationArg>
+                  							<instrumentationArg>userInputTimeoutValueInMS 5000</instrumentationArg>
+									<instrumentationArg>testSuiteList "org.alljoyn.validation.testing.suites.controlpanel.ControlPanelTestSuite"</instrumentationArg>
+									<instrumentationArg>testCaseName ControlPanel-v1-01,ControlPanel-v1-02,ControlPanel-v1-03,ControlPanel-v1-04,ControlPanel-v1-05,ControlPanel-v1-06,ControlPanel-v1-07,ControlPanel-v1-08,ControlPanel-v1-09,ControlPanel-v1-10</instrumentationArg>
+								</instrumentationArgs>
+							</test>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>controlpanel-test-sp140</id>
+			<properties>
+				<android-maven-plugin.version>3.8.2</android-maven-plugin.version>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+						<artifactId>android-maven-plugin</artifactId>
+						<configuration>
+							<test>
+								<skip>false</skip>
+								<instrumentationArgs>
+                  							<instrumentationArg>appId fcce6e8d-ef6e-0345-93c9-438c815237b3</instrumentationArg>
+                  							<instrumentationArg>deviceId fcce6e8def6e034593c9438c815237b3</instrumentationArg>
+                  							<instrumentationArg>userInputTimeoutValueInMS 5000</instrumentationArg>
+									<instrumentationArg>testSuiteList org.alljoyn.validation.testing.suites.controlpanel.ControlPanelTestSuite</instrumentationArg>
+									<instrumentationArg>testCaseName ControlPanel-v1-01,ControlPanel-v1-02,ControlPanel-v1-03,ControlPanel-v1-04,ControlPanel-v1-05,ControlPanel-v1-06,ControlPanel-v1-07,ControlPanel-v1-08,ControlPanel-v1-09,ControlPanel-v1-10</instrumentationArg>
+								</instrumentationArgs>
+							</test>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>instrument-test</id>
+			<properties>
+				<android-maven-plugin.version>3.8.2</android-maven-plugin.version>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+						<artifactId>android-maven-plugin</artifactId>
+						<configuration>
+							<test>
+								<skip>false</skip>
+								<instrumentationArgs>
+									<instrumentationArg>appId 191c4891-659d-e10b-1221-d03c5d2439a8</instrumentationArg>
+									<instrumentationArg>deviceId 191c4891659de10b1221d03c5d2439a8</instrumentationArg>
+									<instrumentationArg>userInputTimeoutValueInMS 5000</instrumentationArg>
+									<instrumentationArg>testSuiteList org.alljoyn.validation.testing.suites.config.ConfigTestSuite,org.alljoyn.validation.testing.suites.about.AboutTestSuite</instrumentationArg>
+									<instrumentationArg>testCaseName About-v1-01,Config-v1-01</instrumentationArg>
+								</instrumentationArgs>
+							</test>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>onboarding-test-bulb</id>
+			<properties>
+				<android-maven-plugin.version>3.8.2</android-maven-plugin.version>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+						<artifactId>android-maven-plugin</artifactId>
+						<configuration>
+							<test>
+								<skip>false</skip>
+								<instrumentationArgs>
+                  							<instrumentationArg>appId 80f4f214-bcb0-183f-1619-e2220be7532d</instrumentationArg>
+                  							<instrumentationArg>deviceId 80f4f214bcb0183f1619e2220be7532d</instrumentationArg>
+									<instrumentationArg>testSuiteList org.alljoyn.validation.testing.suites.onboarding.OnboardingTestSuite</instrumentationArg>
+									<instrumentationArg>testCaseName Onboarding-v1-01,Onboarding-v1-02,Onboarding-v1-03,Onboarding-v1-04,Onboarding-v1-05,Onboarding-v1-06,Onboarding-v1-07,Onboarding-v1-08,Onboarding-v1-09,Onboarding-v1-10,Onboarding-v1-11,Onboarding-v1-12</instrumentationArg>
+									<instrumentationArg>org.alljoyn.Onboarding.SoftApSsid "AJ_LCM_Bulb (FC)_be7532d"</instrumentationArg>
+									<instrumentationArg>org.alljoyn.Onboarding.SoftApSecurity None</instrumentationArg>
+									<instrumentationArg>org.alljoyn.Onboarding.PersonalApSsid RCORBEIL3_Network</instrumentationArg>
+									<instrumentationArg>org.alljoyn.Onboarding.PersonalApSecurity WPA2</instrumentationArg>
+									<instrumentationArg>org.alljoyn.Onboarding.PersonalApPassphrase m3cn-aoof-6cc7</instrumentationArg>
+								</instrumentationArgs>
+							</test>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>onboarding-test-sp140</id>
+			<properties>
+				<android-maven-plugin.version>3.8.2</android-maven-plugin.version>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+						<artifactId>android-maven-plugin</artifactId>
+						<configuration>
+							<test>
+								<skip>false</skip>
+								<instrumentationArgs>
+                  							<instrumentationArg>appId fcce6e8d-ef6e-0345-93c9-438c815237b3</instrumentationArg>
+                  							<instrumentationArg>deviceId fcce6e8def6e034593c9438c815237b3</instrumentationArg>
+									<instrumentationArg>testSuiteList org.alljoyn.validation.testing.suites.onboarding.OnboardingTestSuite</instrumentationArg>
+									<instrumentationArg>testCaseName Onboarding-v1-01,Onboarding-v1-02,Onboarding-v1-03,Onboarding-v1-04,Onboarding-v1-05,Onboarding-v1-06,Onboarding-v1-07,Onboarding-v1-08,Onboarding-v1-09,Onboarding-v1-10,Onboarding-v1-11,Onboarding-v1-12</instrumentationArg>
+									<instrumentationArg>org.alljoyn.Onboarding.SoftApSsid AJ_Device_Name_15237b3</instrumentationArg>
+									<instrumentationArg>org.alljoyn.Onboarding.SoftApSecurity None</instrumentationArg>
+									<instrumentationArg>org.alljoyn.Onboarding.PersonalApSsid RCORBEIL3_Network</instrumentationArg>
+									<instrumentationArg>org.alljoyn.Onboarding.PersonalApSecurity WPA2</instrumentationArg>
+									<instrumentationArg>org.alljoyn.Onboarding.PersonalApPassphrase m3cn-aoof-6cc7</instrumentationArg>
+								</instrumentationArgs>
+							</test>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>
