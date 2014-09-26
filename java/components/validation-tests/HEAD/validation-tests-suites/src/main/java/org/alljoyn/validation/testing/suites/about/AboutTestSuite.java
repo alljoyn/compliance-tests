@@ -46,7 +46,6 @@ import org.alljoyn.services.android.utils.AndroidLogger;
 import org.alljoyn.services.common.BusObjectDescription;
 import org.alljoyn.services.common.utils.TransportUtil;
 import org.alljoyn.validation.framework.AppUnderTestDetails;
-import org.alljoyn.validation.framework.ValidationBaseTestCase;
 import org.alljoyn.validation.framework.annotation.ValidationSuite;
 import org.alljoyn.validation.framework.annotation.ValidationTest;
 import org.alljoyn.validation.framework.utils.introspection.BusIntrospector;
@@ -54,6 +53,7 @@ import org.alljoyn.validation.framework.utils.introspection.bean.InterfaceDetail
 import org.alljoyn.validation.framework.utils.introspection.bean.IntrospectionInterface;
 import org.alljoyn.validation.framework.utils.introspection.bean.IntrospectionNode;
 import org.alljoyn.validation.framework.utils.introspection.bean.NodeDetail;
+import org.alljoyn.validation.testing.suites.BaseTestSuite;
 import org.alljoyn.validation.testing.utils.InterfaceValidator;
 import org.alljoyn.validation.testing.utils.ValidationResult;
 import org.alljoyn.validation.testing.utils.about.AboutAnnouncementDetails;
@@ -67,7 +67,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 @ValidationSuite(name = "About-v1")
-public class AboutTestSuite extends ValidationBaseTestCase
+public class AboutTestSuite extends BaseTestSuite
 {
     protected static final String TAG = "AboutTestSuite";
     private static final Logger logger = LoggerFactory.getLogger(TAG);
@@ -80,7 +80,6 @@ public class AboutTestSuite extends ValidationBaseTestCase
     protected AboutAnnouncementDetails deviceAboutAnnouncement;
     private ServiceHelper serviceHelper;
     private SimpleDateFormat simpleDateFormat;
-    private static final long ANNOUCEMENT_TIMEOUT_IN_SECONDS = 30;
     private static final String DATE_FORMAT = "yyyy-MM-dd";
 
     private AppUnderTestDetails appUnderTestDetails;
@@ -111,7 +110,7 @@ public class AboutTestSuite extends ValidationBaseTestCase
             serviceHelper.initialize(BUS_APPLICATION_NAME, dutDeviceId, dutAppId);
             serviceHelper.startAboutClient();
 
-            deviceAboutAnnouncement = serviceHelper.waitForNextDeviceAnnouncement(ANNOUCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
+            deviceAboutAnnouncement = serviceHelper.waitForNextDeviceAnnouncement(determineAboutAnnouncementTimeout(), TimeUnit.SECONDS);
             assertNotNull("Timed out waiting for About announcement", deviceAboutAnnouncement);
 
             defaultLanguage = deviceAboutAnnouncement.getDefaultLanguage();
