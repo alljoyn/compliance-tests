@@ -34,11 +34,11 @@ import org.alljoyn.services.android.utils.AndroidLogger;
 import org.alljoyn.services.common.ServiceAvailabilityListener;
 import org.alljoyn.validation.framework.AppUnderTestDetails;
 import org.alljoyn.validation.framework.UserInputDetails;
-import org.alljoyn.validation.framework.ValidationBaseTestCase;
 import org.alljoyn.validation.framework.annotation.Disabled;
 import org.alljoyn.validation.framework.annotation.ValidationSuite;
 import org.alljoyn.validation.framework.annotation.ValidationTest;
 import org.alljoyn.validation.testing.suites.AllJoynErrorReplyCodes;
+import org.alljoyn.validation.testing.suites.BaseTestSuite;
 import org.alljoyn.validation.testing.utils.about.AboutAnnouncementDetails;
 import org.alljoyn.validation.testing.utils.log.Logger;
 import org.alljoyn.validation.testing.utils.log.LoggerFactory;
@@ -46,7 +46,7 @@ import org.alljoyn.validation.testing.utils.services.ServiceAvailabilityHandler;
 import org.alljoyn.validation.testing.utils.services.ServiceHelper;
 
 @ValidationSuite(name = "Config-v1")
-public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAvailabilityListener
+public class ConfigTestSuite extends BaseTestSuite implements ServiceAvailabilityListener
 {
     private static final String TAG = "ConfigTestSuite";
     private static final Logger logger = LoggerFactory.getLogger(TAG);
@@ -54,7 +54,7 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
     private static final String INVALID_LANGUAGE_CODE = "INVALID";
     private static final int CONFIG_CLIENT_RECONNECT_WAIT_TIME = 10000;
     private static final String BUS_APPLICATION_NAME = "ConfigTestSuite";
-    public static final long ANNOUCEMENT_TIMEOUT_IN_SECONDS = 30;
+    public static final long SESSION_LOST_TIMEOUT_IN_SECONDS = 30;
     private static final long SESSION_CLOSE_TIMEOUT_IN_SECONDS = 5;
 
     private ConfigClient configClient = null;
@@ -80,6 +80,7 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
     private static final char[] SINGLE_CHAR_PASSCODE = "1".toCharArray();
     private static final char[] DEFAULT_PINCODE = SrpAnonymousKeyListener.DEFAULT_PINCODE;
     private static final char[] SPECIAL_CHARS_PASSCODE = "!@#$%^".toCharArray();
+    private long aboutAnnouncementTimeout;
 
     @Override
     protected void setUp() throws Exception
@@ -97,6 +98,7 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
             logger.debug(String.format("Running Config test case against App ID: %s", dutAppId));
             keyStorePath = getValidationTestContext().getKeyStorePath();
             logger.debug(String.format("Running Config test case using KeyStorePath: %s", keyStorePath));
+            aboutAnnouncementTimeout = determineAboutAnnouncementTimeout();
 
             initServiceHelper();
             resetPasscodeIfNeeded();
@@ -176,7 +178,7 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
     private AboutAnnouncementDetails waitForNextDeviceAnnouncement() throws Exception
     {
         logger.info("Waiting for About announcement");
-        return serviceHelper.waitForNextDeviceAnnouncement(ANNOUCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS, true);
+        return serviceHelper.waitForNextDeviceAnnouncement(aboutAnnouncementTimeout, TimeUnit.SECONDS, true);
     }
 
     private void waitForSessionToClose() throws Exception
@@ -350,7 +352,7 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
         mapToUpdateConfig.put(AboutKeys.ABOUT_DEVICE_NAME, newGeneratedDeviceName);
         configClient.setConfig(mapToUpdateConfig, "");
 
-        AboutAnnouncementDetails nextDeviceAnnouncement = serviceHelper.waitForNextDeviceAnnouncement(ANNOUCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS, true);
+        AboutAnnouncementDetails nextDeviceAnnouncement = serviceHelper.waitForNextDeviceAnnouncement(aboutAnnouncementTimeout, TimeUnit.SECONDS, true);
 
         logger.debug("Device Name returned from the new about announcement : " + nextDeviceAnnouncement.getDeviceName() + " and it should be : " + newGeneratedDeviceName);
 
@@ -365,7 +367,7 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
         mapToUpdateConfig.put(AboutKeys.ABOUT_DEVICE_NAME, originalDeviceName);
         configClient.setConfig(mapToUpdateConfig, "");
 
-        nextDeviceAnnouncement = serviceHelper.waitForNextDeviceAnnouncement(ANNOUCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS, true);
+        nextDeviceAnnouncement = serviceHelper.waitForNextDeviceAnnouncement(aboutAnnouncementTimeout, TimeUnit.SECONDS, true);
 
         logger.debug("Device Name returned from the new about announcement : " + nextDeviceAnnouncement.getDeviceName() + " and it should be : " + originalDeviceName);
 
@@ -793,7 +795,7 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
         reconnectClients();
         callRestartOnConfig();
 
-        assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(ANNOUCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
+        assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(SESSION_LOST_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
 
         deviceAboutAnnouncement = waitForNextDeviceAnnouncement();
 
@@ -810,7 +812,7 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
 
         callRestartOnConfig();
 
-        assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(ANNOUCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
+        assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(SESSION_LOST_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
 
         deviceAboutAnnouncement = waitForNextAnnouncementAndCheckFieldValue(AboutKeys.ABOUT_DEVICE_NAME, NEW_DEVICE_NAME);
 
@@ -902,7 +904,7 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
 
         callRestartOnConfig();
 
-        assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(ANNOUCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
+        assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(SESSION_LOST_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
 
         deviceAboutAnnouncement = waitForNextDeviceAnnouncement();
 
@@ -959,7 +961,7 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
             }
             else
             {
-                assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(ANNOUCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
+                assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(SESSION_LOST_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
 
                 UserInputDetails userInputDetails = createUserInputDetails();
                 // always continue, we ignore the response here
@@ -1033,7 +1035,7 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
             }
             else
             {
-                assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(ANNOUCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
+                assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(SESSION_LOST_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
 
                 UserInputDetails userInputDetails = createUserInputDetails();
                 // always continue, we ignore the response here
@@ -1086,7 +1088,7 @@ public class ConfigTestSuite extends ValidationBaseTestCase implements ServiceAv
             }
             else
             {
-                assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(ANNOUCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
+                assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(SESSION_LOST_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
 
                 UserInputDetails userInputDetails = createUserInputDetails();
                 // always continue, we ignore the response here

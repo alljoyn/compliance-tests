@@ -23,6 +23,9 @@
 	<artifactId>validation-tests-it</artifactId>
 	<name>validation-tests-it</name>
 	<packaging>apk</packaging>
+	<properties>
+		<project.version.value>14.06.00-01</project.version.value>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>com.google.android</groupId>
@@ -106,6 +109,19 @@
 			<plugin>
 				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
 				<artifactId>android-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>update-manifest</id>
+						<goals>
+							<goal>manifest-update</goal>
+						</goals>
+						<configuration>
+							<manifest>
+								<versionName>${project.version.value}-${maven.build.timestamp}</versionName>
+							</manifest>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

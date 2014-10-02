@@ -55,13 +55,13 @@ import org.alljoyn.bus.Variant;
 import org.alljoyn.services.android.utils.AndroidLogger;
 import org.alljoyn.services.common.ClientBase;
 import org.alljoyn.validation.framework.AppUnderTestDetails;
-import org.alljoyn.validation.framework.ValidationBaseTestCase;
 import org.alljoyn.validation.framework.annotation.ValidationSuite;
 import org.alljoyn.validation.framework.annotation.ValidationTest;
 import org.alljoyn.validation.framework.utils.introspection.BusIntrospector;
 import org.alljoyn.validation.framework.utils.introspection.XmlBasedBusIntrospector;
 import org.alljoyn.validation.framework.utils.introspection.bean.IntrospectionSubNode;
 import org.alljoyn.validation.framework.utils.introspection.bean.NodeDetail;
+import org.alljoyn.validation.testing.suites.BaseTestSuite;
 import org.alljoyn.validation.testing.utils.about.AboutAnnouncementDetails;
 import org.alljoyn.validation.testing.utils.audio.AudioSinkParameter;
 import org.alljoyn.validation.testing.utils.audio.AudioSinkPlayStateChangedSignal;
@@ -88,7 +88,7 @@ import org.alljoyn.validation.testing.utils.services.ServiceHelper;
 import org.xml.sax.SAXException;
 
 @ValidationSuite(name = "Audio-v1")
-public class AudioTestSuite extends ValidationBaseTestCase
+public class AudioTestSuite extends BaseTestSuite
 {
     private static final String TAG = "AudioTestSuite";
     private static final Logger logger = LoggerFactory.getLogger(TAG);
@@ -119,7 +119,6 @@ public class AudioTestSuite extends ValidationBaseTestCase
     private static final short INTERFACE_VERSION = 1;
     private static final String SLASH_CHARACTER = "/";
     private static final String BUS_APPLICATION_NAME = "Audio";
-    private static final long ANNOUCEMENT_TIMEOUT_IN_SECONDS = 30;
     private static final long SIGNAL_TIMEOUT_IN_SECONDS = 30;
     private static final int LINK_TIMEOUT_IN_SECONDS = 120;
     private static final byte PORT_DIRECTION = 1;
@@ -161,7 +160,7 @@ public class AudioTestSuite extends ValidationBaseTestCase
             serviceHelper = getServiceHelper();
             serviceHelper.initialize(BUS_APPLICATION_NAME, dutDeviceId, dutAppId);
 
-            deviceAboutAnnouncement = serviceHelper.waitForNextDeviceAnnouncement(ANNOUCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
+            deviceAboutAnnouncement = serviceHelper.waitForNextDeviceAnnouncement(determineAboutAnnouncementTimeout(), TimeUnit.SECONDS);
             assertNotNull("Timed out waiting for About announcement", deviceAboutAnnouncement);
             aboutClient = serviceHelper.connectAboutClient(deviceAboutAnnouncement);
 
