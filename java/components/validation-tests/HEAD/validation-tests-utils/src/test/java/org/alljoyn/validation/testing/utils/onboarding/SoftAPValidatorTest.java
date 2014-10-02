@@ -15,35 +15,29 @@
  *******************************************************************************/
 package org.alljoyn.validation.testing.utils.onboarding;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import junit.framework.ComparisonFailure;
+import junit.framework.AssertionFailedError;
 
-import org.alljoyn.validation.testing.utils.onboarding.SoftAPValidator;
 import org.junit.Test;
 
 public class SoftAPValidatorTest
 {
-
     @Test
-    public void testValidSoftAP()
+    public void testValidSoftAPPrefix()
     {
-        SoftAPValidator.validateSoftAP("AJ_QCA_AC_DE7A82C", "C734260A861099B72C2EE6379DE7A82C");
+        SoftAPValidator.validateSoftAP("AJ_AC_C737664260");
     }
 
     @Test
-    public void testInValidSoftAP()
+    public void testValidSoftAPSuffix()
     {
-        try
-        {
-            SoftAPValidator.validateSoftAP("AJ_QCA_AC_DE7A82D", "C734260A861099B72C2EE6379DE7A82C");
-            fail();
-        }
-        catch (ComparisonFailure cf)
-        {
-            assertEquals("DE7A82C", cf.getExpected());
-            assertEquals("DE7A82D", cf.getActual());
-        }
+        SoftAPValidator.validateSoftAP("CA_C737664260_AJ");
     }
 
+    @Test(expected = AssertionFailedError.class)
+    public void testInvalidSoftAP()
+    {
+        SoftAPValidator.validateSoftAP("AC_C737664260");
+        fail();
+    }
 }

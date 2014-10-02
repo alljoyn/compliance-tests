@@ -28,6 +28,9 @@ import org.alljoyn.validation.framework.annotation.ValidationTest;
 import org.alljoyn.validation.testing.utils.AllJoynLibraryLoader;
 import org.alljoyn.validation.testing.utils.ValidationTestComparator;
 
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -38,8 +41,10 @@ public class ValidationInstrumentationTestRunnerHelper
     public void onCreate(ValidationInstrumentationTestRunner testRunner, Bundle arguments)
     {
         AllJoynLibraryLoader.loadLibrary();
+        Context context = testRunner.getContext();
+        logApkVersion(context);
+        ValidationInstrumentationApplication instrumentApp = (ValidationInstrumentationApplication) context.getApplicationContext();
 
-        ValidationInstrumentationApplication instrumentApp = (ValidationInstrumentationApplication) testRunner.getContext().getApplicationContext();
         if (arguments != null)
         {
             for (InstrumentationArgKey argKey : InstrumentationArgKey.values())
@@ -77,6 +82,19 @@ public class ValidationInstrumentationTestRunnerHelper
         }
 
         return testSuite;
+    }
+
+    private void logApkVersion(Context context)
+    {
+        try
+        {
+            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            Log.d(TAG, "APK Version : " + packageInfo.versionName);
+        }
+        catch (NameNotFoundException nameNotFoundException)
+        {
+            Log.e(TAG, nameNotFoundException.getMessage(), nameNotFoundException);
+        }
     }
 
     private List<String> mapToList(String testCaseKeyWords)

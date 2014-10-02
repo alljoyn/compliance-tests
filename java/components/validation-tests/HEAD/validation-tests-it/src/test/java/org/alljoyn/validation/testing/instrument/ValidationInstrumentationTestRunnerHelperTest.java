@@ -16,6 +16,7 @@
 package org.alljoyn.validation.testing.instrument;
 
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -29,6 +30,8 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -37,6 +40,7 @@ import android.util.Log;
 { Bundle.class, Log.class, AllJoynLibraryLoader.class, InstrumentationTestCaseWrapper.class, TestCase.class })
 public class ValidationInstrumentationTestRunnerHelperTest
 {
+    private static final String PACKAGE_NAME = "packageName";
     private ValidationInstrumentationTestRunnerHelper helper;
     @Mock
     private ValidationInstrumentationTestRunner runner;
@@ -48,6 +52,10 @@ public class ValidationInstrumentationTestRunnerHelperTest
     private ValidationInstrumentationApplication application;
     @Mock
     private InstrumentationTestCaseWrapper instrumentationTestCaseWrapper;
+    @Mock
+    private PackageManager packageManager;
+    @Mock
+    private PackageInfo packageInfo;
 
     @Test
     public void testOnCreate() throws Exception
@@ -57,9 +65,13 @@ public class ValidationInstrumentationTestRunnerHelperTest
 
         when(runner.getContext()).thenReturn(context);
         when(context.getApplicationContext()).thenReturn(application);
+        when(context.getPackageManager()).thenReturn(packageManager);
+        when(context.getPackageName()).thenReturn(PACKAGE_NAME);
+        when(packageManager.getPackageInfo(PACKAGE_NAME, 0)).thenReturn(packageInfo);
         helper = new ValidationInstrumentationTestRunnerHelper();
 
         helper.onCreate(runner, arguments);
+        verify(packageManager).getPackageInfo(PACKAGE_NAME, 0);
     }
 
     @Test
@@ -70,9 +82,13 @@ public class ValidationInstrumentationTestRunnerHelperTest
 
         when(runner.getContext()).thenReturn(context);
         when(context.getApplicationContext()).thenReturn(application);
+        when(context.getPackageManager()).thenReturn(packageManager);
+        when(context.getPackageName()).thenReturn(PACKAGE_NAME);
+        when(packageManager.getPackageInfo(PACKAGE_NAME, 0)).thenReturn(packageInfo);
         helper = new ValidationInstrumentationTestRunnerHelper();
 
         helper.onCreate(runner, null);
+        verify(packageManager).getPackageInfo(PACKAGE_NAME, 0);
     }
 
     @Test

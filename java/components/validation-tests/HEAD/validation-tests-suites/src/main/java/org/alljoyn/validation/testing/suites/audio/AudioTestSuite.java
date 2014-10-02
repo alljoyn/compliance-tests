@@ -56,13 +56,13 @@ import org.alljoyn.services.android.utils.AndroidLogger;
 import org.alljoyn.services.common.ClientBase;
 import org.alljoyn.validation.framework.AppUnderTestDetails;
 import org.alljoyn.validation.framework.UserInputDetails;
-import org.alljoyn.validation.framework.ValidationBaseTestCase;
 import org.alljoyn.validation.framework.annotation.ValidationSuite;
 import org.alljoyn.validation.framework.annotation.ValidationTest;
 import org.alljoyn.validation.framework.utils.introspection.BusIntrospector;
 import org.alljoyn.validation.framework.utils.introspection.XmlBasedBusIntrospector;
 import org.alljoyn.validation.framework.utils.introspection.bean.IntrospectionSubNode;
 import org.alljoyn.validation.framework.utils.introspection.bean.NodeDetail;
+import org.alljoyn.validation.testing.suites.BaseTestSuite;
 import org.alljoyn.validation.testing.utils.about.AboutAnnouncementDetails;
 import org.alljoyn.validation.testing.utils.audio.AudioSinkParameter;
 import org.alljoyn.validation.testing.utils.audio.AudioSinkPlayStateChangedSignal;
@@ -89,7 +89,7 @@ import org.alljoyn.validation.testing.utils.services.ServiceHelper;
 import org.xml.sax.SAXException;
 
 @ValidationSuite(name = "Audio-v1")
-public class AudioTestSuite extends ValidationBaseTestCase
+public class AudioTestSuite extends BaseTestSuite
 {
     private static final String TAG = "AudioTestSuite";
     private static final Logger logger = LoggerFactory.getLogger(TAG);
@@ -120,7 +120,6 @@ public class AudioTestSuite extends ValidationBaseTestCase
     private static final short INTERFACE_VERSION = 1;
     private static final String SLASH_CHARACTER = "/";
     private static final String BUS_APPLICATION_NAME = "Audio";
-    private static final long ANNOUCEMENT_TIMEOUT_IN_SECONDS = 30;
     private static final long SIGNAL_TIMEOUT_IN_SECONDS = 30;
     private static final int LINK_TIMEOUT_IN_SECONDS = 120;
     private static final byte PORT_DIRECTION = 1;
@@ -162,7 +161,7 @@ public class AudioTestSuite extends ValidationBaseTestCase
             serviceHelper = getServiceHelper();
             serviceHelper.initialize(BUS_APPLICATION_NAME, dutDeviceId, dutAppId);
 
-            deviceAboutAnnouncement = serviceHelper.waitForNextDeviceAnnouncement(ANNOUCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
+            deviceAboutAnnouncement = serviceHelper.waitForNextDeviceAnnouncement(determineAboutAnnouncementTimeout(), TimeUnit.SECONDS);
             assertNotNull("Timed out waiting for About announcement", deviceAboutAnnouncement);
             aboutClient = serviceHelper.connectAboutClient(deviceAboutAnnouncement);
 
@@ -808,7 +807,7 @@ public class AudioTestSuite extends ValidationBaseTestCase
             registerVolumeControlSignalHandler(streamObjectPath, volumeControlSignalHandler);
 
             short newVolumeProperty = getNewVolumePropertyValue(originalVolumeProperty, volumeRange);
-            short adjustment = (short)(newVolumeProperty - originalVolumeProperty);
+            short adjustment = (short) (newVolumeProperty - originalVolumeProperty);
             logger.debug("New Volume property to be set on the Volume interface : " + adjustment);
             volume.AdjustVolume(adjustment);
             assertVolumeChangedSignalIsReceived(newVolumeProperty, volumeControlSignalHandler);
@@ -847,19 +846,18 @@ public class AudioTestSuite extends ValidationBaseTestCase
             short originalVolumeProperty = volume.getVolume();
             logger.debug("Volume Interface returned Volume property value as : " + originalVolumeProperty);
             validateOriginalVolumeProperty(high, low, step, originalVolumeProperty);
-            
+
             VolumeControlSignalHandler volumeControlSignalHandler = createVolumeControlSignalHandler();
             registerVolumeControlSignalHandler(streamObjectPath, volumeControlSignalHandler);
-
 
             setVolumeProperty(volume, low);
             assertVolumeChangedSignalIsReceived(low, volumeControlSignalHandler);
 
-            short expectedVolume = (short)((low + (high - low)) / 2);
+            short expectedVolume = (short) ((low + (high - low)) / 2);
             volume.AdjustVolumePercent(0.5);
-            assertTrue( (volume.getVolume() - expectedVolume) < step ); 
+            assertTrue((volume.getVolume() - expectedVolume) < step);
             volumeControlSignalHandler.waitForNextVolumeChangedSignal(getSignalTimeout(), TimeUnit.SECONDS);
-            
+
             logger.debug("Setting volume property value to the original value " + originalVolumeProperty);
             setVolumeProperty(volume, originalVolumeProperty);
             assertVolumeChangedSignalIsReceived(originalVolumeProperty, volumeControlSignalHandler);
@@ -878,17 +876,17 @@ public class AudioTestSuite extends ValidationBaseTestCase
             getValidationTestContext().addNote("Stream does not support AudioSink!");
             return;
         }
-        
+
         stream.Open();
         audioSinkPort.Connect(serviceHelper.getBusUniqueName(), AUDIO_SOURCE_PATH, getValidSinkConfiguration());
 
         Volume volume = getVolume(streamObjectPath, getIntrospector());
         boolean enabled = volume.getEnabled();
-        if(enabled)
+        if (enabled)
         {
-            getValidationTestContext().waitForUserInput(new UserInputDetails("Disable Device", 
-                    "Please switch the audio device to disable if this option is supported", "Continue"));
-            if(enabled)
+            getValidationTestContext()
+                    .waitForUserInput(new UserInputDetails("Disable Device", "Please switch the audio device to disable if this option is supported", "Continue"));
+            if (enabled)
             {
                 getValidationTestContext().addNote("Audio volume control still enabled, assuming not supported");
                 return;
@@ -898,9 +896,9 @@ public class AudioTestSuite extends ValidationBaseTestCase
         boolean caughtSomething = false;
         try
         {
-            volume.setVolume((short)(volume.getVolume() + 5));
+            volume.setVolume((short) (volume.getVolume() + 5));
         }
-        catch(BusException e)
+        catch (BusException e)
         {
             caughtSomething = true;
         }
@@ -909,9 +907,9 @@ public class AudioTestSuite extends ValidationBaseTestCase
         caughtSomething = false;
         try
         {
-            volume.AdjustVolume((short)5);
+            volume.AdjustVolume((short) 5);
         }
-        catch(BusException e)
+        catch (BusException e)
         {
             caughtSomething = true;
         }
@@ -922,14 +920,13 @@ public class AudioTestSuite extends ValidationBaseTestCase
         {
             volume.AdjustVolumePercent(1.0);
         }
-        catch(BusException e)
+        catch (BusException e)
         {
             caughtSomething = true;
         }
         assertTrue(caughtSomething);
 
-        getValidationTestContext().waitForUserInput(new UserInputDetails("Enable Device", 
-                "Please enable the volume control", "Continue"));
+        getValidationTestContext().waitForUserInput(new UserInputDetails("Enable Device", "Please enable the volume control", "Continue"));
     }
 
     AudioSinkSignalHandler getAudioSinkSignalHandler()

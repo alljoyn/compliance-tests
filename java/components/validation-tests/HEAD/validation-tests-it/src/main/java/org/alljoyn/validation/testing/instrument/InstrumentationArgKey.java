@@ -20,7 +20,8 @@ public enum InstrumentationArgKey
     AppId("appId"), DeviceId("deviceId"), TestSuiteList("testSuiteList"), TestCaseName("testCaseName"), UserInputTimeoutValueInMS("userInputTimeoutValueInMS"), SoftAPSsid(
             "org.alljoyn.Onboarding.SoftApSsid"), SoftAPSecurity("org.alljoyn.Onboarding.SoftApSecurity"), SoftAPPassphrase("org.alljoyn.Onboarding.SoftApPassphrase"), PersonalAPSsid(
             "org.alljoyn.Onboarding.PersonalApSsid"), PersonalAPSecurity("org.alljoyn.Onboarding.PersonalApSecurity"), PersonalAPPassphrase(
-            "org.alljoyn.Onboarding.PersonalApPassphrase"), EnableInteractive("enableInteractive"), AudioStreamObjectPath("audioStreamObjectPath");
+            "org.alljoyn.Onboarding.PersonalApPassphrase"), EnableInteractive("enableInteractive"), AudioStreamObjectPath("audioStreamObjectPath"), AboutAnnouncementTimeoutInSeconds(
+            "aboutAnnouncementTimeoutInSeconds");
 
     private String value;
 

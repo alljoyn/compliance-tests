@@ -64,12 +64,12 @@ import org.alljoyn.ioe.controlpanelservice.ui.ajstruct.PropertyWidgetRangeConstr
 import org.alljoyn.ioe.controlpanelservice.ui.ajstruct.PropertyWidgetThreeShortAJ;
 import org.alljoyn.services.android.utils.AndroidLogger;
 import org.alljoyn.validation.framework.AppUnderTestDetails;
-import org.alljoyn.validation.framework.ValidationBaseTestCase;
 import org.alljoyn.validation.framework.annotation.ValidationSuite;
 import org.alljoyn.validation.framework.annotation.ValidationTest;
 import org.alljoyn.validation.framework.utils.introspection.BusIntrospector;
 import org.alljoyn.validation.framework.utils.introspection.bean.InterfaceDetail;
 import org.alljoyn.validation.testing.suites.AllJoynErrorReplyCodes;
+import org.alljoyn.validation.testing.suites.BaseTestSuite;
 import org.alljoyn.validation.testing.utils.about.AboutAnnouncementDetails;
 import org.alljoyn.validation.testing.utils.log.Logger;
 import org.alljoyn.validation.testing.utils.log.LoggerFactory;
@@ -82,13 +82,12 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.xml.sax.SAXException;
 
 @ValidationSuite(name = "ControlPanel-v1")
-public class ControlPanelTestSuite extends ValidationBaseTestCase
+public class ControlPanelTestSuite extends BaseTestSuite
 {
     private static final String TAG = "ControlPanelTestSuite";
     private static final Logger logger = LoggerFactory.getLogger(TAG);
     private static final short INTERFACE_VERSION = 1;
     private static final String BUS_APPLICATION_NAME = "ControlPanel";
-    private static final long ANNOUCEMENT_TIMEOUT_IN_SECONDS = 30;
     private static final List<Integer> TWO_STATES_LIST = Arrays.asList(new Integer[]
     { 0, 1 });
     private static final List<Integer> PROPERTY_STATES_LIST = Arrays.asList(new Integer[]
@@ -126,7 +125,7 @@ public class ControlPanelTestSuite extends ValidationBaseTestCase
             serviceHelper = getServiceHelper();
             serviceHelper.initialize(BUS_APPLICATION_NAME, dutDeviceId, dutAppId);
 
-            deviceAboutAnnouncement = serviceHelper.waitForNextDeviceAnnouncement(ANNOUCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
+            deviceAboutAnnouncement = serviceHelper.waitForNextDeviceAnnouncement(determineAboutAnnouncementTimeout(), TimeUnit.SECONDS);
             assertNotNull("Timed out waiting for About announcement", deviceAboutAnnouncement);
             aboutClient = serviceHelper.connectAboutClient(deviceAboutAnnouncement);
             serviceHelper.enableAuthentication(keyStorePath);

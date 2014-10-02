@@ -23,10 +23,10 @@ import org.alljoyn.about.client.AboutClient;
 import org.alljoyn.services.android.utils.AndroidLogger;
 import org.alljoyn.validation.framework.AppUnderTestDetails;
 import org.alljoyn.validation.framework.UserInputDetails;
-import org.alljoyn.validation.framework.ValidationBaseTestCase;
 import org.alljoyn.validation.framework.annotation.ValidationSuite;
 import org.alljoyn.validation.framework.annotation.ValidationTest;
 import org.alljoyn.validation.framework.utils.introspection.BusIntrospector;
+import org.alljoyn.validation.testing.suites.BaseTestSuite;
 import org.alljoyn.validation.testing.utils.about.AboutAnnouncementDetails;
 import org.alljoyn.validation.testing.utils.log.Logger;
 import org.alljoyn.validation.testing.utils.log.LoggerFactory;
@@ -35,14 +35,12 @@ import org.alljoyn.validation.testing.utils.notification.NotificationValidator.N
 import org.alljoyn.validation.testing.utils.services.ServiceHelper;
 
 @ValidationSuite(name = "Notification-v1")
-public class NotificationProducerTestSuite extends ValidationBaseTestCase
+public class NotificationProducerTestSuite extends BaseTestSuite
 {
     private static final String BUS_APPLICATION_NAME = "NotificationProducerTestSuite";
 
     protected static final String TAG = "NotfProdTestSuite";
     private static final Logger logger = LoggerFactory.getLogger(TAG);
-
-    private static final long ANNOUCEMENT_TIMEOUT_IN_SECONDS = 30;
 
     private static final long TIMEOUT_FOR_SHUTDOWN_IN_SECONDS = 1;
 
@@ -90,7 +88,7 @@ public class NotificationProducerTestSuite extends ValidationBaseTestCase
             notificationValidator = getNotificationValidator();
             serviceHelper.initNotificationReceiver(notificationValidator);
 
-            deviceAboutAnnouncement = serviceHelper.waitForNextDeviceAnnouncement(ANNOUCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
+            deviceAboutAnnouncement = serviceHelper.waitForNextDeviceAnnouncement(determineAboutAnnouncementTimeout(), TimeUnit.SECONDS);
             if (deviceAboutAnnouncement == null)
             {
                 throw new Exception("Timed out waiting for About announcement");
