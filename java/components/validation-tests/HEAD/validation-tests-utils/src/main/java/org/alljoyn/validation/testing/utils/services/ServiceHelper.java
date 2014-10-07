@@ -401,6 +401,11 @@ public class ServiceHelper
         }
     }
 
+    public BusAttachment getBusAttachment()
+    {
+        return busAttachmentMgr.getBusAttachment();
+    }
+
     public String getBusUniqueName()
     {
         return busAttachmentMgr.getBusUniqueName();
