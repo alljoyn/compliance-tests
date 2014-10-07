@@ -50,6 +50,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.alljoyn.validation.validation-tests</groupId>
+			<artifactId>validation-tests-suites-gwagent</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.alljoyn.validation.validation-tests</groupId>
 			<artifactId>validation-tests-simulator</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -94,6 +99,7 @@
 				<configuration>
 					<resourceBundles>
 						<resourceBundle>org.alljoyn.validation.validation-tests:validation-tests-suites:${project.version}</resourceBundle>
+						<resourceBundle>org.alljoyn.validation.validation-tests:validation-tests-suites-gwagent:${project.version}</resourceBundle>
 					</resourceBundles>
 					<attached>false</attached>
 					<outputDirectory>${project.basedir}/target/shared</outputDirectory>
