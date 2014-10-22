@@ -55,6 +55,7 @@ import org.alljoyn.bus.Variant;
 import org.alljoyn.services.android.utils.AndroidLogger;
 import org.alljoyn.services.common.ClientBase;
 import org.alljoyn.validation.framework.AppUnderTestDetails;
+import org.alljoyn.validation.framework.UserInputDetails;
 import org.alljoyn.validation.framework.annotation.ValidationSuite;
 import org.alljoyn.validation.framework.annotation.ValidationTest;
 import org.alljoyn.validation.framework.utils.introspection.BusIntrospector;
@@ -776,6 +777,158 @@ public class AudioTestSuite extends BaseTestSuite
         }
     }
 
+    @ValidationTest(name = "Audio-v1-26")
+    public void testAudio_v1_26_VerifyVolumeCanBeAdjustedOnAudioSink() throws Exception
+    {
+        Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
+
+        if (audioSinkPort == null)
+        {
+            getValidationTestContext().addNote("Stream does not support AudioSink!");
+            return;
+        }
+        else
+        {
+            stream.Open();
+            audioSinkPort.Connect(serviceHelper.getBusUniqueName(), AUDIO_SOURCE_PATH, getValidSinkConfiguration());
+
+            Volume volume = getVolume(streamObjectPath, getIntrospector());
+            VolumeRange volumeRange = volume.getVolumeRange();
+            short high = volumeRange.high;
+            short low = volumeRange.low;
+            short step = volumeRange.step;
+            validateVolumeRangeProperties(high, low, step);
+
+            short originalVolumeProperty = volume.getVolume();
+            logger.debug("Volume Interface returned Volume property value as : " + originalVolumeProperty);
+            validateOriginalVolumeProperty(high, low, step, originalVolumeProperty);
+
+            VolumeControlSignalHandler volumeControlSignalHandler = createVolumeControlSignalHandler();
+            registerVolumeControlSignalHandler(streamObjectPath, volumeControlSignalHandler);
+
+            short newVolumeProperty = getNewVolumePropertyValue(originalVolumeProperty, volumeRange);
+            short adjustment = (short) (newVolumeProperty - originalVolumeProperty);
+            logger.debug("New Volume property to be set on the Volume interface : " + adjustment);
+            volume.AdjustVolume(adjustment);
+            assertVolumeChangedSignalIsReceived(newVolumeProperty, volumeControlSignalHandler);
+            assertEquals(volume.getVolume(), newVolumeProperty);
+
+            logger.debug("Setting volume property value to the original value " + originalVolumeProperty);
+            setVolumeProperty(volume, originalVolumeProperty);
+            assertVolumeChangedSignalIsReceived(originalVolumeProperty, volumeControlSignalHandler);
+
+            stream.Close();
+        }
+    }
+
+    @ValidationTest(name = "Audio-v1-27")
+    public void testAudio_v1_27_VerifyVolumeCanBeAdjustedByPercentOnAudioSink() throws Exception
+    {
+        Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
+
+        if (audioSinkPort == null)
+        {
+            getValidationTestContext().addNote("Stream does not support AudioSink!");
+            return;
+        }
+        else
+        {
+            stream.Open();
+            audioSinkPort.Connect(serviceHelper.getBusUniqueName(), AUDIO_SOURCE_PATH, getValidSinkConfiguration());
+
+            Volume volume = getVolume(streamObjectPath, getIntrospector());
+            VolumeRange volumeRange = volume.getVolumeRange();
+            short high = volumeRange.high;
+            short low = volumeRange.low;
+            short step = volumeRange.step;
+            validateVolumeRangeProperties(high, low, step);
+
+            short originalVolumeProperty = volume.getVolume();
+            logger.debug("Volume Interface returned Volume property value as : " + originalVolumeProperty);
+            validateOriginalVolumeProperty(high, low, step, originalVolumeProperty);
+
+            VolumeControlSignalHandler volumeControlSignalHandler = createVolumeControlSignalHandler();
+            registerVolumeControlSignalHandler(streamObjectPath, volumeControlSignalHandler);
+
+            setVolumeProperty(volume, low);
+            assertVolumeChangedSignalIsReceived(low, volumeControlSignalHandler);
+
+            short expectedVolume = (short) ((low + (high - low)) / 2);
+            volume.AdjustVolumePercent(0.5);
+            assertTrue((volume.getVolume() - expectedVolume) < step);
+            volumeControlSignalHandler.waitForNextVolumeChangedSignal(getSignalTimeout(), TimeUnit.SECONDS);
+
+            logger.debug("Setting volume property value to the original value " + originalVolumeProperty);
+            setVolumeProperty(volume, originalVolumeProperty);
+            assertVolumeChangedSignalIsReceived(originalVolumeProperty, volumeControlSignalHandler);
+
+            stream.Close();
+        }
+    }
+
+    @ValidationTest(name = "Audio-v1-28")
+    public void testAudio_v1_28_VerifyVolumeNotAdjustableWhenDisabled() throws Exception
+    {
+        Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
+
+        if (audioSinkPort == null)
+        {
+            getValidationTestContext().addNote("Stream does not support AudioSink!");
+            return;
+        }
+
+        stream.Open();
+        audioSinkPort.Connect(serviceHelper.getBusUniqueName(), AUDIO_SOURCE_PATH, getValidSinkConfiguration());
+
+        Volume volume = getVolume(streamObjectPath, getIntrospector());
+        boolean enabled = volume.getEnabled();
+        if (enabled)
+        {
+            getValidationTestContext()
+                    .waitForUserInput(new UserInputDetails("Disable Device", "Please switch the audio device to disable if this option is supported", "Continue"));
+            if (enabled)
+            {
+                getValidationTestContext().addNote("Audio volume control still enabled, assuming not supported");
+                return;
+            }
+        }
+
+        boolean caughtSomething = false;
+        try
+        {
+            volume.setVolume((short) (volume.getVolume() + 5));
+        }
+        catch (BusException e)
+        {
+            caughtSomething = true;
+        }
+        assertTrue(caughtSomething);
+
+        caughtSomething = false;
+        try
+        {
+            volume.AdjustVolume((short) 5);
+        }
+        catch (BusException e)
+        {
+            caughtSomething = true;
+        }
+        assertTrue(caughtSomething);
+
+        caughtSomething = false;
+        try
+        {
+            volume.AdjustVolumePercent(1.0);
+        }
+        catch (BusException e)
+        {
+            caughtSomething = true;
+        }
+        assertTrue(caughtSomething);
+
+        getValidationTestContext().waitForUserInput(new UserInputDetails("Enable Device", "Please enable the volume control", "Continue"));
+    }
+
     AudioSinkSignalHandler getAudioSinkSignalHandler()
     {
         return new AudioSinkSignalHandler();
@@ -871,7 +1024,7 @@ public class AudioTestSuite extends BaseTestSuite
     {
         if (originalVolumeProperty < low || originalVolumeProperty > high || ((originalVolumeProperty - low) % step) != 0)
         {
-            fail("Current volume value " + originalVolumeProperty + " is within Volume Range properties of low: " + low + " and high: " + high + " and step: " + step);
+            fail("Current volume value " + originalVolumeProperty + " is not within Volume Range properties of low: " + low + " and high: " + high + " and step: " + step);
         }
     }
 
@@ -1172,8 +1325,10 @@ public class AudioTestSuite extends BaseTestSuite
 
     private Port getAudioSinkPort(String path, BusIntrospector busIntrospector) throws BusException, IOException, ParserConfigurationException, SAXException
     {
+        logger.debug("Introspecting " + path);
         NodeDetail nodeDetail = busIntrospector.introspect(path);
         List<IntrospectionSubNode> introspectionSubNodes = nodeDetail.getIntrospectionNode().getSubNodes();
+        logger.debug("It has this many subnodes: " + introspectionSubNodes.size());
 
         for (IntrospectionSubNode introspectionSubNode : introspectionSubNodes)
         {

@@ -31,6 +31,7 @@ public class VolumeControlSignalHandler implements Volume, BusObject
     private static final String TAG = "VolControlSignalHandler";
     private static final Logger logger = LoggerFactory.getLogger(TAG);
     private LinkedBlockingDeque<Boolean> muteChangedSignalQueue = new LinkedBlockingDeque<Boolean>();
+    private LinkedBlockingDeque<Boolean> enabledChangedSignalQueue = new LinkedBlockingDeque<Boolean>();
     private LinkedBlockingDeque<Short> volumeChangedSignalQueue = new LinkedBlockingDeque<Short>();
 
     @Override
@@ -47,6 +48,21 @@ public class VolumeControlSignalHandler implements Volume, BusObject
     {
         logger.debug("VolumeChanged signal received: " + newVolume);
         volumeChangedSignalQueue.add(newVolume);
+    }
+
+    @Override
+    @BusSignalHandler(iface = "org.alljoyn.Control.Volume", signal = "EnabledChanged")
+    public void EnabledChanged(boolean newEnabled) throws BusException
+    {
+        logger.debug("EnabledChanged signal received: " + newEnabled);
+        muteChangedSignalQueue.add(newEnabled);
+    }
+
+    public Boolean waitForNextEnabledChangedSignal(long timeout, TimeUnit unit) throws InterruptedException
+    {
+        logger.debug("Waiting for EnabledChanged signal");
+
+        return enabledChangedSignalQueue.poll(timeout, unit);
     }
 
     public Boolean waitForNextMuteChangedSignal(long timeout, TimeUnit unit) throws InterruptedException
@@ -98,7 +114,24 @@ public class VolumeControlSignalHandler implements Volume, BusObject
     }
 
     @Override
+    public boolean getEnabled() throws BusException
+    {
+        return false;
+    }
+
+    @Override
+    public void setEnabled(boolean isMuted) throws BusException
+    {
+    }
+
+    @Override
     public void AdjustVolume(short delta) throws BusException
     {
     }
+
+    @Override
+    public void AdjustVolumePercent(double change) throws BusException
+    {
+    }
 }
+

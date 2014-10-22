@@ -189,14 +189,26 @@ public class AudioTransports
         @BusProperty(signature = "(nnn)")
         public VolumeRange getVolumeRange() throws BusException;
 
+        @BusProperty(signature = "b")
+        public boolean getEnabled() throws BusException;
+
+        @BusProperty(signature = "b")
+        public void setEnabled(boolean enabled) throws BusException;
+
         @BusMethod(signature = "n")
         public void AdjustVolume(short delta) throws BusException;
+
+        @BusMethod(signature = "d")
+        public void AdjustVolumePercent(double change) throws BusException;
 
         @BusSignal(signature = "b")
         public void MuteChanged(boolean newMute) throws BusException;
 
         @BusSignal(signature = "n")
         public void VolumeChanged(short newVolume) throws BusException;
+
+        @BusSignal(signature = "b")
+        public void EnabledChanged(boolean enabled) throws BusException;
     }
 
     @BusInterface(name = "org.alljoyn.Stream.Clock")
