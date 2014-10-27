@@ -41,6 +41,7 @@ import android.net.wifi.ScanResult;
 
 public class OnboardingHelper
 {
+    private static final int TIME_TO_WAIT_FOR_SCAN_RESULTS_IN_SECONDS = 2;
     private static final String TAG = "OnboardingHelper";
     private static final Logger logger = LoggerFactory.getLogger(TAG);
     private OnboardingClient onboardingClient;
@@ -271,7 +272,7 @@ public class OnboardingHelper
             }
             else if ((connectedToPersonalAP) && (softAPSsid != null))
             {
-                boolean isSoftAPAvailable = wifiHelper.waitForNetworkAvailable(softAPSsid, 1, TimeUnit.SECONDS);
+                boolean isSoftAPAvailable = wifiHelper.waitForNetworkAvailable(softAPSsid, TIME_TO_WAIT_FOR_SCAN_RESULTS_IN_SECONDS, TimeUnit.SECONDS);
                 if (isSoftAPAvailable)
                 {
                     String message;
@@ -419,7 +420,7 @@ public class OnboardingHelper
 
                     if ((deviceAboutAnnouncement == null) && (softAPSsid != null))
                     {
-                        isSoftAPAvailable = wifiHelper.waitForNetworkAvailable(softAPSsid, 1, TimeUnit.SECONDS);
+                        isSoftAPAvailable = wifiHelper.waitForNetworkAvailable(softAPSsid, TIME_TO_WAIT_FOR_SCAN_RESULTS_IN_SECONDS, TimeUnit.SECONDS);
                     }
                 }
 
