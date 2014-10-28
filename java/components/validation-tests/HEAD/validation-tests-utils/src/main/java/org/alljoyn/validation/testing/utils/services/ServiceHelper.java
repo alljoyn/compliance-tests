@@ -98,6 +98,10 @@ public class ServiceHelper
         busAttachmentMgr.advertise();
     }
 
+    public BusAttachment getBusAttachment(){
+        return busAttachmentMgr.getBusAttachment();
+    }
+
     public void initNotificationReceiver(NotificationReceiver receiver) throws NotificationServiceException
     {
         notificationService = getNotificationService();

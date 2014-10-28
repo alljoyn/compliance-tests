@@ -83,14 +83,13 @@ public class InterfaceValidator
         return new ValidationResult(valid, failureReasonBuilder.toString());
     }
 
-    List<String> getXmlFilesToBeLoaded()
-    {
-        return Arrays.asList(IntrospectionXmlFile.About.getValue(), IntrospectionXmlFile.Action.getValue(), IntrospectionXmlFile.Audio.getValue(),
-                IntrospectionXmlFile.Config.getValue(), IntrospectionXmlFile.Container.getValue(), IntrospectionXmlFile.ControlPanel.getValue(),
-                IntrospectionXmlFile.DeviceIcon.getValue(), IntrospectionXmlFile.Dialog.getValue(), IntrospectionXmlFile.HTTPControl.getValue(),
-                IntrospectionXmlFile.LabelProperty.getValue(), IntrospectionXmlFile.ListProperty.getValue(), IntrospectionXmlFile.Notification.getValue(),
-                IntrospectionXmlFile.NotificationAction.getValue(), IntrospectionXmlFile.Onboarding.getValue(), IntrospectionXmlFile.Peer.getValue(),
-                IntrospectionXmlFile.Property.getValue());
+       List<String> getXmlFilesToBeLoaded() {
+        return Arrays.asList(IntrospectionXmlFile.Clock.getValue(), IntrospectionXmlFile.TimeAuthority.getValue(), IntrospectionXmlFile.Alarm.getValue(), IntrospectionXmlFile.AlarmFactory.getValue(),
+                IntrospectionXmlFile.Timer.getValue(), IntrospectionXmlFile.TimerFactory.getValue(), IntrospectionXmlFile.About.getValue(), IntrospectionXmlFile.Action.getValue(),
+                IntrospectionXmlFile.Audio.getValue(), IntrospectionXmlFile.Config.getValue(), IntrospectionXmlFile.Container.getValue(), IntrospectionXmlFile.ControlPanel.getValue(),
+                IntrospectionXmlFile.DeviceIcon.getValue(), IntrospectionXmlFile.Dialog.getValue(), IntrospectionXmlFile.HTTPControl.getValue(), IntrospectionXmlFile.LabelProperty.getValue(),
+                IntrospectionXmlFile.ListProperty.getValue(), IntrospectionXmlFile.Notification.getValue(), IntrospectionXmlFile.NotificationAction.getValue(),
+                IntrospectionXmlFile.Onboarding.getValue(), IntrospectionXmlFile.Peer.getValue(), IntrospectionXmlFile.Property.getValue());
     }
 
     private ValidationResult validateInterface(IntrospectionInterface standardizedIntrospectionInterface, String path)

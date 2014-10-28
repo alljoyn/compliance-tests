@@ -230,6 +230,21 @@
                             <file>libs\ControlPanelAdapter.jar</file>
                         </configuration>
                     </execution>
+                <execution>
+                        <id>install-timeservice</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>org.alljoyn</groupId>
+                            <artifactId>timeservice</artifactId>
+                            <version>${alljoyn-services.version}</version>
+                            <packaging>jar</packaging>
+                            <classifier>android</classifier>
+                            <file>libs\TimeService.jar</file>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
