@@ -1,17 +1,30 @@
 /*******************************************************************************
- *  Copyright (c) 2013 - 2014, AllSeen Alliance. All rights reserved.
+ *     Copyright (c) Open Connectivity Foundation (OCF) and AllJoyn Open
+ *     Source Project (AJOSP) Contributors and others.
  *
- *     Permission to use, copy, modify, and/or distribute this software for any
- *     purpose with or without fee is hereby granted, provided that the above
- *     copyright notice and this permission notice appear in all copies.
+ *     SPDX-License-Identifier: Apache-2.0
  *
- *     THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
- *     WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
- *     MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
- *     ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
- *     WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
- *     ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
- *     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *     All rights reserved. This program and the accompanying materials are
+ *     made available under the terms of the Apache License, Version 2.0
+ *     which accompanies this distribution, and is available at
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *     Copyright (c) Open Connectivity Foundation and Contributors to AllSeen
+ *     Alliance. All rights reserved.
+ *
+ *     Permission to use, copy, modify, and/or distribute this software for
+ *     any purpose with or without fee is hereby granted, provided that the
+ *     above copyright notice and this permission notice appear in all
+ *     copies.
+ *
+ *      THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+ *      WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+ *      WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+ *      AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+ *      DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+ *      PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+ *      TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+ *      PERFORMANCE OF THIS SOFTWARE.
  *******************************************************************************/
 package org.alljoyn.validation.testing.utils.notification;
 
@@ -37,6 +50,7 @@ import org.alljoyn.validation.testing.utils.log.LoggerFactory;
 
 public class NotificationValidator implements NotificationReceiver, Runnable
 {
+    private static final int NOTIFICATION_SERVICE_VERSION = 2;
     private static final String TAG = "NotificationValidator";
     private static final Logger logger = LoggerFactory.getLogger(TAG);
     private AtomicInteger notificationCounter = new AtomicInteger();
@@ -102,7 +116,7 @@ public class NotificationValidator implements NotificationReceiver, Runnable
                     boolean includedRichAudioUrl = false;
                     boolean includesResponseObjectPath = false;
 
-                    assertEquals("Notification version must be 1", 1, notification.getVersion());
+                    assertEquals(String.format("Notification version must be %s", NOTIFICATION_SERVICE_VERSION), NOTIFICATION_SERVICE_VERSION, notification.getVersion());
 
                     String notifAppName = notification.getAppName();
                     assertEquals("AppName in notification does not match AboutAnnouncement", deviceAboutAnnouncement.getAppName(), notifAppName);
@@ -182,9 +196,16 @@ public class NotificationValidator implements NotificationReceiver, Runnable
                     validationTestContext.addNote(noteMsgString);
                     logger.debug(noteMsgString);
                 }
-                catch (Exception e)
+                catch (Throwable throwable)
                 {
-                    notificationValidationExceptionHandler.onNotificationValidationException(e);
+                    if (throwable instanceof Exception)
+                    {
+                        notificationValidationExceptionHandler.onNotificationValidationException((Exception) throwable);
+                    }
+                    else
+                    {
+                        notificationValidationExceptionHandler.onNotificationValidationException(new Exception(throwable));
+                    }
                 }
             }
         }
