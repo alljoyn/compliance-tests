@@ -363,15 +363,15 @@ public class TestCaseWrapper extends AndroidTestCase
 
         TransportNotificationText[] text = new TransportNotificationText[1];
         text[0] = new TransportNotificationText("en", "Emergency Msg 1");
-        simulator.sendNotification(1, msgId++, (short) 0, deviceId, deviceName, appId, appName, attributes, customAttributes, text);
+        simulator.sendNotification(2, msgId++, (short) 0, deviceId, deviceName, appId, appName, attributes, customAttributes, text);
 
         text = new TransportNotificationText[1];
         text[0] = new TransportNotificationText("en", "Warning Msg 1");
-        simulator.sendNotification(1, msgId++, (short) 1, deviceId, deviceName, appId, appName, attributes, customAttributes, text);
+        simulator.sendNotification(2, msgId++, (short) 1, deviceId, deviceName, appId, appName, attributes, customAttributes, text);
 
         text = new TransportNotificationText[1];
         text[0] = new TransportNotificationText("en", "Info Msg 1");
-        simulator.sendNotification(1, msgId++, (short) 2, deviceId, deviceName, appId, appName, attributes, customAttributes, text);
+        simulator.sendNotification(2, msgId++, (short) 2, deviceId, deviceName, appId, appName, attributes, customAttributes, text);
     }
 
     private String getAppName(DUTSimulator simulator) throws BusException

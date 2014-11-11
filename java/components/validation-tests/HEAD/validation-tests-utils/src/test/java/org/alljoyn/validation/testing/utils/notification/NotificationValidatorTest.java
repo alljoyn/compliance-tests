@@ -56,6 +56,8 @@ import org.robolectric.annotation.Config;
 public class NotificationValidatorTest
 {
 
+    private static final int NOTIFICATION_SERVICE_VERSION = 2;
+    private static final int INVALID_NOTIFICATION_SERVICE_VERSION = 1;
     @Mock
     private ValidationTestContext mockTestContext;
     @Mock
@@ -114,7 +116,7 @@ public class NotificationValidatorTest
     {
         Notification mockNotification = mock(Notification.class);
 
-        when(mockNotification.getVersion()).thenReturn(1);
+        when(mockNotification.getVersion()).thenReturn(NOTIFICATION_SERVICE_VERSION);
         when(mockNotification.getAppId()).thenReturn(appId);
         when(mockNotification.getDeviceName()).thenReturn(deviceName);
         when(mockNotification.getDeviceId()).thenReturn(deviceId);
@@ -147,6 +149,20 @@ public class NotificationValidatorTest
         testWithNotifications(notifications, notes);
 
         assertEquals(1, notificationValidator.getNumberOfNotificationsReceived());
+    }
+
+    @Test
+    public void testReceiveBasicTextNotificationWithWrongVersion() throws Exception
+    {
+        List<Notification> notifications = new ArrayList<Notification>();
+        List<String> notes = new ArrayList<String>();
+        Notification mockNotification = getBaseMockNotification();
+        when(mockNotification.getVersion()).thenReturn(INVALID_NOTIFICATION_SERVICE_VERSION);
+        notifications.add(mockNotification);
+
+        testWithNotifications(notifications, notes);
+        assertNotNull(thrownException);
+        assertEquals(0, notificationValidator.getNumberOfNotificationsReceived());
     }
 
     @Test
