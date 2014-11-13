@@ -37,6 +37,7 @@ import org.alljoyn.validation.testing.utils.log.LoggerFactory;
 
 public class NotificationValidator implements NotificationReceiver, Runnable
 {
+    private static final int NOTIFICATION_SERVICE_VERSION = 2;
     private static final String TAG = "NotificationValidator";
     private static final Logger logger = LoggerFactory.getLogger(TAG);
     private AtomicInteger notificationCounter = new AtomicInteger();
@@ -102,7 +103,7 @@ public class NotificationValidator implements NotificationReceiver, Runnable
                     boolean includedRichAudioUrl = false;
                     boolean includesResponseObjectPath = false;
 
-                    assertEquals("Notification version must be 1", 1, notification.getVersion());
+                    assertEquals(String.format("Notification version must be %s", NOTIFICATION_SERVICE_VERSION), NOTIFICATION_SERVICE_VERSION, notification.getVersion());
 
                     String notifAppName = notification.getAppName();
                     assertEquals("AppName in notification does not match AboutAnnouncement", deviceAboutAnnouncement.getAppName(), notifAppName);
@@ -182,9 +183,16 @@ public class NotificationValidator implements NotificationReceiver, Runnable
                     validationTestContext.addNote(noteMsgString);
                     logger.debug(noteMsgString);
                 }
-                catch (Exception e)
+                catch (Throwable throwable)
                 {
-                    notificationValidationExceptionHandler.onNotificationValidationException(e);
+                    if (throwable instanceof Exception)
+                    {
+                        notificationValidationExceptionHandler.onNotificationValidationException((Exception) throwable);
+                    }
+                    else
+                    {
+                        notificationValidationExceptionHandler.onNotificationValidationException(new Exception(throwable));
+                    }
                 }
             }
         }
