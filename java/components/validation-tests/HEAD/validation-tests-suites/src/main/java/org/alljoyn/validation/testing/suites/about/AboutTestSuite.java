@@ -487,7 +487,6 @@ public class AboutTestSuite extends BaseTestSuite
     {
         verifyFieldIsPresent(AboutKeys.ABOUT_APP_ID, aboutData);
         verifyFieldIsPresent(AboutKeys.ABOUT_DEFAULT_LANGUAGE, aboutData);
-        verifyFieldIsPresent(AboutKeys.ABOUT_DEVICE_NAME, aboutData);
         verifyFieldIsPresent(AboutKeys.ABOUT_DEVICE_ID, aboutData);
         verifyFieldIsPresent(AboutKeys.ABOUT_APP_NAME, aboutData);
         verifyFieldIsPresent(AboutKeys.ABOUT_MANUFACTURER, aboutData);
@@ -511,7 +510,6 @@ public class AboutTestSuite extends BaseTestSuite
     {
         checkForNull(aboutMap, AboutKeys.ABOUT_APP_ID, language);
         checkForNull(aboutMap, AboutKeys.ABOUT_DEFAULT_LANGUAGE, language);
-        checkForNull(aboutMap, AboutKeys.ABOUT_DEVICE_NAME, language);
         checkForNull(aboutMap, AboutKeys.ABOUT_DEVICE_ID, language);
         checkForNull(aboutMap, AboutKeys.ABOUT_APP_NAME, language);
         checkForNull(aboutMap, AboutKeys.ABOUT_MANUFACTURER, language);
@@ -532,7 +530,6 @@ public class AboutTestSuite extends BaseTestSuite
         Map<String, Variant> aboutVariantMap = TransportUtil.toVariantMap(aboutMap);
         validateSignature(aboutVariantMap, AboutKeys.ABOUT_APP_ID, "ay", language);
         validateSignature(aboutVariantMap, AboutKeys.ABOUT_DEFAULT_LANGUAGE, "s", language);
-        validateSignature(aboutVariantMap, AboutKeys.ABOUT_DEVICE_NAME, "s", language);
         validateSignature(aboutVariantMap, AboutKeys.ABOUT_DEVICE_ID, "s", language);
         validateSignature(aboutVariantMap, AboutKeys.ABOUT_APP_NAME, "s", language);
         validateSignature(aboutVariantMap, AboutKeys.ABOUT_MANUFACTURER, "s", language);
@@ -546,6 +543,11 @@ public class AboutTestSuite extends BaseTestSuite
 
     private void validateSignatureForNonRequiredFields(String language, Map<String, Variant> aboutVariantMap) throws AnnotationBusException
     {
+        if (aboutVariantMap.containsKey(AboutKeys.ABOUT_DEVICE_NAME))
+        {
+            validateSignature(aboutVariantMap, AboutKeys.ABOUT_DEVICE_NAME, "s", language);
+        }
+
         if (aboutVariantMap.containsKey(AboutKeys.ABOUT_DATE_OF_MANUFACTURE))
         {
             validateSignature(aboutVariantMap, AboutKeys.ABOUT_DATE_OF_MANUFACTURE, "s", language);
@@ -587,7 +589,7 @@ public class AboutTestSuite extends BaseTestSuite
 
     private void compareFieldsInAboutMap(Map<String, Object> expectedAboutMap, Map<String, Object> aboutMap, String language) throws Exception
     {
-        compareAbout(AboutKeys.ABOUT_DEVICE_NAME, expectedAboutMap.get(AboutKeys.ABOUT_DEVICE_NAME).toString(), aboutMap.get(AboutKeys.ABOUT_DEVICE_NAME).toString(), language);
+        compareAboutNonRequired(expectedAboutMap, aboutMap, language, AboutKeys.ABOUT_DEVICE_NAME);
         compareAbout(AboutKeys.ABOUT_APP_NAME, expectedAboutMap.get(AboutKeys.ABOUT_APP_NAME).toString(), aboutMap.get(AboutKeys.ABOUT_APP_NAME).toString(), language);
         compareAbout(AboutKeys.ABOUT_MANUFACTURER, expectedAboutMap.get(AboutKeys.ABOUT_MANUFACTURER).toString(), aboutMap.get(AboutKeys.ABOUT_MANUFACTURER).toString(), language);
         compareAbout(AboutKeys.ABOUT_DESCRIPTION, expectedAboutMap.get(AboutKeys.ABOUT_DESCRIPTION).toString(), aboutMap.get(AboutKeys.ABOUT_DESCRIPTION).toString(), language);

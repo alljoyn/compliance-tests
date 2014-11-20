@@ -243,9 +243,18 @@ public class AboutTestSuiteTest extends BaseTestSuiteTest
     }
 
     @Test
-    public void testAboutAnnouncementFailsIfDeviceNameFieldIsMissingInAboutMap() throws Exception
+    public void testAboutAnnouncementPassesIfDeviceNameFieldIsMissingInAboutMap() throws Exception
     {
-        testAboutAnnouncementFailsIfFieldIsMissingInAboutMap(AboutKeys.ABOUT_DEVICE_NAME);
+        when(mockAboutAnnouncement.getObjectDescriptions()).thenReturn(new BusObjectDescription[]
+        { getBusObjectDescription() });
+        Map<String, Variant> aboutMap = appAboutDataMap;
+        aboutMap.remove(AboutKeys.ABOUT_DEVICE_NAME);
+        when(mockAboutAnnouncement.getAboutData()).thenReturn(aboutMap);
+
+        executeTestMethod(getTestWrapperFor_v1_01());
+
+        verify(mockAboutAnnouncement).getAboutData();
+        verify(mockAboutAnnouncement).getObjectDescriptions();
     }
 
     @Test
@@ -447,10 +456,16 @@ public class AboutTestSuiteTest extends BaseTestSuiteTest
     }
 
     @Test
-    public void getAboutForDefaultLanguageTestCaseMissingDeviceNameShouldFail() throws Exception
+    public void getAboutForDefaultLanguageTestCaseMissingDeviceNameShouldPass() throws Exception
     {
-        String key = AboutKeys.ABOUT_DEVICE_NAME;
-        verifyAssertFailureOnMissingField(key);
+        Map<String, Object> copiedAboutMap = new HashMap<String, Object>();
+        copiedAboutMap.putAll(TransportUtil.fromVariantMap(appAboutDataMap));
+        copiedAboutMap.remove(AboutKeys.ABOUT_DEVICE_NAME);
+        when(mockAboutClient.getAbout(defaultLanguage)).thenReturn(copiedAboutMap);
+
+        executeTestMethod(getTestWrapperFor_v1_06());
+
+        verify(mockAboutClient).getAbout(defaultLanguage);
     }
 
     @Test
@@ -709,12 +724,6 @@ public class AboutTestSuiteTest extends BaseTestSuiteTest
     public void testGetAboutForSupportedLanguagesFailsIfDeviceIdFieldValueIsNotPresentForAnyLanguage() throws Exception
     {
         testGetAboutForSupportedLanguagesFailsIfAnyFieldValueIsNotPresentForAnyLanguage(AboutKeys.ABOUT_DEVICE_ID);
-    }
-
-    @Test
-    public void testGetAboutForSupportedLanguagesFailsIfDeviceNameFieldValueIsNotPresentForAnyLanguage() throws Exception
-    {
-        testGetAboutForSupportedLanguagesFailsIfAnyFieldValueIsNotPresentForAnyLanguage(AboutKeys.ABOUT_DEVICE_NAME);
     }
 
     @Test
