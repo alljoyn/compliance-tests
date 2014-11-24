@@ -21,7 +21,8 @@ public enum IntrospectionXmlFile
             "introspection-xml/Container.xml"), ControlPanel("introspection-xml/ControlPanel.xml"), DeviceIcon("introspection-xml/DeviceIcon.xml"), Dialog(
             "introspection-xml/Dialog.xml"), HTTPControl("introspection-xml/HTTPControl.xml"), LabelProperty("introspection-xml/LabelProperty.xml"), ListProperty(
             "introspection-xml/ListProperty.xml"), Notification("introspection-xml/Notification.xml"), NotificationAction("introspection-xml/NotificationAction.xml"), Onboarding(
-            "introspection-xml/Onboarding.xml"), Peer("introspection-xml/Peer.xml"), Property("introspection-xml/Property.xml");
+            "introspection-xml/Onboarding.xml"), Peer("introspection-xml/Peer.xml"), Property("introspection-xml/Property.xml"),Clock("introspection-xml/Clock.xml"), Alarm("introspection-xml/Alarm.xml"),
+            AlarmFactory("introspection-xml/AlarmFactory.xml"), TimeAuthority("introspection-xml/TimeAuthority.xml"), Timer("introspection-xml/Timer.xml"), TimerFactory("introspection-xml/TimerFactory.xml");
 
     private String value;
 

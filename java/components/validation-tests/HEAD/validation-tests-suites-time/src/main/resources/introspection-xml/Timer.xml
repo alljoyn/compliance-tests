@@ -1,0 +1,36 @@
+<!--  Copyright (c) 2013 - 2014, AllSeen Alliance. All rights reserved.
+
+    Permission to use, copy, modify, and/or distribute this software for any
+    purpose with or without fee is hereby granted, provided that the above
+    copyright notice and this permission notice appear in all copies.
+
+    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE. -->
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://allseenalliance.org/schemas/introspect.xsd">
+<interface name="org.allseen.Time.Timer">  
+  <property name="Version" type="q" access="read"/>
+  <property name="Interval" type="(uyyq)" access="readwrite"/>
+  <property name="TimeLeft" type="(uyyq)" access="read"/>
+  <method name="Start">
+    <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
+  </method>
+  <method name="Pause">
+    <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
+  </method>
+  <method name="Reset"/>
+  <property name="IsRunning" type="b" access="read"/>
+  <property name="Repeat" type="q" access="readwrite"/>
+  <property name="Title" type="s" access="readwrite"/>
+  <signal name="TimerEvent">
+     <description>Timer reached signal</description>
+  </signal>
+  <signal name="RunStateChanged">
+    <arg name="runState" type="b"/>
+  </signal>  
+</interface>
+</node>
