@@ -187,36 +187,19 @@ public class AboutTestSuiteTest extends BaseTestSuiteTest
     }
 
     @Test
-    public void testAboutAnnouncementFailsIfObjectDescriptionListIsEmpty() throws Exception
-    {
-        when(mockAboutAnnouncement.getObjectDescriptions()).thenReturn(new BusObjectDescription[]
-        {});
-
-        executeTestMethodFailsAssertion(getTestWrapperFor_v1_01(), "About interface not present in announcement");
-    }
-
-    @Test
-    public void testAboutAnnouncementFailsIfInterfaceListIsEmpty() throws Exception
-    {
-        BusObjectDescription busObjectDescription = getBusObjectDescription();
-        busObjectDescription.setInterfaces(new String[]
-        {});
-        when(mockAboutAnnouncement.getObjectDescriptions()).thenReturn(new BusObjectDescription[]
-        { busObjectDescription });
-
-        executeTestMethodFailsAssertion(getTestWrapperFor_v1_01(), "About interface not present in announcement");
-    }
-
-    @Test
-    public void testAboutAnnouncementFailsIfAboutInterfaceIsAbsent() throws Exception
+    public void testAboutAnnouncementPassesEvenIfAboutInterfaceIsAbsent() throws Exception
     {
         BusObjectDescription busObjectDescription = getBusObjectDescription();
         busObjectDescription.setInterfaces(new String[]
         { "org.alljoyn.Config" });
         when(mockAboutAnnouncement.getObjectDescriptions()).thenReturn(new BusObjectDescription[]
         { busObjectDescription });
+        when(mockAboutAnnouncement.getAboutData()).thenReturn(appAboutDataMap);
 
-        executeTestMethodFailsAssertion(getTestWrapperFor_v1_01(), "About interface not present in announcement");
+        executeTestMethod(getTestWrapperFor_v1_01());
+
+        verify(mockAboutAnnouncement).getAboutData();
+        verify(mockAboutAnnouncement).getObjectDescriptions();
     }
 
     @Test
