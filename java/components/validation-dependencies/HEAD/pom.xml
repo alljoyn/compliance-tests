@@ -245,8 +245,7 @@
                             <file>libs\GatewayController.jar</file>
                         </configuration>
                     </execution>
-                </executions>
-            <execution>
+            		<execution>
                         <id>install-timeservice</id>
                         <phase>install</phase>
                         <goals>
