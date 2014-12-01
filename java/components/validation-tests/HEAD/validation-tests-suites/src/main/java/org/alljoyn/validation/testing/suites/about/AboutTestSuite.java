@@ -147,10 +147,7 @@ public class AboutTestSuite extends BaseTestSuite
     @ValidationTest(name = "About-v1-01")
     public void testAbout_v1_01_AboutAnnouncement() throws Exception
     {
-        String aboutPath = getAboutInterfacePathFromAnnouncement();
-        assertNotNull("About interface not present in announcement", aboutPath);
-        assertEquals("About interface present at the wrong path", AboutTransport.OBJ_PATH, aboutPath);
-
+        validatePathIfAboutInterfacePresentInAnnouncement();
         verifyAboutData(deviceAboutAnnouncement.getAboutData());
     }
 
@@ -389,6 +386,20 @@ public class AboutTestSuite extends BaseTestSuite
             isValid = false;
         }
         return isValid;
+    }
+
+    private void validatePathIfAboutInterfacePresentInAnnouncement()
+    {
+        String aboutPath = getAboutInterfacePathFromAnnouncement();
+
+        if (aboutPath != null)
+        {
+            assertEquals("About interface present at the wrong path", AboutTransport.OBJ_PATH, aboutPath);
+        }
+        else
+        {
+            logger.debug("About interface not present in announcement");
+        }
     }
 
     private void releaseResources()
