@@ -85,12 +85,14 @@ public class InterfaceValidator
 
     List<String> getXmlFilesToBeLoaded()
     {
-        return Arrays.asList(IntrospectionXmlFile.About.getValue(), IntrospectionXmlFile.Action.getValue(), IntrospectionXmlFile.Audio.getValue(),
+    	return Arrays.asList(IntrospectionXmlFile.About.getValue(), IntrospectionXmlFile.Action.getValue(), IntrospectionXmlFile.Audio.getValue(),
                 IntrospectionXmlFile.Config.getValue(), IntrospectionXmlFile.Container.getValue(), IntrospectionXmlFile.ControlPanel.getValue(),
                 IntrospectionXmlFile.DeviceIcon.getValue(), IntrospectionXmlFile.Dialog.getValue(), IntrospectionXmlFile.HTTPControl.getValue(),
                 IntrospectionXmlFile.LabelProperty.getValue(), IntrospectionXmlFile.ListProperty.getValue(), IntrospectionXmlFile.Notification.getValue(),
                 IntrospectionXmlFile.NotificationAction.getValue(), IntrospectionXmlFile.Onboarding.getValue(), IntrospectionXmlFile.Peer.getValue(),
-                IntrospectionXmlFile.Property.getValue());
+                IntrospectionXmlFile.Property.getValue(), IntrospectionXmlFile.Lighting.getValue(),IntrospectionXmlFile.GWAgentCtrlAcl.getValue(),
+                IntrospectionXmlFile.GWAgentCtrlAclMgmt.getValue(),IntrospectionXmlFile.GWAgentCtrlApp.getValue(),IntrospectionXmlFile.
+                GWAgentCtrlAppMgmt.getValue());
     }
 
     private ValidationResult validateInterface(IntrospectionInterface standardizedIntrospectionInterface, String path)

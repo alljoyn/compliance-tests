@@ -39,6 +39,8 @@ public class XmlBasedBusIntrospector implements BusIntrospector
     private static final String ROOT_PATH = "/";
     private static final String ALL_STANDARDIZED_INTERFACES = "ALL";
     private static final String STANDARDIZED_INTERFACE_NAME_PREFIX = "org.alljoyn";
+    // This prefix was created due to alljoyn prefix is deprecated
+    private static final String STANDARDIZED_INTERFACE_NAME_PREFIX_NEW = "org.allseen";
     private IntrospectionXmlParser introspectionXmlParser = new IntrospectionXmlParser();
     private BusAttachment busAttachment;
     private String peerName;
@@ -232,7 +234,8 @@ public class XmlBasedBusIntrospector implements BusIntrospector
 
         for (IntrospectionInterface introspectionInterface : introspectionInterfaces)
         {
-            if (introspectionInterface.getName().startsWith(STANDARDIZED_INTERFACE_NAME_PREFIX))
+            if (introspectionInterface.getName().startsWith(STANDARDIZED_INTERFACE_NAME_PREFIX)
+            		|| introspectionInterface.getName().startsWith(STANDARDIZED_INTERFACE_NAME_PREFIX_NEW))
             {
                 standardizedInterfaces.add(introspectionInterface);
             }
