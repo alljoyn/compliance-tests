@@ -230,6 +230,7 @@
                             <file>libs\ControlPanelAdapter.jar</file>
                         </configuration>
                     </execution>
+                    <!--
                     <execution>
                         <id>install-gateway-controller</id>
                         <phase>install</phase>
@@ -260,6 +261,7 @@
                             <file>libs\TimeService.jar</file>
                         </configuration>
                     </execution>
+                    -->
                 </executions>
             </plugin>
         </plugins>
