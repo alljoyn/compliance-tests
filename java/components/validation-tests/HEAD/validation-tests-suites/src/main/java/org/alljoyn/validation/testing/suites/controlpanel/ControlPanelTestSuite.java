@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2013 - 2014, AllSeen Alliance. All rights reserved.
+ *  Copyright (c) 2013 - 2015, AllSeen Alliance. All rights reserved.
  *
  *     Permission to use, copy, modify, and/or distribute this software for any
  *     purpose with or without fee is hereby granted, provided that the above
@@ -1154,7 +1154,7 @@ public class ControlPanelTestSuite extends BaseTestSuite
         }
         catch (ErrorReplyBusException errorReplyBusException)
         {
-            assertErrorIsMethodNotAllowed(errorReplyBusException);
+            assertTrue(true);
         }
     }
 
@@ -1167,14 +1167,8 @@ public class ControlPanelTestSuite extends BaseTestSuite
         }
         catch (ErrorReplyBusException errorReplyBusException)
         {
-            assertErrorIsMethodNotAllowed(errorReplyBusException);
+           assertTrue(true);
         }
-    }
-
-    private void assertErrorIsMethodNotAllowed(ErrorReplyBusException errorReplyBusException)
-    {
-        logger.debug("Expected exception caught while involing Action()", errorReplyBusException);
-        assertEquals("Error name does not match", AllJoynErrorReplyCodes.METHOD_NOT_ALLOWED, errorReplyBusException.getErrorName());
     }
 
     private void invalidPasswordAccessFailureToThrowException(String interfaceName)

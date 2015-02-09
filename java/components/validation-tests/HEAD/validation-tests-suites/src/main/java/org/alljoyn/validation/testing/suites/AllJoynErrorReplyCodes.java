@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2013 - 2014, AllSeen Alliance. All rights reserved.
+ *  Copyright (c) 2013 - 2015, AllSeen Alliance. All rights reserved.
  *
  *     Permission to use, copy, modify, and/or distribute this software for any
  *     purpose with or without fee is hereby granted, provided that the above
@@ -27,6 +27,5 @@ public class AllJoynErrorReplyCodes
     public static String MAX_SIZE_EXCEEDED = "org.alljoyn.Error.MaxSizeExceeded";
     public static String LANGUAGE_NOT_SUPPORTED = "org.alljoyn.Error.LanguageNotSupported";
     public static String UPDATE_NOT_ALLOWED = "org.alljoyn.Error.UpdateNotAllowed";
-    public static String METHOD_NOT_ALLOWED = "org.alljoyn.Error.MethodNotAllowed";
 
 }
