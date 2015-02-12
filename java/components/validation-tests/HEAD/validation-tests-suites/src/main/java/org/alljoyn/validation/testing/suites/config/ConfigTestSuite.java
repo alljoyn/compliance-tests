@@ -795,9 +795,7 @@ public class ConfigTestSuite extends BaseTestSuite implements ServiceAvailabilit
         reconnectClients();
         callRestartOnConfig();
 
-        assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(SESSION_LOST_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
-
-        deviceAboutAnnouncement = waitForNextDeviceAnnouncement();
+        loseSessionOrWait();
 
         connectAboutClient(deviceAboutAnnouncement);
     }
@@ -812,9 +810,7 @@ public class ConfigTestSuite extends BaseTestSuite implements ServiceAvailabilit
 
         callRestartOnConfig();
 
-        assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(SESSION_LOST_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
-
-        deviceAboutAnnouncement = waitForNextAnnouncementAndCheckFieldValue(AboutKeys.ABOUT_DEVICE_NAME, NEW_DEVICE_NAME);
+        loseSessionOrWait();
 
         reconnectClients();
 
@@ -904,9 +900,7 @@ public class ConfigTestSuite extends BaseTestSuite implements ServiceAvailabilit
 
         callRestartOnConfig();
 
-        assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(SESSION_LOST_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
-
-        deviceAboutAnnouncement = waitForNextDeviceAnnouncement();
+        loseSessionOrWait();
 
         reconnectClients();
         serviceHelper.clearKeyStore();
@@ -1434,4 +1428,18 @@ public class ConfigTestSuite extends BaseTestSuite implements ServiceAvailabilit
         callMethodToCheckAuthentication();
         changePasscodeAndReconnect(DEFAULT_PINCODE);
     }
+
+    private void loseSessionOrWait() throws Exception
+    {
+        if (serviceAvailabilityHandler.waitForSessionLost(SESSION_LOST_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS))
+        {
+            deviceAboutAnnouncement = waitForNextDeviceAnnouncement();
+        }
+        else
+        {
+            logger.debug("Failed to lose session, waiting before attempting to reconnect");
+            Thread.sleep(CONFIG_CLIENT_RECONNECT_WAIT_TIME);
+        }
+    }
+
 }
