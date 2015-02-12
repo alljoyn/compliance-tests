@@ -955,7 +955,7 @@ public class ConfigTestSuite extends BaseTestSuite implements ServiceAvailabilit
             }
             else
             {
-                assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(SESSION_LOST_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
+                loseSessionOrWait();
 
                 UserInputDetails userInputDetails = createUserInputDetails();
                 // always continue, we ignore the response here
@@ -982,6 +982,7 @@ public class ConfigTestSuite extends BaseTestSuite implements ServiceAvailabilit
     }
 
     @ValidationTest(name = "Config-v1-34")
+    @Disabled
     public void testConfig_v1_34FactoryResetAfterUpdateConfigurations() throws Exception
     {
         String defaultDeviceName = null;
@@ -1029,7 +1030,7 @@ public class ConfigTestSuite extends BaseTestSuite implements ServiceAvailabilit
             }
             else
             {
-                assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(SESSION_LOST_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
+                loseSessionOrWait();
 
                 UserInputDetails userInputDetails = createUserInputDetails();
                 // always continue, we ignore the response here
@@ -1047,6 +1048,7 @@ public class ConfigTestSuite extends BaseTestSuite implements ServiceAvailabilit
     }
 
     @ValidationTest(name = "Config-v1-35")
+    @Disabled
     public void testConfig_v1_35FactoryResetResetsPasscode() throws Exception
     {
         if (deviceAboutAnnouncement.supportsInterface(OnboardingTransport.INTERFACE_NAME))
@@ -1082,7 +1084,7 @@ public class ConfigTestSuite extends BaseTestSuite implements ServiceAvailabilit
             }
             else
             {
-                assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(SESSION_LOST_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
+               loseSessionOrWait();
 
                 UserInputDetails userInputDetails = createUserInputDetails();
                 // always continue, we ignore the response here
