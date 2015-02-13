@@ -264,7 +264,7 @@ public class OnboardingTestSuite extends ValidationBaseTestCase
         onboardingHelper.waitForAboutAnnouncementAndThenConnect();
 
         verifyOnboardingState(OBS_STATE_PERSONAL_AP_CONFIGURED_ERROR);
-        verifyOnboardingErrorCode(OBS_LASTERROR_UNAUTHORIZED);
+        assertTrue(onboardingHelper.retrieveStateProperty() != OBS_LASTERROR_VALIDATED);
     }
 
     @ValidationTest(name = "Onboarding-v1-07")
