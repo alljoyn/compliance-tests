@@ -63,11 +63,6 @@
             <artifactId>validation-tests-suites-time</artifactId>
             <version>${project.version}</version>
         </dependency>
-		<dependency>
-            <groupId>org.alljoyn.validation.validation-tests</groupId>
-            <artifactId>validation-tests-suites-smarthome</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.alljoyn.validation.validation-tests</groupId>
             <artifactId>validation-tests-simulator</artifactId>
@@ -116,8 +111,7 @@
                         <resourceBundle>org.alljoyn.validation.validation-tests:validation-tests-suites:${project.version}</resourceBundle>
                         <resourceBundle>org.alljoyn.validation.validation-tests:validation-tests-suites-lighting:${project.version}</resourceBundle>
                         <resourceBundle>org.alljoyn.validation.validation-tests:validation-tests-suites-gwagent:${project.version}</resourceBundle>
-                        <resourceBundle>org.alljoyn.validation.validation-tests:validation-tests-suites-time:${project.version}</resourceBundle>
-						<resourceBundle>org.alljoyn.validation.validation-tests:validation-tests-suites-smarthome:${project.version}</resourceBundle>
+                         <resourceBundle>org.alljoyn.validation.validation-tests:validation-tests-suites-time:${project.version}</resourceBundle>
                     </resourceBundles>
                     <attached>false</attached>
                     <outputDirectory>${project.basedir}/target/shared</outputDirectory>
