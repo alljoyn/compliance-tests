@@ -1,30 +1,38 @@
-AllJoyn Validation Tests Version 1.0 Release Notes
-------------------------------------------
+AllJoyn Validation Tests Version 14.12 Release Notes
+----------------------------------------------------
 
 Platform Support
 ----------------
-
  1) Android JellyBean
 
 
-Features added in Version 1.0
+Features added in Version 14.12
 -------------------------------
+The AllJoyn service framework implementations must conform to the published service framework interface specifications. Validation tests verify that the behavior of the implementation has been maintained when it is built/ported to a particular device. The AllJoyn validation framework which is part of this contribution provides the set of Java interface definitions and classes required to write tests which can verify an AllJoyn service/interface implementation.
 
-The AllJoyn service framework implementations must conform to the published service framework interface specifications. Validation tests verify that the behavior of the implementation has been maintained when it is built/ported to a particular device. The AllJoyn validation framework which is part of this contribution provides the set of Java interface definitions and classes required to write tests which can verify an AllJoyn service/interface implementation.   
+Addition of Lighting Service Framework Lamp Service tests
 
+Issues Addressed in Version 14.12
+---------------------------------
+ASABASE-292: Incorrect error name returned while invoking an invalid method on a BusObject implementing Dialog interface
+ASABASE-436: Compliance Tests Config #26, #27, #32 fail (Restart())
+ASABASE-438: Compliance Tests Config #33, #34, #35 fail (FactoryReset())
+ASABASE-442: Onboarding certification test ConfigureWiFiWithWrongPassword fail on OpenWRT
 
 Known Issues
 ------------
 ASACOMP-3: About test case About-v1-02 is not checking About announcement version
 ASACOMP-5: Control Panel test case ControlPanel-v1-10 is not joining a new session before calling getVersion on each secured object
 ASACOMP-6: Onboarding test case Onboarding-v1-04 is disabled (unable to run with latest Onboarding SDK changes)
-
+Compliance testing modules for Gateway and TimeService are disabled.
 
 Compatibility
 -------------
-
+Compliance tests can be performed against applications built against AllJoyn Base Services 14.12.
+Compliance testing modules for Gateway and TimeService are disabled.
 
 Change history
 --------------
-
+14.12 - Bug fixes and code changes needed to match Base Services 14.12
 1.0 - 1st AllSeen Alliance release
+
