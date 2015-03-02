@@ -245,6 +245,7 @@
                             <file>libs\GatewayController.jar</file>
                         </configuration>
                     </execution>
+<!--
             		<execution>
                         <id>install-timeservice</id>
                         <phase>install</phase>
@@ -260,6 +261,7 @@
                             <file>libs\TimeService.jar</file>
                         </configuration>
                     </execution>
+-->
                 </executions>
             </plugin>
         </plugins>
