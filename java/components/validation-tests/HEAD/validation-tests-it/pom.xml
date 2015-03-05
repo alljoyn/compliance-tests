@@ -24,7 +24,7 @@
 	<name>validation-tests-it</name>
 	<packaging>apk</packaging>
 	<properties>
-		<project.version.value>14.06.00-02</project.version.value>
+		<project.version.value>14.06.00-03</project.version.value>
 	</properties>
 	<dependencies>
 		<dependency>
