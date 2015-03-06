@@ -92,7 +92,7 @@ public class InterfaceValidator
                 IntrospectionXmlFile.NotificationAction.getValue(), IntrospectionXmlFile.Onboarding.getValue(), IntrospectionXmlFile.Peer.getValue(),
                 IntrospectionXmlFile.Property.getValue(), IntrospectionXmlFile.Lighting.getValue(),IntrospectionXmlFile.GWAgentCtrlAcl.getValue(),
                 IntrospectionXmlFile.GWAgentCtrlAclMgmt.getValue(),IntrospectionXmlFile.GWAgentCtrlApp.getValue(),IntrospectionXmlFile.
-                GWAgentCtrlAppMgmt.getValue());
+                GWAgentCtrlAppMgmt.getValue(), IntrospectionXmlFile.LSFController.getValue(), IntrospectionXmlFile.LSFControllerLeaderElection.getValue());
     }
 
     private ValidationResult validateInterface(IntrospectionInterface standardizedIntrospectionInterface, String path)
