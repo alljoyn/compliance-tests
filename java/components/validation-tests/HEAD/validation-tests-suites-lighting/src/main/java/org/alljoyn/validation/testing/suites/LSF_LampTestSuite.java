@@ -573,10 +573,6 @@ public class LSF_LampTestSuite extends ValidationBaseTestCase implements Service
 			//assertEquals("TransitionLampState getOnOff failed ", onOffValue, newOnOff);
 
 			/******************************************************************************/
-
-			Thread.sleep(5000);
-			// there should have been enough time for signal to be received
-			assertEquals("LSF_Lamp TransitionLampState await signal returns failure. ", true, signalReceived);
 		}
 		catch (BusException e)
 		{
