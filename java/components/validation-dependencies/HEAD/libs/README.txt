@@ -1,5 +1,7 @@
 This project can be used to install the necessary AllJoyn dependencies into the local Maven repository. 
 
+Alternatively, the validation-dependencies-dl project can be used to automatically download and extract the components from their release locations.
+
 Please copy the following file(s) into the current libs folder before building the pom file.
 
 alljoyn.jar
