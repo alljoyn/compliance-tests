@@ -230,21 +230,6 @@
                             <file>libs\ControlPanelAdapter.jar</file>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>install-gateway-controller</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>install-file</goal>
-                        </goals>
-                        <configuration>
-                            <groupId>org.alljoyn</groupId>
-                            <artifactId>gateway_controller</artifactId>
-                            <version>${alljoyn-services.version}</version>
-                            <packaging>jar</packaging>
-                            <classifier>android</classifier>
-                            <file>libs\GatewayController.jar</file>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
         </plugins>
