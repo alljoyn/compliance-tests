@@ -28,6 +28,7 @@ public class ServiceAvailabilityHandlerTest
     @Test
     public void testSessionLost() throws Exception
     {
+        Thread.interrupted(); // clear interrupted state to avoid test from failing
         ServiceAvailabilityHandler serviceAvailabilityHandler = new ServiceAvailabilityHandler();
         serviceAvailabilityHandler.connectionLost();
         assertTrue(serviceAvailabilityHandler.waitForSessionLost(1, TimeUnit.MICROSECONDS));
