@@ -25,6 +25,7 @@
 	<packaging>apk</packaging>
 	<properties>
 		<project.version.value>14.06.00-03</project.version.value>
+		<android.manifestFile>${project.build.directory}/AndroidManifest.xml</android.manifestFile>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -112,20 +113,45 @@
 					</execution>
 				</executions>
 			</plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                       <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}</directory>
+                                    <filtering>false</filtering>
+                                    <includes>
+                                        <include>AndroidManifest.xml</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 			<plugin>
 				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
 				<artifactId>android-maven-plugin</artifactId>
+				<configuration>
+                    <androidManifestFile>${project.build.directory}/AndroidManifest.xml</androidManifestFile>
+				    <manifest>
+						<versionName>${project.version.value}-${maven.build.timestamp}</versionName>
+					</manifest>
+				</configuration>
 				<executions>
 					<execution>
 						<id>update-manifest</id>
 						<goals>
 							<goal>manifest-update</goal>
 						</goals>
-						<configuration>
-							<manifest>
-								<versionName>${project.version.value}-${maven.build.timestamp}</versionName>
-							</manifest>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
