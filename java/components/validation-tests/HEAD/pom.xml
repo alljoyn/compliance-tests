@@ -46,7 +46,6 @@
         <module>validation-tests-simulator</module>
         <module>validation-tests-suites</module>
 		<module>validation-tests-suites-lighting</module>
-        <module>validation-tests-suites-gwagent</module>
         <module>validation-tests-utils</module>
         <module>validation-tests-utils-android</module>
         <module>validation-tests-it</module>
