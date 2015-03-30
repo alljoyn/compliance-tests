@@ -53,7 +53,7 @@ import org.alljoyn.validation.framework.utils.introspection.bean.InterfaceDetail
 import org.alljoyn.validation.framework.utils.introspection.bean.IntrospectionInterface;
 import org.alljoyn.validation.framework.utils.introspection.bean.IntrospectionNode;
 import org.alljoyn.validation.framework.utils.introspection.bean.NodeDetail;
-import org.alljoyn.validation.testing.suites.BaseTestSuite;
+import org.alljoyn.validation.testing.utils.BaseTestSuite;
 import org.alljoyn.validation.testing.utils.InterfaceValidator;
 import org.alljoyn.validation.testing.utils.ValidationResult;
 import org.alljoyn.validation.testing.utils.about.AboutAnnouncementDetails;
