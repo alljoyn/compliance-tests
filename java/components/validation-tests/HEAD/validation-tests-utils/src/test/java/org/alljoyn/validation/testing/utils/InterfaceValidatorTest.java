@@ -112,23 +112,6 @@ public class InterfaceValidatorTest
     }
 
     @Test
-    public void validateXmlFilesToBeLoaded()
-    {
-        interfaceValidator = new InterfaceValidator(mockValidationTestContext);
-        List<String> xmlFilesToBeLoaded = interfaceValidator.getXmlFilesToBeLoaded();
-        List<String> expectedXmlFiles = Arrays.asList(IntrospectionXmlFile.About.getValue(), IntrospectionXmlFile.Action.getValue(), IntrospectionXmlFile.Audio.getValue(),
-                IntrospectionXmlFile.Config.getValue(), IntrospectionXmlFile.Container.getValue(), IntrospectionXmlFile.ControlPanel.getValue(),
-                IntrospectionXmlFile.DeviceIcon.getValue(), IntrospectionXmlFile.Dialog.getValue(), IntrospectionXmlFile.HTTPControl.getValue(),
-                IntrospectionXmlFile.LabelProperty.getValue(), IntrospectionXmlFile.ListProperty.getValue(), IntrospectionXmlFile.Notification.getValue(),
-                IntrospectionXmlFile.NotificationAction.getValue(), IntrospectionXmlFile.Onboarding.getValue(), IntrospectionXmlFile.Peer.getValue(),
-                IntrospectionXmlFile.Property.getValue(), IntrospectionXmlFile.Clock.getValue(), IntrospectionXmlFile.TimeAuthority.getValue(),
-                IntrospectionXmlFile.Alarm.getValue(), IntrospectionXmlFile.AlarmFactory.getValue(), IntrospectionXmlFile.Timer.getValue(),
-                IntrospectionXmlFile.TimerFactory.getValue());
-
-        assertEquals(xmlFilesToBeLoaded, expectedXmlFiles);
-    }
-
-    @Test
     public void loadingInvalidXmlFileThrowsExceptionWhichIsCaught()
     {
         interfaceValidator = new InterfaceValidator(mockValidationTestContext)
