@@ -37,6 +37,7 @@
         <robolectric.version>2.2</robolectric.version>
         <alljoyn.core.version>14.12.00b</alljoyn.core.version>
         <alljoyn.base-services.version>14.12.00</alljoyn.base-services.version>
+        <alljoyn.gwagent.version>14.12.00-SNAPSHOT</alljoyn.gwagent.version>
         <alljoyn.classifier>android-dbg</alljoyn.classifier>
         <validation-framework.version>14.12.01-SNAPSHOT</validation-framework.version>
         <powermock.version>1.4.12</powermock.version>
@@ -45,8 +46,8 @@
         <module>validation-tests-simulator</module>
         <module>validation-tests-suites</module>
         <module>validation-tests-suites-lighting</module>
-        <!--<module>validation-tests-suites-gwagent</module>-->
-        <!--<module>validation-tests-suites-time</module>-->
+        <module>validation-tests-suites-gwagent</module>
+        <!--<module>validation-tests-suites-time</module> -->
         <module>validation-tests-utils</module>
         <module>validation-tests-utils-android</module>
         <module>validation-tests-it</module>
@@ -166,6 +167,12 @@
                 <groupId>org.alljoyn</groupId>
                 <artifactId>controlpanel_adapter</artifactId>
                 <version>${alljoyn.base-services.version}</version>
+                <classifier>android</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.alljoyn</groupId>
+                <artifactId>gateway_controller</artifactId>
+                <version>${alljoyn.gwagent.version}</version>
                 <classifier>android</classifier>
             </dependency>
             <dependency>
