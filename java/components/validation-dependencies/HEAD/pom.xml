@@ -26,6 +26,7 @@
     <properties>
         <alljoyn.core.version>14.12.00b</alljoyn.core.version>
         <alljoyn.base-services.version>14.12.00</alljoyn.base-services.version>
+        <alljoyn.gwagent.version>14.12.00</alljoyn.gwagent.version>
     </properties>
     <build>
         <plugins>
@@ -229,7 +230,6 @@
                             <file>libs\ControlPanelAdapter.jar</file>
                         </configuration>
                     </execution>
-<!--
                     <execution>
                         <id>install-gateway-controller</id>
                         <phase>install</phase>
@@ -239,14 +239,13 @@
                         <configuration>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>gateway_controller</artifactId>
-                            <version>${alljoyn.base-services.version}</version>
+                            <version>${alljoyn.gwagent.version}</version>
                             <packaging>jar</packaging>
                             <classifier>android</classifier>
                             <file>libs\GatewayController.jar</file>
                         </configuration>
                     </execution>
--->
-<!--
+                    <!--
             		<execution>
                         <id>install-timeservice</id>
                         <phase>install</phase>
@@ -262,7 +261,7 @@
                             <file>libs\TimeService.jar</file>
                         </configuration>
                     </execution>
--->
+                    -->
                 </executions>
             </plugin>
         </plugins>

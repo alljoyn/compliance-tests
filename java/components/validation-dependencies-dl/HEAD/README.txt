@@ -8,3 +8,6 @@ Check that sufficient storage space is available before building this project. T
 
 Files are downloaded to the Java temporary folder. As an example, the following can be used to override the location of the temporary folder:
   mvn install -Djava.io.tmpdir=/local/mnt/workspace/tmp
+
+If you get an error downloading because your JRE does not trust the root certificate for the allseenalliance.org sites then you can use the cacerts file in this current directory as follows:
+  mvn install -Djava.io.tmpdir=/local/mnt/workspace/tmp -Djavax.net.ssl.trustStore=cacerts -Djavax.net.ssl.trustStorePassword=changeit

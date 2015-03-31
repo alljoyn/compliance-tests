@@ -48,7 +48,7 @@
             <artifactId>validation-tests-utils-android</artifactId>
             <version>${project.version}</version>
         </dependency>
-		<dependency>
+        <dependency>
             <groupId>org.alljoyn.validation.validation-tests</groupId>
             <artifactId>validation-tests-suites</artifactId>
             <version>${project.version}</version>
@@ -74,12 +74,6 @@
             <groupId>org.alljoyn</groupId>
             <artifactId>alljoyn_app_utils</artifactId>
             <classifier>android</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.alljoyn</groupId>
-            <artifactId>gateway_controller</artifactId>
-            <classifier>android</classifier>
-			<version>14.06.00-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.robolectric</groupId>

@@ -24,7 +24,7 @@
     <name>validation-tests-it</name>
     <packaging>apk</packaging>
     <properties>
-        <project.version.value>14.06.00-01</project.version.value>
+        <project.version.value>00.00.00-01</project.version.value>
         <android.manifestFile>${project.build.directory}/AndroidManifest.xml</android.manifestFile>
     </properties>
     <dependencies>
@@ -54,20 +54,20 @@
             <artifactId>validation-tests-suites-lighting</artifactId>
             <version>${project.version}</version>
         </dependency>
-<!--
         <dependency>
             <groupId>org.alljoyn.validation.validation-tests</groupId>
             <artifactId>validation-tests-suites-gwagent</artifactId>
             <version>${project.version}</version>
         </dependency>
--->
-<!--
+        <!--
+
+
         <dependency>
             <groupId>org.alljoyn.validation.validation-tests</groupId>
             <artifactId>validation-tests-suites-time</artifactId>
             <version>${project.version}</version>
         </dependency>
--->
+        -->
         <dependency>
             <groupId>org.alljoyn.validation.validation-tests</groupId>
             <artifactId>validation-tests-simulator</artifactId>
@@ -115,7 +115,7 @@
                     <resourceBundles>
                         <resourceBundle>org.alljoyn.validation.validation-tests:validation-tests-suites:${project.version}</resourceBundle>
                         <resourceBundle>org.alljoyn.validation.validation-tests:validation-tests-suites-lighting:${project.version}</resourceBundle>
-                        <!--<resourceBundle>org.alljoyn.validation.validation-tests:validation-tests-suites-gwagent:${project.version}</resourceBundle>-->
+                        <resourceBundle>org.alljoyn.validation.validation-tests:validation-tests-suites-gwagent:${project.version}</resourceBundle>
                         <!--<resourceBundle>org.alljoyn.validation.validation-tests:validation-tests-suites-time:${project.version}</resourceBundle>-->
                     </resourceBundles>
                     <attached>false</attached>
