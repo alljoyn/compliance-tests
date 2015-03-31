@@ -26,6 +26,7 @@ import org.alljoyn.validation.testing.instrument.ValidationTestCaseBuilder;
 import org.alljoyn.validation.testing.suites.about.AboutTestSuite;
 import org.alljoyn.validation.testing.suites.config.ConfigTestSuite;
 import org.alljoyn.validation.testing.suites.controlpanel.ControlPanelTestSuite;
+import org.alljoyn.validation.testing.suites.gwagent.GwAgentTestSuite;
 import org.alljoyn.validation.testing.suites.notification.NotificationConsumerTestSuite;
 import org.alljoyn.validation.testing.suites.notification.NotificationProducerTestSuite;
 
@@ -47,6 +48,7 @@ public class RunTestSuitesIT extends AndroidTestCase
         getTestCasesFromClass(testSuite, NotificationProducerTestSuite.class);
         getTestCasesFromClass(testSuite, NotificationConsumerTestSuite.class);
         getTestCasesFromClass(testSuite, ControlPanelTestSuite.class);
+        getTestCasesFromClass(testSuite, GwAgentTestSuite.class);
 
         return testSuite;
     }
