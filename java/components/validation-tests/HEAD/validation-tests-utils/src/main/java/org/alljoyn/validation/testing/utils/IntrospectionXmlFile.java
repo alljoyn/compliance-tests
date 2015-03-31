@@ -23,7 +23,8 @@ public enum IntrospectionXmlFile
             "introspection-xml/LabelProperty.xml"), ListProperty("introspection-xml/ListProperty.xml"), Notification("introspection-xml/Notification.xml"), NotificationAction(
             "introspection-xml/NotificationAction.xml"), Onboarding("introspection-xml/Onboarding.xml"), Peer("introspection-xml/Peer.xml"), Property(
             "introspection-xml/Property.xml"), Lighting("introspection-xml/Lamp.xml"), GWAgentCtrlAcl("introspection-xml/GWAgentCtrlAcl.xml"), GWAgentCtrlAclMgmt(
-            "introspection-xml/GWAgentCtrlAclMgmt.xml"), GWAgentCtrlApp("introspection-xml/GWAgentCtrlApp.xml"), GWAgentCtrlAppMgmt("introspection-xml/GWAgentCtrlAppMgmt.xml");
+            "introspection-xml/GWAgentCtrlAclMgmt.xml"), GWAgentCtrlApp("introspection-xml/GWAgentCtrlApp.xml"), GWAgentCtrlAppMgmt("introspection-xml/GWAgentCtrlAppMgmt.xml"), GWAgentConnectorApp(
+            "introspection-xml/GWAgentConnectorApp.xml");
 
     private String value;
 

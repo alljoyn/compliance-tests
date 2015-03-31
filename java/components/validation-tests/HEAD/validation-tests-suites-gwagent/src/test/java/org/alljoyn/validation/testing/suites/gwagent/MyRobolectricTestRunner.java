@@ -15,22 +15,21 @@
  *******************************************************************************/
 package org.alljoyn.validation.testing.suites.gwagent;
 
-import org.alljoyn.validation.framework.ValidationTestCase;
-import org.alljoyn.validation.framework.ValidationTestSuite;
-import org.alljoyn.validation.testing.suites.BaseTestSuiteManager;
-import org.alljoyn.validation.testing.utils.about.AboutAnnouncementDetails;
+import org.junit.runners.model.InitializationError;
+import org.robolectric.RobolectricTestRunner;
 
-public class GWAgentTestSuiteManager extends BaseTestSuiteManager implements ValidationTestSuite
+public class MyRobolectricTestRunner extends RobolectricTestRunner
 {
-    @Override
-    protected Class<? extends ValidationTestCase> getTestSuiteClass()
+
+    static
     {
-        return GWAgentTestSuite.class;
+        // write Log statements to stdout
+        System.setProperty("robolectric.logging", "stdout");
     }
 
-    @Override
-    protected boolean addTestGroupForApplication(AboutAnnouncementDetails aboutAnnouncement)
+    public MyRobolectricTestRunner(Class<?> testClass) throws InitializationError
     {
-        return aboutAnnouncement.supportsInterface("org.alljoyn.gwagent.ctrl.AppMgmt");
-   }
+        super(testClass);
+    }
+
 }

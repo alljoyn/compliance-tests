@@ -23,47 +23,48 @@ import java.util.concurrent.TimeUnit;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.alljoyn.about.AboutKeys;
 import org.alljoyn.about.client.AboutClient;
 import org.alljoyn.bus.BusException;
-import org.alljoyn.gatewaycontroller.sdk.GatewayController;
 import org.alljoyn.services.android.utils.AndroidLogger;
 import org.alljoyn.services.common.ServiceAvailabilityListener;
 import org.alljoyn.validation.framework.AppUnderTestDetails;
-import org.alljoyn.validation.framework.ValidationBaseTestCase;
 import org.alljoyn.validation.framework.annotation.ValidationSuite;
 import org.alljoyn.validation.framework.annotation.ValidationTest;
 import org.alljoyn.validation.framework.utils.introspection.BusIntrospector;
 import org.alljoyn.validation.framework.utils.introspection.bean.InterfaceDetail;
 import org.alljoyn.validation.framework.utils.introspection.bean.IntrospectionInterface;
-import org.alljoyn.validation.testing.utils.ValidationResult;
+import org.alljoyn.validation.testing.utils.BaseTestSuite;
 import org.alljoyn.validation.testing.utils.about.AboutAnnouncementDetails;
-import org.alljoyn.validation.testing.utils.gwagent.GWAgentHelper;
-import org.alljoyn.validation.testing.utils.gwagent.GWAgentInterfaceValidator;
 import org.alljoyn.validation.testing.utils.log.Logger;
 import org.alljoyn.validation.testing.utils.log.LoggerFactory;
 import org.alljoyn.validation.testing.utils.services.ServiceAvailabilityHandler;
+import org.alljoyn.validation.testing.utils.services.ServiceHelper;
 import org.xml.sax.SAXException;
 
 @ValidationSuite(name = "GWAgent-v1")
-public class GWAgentTestSuite extends ValidationBaseTestCase implements ServiceAvailabilityListener
+public class GWAgentTestSuite extends BaseTestSuite implements ServiceAvailabilityListener
 {
     private static final String TAG = "GWAgentTestSuite";
     private static final Logger logger = LoggerFactory.getLogger(TAG);
     private static final String BUS_APPLICATION_NAME = "GWAgentTestSuite";
     public static final long ANNOUCEMENT_TIMEOUT_IN_SECONDS = 30;
-    private static final long SESSION_CLOSE_TIMEOUT_IN_SECONDS = 5;
 
-    private GWAgentHelper gwagentHelper;
+    static final String GWAGENT_IFACE_PREFIX = "org.alljoyn.gwagent.ctrl";
+    static final String GWAGENT_APPMGMT_IFNAME = GWAGENT_IFACE_PREFIX + ".AppMgmt";
+    static final String GWAGENT_CTRLAPP_IFNAME = GWAGENT_IFACE_PREFIX + ".App";
+    static final String GWAGENT_CTRLACLMGMT_IFNAME = GWAGENT_IFACE_PREFIX + ".AclMgmt";
+    static final String GWAGENT_CTRLACL_IFNAME = GWAGENT_IFACE_PREFIX + ".Acl";
+    static final String GWAGENT_APPMGMT_PATH = "/gw";
+
+    private ServiceHelper serviceHelper;
     private AboutClient aboutClient;
-    private GatewayController gatewayController;
+    private BusIntrospector busIntrospector;
 
     private AboutAnnouncementDetails deviceAboutAnnouncement;
 
     private AppUnderTestDetails appUnderTestDetails;
     private UUID dutAppId;
     private String dutDeviceId;
-    private ServiceAvailabilityHandler serviceAvailabilityHandler;
     private String keyStorePath;
 
     @Override
@@ -71,10 +72,10 @@ public class GWAgentTestSuite extends ValidationBaseTestCase implements ServiceA
     {
         super.setUp();
 
-        logger.debug("test setUp started");
-
         try
         {
+            logger.debug("test setUp started");
+
             appUnderTestDetails = getValidationTestContext().getAppUnderTestDetails();
             dutDeviceId = appUnderTestDetails.getDeviceId();
             logger.debug(String.format("Running GWAgent test case against Device ID: %s", dutDeviceId));
@@ -83,81 +84,30 @@ public class GWAgentTestSuite extends ValidationBaseTestCase implements ServiceA
             keyStorePath = getValidationTestContext().getKeyStorePath();
             logger.debug(String.format("Running GWAgent test case using KeyStorePath: %s", keyStorePath));
 
-            initGWAgentHelper();
+            serviceHelper = getServiceHelper();
+            serviceHelper.initialize(BUS_APPLICATION_NAME, dutDeviceId, dutAppId);
 
+            deviceAboutAnnouncement = serviceHelper.waitForNextDeviceAnnouncement(determineAboutAnnouncementTimeout(), TimeUnit.SECONDS);
+            assertNotNull("Timed out waiting for About announcement", deviceAboutAnnouncement);
+            aboutClient = serviceHelper.connectAboutClient(deviceAboutAnnouncement);
+            serviceHelper.enableAuthentication(keyStorePath);
+            busIntrospector = getIntrospector();
             logger.debug("test setUp done");
         }
-        catch (Exception e)
+        catch (Exception exception)
         {
-            logger.debug("test setUp thrown an exception", e);
-            releaseResources();
-            throw e;
-        }
-    }
-
-    protected void initGWAgentHelper() throws BusException, Exception
-    {
-        releaseGWAgentHelper();
-        gwagentHelper = createGWAgentHelper();
-
-        gwagentHelper.initialize(BUS_APPLICATION_NAME, dutDeviceId, dutAppId);
-
-        deviceAboutAnnouncement = waitForNextAnnouncementAndCheckFieldValue(AboutKeys.ABOUT_DEVICE_NAME, "AllJoyn Gateway Agent"); // waitForNextDeviceAnnouncement();
-
-        connectAboutClient(deviceAboutAnnouncement);
-        connectGatewayController(deviceAboutAnnouncement);
-
-        gwagentHelper.enableAuthentication(keyStorePath);
-    }
-
-    private void releaseGWAgentHelper()
-    {
-        try
-        {
-            if (aboutClient != null)
+            try
             {
-                aboutClient.disconnect();
-                aboutClient = null;
+                releaseResources();
             }
-            if (gatewayController != null)
+            catch (Exception newException)
             {
-                gatewayController.shutdown();
-                gatewayController = null;
+                logger.debug("Exception releasing resources", newException);
             }
-            if (gwagentHelper != null)
-            {
-                gwagentHelper.release();
-                waitForSessionToClose();
-                gwagentHelper = null;
-            }
+
+            throw exception;
         }
-        catch (Exception ex)
-        {
-            logger.debug("Exception releasing resources", ex);
-        }
-    }
 
-    private void connectGatewayController(AboutAnnouncementDetails aboutAnnouncement) throws Exception
-    {
-        gatewayController = gwagentHelper.connectGatewayController(aboutAnnouncement);
-    }
-
-    private void connectAboutClient(AboutAnnouncementDetails aboutAnnouncement) throws Exception
-    {
-        serviceAvailabilityHandler = createServiceAvailabilityHandler();
-        aboutClient = gwagentHelper.connectAboutClient(aboutAnnouncement, serviceAvailabilityHandler);
-    }
-
-    private AboutAnnouncementDetails waitForNextDeviceAnnouncement() throws Exception
-    {
-        logger.info("Waiting for About announcement");
-        return gwagentHelper.waitForNextDeviceAnnouncement(ANNOUCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS, true);
-    }
-
-    private void waitForSessionToClose() throws Exception
-    {
-        logger.info("Waiting for session to close");
-        gwagentHelper.waitForSessionToClose(SESSION_CLOSE_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
     }
 
     @Override
@@ -169,59 +119,90 @@ public class GWAgentTestSuite extends ValidationBaseTestCase implements ServiceA
         logger.debug("test tearDown done");
     }
 
-    @ValidationTest(name = "GWAgent-v1-01")
-    public void testGWAgent_v1_01_GWAgentInterfacesMatchDefinitions() throws Exception
+    private void releaseResources()
     {
-        List<InterfaceDetail> gwagentCtrlIntrospectionInterfacesExposedOnBus = new ArrayList<InterfaceDetail>();
-        List<InterfaceDetail> gwagentCtrlAppMgmtIntrospectionInterfacesExposedOnBus = getIntrospector().getInterfacesExposedOnBusUnderSpecifiedPathBasedOnName("/",
-                "org.alljoyn.gwagent.ctrl.AppMgmt");
-        for (InterfaceDetail gwObjectDetail : gwagentCtrlAppMgmtIntrospectionInterfacesExposedOnBus)
+        disconnectFromAboutClient();
+
+        if (serviceHelper != null)
         {
-            if (gwObjectDetail.getPath().equals("/gw"))
-            {
-                gwagentCtrlIntrospectionInterfacesExposedOnBus.add(gwObjectDetail);
-                List<InterfaceDetail> gwagentCtrlAppIntrospectionInterfacesExposedOnBus = getIntrospector().getInterfacesExposedOnBusUnderSpecifiedPathBasedOnName(
-                        gwObjectDetail.getPath(), "org.alljoyn.gwagent.ctrl.App");
-                for (InterfaceDetail gwAppObjectDetail : gwagentCtrlAppIntrospectionInterfacesExposedOnBus)
-                {
-                    gwagentCtrlIntrospectionInterfacesExposedOnBus.add(gwAppObjectDetail);
-                }
-                List<InterfaceDetail> gwagentCtrlAclMgmtIntrospectionInterfacesExposedOnBus = getIntrospector().getInterfacesExposedOnBusUnderSpecifiedPathBasedOnName(
-                        gwObjectDetail.getPath(), "org.alljoyn.gwagent.ctrl.AclMgmt");
-                for (InterfaceDetail gwAclMgmtObjectDetail : gwagentCtrlAclMgmtIntrospectionInterfacesExposedOnBus)
-                {
-                    gwagentCtrlIntrospectionInterfacesExposedOnBus.add(gwAclMgmtObjectDetail);
-                }
-                for (InterfaceDetail gwAppObjectDetail : gwagentCtrlAppIntrospectionInterfacesExposedOnBus)
-                {
-                    boolean matched = false;
-                    for (InterfaceDetail gwAclMgmtObjectDetail : gwagentCtrlAclMgmtIntrospectionInterfacesExposedOnBus)
-                    {
-                        if (gwAppObjectDetail.getPath().equals(gwAclMgmtObjectDetail.getPath()))
-                        {
-                            matched = true;
-                            List<InterfaceDetail> gwagentCtrlAclIntrospectionInterfacesExposedOnBus = getIntrospector().getInterfacesExposedOnBusUnderSpecifiedPathBasedOnName(
-                                    gwObjectDetail.getPath(), "org.alljoyn.gwagent.ctrl.Acl");
-                            for (InterfaceDetail gwAclObjectDetail : gwagentCtrlAclIntrospectionInterfacesExposedOnBus)
-                            {
-                                gwagentCtrlIntrospectionInterfacesExposedOnBus.add(gwAclObjectDetail);
-                            }
-                        }
-                    }
-                    assertTrue(String.format("Application at path %s does NOT have ALL relevant interfaces", gwAppObjectDetail.getPath()), matched);
-                }
-            }
+            serviceHelper.release();
+            serviceHelper = null;
         }
-        for (InterfaceDetail objectDetail : gwagentCtrlIntrospectionInterfacesExposedOnBus)
+    }
+
+    private void disconnectFromAboutClient()
+    {
+        if (aboutClient != null)
+        {
+            aboutClient.disconnect();
+            aboutClient = null;
+        }
+    }
+
+    @ValidationTest(name = "GWAgent-v1-01")
+    public void testGWAgent_v1_01_ValiateCtrlAppMgmtInterfaces() throws Exception
+    {
+        List<InterfaceDetail> gwAgentObjects = new ArrayList<InterfaceDetail>();
+
+        assertTrue("About announcement does not advertise interface: " + GWAGENT_APPMGMT_IFNAME, deviceAboutAnnouncement.supportsInterface(GWAGENT_APPMGMT_IFNAME));
+
+        List<InterfaceDetail> appMgmtInterfaceDetailList = busIntrospector.getInterfacesExposedOnBusBasedOnName(GWAGENT_APPMGMT_IFNAME);
+
+        validateAppMgmtBusObject(appMgmtInterfaceDetailList, gwAgentObjects);
+
+        validateAppBusObjects(gwAgentObjects);
+
+        validateAclMgmtBusObjects(gwAgentObjects);
+
+        logBusObjectDetails(gwAgentObjects);
+
+    }
+
+    private void logBusObjectDetails(List<InterfaceDetail> gwAgentObjects)
+    {
+        for (InterfaceDetail objectDetail : gwAgentObjects)
         {
             for (IntrospectionInterface intfName : objectDetail.getIntrospectionInterfaces())
             {
                 logger.info(String.format("Found object at %s implementing %s", objectDetail.getPath(), intfName.getName()));
             }
         }
-        ValidationResult validationResult = getInterfaceValidator().validate(gwagentCtrlIntrospectionInterfacesExposedOnBus);
+    }
 
-        assertTrue(validationResult.getFailureReason(), validationResult.isValid());
+    private void validateAclMgmtBusObjects(List<InterfaceDetail> gwAgentObjects) throws BusException, IOException, ParserConfigurationException, SAXException
+    {
+        for (InterfaceDetail gwAclMgmtInterfaceDetail : getIntrospector().getInterfacesExposedOnBusUnderSpecifiedPathBasedOnName(GWAGENT_APPMGMT_PATH, GWAGENT_CTRLACLMGMT_IFNAME))
+        {
+            String path = gwAclMgmtInterfaceDetail.getPath();
+            assertTrue("BusObject at " + path + " must implement " + GWAGENT_CTRLAPP_IFNAME, busIntrospector.isInterfacePresent(path, GWAGENT_CTRLAPP_IFNAME));
+            gwAgentObjects.add(gwAclMgmtInterfaceDetail);
+
+            for (InterfaceDetail gwAclInterfaceDetail : getIntrospector().getInterfacesExposedOnBusUnderSpecifiedPathBasedOnName(path, GWAGENT_CTRLACL_IFNAME))
+            {
+                gwAgentObjects.add(gwAclInterfaceDetail);
+            }
+
+        }
+    }
+
+    private void validateAppBusObjects(List<InterfaceDetail> gwAgentObjects) throws BusException, IOException, ParserConfigurationException, SAXException
+    {
+        for (InterfaceDetail gwAppInterfaceDetail : getIntrospector().getInterfacesExposedOnBusUnderSpecifiedPathBasedOnName(GWAGENT_APPMGMT_PATH, GWAGENT_CTRLAPP_IFNAME))
+        {
+            String path = gwAppInterfaceDetail.getPath();
+            assertTrue("BusObject at " + path + " must implement " + GWAGENT_CTRLACLMGMT_IFNAME, busIntrospector.isInterfacePresent(path, GWAGENT_CTRLACLMGMT_IFNAME));
+            gwAgentObjects.add(gwAppInterfaceDetail);
+        }
+    }
+
+    private void validateAppMgmtBusObject(List<InterfaceDetail> appMgmtInterfaceDetailList, List<InterfaceDetail> gwAgentObjects)
+    {
+        assertEquals("One BusObject implementing " + GWAGENT_APPMGMT_IFNAME + " not found on bus", 1, appMgmtInterfaceDetailList.size());
+
+        InterfaceDetail gwAppMgmtInterfaceDetail = appMgmtInterfaceDetailList.get(0);
+        String gwAppMgmtPath = gwAppMgmtInterfaceDetail.getPath();
+        assertEquals("Object implementing " + GWAGENT_APPMGMT_IFNAME + " found at " + gwAppMgmtPath + " instead of /gw", gwAppMgmtPath, GWAGENT_APPMGMT_PATH);
+        gwAgentObjects.add(gwAppMgmtInterfaceDetail);
     }
 
     @Override
@@ -230,43 +211,19 @@ public class GWAgentTestSuite extends ValidationBaseTestCase implements ServiceA
         logger.debug("The connection with the remote device has lost");
     }
 
-    protected GWAgentHelper createGWAgentHelper()
-    {
-        return new GWAgentHelper(new AndroidLogger());
-    }
-
     protected ServiceAvailabilityHandler createServiceAvailabilityHandler()
     {
         return new ServiceAvailabilityHandler();
     }
 
-    protected AboutAnnouncementDetails waitForNextAnnouncementAndCheckFieldValue(String fieldName, String fieldValue) throws Exception
+    BusIntrospector getIntrospector()
     {
-        logger.info("Waiting for updating About announcement");
-        AboutAnnouncementDetails nextDeviceAnnouncement = waitForNextDeviceAnnouncement();
-        if (fieldName.equals(AboutKeys.ABOUT_DEVICE_NAME))
-        {
-            assertEquals("Received About announcement did not contain expected DeviceName", fieldValue, nextDeviceAnnouncement.getDeviceName());
-        }
-        else
-        {
-            assertEquals("Received About announcement did not contain expected DefaultLanguage", fieldValue, nextDeviceAnnouncement.getDefaultLanguage());
-        }
-        return nextDeviceAnnouncement;
+        return serviceHelper.getBusIntrospector(aboutClient);
     }
 
-    protected BusIntrospector getIntrospector()
+    ServiceHelper getServiceHelper()
     {
-        return gwagentHelper.getBusIntrospector(aboutClient);
+        return new ServiceHelper(new AndroidLogger());
     }
 
-    protected GWAgentInterfaceValidator getInterfaceValidator() throws IOException, ParserConfigurationException, SAXException
-    {
-        return new GWAgentInterfaceValidator(getValidationTestContext());
-    }
-
-    private void releaseResources()
-    {
-        releaseGWAgentHelper();
-    }
 }

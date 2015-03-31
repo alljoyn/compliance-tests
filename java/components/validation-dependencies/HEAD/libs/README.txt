@@ -17,3 +17,4 @@ NSNativePlatformAndr.jar
 alljoyn_onboarding.jar
 ControlPanelService.jar
 ControlPanelAdapter.jar
+GatewayController.jar
