@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2013 - 2014, AllSeen Alliance. All rights reserved.
+ *  Copyright AllSeen Alliance. All rights reserved.
  *
  *     Permission to use, copy, modify, and/or distribute this software for any
  *     purpose with or without fee is hereby granted, provided that the above
@@ -25,6 +25,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -186,8 +187,8 @@ public class InterfaceValidatorTest
         when(introspectionInterface.getName()).thenReturn(INVALID_INTERFACE_NAME);
         ValidationResult validationResult = interfaceValidator.validate(interfaceDetail);
 
-        assertTrue(validationResult.isValid());
-        assertTrue(validationResult.getFailureReason().isEmpty());
+        assertFalse(validationResult.isValid());
+        assertEquals("Interface definition does not exist for org.alljoyn.Undefined", validationResult.getFailureReason());        
     }
 
     @Test
