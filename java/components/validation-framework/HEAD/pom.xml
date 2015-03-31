@@ -34,10 +34,9 @@
         <mockito.version>1.9.0</mockito.version>
         <robolectric.version>2.2</robolectric.version>
         <dexmaker.version>1.0</dexmaker.version>
-        <alljoyn.version>14.12.00-SNAPSHOT</alljoyn.version>
-        <alljoyn-about.version>14.12.00-SNAPSHOT</alljoyn-about.version>
+        <alljoyn.core.version>14.12.00b</alljoyn.core.version>
+        <alljoyn.base-services.version>14.12.00</alljoyn.base-services.version>
         <alljoyn.classifier>android-dbg</alljoyn.classifier>
-        <alljoyn-services.version>14.12.00-SNAPSHOT</alljoyn-services.version>
         <powermock.version>1.4.12</powermock.version>
     </properties>
     <modules>
@@ -80,13 +79,13 @@
             <dependency>
                 <groupId>org.alljoyn</groupId>
                 <artifactId>alljoyn</artifactId>
-                <version>${alljoyn.version}</version>
+                <version>${alljoyn.core.version}</version>
                 <classifier>${alljoyn.classifier}</classifier>
             </dependency>
             <dependency>
                 <groupId>org.alljoyn</groupId>
                 <artifactId>liballjoyn_java</artifactId>
-                <version>${alljoyn.version}</version>
+                <version>${alljoyn.core.version}</version>
                 <classifier>${alljoyn.classifier}</classifier>
                 <scope>runtime</scope>
                 <type>so</type>
@@ -94,55 +93,55 @@
             <dependency>
                 <groupId>org.alljoyn</groupId>
                 <artifactId>about</artifactId>
-                <version>${alljoyn-about.version}</version>
+                <version>${alljoyn.core.version}</version>
                 <classifier>android-rel</classifier>
             </dependency>
             <dependency>
                 <groupId>org.alljoyn</groupId>
                 <artifactId>alljoyn_config</artifactId>
-                <version>${alljoyn-services.version}</version>
+                <version>${alljoyn.base-services.version}</version>
                 <classifier>android</classifier>
             </dependency>
             <dependency>
                 <groupId>org.alljoyn</groupId>
                 <artifactId>alljoyn_app_utils</artifactId>
-                <version>${alljoyn-services.version}</version>
+                <version>${alljoyn.base-services.version}</version>
                 <classifier>android</classifier>
             </dependency>
             <dependency>
                 <groupId>org.alljoyn</groupId>
                 <artifactId>alljoyn_ns</artifactId>
-                <version>${alljoyn-services.version}</version>
+                <version>${alljoyn.base-services.version}</version>
                 <classifier>android</classifier>
             </dependency>
             <dependency>
                 <groupId>org.alljoyn</groupId>
                 <artifactId>alljoyn_ns_commons</artifactId>
-                <version>${alljoyn-services.version}</version>
+                <version>${alljoyn.base-services.version}</version>
                 <classifier>android</classifier>
             </dependency>
             <dependency>
                 <groupId>org.alljoyn</groupId>
                 <artifactId>alljoyn_ns_nativeplatform</artifactId>
-                <version>${alljoyn-services.version}</version>
+                <version>${alljoyn.base-services.version}</version>
                 <classifier>android</classifier>
             </dependency>
             <dependency>
                 <groupId>org.alljoyn</groupId>
                 <artifactId>onboarding</artifactId>
-                <version>${alljoyn-services.version}</version>
+                <version>${alljoyn.base-services.version}</version>
                 <classifier>android</classifier>
             </dependency>
             <dependency>
                 <groupId>org.alljoyn</groupId>
                 <artifactId>controlpanel</artifactId>
-                <version>${alljoyn-services.version}</version>
+                <version>${alljoyn.base-services.version}</version>
                 <classifier>android</classifier>
             </dependency>
             <dependency>
                 <groupId>org.alljoyn</groupId>
                 <artifactId>controlpanel_adapter</artifactId>
-                <version>${alljoyn-services.version}</version>
+                <version>${alljoyn.base-services.version}</version>
                 <classifier>android</classifier>
             </dependency>
             <dependency>
