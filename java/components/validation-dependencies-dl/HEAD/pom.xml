@@ -24,6 +24,7 @@
         <alljoyn.major.version>14.12</alljoyn.major.version>
         <alljoyn.core.version>14.12.00b</alljoyn.core.version>
         <alljoyn.base-services.version>14.12.00</alljoyn.base-services.version>
+        <alljoyn.gwagent.version>14.12.00-SNAPSHOT</alljoyn.gwagent.version>
         <download-mirror>http://mirrors.kernel.org/allseenalliance/alljoyn/${alljoyn.major.version}</download-mirror>
     </properties>
     <build>
@@ -155,6 +156,15 @@
                             <classifier>android</classifier>
                             <downloadUrl>${download-mirror}/alljoyn-controlpanel-service-framework-${alljoyn.base-services.version}-android-sdk-rel.zip</downloadUrl>
                             <extractFile>alljoyn-android/services/alljoyn-controlpanel-${alljoyn.base-services.version}-rel/java/libs/ControlPanelAdapter.jar</extractFile>
+                        </artifactItem>
+                         <artifactItem>
+                            <groupId>org.alljoyn</groupId>
+                            <artifactId>gateway_controller</artifactId>
+                            <version>${alljoyn.gwagent.version}</version>
+                            <packaging>jar</packaging>
+                            <classifier>android</classifier>
+                            <downloadUrl>https://build.allseenalliance.org/ci/job/gwagent_master_android-sdk/BUILD_VARIANT=debug,rac-ord-asa-ci-android-1=rac-ord-asa-ci-android-1/lastSuccessfulBuild/artifact/artifacts/sdks/alljoyn-gwagent-14.12.00-android-sdk-dbg.zip</downloadUrl>
+                            <extractFile>alljoyn-android/gwagent/alljoyn-gwagent-14.12.00-dbg/java/libs/GatewayController.jar</extractFile>
                         </artifactItem>
                     </artifactItems>
                 </configuration>

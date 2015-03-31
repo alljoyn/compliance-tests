@@ -5,7 +5,7 @@
  *     purpose with or without fee is hereby granted, provided that the above
  *     copyright notice and this permission notice appear in all copies.
  *
- *     THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+*     THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
  *     WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
  *     MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
  *     ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
@@ -15,23 +15,22 @@
  *******************************************************************************/
 package org.alljoyn.validation.testing.suites.gwagent;
 
-import org.alljoyn.gatewaycontroller.sdk.GatewayController;
 import org.alljoyn.validation.framework.ValidationTestCase;
 import org.alljoyn.validation.framework.ValidationTestSuite;
 import org.alljoyn.validation.testing.suites.BaseTestSuiteManager;
 import org.alljoyn.validation.testing.utils.about.AboutAnnouncementDetails;
 
-public class GWAgentTestSuiteManager extends BaseTestSuiteManager implements ValidationTestSuite
+public class GwAgentTestSuiteManager extends BaseTestSuiteManager implements ValidationTestSuite
 {
     @Override
     protected Class<? extends ValidationTestCase> getTestSuiteClass()
     {
-        return GWAgentTestSuite.class;
+        return GwAgentTestSuite.class;
     }
 
     @Override
     protected boolean addTestGroupForApplication(AboutAnnouncementDetails aboutAnnouncement)
     {
-        return aboutAnnouncement.supportsInterface(GatewayController.IFACE_PREFIX + ".AppMgmt");
-    }
+        return aboutAnnouncement.supportsInterface("org.alljoyn.gwagent.ctrl.AppMgmt");
+   }
 }

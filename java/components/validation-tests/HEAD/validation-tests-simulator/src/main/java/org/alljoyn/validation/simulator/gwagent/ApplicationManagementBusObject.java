@@ -13,24 +13,25 @@
  *     ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  *     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *******************************************************************************/
-package org.alljoyn.validation.testing.utils.gwagent;
+package org.alljoyn.validation.simulator.gwagent;
 
-public enum IntrospectionXmlFile
+import org.alljoyn.bus.BusException;
+import org.alljoyn.bus.BusObject;
+import org.alljoyn.gatewaycontroller.sdk.managerinterfaces.ApplicationManagement;
+import org.alljoyn.gatewaycontroller.sdk.managerinterfaces.InstalledAppInfoAJ;
+
+public class ApplicationManagementBusObject implements ApplicationManagement, BusObject
 {
-    GWAgentCtrlAppMgmt("introspection-xml/GWAgentCtrlAppMgmt.xml"),
-    GWAgentCtrlApp("introspection-xml/GWAgentCtrlApp.xml"),
-    GWAgentCtrlAclMgmt("introspection-xml/GWAgentCtrlAclMgmt.xml"),
-    GWAgentCtrlAcl("introspection-xml/GWAgentCtrlAcl.xml");
 
-    private String value;
-
-    IntrospectionXmlFile(String value)
+    @Override
+    public InstalledAppInfoAJ[] getInstalledApps() throws BusException
     {
-        this.value = value;
+        return null;
     }
 
-    public String getValue()
+    @Override
+    public short getVersion() throws BusException
     {
-        return value;
+        return 1;
     }
 }

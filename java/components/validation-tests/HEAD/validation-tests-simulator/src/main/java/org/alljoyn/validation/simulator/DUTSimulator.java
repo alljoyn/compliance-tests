@@ -46,6 +46,7 @@ import org.alljoyn.validation.simulator.config.ConfigPropertyStoreImpl;
 import org.alljoyn.validation.simulator.config.DUTSimulatorAuthPasswordHandler;
 import org.alljoyn.validation.simulator.config.DUTSimulatorConfigTransport;
 import org.alljoyn.validation.simulator.controlpanel.ControlPanelInterfaceManager;
+import org.alljoyn.validation.simulator.gwagent.GwAgentInterfaceManager;
 import org.alljoyn.validation.simulator.notification.NotificationSignalHandler;
 import org.alljoyn.validation.simulator.notification.NotificationTransport;
 
@@ -82,6 +83,8 @@ public class DUTSimulator
     private boolean supportsConfig = false;
     private boolean controlPanelSupported = false;
     private boolean supportsNotificationProducer = false;
+    private boolean gwAgentSupported = false;
+
     private boolean listenForNotifications = false;
     private AboutTransport aboutInterface = new DUTSimulatorAboutTransport(this);
     private ConfigTransport configInterface = new DUTSimulatorConfigTransport(this);
@@ -89,6 +92,7 @@ public class DUTSimulator
 
     public SrpAnonymousKeyListener authListener;
     private NotificationSignalHandler notificationSignalHandler;
+    private GwAgentInterfaceManager gwAgentInterfaceManager;
 
     static
     {
@@ -192,6 +196,8 @@ public class DUTSimulator
 
         addControlPanelInterfaces();
 
+        addGwAgentInterfaces();
+
         SignalEmitter signalEmitter = new SignalEmitter(aboutInterfaceMapper, SignalEmitter.GlobalBroadcast.Off);
         signalEmitter.setSessionlessFlag(true);
         signalEmitter.setTimeToLive(0);
@@ -219,7 +225,7 @@ public class DUTSimulator
             notificationSignalHandler.initialize();
         }
 
-        if (supportsConfig || controlPanelSupported)
+        if (supportsConfig || controlPanelSupported || gwAgentSupported)
         {
             authPasswordHandler = new DUTSimulatorAuthPasswordHandler(this);
             authListener = new SrpAnonymousKeyListener(authPasswordHandler, logger, AUTH_MECHANISMS);
@@ -243,6 +249,16 @@ public class DUTSimulator
         catch (BusException e)
         {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void addGwAgentInterfaces()
+    {
+        if (gwAgentSupported)
+        {
+            gwAgentInterfaceManager = new GwAgentInterfaceManager(busAttachment);
+            supportedInterfaces.add(gwAgentInterfaceManager.getBusObjectDescriptionToBeAnnounced());
+            gwAgentInterfaceManager.registerBusObjects();
         }
     }
 
@@ -462,6 +478,7 @@ public class DUTSimulator
             {
                 Log.d(TAG, "Disconnecting busAttachment!");
                 unregisterControlPanelBusObjects();
+                unregisterGwAgentBusObjects();
                 busAttachment.unregisterBusObject(notificationObjEmergency);
                 busAttachment.unregisterBusObject(notificationObjInfo);
                 busAttachment.unregisterBusObject(notificationObjWarning);
@@ -547,6 +564,16 @@ public class DUTSimulator
         this.controlPanelSupported = controlPanelSupported;
     }
 
+    public boolean isGwAgentSupported()
+    {
+        return gwAgentSupported;
+    }
+
+    public void setGwAgentSupported(boolean gwAgentSupported)
+    {
+        this.gwAgentSupported = gwAgentSupported;
+    }
+
     public String getKeyStorePath()
     {
         return keyStorePath;
@@ -620,6 +647,14 @@ public class DUTSimulator
         if (controlPanelSupported)
         {
             controlPanelInterfaceManager.unregisterBusObjects();
+        }
+    }
+
+    private void unregisterGwAgentBusObjects()
+    {
+        if (gwAgentSupported)
+        {
+            gwAgentInterfaceManager.unregisterBusObjects();
         }
     }
 
