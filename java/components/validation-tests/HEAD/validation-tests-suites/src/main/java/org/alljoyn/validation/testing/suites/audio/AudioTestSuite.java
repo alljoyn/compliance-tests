@@ -62,7 +62,7 @@ import org.alljoyn.validation.framework.utils.introspection.BusIntrospector;
 import org.alljoyn.validation.framework.utils.introspection.XmlBasedBusIntrospector;
 import org.alljoyn.validation.framework.utils.introspection.bean.IntrospectionSubNode;
 import org.alljoyn.validation.framework.utils.introspection.bean.NodeDetail;
-import org.alljoyn.validation.testing.utils.BaseTestSuite;
+import org.alljoyn.validation.testing.suites.BaseTestSuite;
 import org.alljoyn.validation.testing.utils.about.AboutAnnouncementDetails;
 import org.alljoyn.validation.testing.utils.audio.AudioSinkParameter;
 import org.alljoyn.validation.testing.utils.audio.AudioSinkPlayStateChangedSignal;
