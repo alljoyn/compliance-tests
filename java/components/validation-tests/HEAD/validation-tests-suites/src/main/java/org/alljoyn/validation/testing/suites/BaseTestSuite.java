@@ -13,7 +13,7 @@
  *     ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  *     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *******************************************************************************/
-package org.alljoyn.validation.testing.utils;
+package org.alljoyn.validation.testing.suites;
 
 import org.alljoyn.validation.framework.ValidationBaseTestCase;
 import org.alljoyn.validation.testing.utils.log.Logger;

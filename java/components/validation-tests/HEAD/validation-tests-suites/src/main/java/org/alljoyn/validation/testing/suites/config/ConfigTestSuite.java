@@ -38,7 +38,7 @@ import org.alljoyn.validation.framework.annotation.Disabled;
 import org.alljoyn.validation.framework.annotation.ValidationSuite;
 import org.alljoyn.validation.framework.annotation.ValidationTest;
 import org.alljoyn.validation.testing.suites.AllJoynErrorReplyCodes;
-import org.alljoyn.validation.testing.utils.BaseTestSuite;
+import org.alljoyn.validation.testing.suites.BaseTestSuite;
 import org.alljoyn.validation.testing.utils.about.AboutAnnouncementDetails;
 import org.alljoyn.validation.testing.utils.log.Logger;
 import org.alljoyn.validation.testing.utils.log.LoggerFactory;
