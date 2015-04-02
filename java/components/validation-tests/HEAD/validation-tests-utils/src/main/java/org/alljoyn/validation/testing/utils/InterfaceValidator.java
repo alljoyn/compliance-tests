@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright AllSeen Alliance. All rights reserved.
+ *  Copyright (c) 2013 - 2014, AllSeen Alliance. All rights reserved.
  *
  *     Permission to use, copy, modify, and/or distribute this software for any
  *     purpose with or without fee is hereby granted, provided that the above
@@ -101,10 +101,8 @@ public class InterfaceValidator
 
         if (interfaceDetail == null)
         {
-            StringBuilder failureReasonBuilder = new StringBuilder();
-            appendToFailureReason(failureReasonBuilder, "Interface definition does not exist for ");
-            appendToFailureReason(failureReasonBuilder, standardizedIntrospectionInterface.getName());
-            validationResult = new ValidationResult(false, failureReasonBuilder.toString());
+            logger.warn(String.format("Interface definition does not exist for: %s", standardizedIntrospectionInterface.getName()));
+            validationResult = new ValidationResult(true, null);
         }
         else
         {
