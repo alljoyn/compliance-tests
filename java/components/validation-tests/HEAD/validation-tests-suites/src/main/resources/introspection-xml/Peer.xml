@@ -103,6 +103,13 @@
           <arg type="u" direction="in"/>
           <arg type="u" direction="out"/>
         </method>
+        <method name="SetIdleTimeouts">
+          <arg type="u" direction="in"/>
+          <arg type="u" direction="in"/>
+          <arg type="u" direction="out"/>
+          <arg type="u" direction="out"/>
+          <arg type="u" direction="out"/>
+        </method>
     </interface>
     <interface name="org.alljoyn.Bus.Peer.HeaderCompression">
         <method name="GetExpansion">
