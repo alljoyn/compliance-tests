@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 import org.alljoyn.about.client.AboutClient;
 import org.alljoyn.bus.BusException;
@@ -51,21 +52,16 @@ public class EventsActionsTestSuite extends ValidationBaseTestCase
     private static final String BUS_APPLICATION_NAME = "EventsActions";
 
     /**
-     * Time to wait for an Announcement signal to arrive
-     */
-    private static final long ANNOUNCEMENT_TIMEOUT_IN_SECONDS = 30;
-
-    /**
      * This regular expression is used to replace description tags with the
      * INTROSPECTION_XML_DESC_PLACEHOLDER
      */
-    private static final String INTROSPECTION_XML_DESC_REGEX = "(<description>).*(</description>.*)";
+    private static final String INTROSPECTION_XML_DESC_REGEX = "<description.*?>.*?</description>";
 
     /**
      * This placeholder is used to change the description tags in the
      * introspected XML
      */
-    private static final String INTROSPECTION_XML_DESC_PLACEHOLDER = "$1$2";
+    private static final String INTROSPECTION_XML_DESC_PLACEHOLDER = "<description></description>";
 
     /**
      * The expected result after the introspection XML will be modified as a
@@ -248,7 +244,7 @@ public class EventsActionsTestSuite extends ValidationBaseTestCase
      * @return TRUE whether at least one of the child objects has a description
      *         tag
      */
-    private boolean testChildrenObjectValidity(String parentObjectPath, String parentIntroXML)
+    boolean testChildrenObjectValidity(String parentObjectPath, String parentIntroXML)
     {
 
         EvAcIntrospectionNode introspectNode = null;
@@ -317,7 +313,7 @@ public class EventsActionsTestSuite extends ValidationBaseTestCase
      * @return TRUE whether parent XML or one of its child has a description
      *         tag.
      */
-    private boolean testObjectValidityPerLanguages(ProxyBusObject proxyObj, String parentObjectPath, String[] descLangs)
+    boolean testObjectValidityPerLanguages(ProxyBusObject proxyObj, String parentObjectPath, String[] descLangs)
     {
 
         logger.info("Found description languages: '%s' for the objectPath: '%s'", Arrays.toString(descLangs), parentObjectPath);
@@ -325,6 +321,7 @@ public class EventsActionsTestSuite extends ValidationBaseTestCase
         String firstLangXML = null;
         String firstLang = null;
         boolean descriptionFound = false;
+        Pattern xmlDescPresent = Pattern.compile(INTROSPECTION_XML_DESC_EXPECTED, Pattern.DOTALL);
 
         for (String lang : descLangs)
         {
@@ -343,8 +340,10 @@ public class EventsActionsTestSuite extends ValidationBaseTestCase
             if (firstLangXML == null)
             {
 
+                boolean isXmlDescPresent = xmlDescPresent.matcher(currentXML).find();
+
                 assertTrue("The description tag wasn't found in the XML for the description language: '" + lang + "', " + "Object Path: '" + parentObjectPath + "'",
-                        currentXML.contains(INTROSPECTION_XML_DESC_EXPECTED));
+                        isXmlDescPresent);
 
                 logger.info("The object '%s' contains a description tag in the language: '%s'", parentObjectPath, lang);
 
