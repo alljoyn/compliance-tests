@@ -42,36 +42,40 @@ import org.alljoyn.validation.testing.utils.services.ServiceHelper;
  * The class tests Events & Actions core functionality
  */
 @ValidationSuite(name = "EventsActions-v1")
-public class EventsActionsTestSuite extends ValidationBaseTestCase {
+public class EventsActionsTestSuite extends ValidationBaseTestCase
+{
 
-    private static final String TAG    = "EventsActionsTestSuite";
+    private static final String TAG = "EventsActionsTestSuite";
     private static final Logger logger = LoggerFactory.getLogger(TAG);
 
-    private static final String BUS_APPLICATION_NAME                 = "EventsActions";
+    private static final String BUS_APPLICATION_NAME = "EventsActions";
 
     /**
      * Time to wait for an Announcement signal to arrive
      */
-    private static final long ANNOUNCEMENT_TIMEOUT_IN_SECONDS        = 30;
+    private static final long ANNOUNCEMENT_TIMEOUT_IN_SECONDS = 30;
 
     /**
-     * This regular expression is used to replace description tags with the INTROSPECTION_XML_DESC_PLACEHOLDER
+     * This regular expression is used to replace description tags with the
+     * INTROSPECTION_XML_DESC_PLACEHOLDER
      */
-    private static final String INTROSPECTION_XML_DESC_REGEX         = "(<description>).*(</description>.*)";
+    private static final String INTROSPECTION_XML_DESC_REGEX = "(<description>).*(</description>.*)";
 
     /**
-     * This placeholder is used to change the description tags in the introspected XML
+     * This placeholder is used to change the description tags in the
+     * introspected XML
      */
-    private static final String INTROSPECTION_XML_DESC_PLACEHOLDER   = "$1$2";
+    private static final String INTROSPECTION_XML_DESC_PLACEHOLDER = "$1$2";
 
     /**
-     * The expected result after the introspection XML will be modified as a result of applying the
+     * The expected result after the introspection XML will be modified as a
+     * result of applying the
      * {@link EventsActionsTestSuite#INTROSPECTION_XML_DESC_REGEX}
      */
-    private static final String INTROSPECTION_XML_DESC_EXPECTED      = "<description></description>";
-     /**
-      * {@link ServiceHelper} object with utilities methods
-      */
+    private static final String INTROSPECTION_XML_DESC_EXPECTED = "<description></description>";
+    /**
+     * {@link ServiceHelper} object with utilities methods
+     */
     private ServiceHelper serviceHelper;
 
     /**
@@ -80,8 +84,8 @@ public class EventsActionsTestSuite extends ValidationBaseTestCase {
     private AboutAnnouncementDetails deviceAboutAnnouncement;
 
     /**
-    * Announcement time out
-    */
+     * Announcement time out
+     */
     private static final long ANNOUCEMENT_TIMEOUT_IN_SECONDS = 60;
 
     private AboutClient aboutClient;
@@ -89,8 +93,7 @@ public class EventsActionsTestSuite extends ValidationBaseTestCase {
     private String dutDeviceId;
     private AppUnderTestDetails appUnderTestDetails;
 
-
-     @Override
+    @Override
     protected void setUp() throws Exception
     {
         super.setUp();
@@ -134,7 +137,8 @@ public class EventsActionsTestSuite extends ValidationBaseTestCase {
      * @see junit.framework.TestCase#tearDown()
      */
     @Override
-    protected void tearDown() throws Exception {
+    protected void tearDown() throws Exception
+    {
 
         super.tearDown();
         releaseResources();
@@ -142,9 +146,11 @@ public class EventsActionsTestSuite extends ValidationBaseTestCase {
 
     /**
      * Initializes {@link ServiceHelper}
+     * 
      * @return {@link ServiceHelper}
      */
-    protected ServiceHelper getServiceHelper() {
+    protected ServiceHelper getServiceHelper()
+    {
 
         return new ServiceHelper(new AndroidLogger());
     }
@@ -152,45 +158,48 @@ public class EventsActionsTestSuite extends ValidationBaseTestCase {
     /**
      * Release the test resources
      */
-    protected void releaseResources() {
+    protected void releaseResources()
+    {
 
         logger.info("Releasing the test resources");
 
         disconnectAboutClient();
 
-        if ( serviceHelper != null ) {
+        if (serviceHelper != null)
+        {
 
             serviceHelper.release();
             serviceHelper = null;
         }
 
-        if ( deviceAboutAnnouncement != null ) {
+        if (deviceAboutAnnouncement != null)
+        {
 
             deviceAboutAnnouncement = null;
         }
     }
 
     /**
-     * Verifies that the object or one of its child objects, implement the {@link AllSeenIntrospectable}
-     * interface and has the "description" tag.
-     * If an object has a description in multiple languages,
-     * the introspection XMLs of each object should be identical.
+     * Verifies that the object or one of its child objects, implement the
+     * {@link AllSeenIntrospectable} interface and has the "description" tag. If
+     * an object has a description in multiple languages, the introspection XMLs
+     * of each object should be identical.
      */
-    @ValidationTest(name="EventsActions-v1-01")
-    public void testEventsActions_v1_1() {
+    @ValidationTest(name = "EventsActions-v1-01")
+    public void testEventsActions_v1_1()
+    {
 
         logger.info("Executing the test");
-        logger.info("Received announcement from device: '%s' app: '%s', bus: '%s'",
-                      deviceAboutAnnouncement.getDeviceId(),
-                      deviceAboutAnnouncement.getAppId(),
-                      deviceAboutAnnouncement.getServiceName());
+        logger.info("Received announcement from device: '%s' app: '%s', bus: '%s'", deviceAboutAnnouncement.getDeviceId(), deviceAboutAnnouncement.getAppId(),
+                deviceAboutAnnouncement.getServiceName());
 
         List<String> objectPaths = getAllSeenIntrospectablObjectPaths();
-        assertTrue("Looks like this object doesn't implement the: '" + getIntrospectableInterfaceName() + "' interface,"
-                     + " even though it states it does in the announcement", objectPaths.size() > 0);
+        assertTrue("Looks like this object doesn't implement the: '" + getIntrospectableInterfaceName() + "' interface," + " even though it states it does in the announcement",
+                objectPaths.size() > 0);
 
         logger.info("Object paths to be tested: '%s'", objectPaths);
-        for (String objectPath : objectPaths) {
+        for (String objectPath : objectPaths)
+        {
 
             logger.info("==> Testing Announced Object Path: '%s'", objectPath);
 
@@ -201,20 +210,23 @@ public class EventsActionsTestSuite extends ValidationBaseTestCase {
 
     /**
      * Runs the test for the received object path
+     * 
      * @param objectPath
-     * @return whether description was found at any place for this object path or its sub objects
+     * @return whether description was found at any place for this object path
+     *         or its sub objects
      */
-    private boolean testObjectValidity(String objectPath) {
+    private boolean testObjectValidity(String objectPath)
+    {
 
         logger.info("Testing Object Path: '%s'", objectPath);
-        ProxyBusObject proxyObj = serviceHelper.getProxyBusObject(aboutClient, objectPath,
-                                            new Class<?>[]{AllSeenIntrospectable.class});
+        ProxyBusObject proxyObj = serviceHelper.getProxyBusObject(aboutClient, objectPath, new Class<?>[]
+        { AllSeenIntrospectable.class });
 
         String[] descLangs = getDescriptionLanguages(proxyObj, objectPath);
-        if ( descLangs.length == 0 ) {
+        if (descLangs.length == 0)
+        {
 
-            logger.warn("No description languages found for the Object Path: '%s'. Introspecting child objects with NO_LANGUAGE",
-                              objectPath);
+            logger.warn("No description languages found for the Object Path: '%s'. Introspecting child objects with NO_LANGUAGE", objectPath);
 
             String introXML = getIntrospectionXML(proxyObj, objectPath, "NO_LANGUAGE");
             assertNotNull("Introspection XML is NULL Object Path: '" + objectPath + "'", introXML);
@@ -225,20 +237,30 @@ public class EventsActionsTestSuite extends ValidationBaseTestCase {
     }
 
     /**
-     * Parses parent's introspection XML and calls {@link EventsActionsTestSuite#testObjectValidity(String)} for each child object.
-     * @param parentObjectPath Parent object path that was introspected
-     * @param parentIntroXML Parent introspection XML
-     * @return TRUE whether at least one of the child objects has a description tag
+     * Parses parent's introspection XML and calls
+     * {@link EventsActionsTestSuite#testObjectValidity(String)} for each child
+     * object.
+     * 
+     * @param parentObjectPath
+     *            Parent object path that was introspected
+     * @param parentIntroXML
+     *            Parent introspection XML
+     * @return TRUE whether at least one of the child objects has a description
+     *         tag
      */
-    private boolean testChildrenObjectValidity(String parentObjectPath, String parentIntroXML) {
+    private boolean testChildrenObjectValidity(String parentObjectPath, String parentIntroXML)
+    {
 
         EvAcIntrospectionNode introspectNode = null;
 
-        try {
+        try
+        {
 
             introspectNode = new EvAcIntrospectionNode(parentObjectPath);
             introspectNode.parse(parentIntroXML);
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
 
             logger.error("Failed to parse the introspection XML, object path: '%s'", parentObjectPath);
             logger.error("Error", e);
@@ -248,119 +270,143 @@ public class EventsActionsTestSuite extends ValidationBaseTestCase {
         logger.debug("Testing child objects of the parent object: '%s'", parentObjectPath);
 
         List<EvAcIntrospectionNode> childrenNodes = introspectNode.getChidren();
-        boolean descFoundBroth                    = false;
+        boolean descFoundBroth = false;
 
-        if ( childrenNodes == null || childrenNodes.size() == 0 ) {
+        if (childrenNodes == null || childrenNodes.size() == 0)
+        {
 
             logger.warn("The object '%s' doesn't have any child object", parentObjectPath);
             return false;
         }
 
-        for (EvAcIntrospectionNode childNode : introspectNode.getChidren()) {
+        for (EvAcIntrospectionNode childNode : introspectNode.getChidren())
+        {
 
             boolean descFoundChild = testObjectValidity(childNode.getPath());
-            String logMsg          = descFoundChild ? "contains a description tag" : "doesn't contain any description tag";
+            String logMsg = descFoundChild ? "contains a description tag" : "doesn't contain any description tag";
 
             logger.debug("The object or its offspring: '%s' %s", childNode.getPath(), logMsg);
-            if ( !descFoundBroth ) {
+            if (!descFoundBroth)
+            {
 
                 descFoundBroth = descFoundChild;
             }
         }
 
-        String logMsg  = descFoundBroth ? "contain a description tag" : "doesn't contain any description tag";
+        String logMsg = descFoundBroth ? "contain a description tag" : "doesn't contain any description tag";
         logger.debug("Child objects of the parent: '%s' %s", parentObjectPath, logMsg);
         return descFoundBroth;
     }
 
     /**
-     * Verifies that for each description language the introspected XML contains a description tag.
-     * Verifies that introspection XMLs in different description languages are identical.
-     * The verification is performed after the description content is cut by the {@link EventsActionsTestSuite#removeXMLDesc(String)}
-     * method. Afterwards the verification algorithm is applied on the child objects by the call to the
+     * Verifies that for each description language the introspected XML contains
+     * a description tag. Verifies that introspection XMLs in different
+     * description languages are identical. The verification is performed after
+     * the description content is cut by the
+     * {@link EventsActionsTestSuite#removeXMLDesc(String)} method. Afterwards
+     * the verification algorithm is applied on the child objects by the call to
+     * the
      * {@link EventsActionsTestSuite#testChildrenObjectValidity(String, String)}
-     * @param proxyObj {@link ProxyBusObject}
-     * @param parentObjectPath The object path of the parent object
-     * @param descLangs Description is supported on those languages
-     * @return TRUE whether parent XML or one of its child has a description tag.
+     * 
+     * @param proxyObj
+     *            {@link ProxyBusObject}
+     * @param parentObjectPath
+     *            The object path of the parent object
+     * @param descLangs
+     *            Description is supported on those languages
+     * @return TRUE whether parent XML or one of its child has a description
+     *         tag.
      */
-    private boolean testObjectValidityPerLanguages(ProxyBusObject proxyObj, String parentObjectPath, String[] descLangs) {
+    private boolean testObjectValidityPerLanguages(ProxyBusObject proxyObj, String parentObjectPath, String[] descLangs)
+    {
 
         logger.info("Found description languages: '%s' for the objectPath: '%s'", Arrays.toString(descLangs), parentObjectPath);
 
-        String firstLangXML      = null;
-        String firstLang         = null;
+        String firstLangXML = null;
+        String firstLang = null;
         boolean descriptionFound = false;
 
-        for (String lang : descLangs) {
+        for (String lang : descLangs)
+        {
 
             String currentXML = getIntrospectionXML(proxyObj, parentObjectPath, lang);
             assertNotNull("Introspection XML is NULL Object Path: '" + parentObjectPath + "'", currentXML);
 
-            //Print the introspection XML
-            //logger.debug("The introspection XML, the lang: '%s': '%s'", lang, currentXML);
+            // Print the introspection XML
+            // logger.debug("The introspection XML, the lang: '%s': '%s'", lang,
+            // currentXML);
 
             currentXML = removeXMLDesc(currentXML);
 
             logger.debug("Testing language validity for the object path: '%s', language: '%s'", parentObjectPath, lang);
 
-            if ( firstLangXML == null ) {
+            if (firstLangXML == null)
+            {
 
-                assertTrue("The description tag wasn't found in the XML for the description language: '" + lang + "', " +
-                           "Object Path: '" + parentObjectPath + "'", currentXML.contains(INTROSPECTION_XML_DESC_EXPECTED));
+                assertTrue("The description tag wasn't found in the XML for the description language: '" + lang + "', " + "Object Path: '" + parentObjectPath + "'",
+                        currentXML.contains(INTROSPECTION_XML_DESC_EXPECTED));
 
                 logger.info("The object '%s' contains a description tag in the language: '%s'", parentObjectPath, lang);
 
-                if ( descLangs.length == 1 ) {
+                if (descLangs.length == 1)
+                {
 
                     logger.debug("The object '%s' supports a single description language: '%s'", parentObjectPath, lang);
                     return true;
                 }
 
-                firstLang        = lang;
-                firstLangXML     = currentXML;
+                firstLang = lang;
+                firstLangXML = currentXML;
                 descriptionFound = true;
                 continue;
             }
 
-            logger.debug("Test identity of the XMLs in the first language: '%s' and the current language: '%s', " +
-                         "Object Path: '%s'", firstLang, lang, parentObjectPath);
+            logger.debug("Test identity of the XMLs in the first language: '%s' and the current language: '%s', " + "Object Path: '%s'", firstLang, lang, parentObjectPath);
 
-            //Print the intospection XML in the first language and in the current language
-            //logger.debug("The expected XML in the first lang: '%s': '%s'", firstLang, firstLangXML);
-            //logger.debug("The tested XML in the current lang: '%s': '%s'", lang, currentXML);
+            // Print the intospection XML in the first language and in the
+            // current language
+            // logger.debug("The expected XML in the first lang: '%s': '%s'",
+            // firstLang, firstLangXML);
+            // logger.debug("The tested XML in the current lang: '%s': '%s'",
+            // lang, currentXML);
 
-            //If current language is not a first language, compare current language XML with the first language XML
-            assertEquals("The XML in the first language: '" + firstLang + "' is not identical to the XML in the current language: '" +
-                          lang + "', object path: '" + parentObjectPath + "'", firstLangXML, currentXML);
+            // If current language is not a first language, compare current
+            // language XML with the first language XML
+            assertEquals("The XML in the first language: '" + firstLang + "' is not identical to the XML in the current language: '" + lang + "', object path: '"
+                    + parentObjectPath + "'", firstLangXML, currentXML);
 
-            logger.info("The XMLs in the first language: '%s' and the current language: '%s', " +
-                         "Object Path: '%s' are identical", firstLang, lang, parentObjectPath);
-        }//for :: descLangs
+            logger.info("The XMLs in the first language: '%s' and the current language: '%s', " + "Object Path: '%s' are identical", firstLang, lang, parentObjectPath);
+        }// for :: descLangs
 
         testChildrenObjectValidity(parentObjectPath, firstLangXML);
         return descriptionFound;
     }
 
     /**
-     * Searches in the received announcement object paths that implement the {@link AllSeenIntrospectable}
-     * interface
+     * Searches in the received announcement object paths that implement the
+     * {@link AllSeenIntrospectable} interface
+     * 
      * @return Array of the object paths
      */
-    protected List<String> getAllSeenIntrospectablObjectPaths() {
+    protected List<String> getAllSeenIntrospectablObjectPaths()
+    {
 
-        List<String> retList  = new ArrayList<String>();
+        List<String> retList = new ArrayList<String>();
         String introIfaceName = getIntrospectableInterfaceName();
 
         BusObjectDescription[] objDescs = deviceAboutAnnouncement.getObjectDescriptions();
-        for (BusObjectDescription bod : objDescs) {
+        for (BusObjectDescription bod : objDescs)
+        {
 
             String path = bod.getPath();
 
-            for (String iface : bod.getInterfaces()) {
+            for (String iface : bod.getInterfaces())
+            {
 
-                // The AllSeenIntrospectable interface was found => add the path to the returned list
-                if ( iface.equals(introIfaceName) ) {
+                // The AllSeenIntrospectable interface was found => add the path
+                // to the returned list
+                if (iface.equals(introIfaceName))
+                {
                     retList.add(path);
                 }
             }
@@ -372,9 +418,11 @@ public class EventsActionsTestSuite extends ValidationBaseTestCase {
     /**
      * Disconnect and releases the {@link AboutClient}
      */
-    private void disconnectAboutClient() {
+    private void disconnectAboutClient()
+    {
 
-        if ( aboutClient != null && aboutClient.isConnected() ) {
+        if (aboutClient != null && aboutClient.isConnected())
+        {
 
             aboutClient.disconnect();
             aboutClient = null;
@@ -382,28 +430,38 @@ public class EventsActionsTestSuite extends ValidationBaseTestCase {
     }
 
     /**
-     * @return Returns the AJ name of the {@link AllSeenIntrospectable} interface
+     * @return Returns the AJ name of the {@link AllSeenIntrospectable}
+     *         interface
      */
-    private String getIntrospectableInterfaceName() {
+    private String getIntrospectableInterfaceName()
+    {
 
-        //Retrieve the AJ name of the introspection interface
+        // Retrieve the AJ name of the introspection interface
         BusInterface ifaceName = AllSeenIntrospectable.class.getAnnotation(BusInterface.class);
         return ifaceName.name();
     }
 
     /**
      * Returns the supported description languages for the given object path
-     * @param proxyObj {@link ProxyBusObject}
-     * @param objectPath The object to be asked for the description languages
+     * 
+     * @param proxyObj
+     *            {@link ProxyBusObject}
+     * @param objectPath
+     *            The object to be asked for the description languages
      * @return Array of the description languages
      */
-    private String[] getDescriptionLanguages(ProxyBusObject proxyObj, String objectPath) {
+    private String[] getDescriptionLanguages(ProxyBusObject proxyObj, String objectPath)
+    {
 
-        String[] langs = new String[]{};
+        String[] langs = new String[]
+        {};
 
-        try {
+        try
+        {
             langs = proxyObj.getInterface(AllSeenIntrospectable.class).GetDescriptionLanguages();
-        } catch (BusException be) {
+        }
+        catch (BusException be)
+        {
 
             logger.error("Failed to call GetDescriptionLanguages for the Object Path: '%s'", objectPath);
             logger.error("Error", be);
@@ -415,18 +473,26 @@ public class EventsActionsTestSuite extends ValidationBaseTestCase {
 
     /**
      * Retrieves the introspection XML
-     * @param proxyObj The {@link ProxyBusObject}
-     * @param objectPath Object path to be introspected
-     * @param language The language to query the introspection
+     * 
+     * @param proxyObj
+     *            The {@link ProxyBusObject}
+     * @param objectPath
+     *            Object path to be introspected
+     * @param language
+     *            The language to query the introspection
      * @return Introspection XML
      */
-    private String getIntrospectionXML(ProxyBusObject proxyObj, String objectPath, String lang) {
+    private String getIntrospectionXML(ProxyBusObject proxyObj, String objectPath, String lang)
+    {
 
         String introXML = null;
 
-        try {
+        try
+        {
             introXML = proxyObj.getInterface(AllSeenIntrospectable.class).IntrospectWithDescription(lang);
-        } catch (BusException be) {
+        }
+        catch (BusException be)
+        {
 
             logger.error("Failed to call IntrospectWithDescription for the Object Path: '%s'", objectPath);
             logger.error("Error", be);
@@ -438,12 +504,13 @@ public class EventsActionsTestSuite extends ValidationBaseTestCase {
 
     /**
      * This method removes the content of the XML description tags
+     * 
      * @param introspection
      * @return Introspected XML without the description content
      */
-    private String removeXMLDesc(String introspection) {
+    private String removeXMLDesc(String introspection)
+    {
 
         return introspection.replaceAll(INTROSPECTION_XML_DESC_REGEX, INTROSPECTION_XML_DESC_PLACEHOLDER);
     }
 }
-
