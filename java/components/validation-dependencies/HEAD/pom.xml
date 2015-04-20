@@ -18,15 +18,14 @@
     <parent>
         <groupId>org.alljoyn.validation.validation-base</groupId>
         <artifactId>validation-base</artifactId>
-        <version>14.06.01-SNAPSHOT</version>
+        <version>00.00.01-SNAPSHOT</version>
     </parent>
     <artifactId>validation-dependencies</artifactId>
     <name>validation-dependencies</name>
     <packaging>pom</packaging>
     <properties>
-        <alljoyn.version>14.06.00-SNAPSHOT</alljoyn.version>
-        <alljoyn-about.version>14.06.00-SNAPSHOT</alljoyn-about.version>
-        <alljoyn-services.version>14.06.00-SNAPSHOT</alljoyn-services.version>
+        <alljoyn.core.version>14.12.00b</alljoyn.core.version>
+        <alljoyn.base-services.version>14.12.00</alljoyn.base-services.version>
     </properties>
     <build>
         <plugins>
@@ -44,7 +43,7 @@
                         <configuration>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>alljoyn</artifactId>
-                            <version>${alljoyn.version}</version>
+                            <version>${alljoyn.core.version}</version>
                             <packaging>jar</packaging>
                             <classifier>android-dbg</classifier>
                             <file>libs\alljoyn.jar</file>
@@ -59,7 +58,7 @@
                         <configuration>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>alljoyn</artifactId>
-                            <version>${alljoyn.version}</version>
+                            <version>${alljoyn.core.version}</version>
                             <packaging>jar</packaging>
                             <classifier>android-rel</classifier>
                             <file>libs\alljoyn-rel.jar</file>
@@ -74,7 +73,7 @@
                         <configuration>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>liballjoyn_java</artifactId>
-                            <version>${alljoyn.version}</version>
+                            <version>${alljoyn.core.version}</version>
                             <packaging>so</packaging>
                             <classifier>android-dbg</classifier>
                             <file>libs\liballjoyn_java.so</file>
@@ -89,7 +88,7 @@
                         <configuration>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>liballjoyn_java</artifactId>
-                            <version>${alljoyn.version}</version>
+                            <version>${alljoyn.core.version}</version>
                             <packaging>so</packaging>
                             <classifier>android-rel</classifier>
                             <file>libs\liballjoyn_java-rel.so</file>
@@ -104,7 +103,7 @@
                         <configuration>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>about</artifactId>
-                            <version>${alljoyn-about.version}</version>
+                            <version>${alljoyn.core.version}</version>
                             <packaging>jar</packaging>
                             <classifier>android-rel</classifier>
                             <file>libs\alljoyn_about.jar</file>
@@ -119,7 +118,7 @@
                         <configuration>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>alljoyn_config</artifactId>
-                            <version>${alljoyn-services.version}</version>
+                            <version>${alljoyn.base-services.version}</version>
                             <packaging>jar</packaging>
                             <classifier>android</classifier>
                             <file>libs\alljoyn_config.jar</file>
@@ -134,7 +133,7 @@
                         <configuration>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>alljoyn_app_utils</artifactId>
-                            <version>${alljoyn-services.version}</version>
+                            <version>${alljoyn.base-services.version}</version>
                             <packaging>jar</packaging>
                             <classifier>android</classifier>
                             <file>libs\alljoyn_apps_android_utils.jar</file>
@@ -149,7 +148,7 @@
                         <configuration>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>alljoyn_ns</artifactId>
-                            <version>${alljoyn-services.version}</version>
+                            <version>${alljoyn.base-services.version}</version>
                             <packaging>jar</packaging>
                             <classifier>android</classifier>
                             <file>libs\NotificationService.jar</file>
@@ -164,7 +163,7 @@
                         <configuration>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>alljoyn_ns_commons</artifactId>
-                            <version>${alljoyn-services.version}</version>
+                            <version>${alljoyn.base-services.version}</version>
                             <packaging>jar</packaging>
                             <classifier>android</classifier>
                             <file>libs\NSCommons.jar</file>
@@ -179,7 +178,7 @@
                         <configuration>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>alljoyn_ns_nativeplatform</artifactId>
-                            <version>${alljoyn-services.version}</version>
+                            <version>${alljoyn.base-services.version}</version>
                             <packaging>jar</packaging>
                             <classifier>android</classifier>
                             <file>libs\NSNativePlatformAndr.jar</file>
@@ -194,7 +193,7 @@
                         <configuration>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>onboarding</artifactId>
-                            <version>${alljoyn-services.version}</version>
+                            <version>${alljoyn.base-services.version}</version>
                             <packaging>jar</packaging>
                             <classifier>android</classifier>
                             <file>libs\alljoyn_onboarding.jar</file>
@@ -209,7 +208,7 @@
                         <configuration>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>controlpanel</artifactId>
-                            <version>${alljoyn-services.version}</version>
+                            <version>${alljoyn.base-services.version}</version>
                             <packaging>jar</packaging>
                             <classifier>android</classifier>
                             <file>libs\ControlPanelService.jar</file>
@@ -224,7 +223,7 @@
                         <configuration>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>controlpanel_adapter</artifactId>
-                            <version>${alljoyn-services.version}</version>
+                            <version>${alljoyn.base-services.version}</version>
                             <packaging>jar</packaging>
                             <classifier>android</classifier>
                             <file>libs\ControlPanelAdapter.jar</file>
@@ -240,7 +239,7 @@
                         <configuration>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>gateway_controller</artifactId>
-                            <version>${alljoyn-services.version}</version>
+                            <version>${alljoyn.base-services.version}</version>
                             <packaging>jar</packaging>
                             <classifier>android</classifier>
                             <file>libs\GatewayController.jar</file>
@@ -257,7 +256,7 @@
                         <configuration>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>timeservice</artifactId>
-                            <version>${alljoyn-services.version}</version>
+                            <version>${alljoyn.base-services.version}</version>
                             <packaging>jar</packaging>
                             <classifier>android</classifier>
                             <file>libs\TimeService.jar</file>

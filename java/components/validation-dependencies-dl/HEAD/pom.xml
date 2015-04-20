@@ -15,7 +15,7 @@
     <parent>
         <groupId>org.alljoyn.validation.validation-base</groupId>
         <artifactId>validation-base</artifactId>
-        <version>14.12.01-SNAPSHOT</version>
+        <version>00.00.01-SNAPSHOT</version>
     </parent>
     <artifactId>validation-dependencies-dl</artifactId>
     <name>validation-dependencies-dl</name>
@@ -23,8 +23,7 @@
     <properties>
         <alljoyn.major.version>14.12</alljoyn.major.version>
         <alljoyn.core.version>14.12.00b</alljoyn.core.version>
-        <alljoyn.services.version>14.12.00</alljoyn.services.version>
-        <alljoyn.dependencies.version>14.12.00-SNAPSHOT</alljoyn.dependencies.version>
+        <alljoyn.base-services.version>14.12.00</alljoyn.base-services.version>
         <download-mirror>http://mirrors.kernel.org/allseenalliance/alljoyn/${alljoyn.major.version}</download-mirror>
     </properties>
     <build>
@@ -43,7 +42,7 @@
                         <artifactItem>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>alljoyn</artifactId>
-                            <version>${alljoyn.dependencies.version}</version>
+                            <version>${alljoyn.core.version}</version>
                             <packaging>jar</packaging>
                             <classifier>android-rel</classifier>
                             <downloadUrl>${download-mirror}/alljoyn-${alljoyn.core.version}-android-sdk-rel.zip</downloadUrl>
@@ -52,7 +51,7 @@
                         <artifactItem>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>liballjoyn_java</artifactId>
-                            <version>${alljoyn.dependencies.version}</version>
+                            <version>${alljoyn.core.version}</version>
                             <packaging>so</packaging>
                             <classifier>android-rel</classifier>
                             <downloadUrl>${download-mirror}/alljoyn-${alljoyn.core.version}-android-sdk-rel.zip</downloadUrl>
@@ -61,7 +60,7 @@
                         <artifactItem>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>about</artifactId>
-                            <version>${alljoyn.dependencies.version}</version>
+                            <version>${alljoyn.core.version}</version>
                             <packaging>jar</packaging>
                             <classifier>android-rel</classifier>
                             <downloadUrl>${download-mirror}/alljoyn-${alljoyn.core.version}-android-sdk-rel.zip</downloadUrl>
@@ -70,7 +69,7 @@
                         <artifactItem>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>alljoyn</artifactId>
-                            <version>${alljoyn.dependencies.version}</version>
+                            <version>${alljoyn.core.version}</version>
                             <packaging>jar</packaging>
                             <classifier>android-dbg</classifier>
                             <downloadUrl>${download-mirror}/alljoyn-${alljoyn.core.version}-android-sdk-dbg.zip</downloadUrl>
@@ -79,7 +78,7 @@
                         <artifactItem>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>liballjoyn_java</artifactId>
-                            <version>${alljoyn.dependencies.version}</version>
+                            <version>${alljoyn.core.version}</version>
                             <packaging>so</packaging>
                             <classifier>android-dbg</classifier>
                             <downloadUrl>${download-mirror}/alljoyn-${alljoyn.core.version}-android-sdk-dbg.zip</downloadUrl>
@@ -88,74 +87,74 @@
                         <artifactItem>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>alljoyn_config</artifactId>
-                            <version>${alljoyn.dependencies.version}</version>
+                            <version>${alljoyn.base-services.version}</version>
                             <packaging>jar</packaging>
                             <classifier>android</classifier>
-                            <downloadUrl>${download-mirror}/alljoyn-config-service-framework-${alljoyn.services.version}-android-sdk-rel.zip</downloadUrl>
-                            <extractFile>alljoyn-android/services/alljoyn-config-${alljoyn.services.version}-rel/java/libs/alljoyn_config.jar</extractFile>
+                            <downloadUrl>${download-mirror}/alljoyn-config-service-framework-${alljoyn.base-services.version}-android-sdk-rel.zip</downloadUrl>
+                            <extractFile>alljoyn-android/services/alljoyn-config-${alljoyn.base-services.version}-rel/java/libs/alljoyn_config.jar</extractFile>
                         </artifactItem>
                         <artifactItem>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>alljoyn_app_utils</artifactId>
-                            <version>${alljoyn.dependencies.version}</version>
+                            <version>${alljoyn.base-services.version}</version>
                             <packaging>jar</packaging>
                             <classifier>android</classifier>
-                            <downloadUrl>${download-mirror}/alljoyn-config-service-framework-${alljoyn.services.version}-android-sdk-rel.zip</downloadUrl>
-                            <extractFile>alljoyn-android/services/alljoyn-config-${alljoyn.services.version}-rel/samples/ConfigClientSample/libs/alljoyn_apps_android_utils.jar</extractFile>
+                            <downloadUrl>${download-mirror}/alljoyn-config-service-framework-${alljoyn.base-services.version}-android-sdk-rel.zip</downloadUrl>
+                            <extractFile>alljoyn-android/services/alljoyn-config-${alljoyn.base-services.version}-rel/samples/ConfigClientSample/libs/alljoyn_apps_android_utils.jar</extractFile>
                         </artifactItem>
                         <artifactItem>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>alljoyn_ns</artifactId>
-                            <version>${alljoyn.dependencies.version}</version>
+                            <version>${alljoyn.base-services.version}</version>
                             <packaging>jar</packaging>
                             <classifier>android</classifier>
-                            <downloadUrl>${download-mirror}/alljoyn-notification-service-framework-${alljoyn.services.version}-android-sdk-rel.zip</downloadUrl>
-                            <extractFile>alljoyn-android/services/alljoyn-notification-${alljoyn.services.version}-rel/java/libs/NotificationService.jar</extractFile>
+                            <downloadUrl>${download-mirror}/alljoyn-notification-service-framework-${alljoyn.base-services.version}-android-sdk-rel.zip</downloadUrl>
+                            <extractFile>alljoyn-android/services/alljoyn-notification-${alljoyn.base-services.version}-rel/java/libs/NotificationService.jar</extractFile>
                         </artifactItem>
                         <artifactItem>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>alljoyn_ns_commons</artifactId>
-                            <version>${alljoyn.dependencies.version}</version>
+                            <version>${alljoyn.base-services.version}</version>
                             <packaging>jar</packaging>
                             <classifier>android</classifier>
-                            <downloadUrl>${download-mirror}/alljoyn-notification-service-framework-${alljoyn.services.version}-android-sdk-rel.zip</downloadUrl>
-                            <extractFile>alljoyn-android/services/alljoyn-notification-${alljoyn.services.version}-rel/java/libs/NSCommons.jar</extractFile>
+                            <downloadUrl>${download-mirror}/alljoyn-notification-service-framework-${alljoyn.base-services.version}-android-sdk-rel.zip</downloadUrl>
+                            <extractFile>alljoyn-android/services/alljoyn-notification-${alljoyn.base-services.version}-rel/java/libs/NSCommons.jar</extractFile>
                         </artifactItem>
                         <artifactItem>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>alljoyn_ns_nativeplatform</artifactId>
-                            <version>${alljoyn.dependencies.version}</version>
+                            <version>${alljoyn.base-services.version}</version>
                             <packaging>jar</packaging>
                             <classifier>android</classifier>
-                            <downloadUrl>${download-mirror}/alljoyn-notification-service-framework-${alljoyn.services.version}-android-sdk-rel.zip</downloadUrl>
-                            <extractFile>alljoyn-android/services/alljoyn-notification-${alljoyn.services.version}-rel/java/libs/NSNativePlatformAndr.jar</extractFile>
+                            <downloadUrl>${download-mirror}/alljoyn-notification-service-framework-${alljoyn.base-services.version}-android-sdk-rel.zip</downloadUrl>
+                            <extractFile>alljoyn-android/services/alljoyn-notification-${alljoyn.base-services.version}-rel/java/libs/NSNativePlatformAndr.jar</extractFile>
                         </artifactItem>
                         <artifactItem>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>onboarding</artifactId>
-                            <version>${alljoyn.dependencies.version}</version>
+                            <version>${alljoyn.base-services.version}</version>
                             <packaging>jar</packaging>
                             <classifier>android</classifier>
-                            <downloadUrl>${download-mirror}/alljoyn-onboarding-service-framework-${alljoyn.services.version}-android-sdk-rel.zip</downloadUrl>
-                            <extractFile>alljoyn-android/services/alljoyn-onboarding-${alljoyn.services.version}-rel/java/libs/alljoyn_onboarding.jar</extractFile>
+                            <downloadUrl>${download-mirror}/alljoyn-onboarding-service-framework-${alljoyn.base-services.version}-android-sdk-rel.zip</downloadUrl>
+                            <extractFile>alljoyn-android/services/alljoyn-onboarding-${alljoyn.base-services.version}-rel/java/libs/alljoyn_onboarding.jar</extractFile>
                         </artifactItem>
                         <artifactItem>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>controlpanel</artifactId>
-                            <version>${alljoyn.dependencies.version}</version>
+                            <version>${alljoyn.base-services.version}</version>
                             <packaging>jar</packaging>
                             <classifier>android</classifier>
-                            <downloadUrl>${download-mirror}/alljoyn-controlpanel-service-framework-${alljoyn.services.version}-android-sdk-rel.zip</downloadUrl>
-                            <extractFile>alljoyn-android/services/alljoyn-controlpanel-${alljoyn.services.version}-rel/java/libs/ControlPanelService.jar</extractFile>
+                            <downloadUrl>${download-mirror}/alljoyn-controlpanel-service-framework-${alljoyn.base-services.version}-android-sdk-rel.zip</downloadUrl>
+                            <extractFile>alljoyn-android/services/alljoyn-controlpanel-${alljoyn.base-services.version}-rel/java/libs/ControlPanelService.jar</extractFile>
                         </artifactItem>
                         <artifactItem>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>controlpanel_adapter</artifactId>
-                            <version>${alljoyn.dependencies.version}</version>
+                            <version>${alljoyn.base-services.version}</version>
                             <packaging>jar</packaging>
                             <classifier>android</classifier>
-                            <downloadUrl>${download-mirror}/alljoyn-controlpanel-service-framework-${alljoyn.services.version}-android-sdk-rel.zip</downloadUrl>
-                            <extractFile>alljoyn-android/services/alljoyn-controlpanel-${alljoyn.services.version}-rel/java/libs/ControlPanelAdapter.jar</extractFile>
+                            <downloadUrl>${download-mirror}/alljoyn-controlpanel-service-framework-${alljoyn.base-services.version}-android-sdk-rel.zip</downloadUrl>
+                            <extractFile>alljoyn-android/services/alljoyn-controlpanel-${alljoyn.base-services.version}-rel/java/libs/ControlPanelAdapter.jar</extractFile>
                         </artifactItem>
                     </artifactItems>
                 </configuration>
