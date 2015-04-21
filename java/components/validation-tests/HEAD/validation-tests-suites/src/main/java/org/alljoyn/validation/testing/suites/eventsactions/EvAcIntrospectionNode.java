@@ -35,19 +35,22 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
-public class EvAcIntrospectionNode {
+public class EvAcIntrospectionNode
+{
 
-    class NoOpEntityResolver implements EntityResolver {
-            public InputSource resolveEntity(String publicId, String systemId)
-                                        throws SAXException, java.io.IOException {
-                return new InputSource(new ByteArrayInputStream("".getBytes()));
-            }
+    class NoOpEntityResolver implements EntityResolver
+    {
+        public InputSource resolveEntity(String publicId, String systemId) throws SAXException, java.io.IOException
+        {
+            return new InputSource(new ByteArrayInputStream("".getBytes()));
+        }
 
     }
 
-    //=============================================//
+    // =============================================//
 
-    class IntrospectionParser extends DefaultHandler{
+    class IntrospectionParser extends DefaultHandler
+    {
 
         private XMLReader xmlReader = null;
         private SAXParser saxParser = null;
@@ -55,7 +58,8 @@ public class EvAcIntrospectionNode {
         private EvAcIntrospectionNode currentNode = null;
         private boolean sawRootNode = false;
 
-        public IntrospectionParser() throws IOException, ParserConfigurationException, SAXException {
+        public IntrospectionParser() throws IOException, ParserConfigurationException, SAXException
+        {
             SAXParserFactory spf = SAXParserFactory.newInstance();
             spf.setNamespaceAware(false);
             saxParser = spf.newSAXParser();
@@ -64,95 +68,116 @@ public class EvAcIntrospectionNode {
             xmlReader.setEntityResolver(new NoOpEntityResolver());
         }
 
-        public void parse(EvAcIntrospectionNode node, String xml) throws SAXException {
+        public void parse(EvAcIntrospectionNode node, String xml) throws SAXException
+        {
             this.currentNode = node;
             sawRootNode = false;
-            try{
+            try
+            {
                 xmlReader.parse(new InputSource(new StringReader(xml)));
-            }catch(IOException cantReallyHappen) {
+            }
+            catch (IOException cantReallyHappen)
+            {
                 logger.error("Failed to read the XML: '" + cantReallyHappen.getMessage() + "'", cantReallyHappen);
             }
             this.currentNode = null;
         }
 
-        public void startElement(String namespaceURI, String localName,
-                        String qName, Attributes attrs) throws SAXException {
-            if(qName.equals("node")) {
-                if(!sawRootNode) {
-                        sawRootNode = true;
-                        return;
+        public void startElement(String namespaceURI, String localName, String qName, Attributes attrs) throws SAXException
+        {
+            if (qName.equals("node"))
+            {
+                if (!sawRootNode)
+                {
+                    sawRootNode = true;
+                    return;
                 }
                 currentNode.addChild(getNameAttr(attrs));
-            }else if(qName.equals("interface")){
-                if(null == currentNode) throw new SAXException("interface not in node");
+            }
+            else if (qName.equals("interface"))
+            {
+                if (null == currentNode)
+                    throw new SAXException("interface not in node");
                 currentNode.interfaces.add(getNameAttr(attrs));
             }
 
         }
 
-        private String getNameAttr(Attributes attrs) throws SAXException {
+        private String getNameAttr(Attributes attrs) throws SAXException
+        {
             int i = attrs.getIndex("name");
-            if(-1 == i) throw new SAXException("inner node without a name");
+            if (-1 == i)
+                throw new SAXException("inner node without a name");
             return attrs.getValue(i);
         }
     }
 
-    //================================================//
-    //                END OF NESTED CLASSES           //
-    //================================================//
+    // ================================================//
+    // END OF NESTED CLASSES //
+    // ================================================//
 
-    private static final String TAG    = "EvAcIntrospectionNode";
+    private static final String TAG = "EvAcIntrospectionNode";
     private static final Logger logger = LoggerFactory.getLogger(TAG);
 
-    private boolean parsed                       = false;
-    private String path                          = null;
-    private IntrospectionParser parser           = null;
+    private boolean parsed = false;
+    private String path = null;
+    private IntrospectionParser parser = null;
 
     private List<EvAcIntrospectionNode> children = new LinkedList<EvAcIntrospectionNode>();
-    private List<String> interfaces              = new LinkedList<String>();
+    private List<String> interfaces = new LinkedList<String>();
 
-    public EvAcIntrospectionNode(String path) throws ParserConfigurationException, IOException, SAXException {
-        this.path   = path;
+    public EvAcIntrospectionNode(String path) throws ParserConfigurationException, IOException, SAXException
+    {
+        this.path = path;
         this.parser = new IntrospectionParser();
     }
 
-    private EvAcIntrospectionNode(String path, IntrospectionParser parser){
-        this.path   = path;
+    private EvAcIntrospectionNode(String path, IntrospectionParser parser)
+    {
+        this.path = path;
         this.parser = parser;
     }
 
-    protected void addChild(String name) {
+    protected void addChild(String name)
+    {
         StringBuilder sb = new StringBuilder(path);
-        if(!name.endsWith("/")) sb.append('/');
+        if (!name.endsWith("/"))
+            sb.append('/');
         sb.append(name);
         children.add(new EvAcIntrospectionNode(sb.toString(), parser));
     }
 
-    public String getPath() {
+    public String getPath()
+    {
         return path;
     }
 
-    public boolean isParsed() {
+    public boolean isParsed()
+    {
         return parsed;
     }
 
-    public String toString() {
+    public String toString()
+    {
         StringBuilder sb = new StringBuilder();
         sb.append(path);
         sb.append('\n');
 
-        if(!parsed) {
+        if (!parsed)
+        {
             sb.append(" Not parsed\n");
             return sb.toString();
         }
 
-        for(String ifc : interfaces) {
+        for (String ifc : interfaces)
+        {
             sb.append(' ');
             sb.append(ifc);
             sb.append('\n');
         }
 
-        for(EvAcIntrospectionNode node : children ) {
+        for (EvAcIntrospectionNode node : children)
+        {
             sb.append(node.toString());
         }
 
@@ -161,20 +186,24 @@ public class EvAcIntrospectionNode {
 
     /**
      * Parse the given XML
+     * 
      * @param xml
      * @throws SAXException
      */
-    public void parse(String xml) throws SAXException {
+    public void parse(String xml) throws SAXException
+    {
 
         parser.parse(this, xml);
         parsed = true;
-    }//parse
+    }// parse
 
-    public List<EvAcIntrospectionNode> getChidren() {
+    public List<EvAcIntrospectionNode> getChidren()
+    {
         return children;
     }
 
-    public List<String> getInterfaces() {
+    public List<String> getInterfaces()
+    {
         return interfaces;
     }
 
