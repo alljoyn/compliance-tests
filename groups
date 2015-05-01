@@ -2,4 +2,3 @@
 #
 139102f0421fe2b600cbffd8e124a246f244414c	GitHub Replication
 bff9504c6ef3f5ba6333442cbc8b32b495d5ed65	cc-test
-ldap:cn=gerrit_compliance_committers,ou=groups,cn=allseen,dc=codeaurora,dc=org	ldap/gerrit_compliance_committers
