@@ -1,5 +1,5 @@
-/******************************************************************************
- * Copyright (c) 2014, AllSeen Alliance. All rights reserved.
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
  *
  *    Permission to use, copy, modify, and/or distribute this software for any
  *    purpose with or without fee is hereby granted, provided that the above
@@ -12,7 +12,7 @@
  *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
  *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- ******************************************************************************/
+ */
 
 package org.alljoyn.gatewaycontroller.sdk;
 
@@ -23,6 +23,7 @@ import org.alljoyn.gatewaycontroller.sdk.managerinterfaces.ManifestObjectDescrip
 import org.alljoyn.gatewaycontroller.sdk.managerinterfaces.ManifestObjectDescriptionInfoAJ.InterfaceInfoAJ;
 import org.alljoyn.gatewaycontroller.sdk.managerinterfaces.ManifestObjectDescriptionInfoAJ.ObjectPathInfoAJ;
 
+// TODO: Auto-generated Javadoc
 /**
  * This class stores object description provided with the manifest of the
  * Gateway Connector Application

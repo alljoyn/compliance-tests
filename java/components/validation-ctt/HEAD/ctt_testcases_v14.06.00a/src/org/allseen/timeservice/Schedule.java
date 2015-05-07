@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.allseen.timeservice.ajinterfaces.Alarm;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Schedule indicates the when the {@link Alarm} should fire.
  */
@@ -31,12 +32,25 @@ public class Schedule {
      */
     public static enum WeekDay {
 
+        /** The sunday. */
         SUNDAY ((byte) 0x1),
+        
+        /** The monday. */
         MONDAY ((byte) 0x2),
+        
+        /** The tuesday. */
         TUESDAY ((byte) 0x4),
+        
+        /** The wednesday. */
         WEDNESDAY((byte) 0x8),
+        
+        /** The thursday. */
         THURSDAY ((byte) 0x10),
+        
+        /** The friday. */
         FRIDAY ((byte) 0x20),
+        
+        /** The saturday. */
         SATURDAY ((byte) 0x40),
         ;
 

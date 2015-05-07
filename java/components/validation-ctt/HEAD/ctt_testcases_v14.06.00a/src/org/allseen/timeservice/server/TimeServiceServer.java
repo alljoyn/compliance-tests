@@ -39,6 +39,7 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 
 
+// TODO: Auto-generated Javadoc
 /**
  * The main class to initialize the Time Service in the server mode. Initialize
  * the class by calling the {@link TimeServiceServer#init(BusAttachment)}
@@ -46,7 +47,10 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
  */
 public class TimeServiceServer {
 
+    /** The Constant TAG. */
     private static final String TAG = "ajts" + TimeServiceServer.class.getSimpleName();
+	
+	/** The Constant Log. */
 	private static final WindowsLoggerImpl Log =  new WindowsLoggerImpl(TAG);
 
     /**

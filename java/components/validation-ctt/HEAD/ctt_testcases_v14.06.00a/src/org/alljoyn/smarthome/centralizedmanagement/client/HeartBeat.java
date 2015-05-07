@@ -1,5 +1,5 @@
 /*
- *    Copyright (c) 2014, AllSeen Alliance. All rights reserved.
+ * Copyright AllSeen Alliance. All rights reserved.
  *
  *    Permission to use, copy, modify, and/or distribute this software for any
  *    purpose with or without fee is hereby granted, provided that the above
@@ -17,19 +17,33 @@ package org.alljoyn.smarthome.centralizedmanagement.client;
 
 import java.util.Timer;
 
+// TODO: Auto-generated Javadoc
 /**
  * 	This class used to implement the heartbeat mechanism.
  */
 
 public class HeartBeat {
+	
+	/** The smart home client. */
 	SmartHomeClient smartHomeClient;
+	
+	/** The device id. */
 	String deviceId;
 	
+	/**
+	 * Instantiates a new heart beat.
+	 *
+	 * @param smartHomeClient the smart home client
+	 * @param deviceId the device id
+	 */
 	public HeartBeat(SmartHomeClient smartHomeClient, String deviceId) {
 		this.smartHomeClient = smartHomeClient;
 		this.deviceId = deviceId;
 	}
 	
+	/**
+	 * Device heart beat.
+	 */
 	public void deviceHeartBeat() {
 		HeartBeatTask heartBeatTask = new HeartBeatTask(this.smartHomeClient, this.deviceId);
 		Timer timer = new Timer();

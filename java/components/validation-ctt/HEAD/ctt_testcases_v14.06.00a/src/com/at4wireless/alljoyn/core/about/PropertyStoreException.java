@@ -16,11 +16,14 @@
 
 package com.at4wireless.alljoyn.core.about;
 
+
 /**
  * An exception that is thrown by the PropertyStore when illegal arguments are given in set/get methods.
  * @see PropertyStore
  */
 public class PropertyStoreException extends Exception {
+    
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -8488311339426012157L;
 
     /**
@@ -43,8 +46,14 @@ public class PropertyStoreException extends Exception {
      */
     public final static int INVALID_VALUE = 3;
 
+    /** The m_reason. */
     private int m_reason;
 
+    /**
+     * Instantiates a new property store exception.
+     *
+     * @param reason the reason
+     */
     public PropertyStoreException(int reason)
     {
         m_reason = reason;

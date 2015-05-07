@@ -35,6 +35,7 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 
 
+// TODO: Auto-generated Javadoc
 /**
  * The main class to initialize the Time Service in the client mode. The class
  * is initialized with the {@link BusObjectDescription} array received from the
@@ -44,7 +45,11 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
  * {@link TimeServiceClient#getAnnouncedClockList()}.
  */
 public class TimeServiceClient {
+    
+    /** The Constant TAG. */
     private static final String TAG = "ajts" + TimeServiceClient.class.getSimpleName();
+	
+	/** The Constant Log. */
 	private static final WindowsLoggerImpl Log =  new WindowsLoggerImpl(TAG);
 
     /**

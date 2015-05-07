@@ -1,5 +1,5 @@
-/******************************************************************************
- * Copyright (c) 2014, AllSeen Alliance. All rights reserved.
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
  *
  *    Permission to use, copy, modify, and/or distribute this software for any
  *    purpose with or without fee is hereby granted, provided that the above
@@ -12,7 +12,7 @@
  *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
  *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- ******************************************************************************/
+ */
 
 package org.alljoyn.gatewaycontroller.sdk;
 
@@ -45,12 +45,17 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 
 
+// TODO: Auto-generated Javadoc
 /**
  * The object contains access control configuration rules for a Gateway
  * Connector Application.
  */
 public class Acl {
+    
+    /** The Constant TAG. */
     private static final String TAG = "gwc" + Acl.class.getSimpleName();
+	
+	/** The Constant Log. */
 	private static final WindowsLoggerImpl Log =  new WindowsLoggerImpl(TAG);
 
     /**
@@ -59,12 +64,25 @@ public class Acl {
      */
     public static enum AclResponseCode {
 
+        /** The gw acl rc success. */
         GW_ACL_RC_SUCCESS("Success", (short) 0),
+        
+        /** The gw acl rc invalid. */
         GW_ACL_RC_INVALID("Invalid", (short) 1),
+        
+        /** The gw acl rc register error. */
         GW_ACL_RC_REGISTER_ERROR("Register error", (short) 2),
+        
+        /** The gw acl rc acl not found. */
         GW_ACL_RC_ACL_NOT_FOUND("ACL not found", (short) 3),
+        
+        /** The gw acl rc persistence error. */
         GW_ACL_RC_PERSISTENCE_ERROR("ACL persistence error", (short) 4),
+        
+        /** The gw acl rc policymanager error. */
         GW_ACL_RC_POLICYMANAGER_ERROR("ACL policy manager error", (short) 5),
+        
+        /** The gw acl rc metadata error. */
         GW_ACL_RC_METADATA_ERROR("Metadata error", (short) 6);
 
         /**
@@ -99,7 +117,10 @@ public class Acl {
      */
     public static enum AclStatus {
 
+        /** The gw as inactive. */
         GW_AS_INACTIVE("Inactive", (short) 0),
+        
+        /** The gw as active. */
         GW_AS_ACTIVE("Active", (short) 1),
         ;
 

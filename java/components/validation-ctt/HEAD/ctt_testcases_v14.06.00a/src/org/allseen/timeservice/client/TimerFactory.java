@@ -28,12 +28,17 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 
 
+// TODO: Auto-generated Javadoc
 /**
  * Time Service TimerFactory.
  * Use this class to communication with {@link TimeServiceServer} TimerFactory object.
  */
 public class TimerFactory extends ObjectIntrospector {
+    
+    /** The Constant TAG. */
     private static final String TAG = "ajts" + TimerFactory.class.getSimpleName();
+	
+	/** The Constant Log. */
 	private static final WindowsLoggerImpl Log =  new WindowsLoggerImpl(TAG);
 
     /**

@@ -28,12 +28,17 @@ import org.allseen.timeservice.server.TimeServiceServer;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * Time Service Clock.
  * Use this class to communication with {@link TimeServiceServer} Clock object.
  */
 public class Clock extends TimeClientBase {
+    
+    /** The Constant TAG. */
     private static final String TAG = "ajts" + Clock.class.getSimpleName();
+	
+	/** The Constant Log. */
 	private static final WindowsLoggerImpl Log =  new WindowsLoggerImpl(TAG);
 
     /**

@@ -19,6 +19,7 @@ package org.allseen.timeservice.client;
 import org.alljoyn.bus.SessionListener;
 import org.alljoyn.bus.Status;
 
+// TODO: Auto-generated Javadoc
 /**
  * Implement this interface to receive AllJoyn session related events.
  */

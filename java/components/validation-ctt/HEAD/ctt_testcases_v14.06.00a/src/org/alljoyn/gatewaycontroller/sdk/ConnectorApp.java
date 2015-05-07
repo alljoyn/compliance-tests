@@ -1,5 +1,5 @@
-/******************************************************************************
- * Copyright (c) 2014, AllSeen Alliance. All rights reserved.
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
  *
  *    Permission to use, copy, modify, and/or distribute this software for any
  *    purpose with or without fee is hereby granted, provided that the above
@@ -12,7 +12,7 @@
  *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
  *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- ******************************************************************************/
+ */
 
 package org.alljoyn.gatewaycontroller.sdk;
 
@@ -53,11 +53,16 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 
 
+// TODO: Auto-generated Javadoc
 /**
  * The Connector Application managed by the {@link GatewayMgmtApp}
  */
 public class ConnectorApp {
+    
+    /** The Constant TAG. */
     private static final String TAG = "gwc" + ConnectorApp.class.getSimpleName();
+	
+	/** The Constant Log. */
 	private static final WindowsLoggerImpl Log =  new WindowsLoggerImpl(TAG);
 
     /**
@@ -125,26 +130,41 @@ public class ConnectorApp {
             return signalMethod;
         }
 
+        /* (non-Javadoc)
+         * @see org.alljoyn.gatewaycontroller.sdk.managerinterfaces.Application#getApplicationStatus()
+         */
         @Override
         public ApplicationStatusAJ getApplicationStatus() throws BusException {
             return null;
         }
 
+        /* (non-Javadoc)
+         * @see org.alljoyn.gatewaycontroller.sdk.managerinterfaces.Application#getManifestInterfaces()
+         */
         @Override
         public ManifestRulesAJ getManifestInterfaces() throws BusException {
             return null;
         }
 
+        /* (non-Javadoc)
+         * @see org.alljoyn.gatewaycontroller.sdk.managerinterfaces.Application#restartApp()
+         */
         @Override
         public short restartApp() throws BusException {
             return 0;
         }
 
+        /* (non-Javadoc)
+         * @see org.alljoyn.gatewaycontroller.sdk.managerinterfaces.Application#getManifestFile()
+         */
         @Override
         public String getManifestFile() throws BusException {
             return null;
         }
 
+        /* (non-Javadoc)
+         * @see org.alljoyn.gatewaycontroller.sdk.managerinterfaces.Application#getVersion()
+         */
         @Override
         public short getVersion() throws BusException {
             return 0;

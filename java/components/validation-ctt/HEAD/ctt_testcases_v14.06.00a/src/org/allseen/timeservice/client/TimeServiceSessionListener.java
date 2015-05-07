@@ -28,11 +28,16 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 
 
+// TODO: Auto-generated Javadoc
 /**
  * Utility class handling AllJoyn session related events and managing the session
  */
 class TimeServiceSessionListener extends SessionListener {
+    
+    /** The Constant TAG. */
     private static final String TAG = "ajts" + TimeServiceSessionListener.class.getSimpleName();
+	
+	/** The Constant Log. */
 	private static final WindowsLoggerImpl Log =  new WindowsLoggerImpl(TAG);
 
     /**

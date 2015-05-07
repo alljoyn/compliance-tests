@@ -1,3 +1,18 @@
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *    Permission to use, copy, modify, and/or distribute this software for any
+ *    purpose with or without fee is hereby granted, provided that the above
+ *    copyright notice and this permission notice appear in all copies.
+ *
+ *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.at4wireless.alljoyn.testcases.conf.time;
 
 import java.io.IOException;
@@ -55,71 +70,155 @@ import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionInterface;
 import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionNode;
 import com.at4wireless.alljoyn.core.introspection.bean.NodeDetail;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class TimeService.
+ */
 public class TimeService {
 
 
-	 Boolean pass=true;
+	 /** The pass. */
+ 	Boolean pass=true;
 
+	/** The tag. */
 	protected  final String TAG = "TimeServiceTestSuite";
+	
+	/** The logger. */
 	private  final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
 
+	/** The introspectable interface name. */
 	private  final String INTROSPECTABLE_INTERFACE_NAME = "org.allseen.Introspectable";
 
 
+	/** The bus application name. */
 	private  final String BUS_APPLICATION_NAME = "TimeServiceTestSuite";
+	
+	/** The error msg bus introspection. */
 	private  final String ERROR_MSG_BUS_INTROSPECTION = "Encountered exception while trying to introspect the bus";
+	
+	/** The dbus error service unknown. */
 	private  final String DBUS_ERROR_SERVICE_UNKNOWN = "org.freedesktop.DBus.Error.ServiceUnknown";
 
+	/** The device about announcement. */
 	protected  AboutAnnouncementDetails deviceAboutAnnouncement;
+	
+	/** The service helper. */
 	private  ServiceHelper serviceHelper;
+	
+	/** The time service client. */
 	private  TimeServiceClient timeServiceClient;
+	
+	/** The simple date format. */
 	private  SimpleDateFormat simpleDateFormat;
+	
+	/** The annoucement timeout in seconds. */
 	private  long ANNOUCEMENT_TIMEOUT_IN_SECONDS = 30;
+	
+	/** The date format. */
 	private  final String DATE_FORMAT = "yyyy-MM-dd";
 
 	// private  TimeServiceClient timeServiceClient;
 
 
+	/** The dut app id. */
 	private  UUID dutAppId;
+	
+	/** The dut device id. */
 	private  String dutDeviceId;
 
+	/** The join session queue. */
 	private  BlockingQueue<Pair<TimeServiceClient, Status>> joinSessionQueue = new ArrayBlockingQueue<Pair<TimeServiceClient, Status>>(1);
 
 
+	/** The date and time display format. */
 	private  SimpleDateFormat dateAndTimeDisplayFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
 
 	//private BlockingQueue<Pair<TimeServiceClient, Status>> joinSessionQueue = new ArrayBlockingQueue<Pair<TimeServiceClient, Status>>(1);
 
 
-	 boolean ICST_TimeServiceFramework=false;
-	 boolean ICST_ClockInterface=false;
-	 boolean ICST_Date=false;
-	 boolean ICST_Milliseconds=false;
-	 boolean ICST_TimeAuthorityInterface=false;
-	 boolean ICST_AlarmFactoryInterface=false;
-	 boolean ICST_AlarmInterface=false;
-	 boolean ICST_TimerFactoryInterface=false;
-	 boolean ICST_TimerInterface=false;
+	 /** The ICS t_ time service framework. */
+	boolean ICST_TimeServiceFramework=false;
+	 
+ 	/** The ICS t_ clock interface. */
+ 	boolean ICST_ClockInterface=false;
+	 
+ 	/** The ICS t_ date. */
+ 	boolean ICST_Date=false;
+	 
+ 	/** The ICS t_ milliseconds. */
+ 	boolean ICST_Milliseconds=false;
+	 
+ 	/** The ICS t_ time authority interface. */
+ 	boolean ICST_TimeAuthorityInterface=false;
+	 
+ 	/** The ICS t_ alarm factory interface. */
+ 	boolean ICST_AlarmFactoryInterface=false;
+	 
+ 	/** The ICS t_ alarm interface. */
+ 	boolean ICST_AlarmInterface=false;
+	 
+ 	/** The ICS t_ timer factory interface. */
+ 	boolean ICST_TimerFactoryInterface=false;
+	 
+ 	/** The ICS t_ timer interface. */
+ 	boolean ICST_TimerInterface=false;
 
 	////////////////
-	 String IXITCO_AppId=null;
+	 /** The IXITC o_ app id. */
+	String IXITCO_AppId=null;
 
-	 String IXITCO_DeviceId=null;
+	 /** The IXITC o_ device id. */
+ 	String IXITCO_DeviceId=null;
 
-	 String IXITCO_DefaultLanguage=null;
+	 /** The IXITC o_ default language. */
+ 	String IXITCO_DefaultLanguage=null;
 
 
 
 	////////////////
 
-	 String IXITT_ClockVersion=null;
-	 String IXITT_TimeAuthorityVersion=null;
-	 String IXITT_AlarmFactoryVersion=null;
+	 /** The IXIT t_ clock version. */
+	String IXITT_ClockVersion=null;
+	 
+ 	/** The IXIT t_ time authority version. */
+ 	String IXITT_TimeAuthorityVersion=null;
+	 
+ 	/** The IXIT t_ alarm factory version. */
+ 	String IXITT_AlarmFactoryVersion=null;
 
-	 String IXITT_AlarmVersion=null;
-	 String IXITT_TimerFactoryVersion=null;
-	 String IXITT_TimerVersion=null;
+	 /** The IXIT t_ alarm version. */
+ 	String IXITT_AlarmVersion=null;
+	 
+ 	/** The IXIT t_ timer factory version. */
+ 	String IXITT_TimerFactoryVersion=null;
+	 
+ 	/** The IXIT t_ timer version. */
+ 	String IXITT_TimerVersion=null;
 
+	/**
+	 * Instantiates a new time service.
+	 *
+	 * @param testCase the test case
+	 * @param iCST_TimeServiceFramework the i cs t_ time service framework
+	 * @param iCST_ClockInterface the i cs t_ clock interface
+	 * @param iCST_Date the i cs t_ date
+	 * @param iCST_Milliseconds the i cs t_ milliseconds
+	 * @param iCST_TimeAuthorityInterface the i cs t_ time authority interface
+	 * @param iCST_AlarmFactoryInterface the i cs t_ alarm factory interface
+	 * @param iCST_AlarmInterface the i cs t_ alarm interface
+	 * @param iCST_TimerFactoryInterface the i cs t_ timer factory interface
+	 * @param iCST_TimerInterface the i cs t_ timer interface
+	 * @param iXITCO_AppId the i xitc o_ app id
+	 * @param iXITCO_DeviceId the i xitc o_ device id
+	 * @param iXITCO_DefaultLanguage the i xitc o_ default language
+	 * @param iXITT_ClockVersion the i xit t_ clock version
+	 * @param iXITT_TimeAuthorityVersion the i xit t_ time authority version
+	 * @param iXITT_AlarmFactoryVersion the i xit t_ alarm factory version
+	 * @param iXITT_AlarmVersion the i xit t_ alarm version
+	 * @param iXITT_TimerFactoryVersion the i xit t_ timer factory version
+	 * @param iXITT_TimerVersion the i xit t_ timer version
+	 * @param gPCO_AnnouncementTimeout the g pc o_ announcement timeout
+	 */
 	public TimeService(String testCase, boolean iCST_TimeServiceFramework,
 			boolean iCST_ClockInterface, boolean iCST_Date,
 			boolean iCST_Milliseconds, boolean iCST_TimeAuthorityInterface,
@@ -165,6 +264,13 @@ public class TimeService {
 			//}
 		}
 	}
+	
+	/**
+	 * Run test case.
+	 *
+	 * @param testCase the test case
+	 * @throws Exception the exception
+	 */
 	public  void runTestCase(String testCase) throws Exception{
 		setUp(IXITCO_DeviceId,IXITCO_AppId);		
 		if(testCase.equals("TimeService-v1-01")){
@@ -182,6 +288,13 @@ public class TimeService {
 	}
 
 
+	/**
+	 * Sets the up.
+	 *
+	 * @param iXITCO_DeviceId the i xitc o_ device id
+	 * @param iXITCO_AppId the i xitc o_ app id
+	 * @throws Exception the exception
+	 */
 	private  void setUp(String iXITCO_DeviceId, String iXITCO_AppId) throws Exception {
 		logger.debug("test setUp started");
 
@@ -241,6 +354,11 @@ public class TimeService {
 
 
 
+	/**
+	 * Test time_v1_01_ get object description.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testTime_v1_01_GetObjectDescription() throws Exception {
 
 		List<InterfaceDetail> standardizedIntrospectionInterfacesExposedOnBus = getIntrospector().getStandardizedInterfacesExposedOnBus();
@@ -282,6 +400,11 @@ public class TimeService {
 
 
 
+	/**
+	 * Test time_v1_02_ verify clocks.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testTime_v1_02_VerifyClocks() throws Exception {
 
 		ValidationResult validationResult;
@@ -311,18 +434,38 @@ public class TimeService {
 
 
 
+	/**
+	 * The Class ClockChecker.
+	 */
 	public  class ClockChecker {
+		
+		/** The current clock. */
 		org.allseen.timeservice.client.Clock currentClock;
 
+		/**
+		 * Instantiates a new clock checker.
+		 *
+		 * @param clock the clock
+		 */
 		ClockChecker(org.allseen.timeservice.client.Clock clock) {
 			this.currentClock = clock;
 		}
 
+		/**
+		 * Validate.
+		 *
+		 * @throws Exception the exception
+		 */
 		public void validate() throws Exception {
 			logger.debug("ClockChecker vlaidate");
 			checkClockSet();
 		}
 
+		/**
+		 * Check clock set.
+		 *
+		 * @throws Exception the exception
+		 */
 		private void checkClockSet() throws Exception {
 			final Calendar calander = Calendar.getInstance();
 
@@ -349,6 +492,11 @@ public class TimeService {
 
 
 
+	/**
+	 * Test time_v1_03_ verify timers.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testTime_v1_03_VerifyTimers() throws Exception {
 		String interfaceNameTimer = "org.allseen.Time.Timer";
 		ValidationResult validationResult;
@@ -395,6 +543,11 @@ public class TimeService {
 
 
 
+	/**
+	 * Test time_v1_04_ verify alarms.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testTime_v1_04_VerifyAlarms() throws Exception {
 		String interfaceNameAlarm = "org.allseen.Time.Alarm";
 		ValidationResult validationResult;
@@ -444,25 +597,57 @@ public class TimeService {
 
 
 
+	/**
+	 * The Class AlarmChecker.
+	 */
 	public  class AlarmChecker {
+		
+		/** The current alarm. */
 		private org.allseen.timeservice.client.Alarm currentAlarm;
+		
+		/** The alarm checker title. */
 		private String alarmCheckerTitle = "Alarm checker";
+		
+		/** The time service client. */
 		private TimeServiceClient timeServiceClient;
 
+		/** The latch. */
 		private CountDownLatch latch;
+		
+		/** The primary scheduled future. */
 		private ScheduledFuture primaryScheduledFuture;
+		
+		/** The scheduled executor service. */
 		private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
+		/**
+		 * Instantiates a new alarm checker.
+		 *
+		 * @param alarm the alarm
+		 * @param timeServiceClient the time service client
+		 */
 		public AlarmChecker(org.allseen.timeservice.client.Alarm alarm, TimeServiceClient timeServiceClient) {
 			this.timeServiceClient = timeServiceClient;
 			currentAlarm = alarm;
 		}
 
+		/**
+		 * Vlaidate.
+		 *
+		 * @throws Exception the exception
+		 */
 		public void vlaidate() throws Exception {
 			prepareForTest();
 			test1();
 		}
 
+		/**
+		 * Sets the clock.
+		 *
+		 * @param dateTime the date time
+		 * @return true, if successful
+		 * @throws Exception the exception
+		 */
 		boolean setClock(DateTime dateTime) throws Exception {
 			if (timeServiceClient.isClockAnnounced() && timeServiceClient.getAnnouncedClockList().size() > 0) {
 				for (Clock clock : timeServiceClient.getAnnouncedClockList()) {
@@ -473,6 +658,11 @@ public class TimeService {
 			return false;
 		}
 
+		/**
+		 * Prepare for test.
+		 *
+		 * @throws Exception the exception
+		 */
 		private void prepareForTest() throws Exception {
 			logger.debug("TimerChecker prepareForTest");
 			if (currentAlarm.retrieveIsEnabled()) {
@@ -487,6 +677,11 @@ public class TimeService {
 			assertEquals("",schedule.toString(), currentAlarm.retrieveSchedule().toString());
 		}
 
+		/**
+		 * Start scheduler.
+		 *
+		 * @throws Exception the exception
+		 */
 		private void startScheduler() throws Exception {
 
 			latch = new CountDownLatch(1);
@@ -505,6 +700,11 @@ public class TimeService {
 			}
 		}
 
+		/**
+		 * Test1.
+		 *
+		 * @throws Exception the exception
+		 */
 		private void test1() throws Exception {
 
 			if (!setClock(new org.allseen.timeservice.DateTime(new org.allseen.timeservice.Date((short) 2014, (byte) 1, (byte) 5), new org.allseen.timeservice.Time((byte) 12, (byte) 0, (byte) 0,
@@ -554,34 +754,75 @@ public class TimeService {
 
 
 
+	/**
+	 * The Class TimerChecker.
+	 */
 	public  class TimerChecker {
 
+		/** The current timer. */
 		private org.allseen.timeservice.client.Timer currentTimer;
+		
+		/** The repeat. */
 		private short repeat;
+		
+		/** The period. */
 		private org.allseen.timeservice.Period period = new Period(0, (byte) 1, (byte) 0, (short) 0);
+		
+		/** The Timer checker title. */
 		private String TimerCheckerTitle = "TimerChecker";
+		
+		/** The exception. */
 		private Exception exception = null;
+		
+		/** The latch. */
 		private CountDownLatch latch = new CountDownLatch(1);
+		
+		/** The primary scheduled future. */
 		private ScheduledFuture primaryScheduledFuture;
+		
+		/** The scheduled executor service. */
 		private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
+		/** The running. */
 		private String running = "Running";
+		
+		/** The idle. */
 		private String idle = "Idle";
+		
+		/** The finished. */
 		private String finished = "Finished";
+		
+		/** The Error message. */
 		private String ErrorMessage;
 
+		/** The message queue. */
 		private Vector<Pair<Long, String>> messageQueue = new Vector<Pair<Long, String>>();
 
+		/**
+		 * Instantiates a new timer checker.
+		 *
+		 * @param timer the timer
+		 */
 		public TimerChecker(org.allseen.timeservice.client.Timer timer) {
 			currentTimer = timer;
 		}
 
+		/**
+		 * Validate.
+		 *
+		 * @throws Exception the exception
+		 */
 		public void validate() throws Exception {
 
 			prepareForTest();
 			test1();
 		}
 
+		/**
+		 * Prepare for test.
+		 *
+		 * @throws Exception the exception
+		 */
 		private void prepareForTest() throws Exception {
 			logger.debug("TimerChecker prepareForTest");
 			if (currentTimer.retrieveIsRunning()) {
@@ -599,6 +840,11 @@ public class TimeService {
 			assertEquals("Timer title was not setted correctly",period.toString(), currentTimer.retrieveTimeLeft().toString());
 		}
 
+		/**
+		 * Test1.
+		 *
+		 * @throws Exception the exception
+		 */
 		private void test1() throws Exception {
 			logger.debug("TimerChecker test1");
 
@@ -672,6 +918,12 @@ public class TimeService {
 
 
 
+	/**
+	 * Convert date time to calendar.
+	 *
+	 * @param dt the dt
+	 * @return the calendar
+	 */
 	private  Calendar convertDateTimeToCalendar(DateTime dt) {
 		Calendar newCalendar = Calendar.getInstance();
 		newCalendar.set(Calendar.HOUR_OF_DAY, dt.getTime().getHour());
@@ -684,6 +936,12 @@ public class TimeService {
 		return newCalendar;
 	}
 
+	/**
+	 * Convert calendar to date time.
+	 *
+	 * @param currentCalendar the current calendar
+	 * @return the date time
+	 */
 	private  DateTime convertCalendarToDateTime(Calendar currentCalendar) {
 
 		Time ts = new org.allseen.timeservice.Time((byte) currentCalendar.get(Calendar.HOUR_OF_DAY), (byte) currentCalendar.get(Calendar.MINUTE), (byte) currentCalendar.get(Calendar.SECOND),
@@ -697,6 +955,14 @@ public class TimeService {
 
 
 
+	/**
+	 * Populate bus introspect path interface set.
+	 *
+	 * @param busIntrospector the bus introspector
+	 * @param busIntrospectPathInterfaceSet the bus introspect path interface set
+	 * @param path the path
+	 * @throws Exception the exception
+	 */
 	private  void populateBusIntrospectPathInterfaceSet(BusIntrospector busIntrospector, Set<String> busIntrospectPathInterfaceSet, String path) throws Exception {
 		NodeDetail nodeDetail = null;
 		try {
@@ -719,6 +985,13 @@ public class TimeService {
 		}
 	}
 
+	/**
+	 * Handle introspection bus exception.
+	 *
+	 * @param path the path
+	 * @param e the e
+	 * @throws Exception the exception
+	 */
 	private  void handleIntrospectionBusException(String path, BusException e) throws Exception {
 		String msg = ERROR_MSG_BUS_INTROSPECTION;
 		if (e instanceof ErrorReplyBusException && DBUS_ERROR_SERVICE_UNKNOWN.equals(((ErrorReplyBusException) e).getErrorName())) {
@@ -728,6 +1001,13 @@ public class TimeService {
 		throw new Exception(msg, e);
 	}
 
+	/**
+	 * Populate announcement path interface set.
+	 *
+	 * @param announcementPathInterfaceSet the announcement path interface set
+	 * @param busObjectDescription the bus object description
+	 * @param path the path
+	 */
 	private  void populateAnnouncementPathInterfaceSet(Set<String> announcementPathInterfaceSet, BusObjectDescription busObjectDescription, String path) {
 		for (String ifacename : busObjectDescription.interfaces) {
 			String key = new StringBuilder(path).append(":").append(ifacename).toString();
@@ -738,17 +1018,35 @@ public class TimeService {
 	}
 
 
+	/**
+	 * Gets the introspector.
+	 *
+	 * @return the introspector
+	 */
 	protected  BusIntrospector getIntrospector() {
 		return new XmlBasedBusIntrospector(serviceHelper.getBusAttachment(), timeServiceClient.getServerBusName(), timeServiceClient.getSessionId());
 
 	}
 
+	/**
+	 * Gets the interface validator.
+	 *
+	 * @return the interface validator
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws SAXException the SAX exception
+	 */
 	protected  InterfaceValidator getInterfaceValidator() throws IOException, ParserConfigurationException, SAXException {
 		return new InterfaceValidator();
 	}
 
 
 
+	/**
+	 * Gets the service helper.
+	 *
+	 * @return the service helper
+	 */
 	protected  ServiceHelper getServiceHelper() {
 		return new ServiceHelper();
 	}
@@ -759,6 +1057,11 @@ public class TimeService {
 
 
 
+	/**
+	 * Tear down.
+	 *
+	 * @throws Exception the exception
+	 */
 	protected  void tearDown() throws Exception {
 
 		logger.debug("test tearDown started");
@@ -767,6 +1070,9 @@ public class TimeService {
 	}
 
 
+	/**
+	 * Release resources.
+	 */
 	private  void releaseResources() {
 		if (timeServiceClient != null) {
 			timeServiceClient.release();
@@ -779,6 +1085,11 @@ public class TimeService {
 	}
 
 
+	/**
+	 * Fail.
+	 *
+	 * @param msg the msg
+	 */
 	private  void fail(String msg) {
 
 
@@ -788,6 +1099,13 @@ public class TimeService {
 	}
 
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param errorMsg the error msg
+	 * @param Version the version
+	 * @param version the version
+	 */
 	private  void assertEquals(String errorMsg,
 			String Version, short version) {
 
@@ -802,6 +1120,12 @@ public class TimeService {
 	}
 
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param status the status
+	 * @param second the second
+	 */
 	private  void assertEquals(Status status, Status second) {
 
 		if(!status.equals(second)){
@@ -812,6 +1136,13 @@ public class TimeService {
 
 
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param errorMsg the error msg
+	 * @param i the i
+	 * @param j the j
+	 */
 	private  void assertEquals(String errorMsg, int i, int j) {
 		if(i!=j){
 			fail(errorMsg);
@@ -822,6 +1153,13 @@ public class TimeService {
 
 	}
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param errorMsg the error msg
+	 * @param string1 the string1
+	 * @param string2 the string2
+	 */
 	private  void assertEquals(String errorMsg,
 			String string1, String string2) {
 
@@ -835,6 +1173,13 @@ public class TimeService {
 	}
 
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param errorMsg the error msg
+	 * @param byte1 the byte1
+	 * @param byte2 the byte2
+	 */
 	private  void assertEquals(String errorMsg, byte byte1,
 			byte byte2) {
 		if(!(byte1==byte2)){
@@ -847,6 +1192,13 @@ public class TimeService {
 
 
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param errorMsg the error msg
+	 * @param bool the bool
+	 * @param booleanValue the boolean value
+	 */
 	private  void assertEquals(String errorMsg, boolean bool,
 			boolean booleanValue) {
 		if(bool!=booleanValue){
@@ -859,6 +1211,12 @@ public class TimeService {
 
 
 
+	/**
+	 * Assert true.
+	 *
+	 * @param errorMsg the error msg
+	 * @param bool the bool
+	 */
 	private  void assertTrue(String errorMsg,
 			boolean bool) {
 
@@ -870,6 +1228,12 @@ public class TimeService {
 	}
 
 
+	/**
+	 * Assert false.
+	 *
+	 * @param errorMsg the error msg
+	 * @param bool the bool
+	 */
 	private  void assertFalse(String errorMsg,
 			boolean bool) {
 
@@ -881,6 +1245,12 @@ public class TimeService {
 	}
 
 
+	/**
+	 * Assert not null.
+	 *
+	 * @param msgError the msg error
+	 * @param notNull the not null
+	 */
 	private  void assertNotNull(String msgError, Object notNull) {
 
 		if(notNull==null){
@@ -890,6 +1260,12 @@ public class TimeService {
 	}
 
 
+	/**
+	 * Assert null.
+	 *
+	 * @param msgError the msg error
+	 * @param Null the null
+	 */
 	private  void assertNull(String msgError,
 			Object Null) {
 		if(Null!=null){
@@ -898,6 +1274,11 @@ public class TimeService {
 
 	}
 
+	/**
+	 * Gets the verdict.
+	 *
+	 * @return the verdict
+	 */
 	public String getVerdict() {
 
 		String verdict=null;

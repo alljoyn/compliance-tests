@@ -27,12 +27,17 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 
 
+// TODO: Auto-generated Javadoc
 /**
  * Time Service Alarm.
  * Use this class to communicate with {@link TimeServiceServer} Alarm object.
  */
 public class Alarm extends ObjectIntrospector {
+    
+    /** The Constant TAG. */
     private static final String TAG = "ajts" + Alarm.class.getSimpleName();
+	
+	/** The Constant Log. */
 	private static final WindowsLoggerImpl Log =  new WindowsLoggerImpl(TAG);
 
     /**

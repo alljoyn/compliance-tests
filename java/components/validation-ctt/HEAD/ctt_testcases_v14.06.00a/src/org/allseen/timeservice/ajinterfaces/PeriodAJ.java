@@ -19,24 +19,29 @@ package org.allseen.timeservice.ajinterfaces;
 import org.alljoyn.bus.annotation.Position;
 import org.allseen.timeservice.Period;
 
+// TODO: Auto-generated Javadoc
 /**
  * Period structure
  */
 public class PeriodAJ {
 
     //Positive
+    /** The hour. */
     @Position(0)
     public int hour;
 
     //0-59
+    /** The minute. */
     @Position(1)
     public byte minute;
 
     //0-59
+    /** The second. */
     @Position(2)
     public byte second;
 
     //0-999
+    /** The millisecond. */
     @Position(3)
     public short millisecond;
 

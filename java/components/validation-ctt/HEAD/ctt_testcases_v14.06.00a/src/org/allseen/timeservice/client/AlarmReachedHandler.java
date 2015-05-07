@@ -30,11 +30,16 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 
 
+// TODO: Auto-generated Javadoc
 /**
  * Singleton class that is responsible to receive {@link Alarm#alarmReached()} signals
  */
 class AlarmReachedHandler {
+    
+    /** The Constant TAG. */
     private static final String TAG = "ajts" + AlarmReachedHandler.class.getSimpleName();
+	
+	/** The Constant Log. */
 	private static final WindowsLoggerImpl Log =  new WindowsLoggerImpl(TAG);
 
     /**

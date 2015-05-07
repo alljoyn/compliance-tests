@@ -1,5 +1,5 @@
-/******************************************************************************
- * Copyright (c) 2014, AllSeen Alliance. All rights reserved.
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
  *
  *    Permission to use, copy, modify, and/or distribute this software for any
  *    purpose with or without fee is hereby granted, provided that the above
@@ -12,13 +12,14 @@
  *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
  *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- ******************************************************************************/
+ */
 
 package org.alljoyn.gatewaycontroller.sdk;
 
 import org.alljoyn.gatewaycontroller.sdk.ajcommunication.CommunicationUtil;
 import org.alljoyn.gatewaycontroller.sdk.managerinterfaces.ApplicationStatusAJ;
 
+// TODO: Auto-generated Javadoc
 /**
  * The information about the state of the Gateway {@link ConnectorApp}
  */
@@ -30,10 +31,19 @@ public class ConnectorAppStatus {
      */
     public static enum ConnectionStatus {
 
+        /** The gw cs not initialized. */
         GW_CS_NOT_INITIALIZED("Not initialized", (short) 0),
+        
+        /** The gw cs in progress. */
         GW_CS_IN_PROGRESS("In progress", (short) 1),
+        
+        /** The gw cs connected. */
         GW_CS_CONNECTED("Connected", (short) 2),
+        
+        /** The gw cs not connected. */
         GW_CS_NOT_CONNECTED("Not connected", (short) 3),
+        
+        /** The gw cs error. */
         GW_CS_ERROR("Error", (short) 4),
         ;
 
@@ -69,10 +79,19 @@ public class ConnectorAppStatus {
      */
     public static enum InstallStatus {
 
+        /** The gw is installed. */
         GW_IS_INSTALLED("Installed", (short) 0),
+        
+        /** The gw is install in progress. */
         GW_IS_INSTALL_IN_PROGRESS("Installing", (short) 1),
+        
+        /** The gw is upgrade in progress. */
         GW_IS_UPGRADE_IN_PROGRESS("Upgrading", (short) 2),
+        
+        /** The gw is uninstall in progress. */
         GW_IS_UNINSTALL_IN_PROGRESS("Uninstalling", (short) 3),
+        
+        /** The gw is install failed. */
         GW_IS_INSTALL_FAILED("Failed", (short) 4);
 
         /**
@@ -108,7 +127,10 @@ public class ConnectorAppStatus {
      */
     public static enum OperationalStatus {
 
+        /** The gw os running. */
         GW_OS_RUNNING("Running", (short) 0),
+        
+        /** The gw os stopped. */
         GW_OS_STOPPED("Stopped", (short) 1),
         ;
 
@@ -145,7 +167,10 @@ public class ConnectorAppStatus {
      */
     public static enum RestartStatus {
 
+        /** The gw restart app rc success. */
         GW_RESTART_APP_RC_SUCCESS("Restarted", (short) 0),
+        
+        /** The gw restart app rc invalid. */
         GW_RESTART_APP_RC_INVALID("Failed", (short) 1),
         ;
 

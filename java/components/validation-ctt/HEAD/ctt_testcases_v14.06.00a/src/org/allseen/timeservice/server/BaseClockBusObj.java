@@ -30,6 +30,7 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 
 
+// TODO: Auto-generated Javadoc
 /**
  * This is the base class for all the {@link org.allseen.timeservice.ajinterfaces.Clock} implementations.
  * Most of the {@link org.allseen.timeservice.ajinterfaces.Clock} related calls delegated to
@@ -38,7 +39,11 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 //Commented out because currently JavaBinding doesn't support finding AJ interfaces in the SuperClasses
 //so they must be implemented by the leaf classes
 abstract class BaseClockBusObj /*implements Clock*/ {
+    
+    /** The Constant TAG. */
     private static final String TAG = "ajts" + BaseClockBusObj.class.getSimpleName();
+	
+	/** The Constant Log. */
 	private static final WindowsLoggerImpl Log =  new WindowsLoggerImpl(TAG);
 
     /**

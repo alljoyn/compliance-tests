@@ -17,17 +17,22 @@ package org.allseen.timeservice;
 
 import org.allseen.timeservice.ajinterfaces.Timer;
 
+// TODO: Auto-generated Javadoc
 /**
  * Period is used to indicate time interval of the {@link Timer}.
  */
 public class Period {
 
+    /** The hour. */
     private final int HOUR;
 
+    /** The minute. */
     private final byte MINUTE;
 
+    /** The second. */
     private final byte SECOND;
 
+    /** The millisecond. */
     private final short MILLISECOND;
 
     /**
@@ -48,18 +53,38 @@ public class Period {
         MILLISECOND  = millisecond;
     }
 
+    /**
+     * Gets the hour.
+     *
+     * @return the hour
+     */
     public int getHour() {
         return HOUR;
     }
 
+    /**
+     * Gets the minute.
+     *
+     * @return the minute
+     */
     public byte getMinute() {
         return MINUTE;
     }
 
+    /**
+     * Gets the seconds.
+     *
+     * @return the seconds
+     */
     public byte getSeconds() {
         return SECOND ;
     }
 
+    /**
+     * Gets the milliseconds.
+     *
+     * @return the milliseconds
+     */
     public short getMilliseconds() {
         return MILLISECOND;
     }

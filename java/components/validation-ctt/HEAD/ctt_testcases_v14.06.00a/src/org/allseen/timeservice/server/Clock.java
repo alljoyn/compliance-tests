@@ -21,11 +21,16 @@ import org.allseen.timeservice.DateTime;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * Extend this class to receive events related to this {@link Clock} object.
  */
 public abstract class Clock {
+    
+    /** The Constant TAG. */
     private static final String TAG = "ajts" + Clock.class.getSimpleName();
+	
+	/** The Constant Log. */
 	private static final WindowsLoggerImpl Log =  new WindowsLoggerImpl(TAG);
 
     /**

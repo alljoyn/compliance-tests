@@ -18,15 +18,19 @@ package org.allseen.timeservice;
 
 import org.allseen.timeservice.ajinterfaces.Clock;
 
+// TODO: Auto-generated Javadoc
 /**
  * Date is used by the {@link Clock} to set its {@link DateTime}
  */
 public class Date {
 
+    /** The year. */
     private final short YEAR;
 
+    /** The month. */
     private final byte MONTH;
 
+    /** The day. */
     private final byte DAY;
 
     /**
@@ -45,14 +49,29 @@ public class Date {
         DAY    = day;
     }
 
+    /**
+     * Gets the year.
+     *
+     * @return the year
+     */
     public short getYear() {
         return YEAR;
     }
 
+    /**
+     * Gets the month.
+     *
+     * @return the month
+     */
     public byte getMonth() {
         return MONTH;
     }
 
+    /**
+     * Gets the day.
+     *
+     * @return the day
+     */
     public byte getDay() {
         return DAY;
     }

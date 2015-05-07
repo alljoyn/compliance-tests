@@ -1,18 +1,18 @@
-/*******************************************************************************
- *  Copyright (c) 2013 - 2014, AllSeen Alliance. All rights reserved.
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
  *
- *     Permission to use, copy, modify, and/or distribute this software for any
- *     purpose with or without fee is hereby granted, provided that the above
- *     copyright notice and this permission notice appear in all copies.
+ *    Permission to use, copy, modify, and/or distribute this software for any
+ *    purpose with or without fee is hereby granted, provided that the above
+ *    copyright notice and this permission notice appear in all copies.
  *
- *     THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
- *     WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
- *     MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
- *     ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
- *     WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
- *     ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
- *     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- *******************************************************************************/
+ *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.at4wireless.alljoyn.core.introspection;
 
 import java.io.ByteArrayInputStream;
@@ -35,17 +35,44 @@ import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionSubNode;
 import com.at4wireless.alljoyn.core.introspection.bean.NodeDetail;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class XmlBasedBusIntrospector.
+ */
 public class XmlBasedBusIntrospector implements BusIntrospector
 {
+    
+    /** The Constant SLASH_CHARACTER. */
     private static final String SLASH_CHARACTER = "/";
+    
+    /** The Constant ROOT_PATH. */
     private static final String ROOT_PATH = "/";
+    
+    /** The Constant ALL_STANDARDIZED_INTERFACES. */
     private static final String ALL_STANDARDIZED_INTERFACES = "ALL";
+    
+    /** The Constant STANDARDIZED_INTERFACE_NAME_PREFIX. */
     private static final String STANDARDIZED_INTERFACE_NAME_PREFIX = "org.alljoyn";
+    
+    /** The introspection xml parser. */
     private IntrospectionXmlParser introspectionXmlParser = new IntrospectionXmlParser();
+    
+    /** The bus attachment. */
     private BusAttachment busAttachment;
+    
+    /** The peer name. */
     private String peerName;
+    
+    /** The session id. */
     private int sessionId;
 
+    /**
+     * Instantiates a new xml based bus introspector.
+     *
+     * @param busAttachment the bus attachment
+     * @param peerName the peer name
+     * @param sessionId the session id
+     */
     public XmlBasedBusIntrospector(BusAttachment busAttachment, String peerName, int sessionId)
     {
         this.busAttachment = busAttachment;
@@ -53,6 +80,9 @@ public class XmlBasedBusIntrospector implements BusIntrospector
         this.sessionId = sessionId;
     }
 
+    /* (non-Javadoc)
+     * @see com.at4wireless.alljoyn.core.introspection.BusIntrospector#getInterface(java.lang.String, java.lang.Class)
+     */
     @Override
     public <T> T getInterface(String path, Class<T> interfaceClass)
     {
@@ -61,6 +91,9 @@ public class XmlBasedBusIntrospector implements BusIntrospector
         return proxyBusObject.getInterface(interfaceClass);
     }
 
+    /* (non-Javadoc)
+     * @see com.at4wireless.alljoyn.core.introspection.BusIntrospector#introspect(java.lang.String)
+     */
     public NodeDetail introspect(String path) throws BusException, IOException, ParserConfigurationException, SAXException
     {
         ProxyBusObject proxyBusObject = busAttachment.getProxyBusObject(peerName, path, sessionId, getClasses(Introspectable.class));
@@ -71,6 +104,9 @@ public class XmlBasedBusIntrospector implements BusIntrospector
         return new NodeDetail(path, introspectionNode);
     }
 
+    /* (non-Javadoc)
+     * @see com.at4wireless.alljoyn.core.introspection.BusIntrospector#introspectEntireTree(java.lang.String)
+     */
     public List<NodeDetail> introspectEntireTree(String path) throws BusException, IOException, ParserConfigurationException, SAXException
     {
         NodeDetail nodeDetail = introspect(path);
@@ -81,6 +117,9 @@ public class XmlBasedBusIntrospector implements BusIntrospector
         return nodeDetailList;
     }
 
+    /* (non-Javadoc)
+     * @see com.at4wireless.alljoyn.core.introspection.BusIntrospector#getStandardizedInterfacesExposedOnBus()
+     */
     public List<InterfaceDetail> getStandardizedInterfacesExposedOnBus() throws BusException, IOException, ParserConfigurationException, SAXException
     {
         List<NodeDetail> nodeDetailList = introspectEntireTree(ROOT_PATH);
@@ -88,6 +127,9 @@ public class XmlBasedBusIntrospector implements BusIntrospector
         return determineIntrospectionInterfaces(nodeDetailList, ALL_STANDARDIZED_INTERFACES);
     }
 
+    /* (non-Javadoc)
+     * @see com.at4wireless.alljoyn.core.introspection.BusIntrospector#getInterfacesExposedOnBusBasedOnName(java.lang.String)
+     */
     public List<InterfaceDetail> getInterfacesExposedOnBusBasedOnName(String interfaceName) throws BusException, IOException, ParserConfigurationException, SAXException
     {
         List<NodeDetail> nodeDetailList = introspectEntireTree(ROOT_PATH);
@@ -95,6 +137,9 @@ public class XmlBasedBusIntrospector implements BusIntrospector
         return determineIntrospectionInterfaces(nodeDetailList, interfaceName);
     }
 
+    /* (non-Javadoc)
+     * @see com.at4wireless.alljoyn.core.introspection.BusIntrospector#getInterfacesExposedOnBusUnderSpecifiedPathBasedOnName(java.lang.String, java.lang.String)
+     */
     public List<InterfaceDetail> getInterfacesExposedOnBusUnderSpecifiedPathBasedOnName(String path, String interfaceName) throws BusException, IOException,
             ParserConfigurationException, SAXException
     {
@@ -103,6 +148,9 @@ public class XmlBasedBusIntrospector implements BusIntrospector
         return determineIntrospectionInterfaces(nodeDetailList, interfaceName);
     }
 
+    /* (non-Javadoc)
+     * @see com.at4wireless.alljoyn.core.introspection.BusIntrospector#isInterfacePresent(java.lang.String, java.lang.String)
+     */
     public boolean isInterfacePresent(String path, String interfaceName) throws BusException, IOException, ParserConfigurationException, SAXException
     {
         NodeDetail nodeDetail = introspect(path);
@@ -119,6 +167,9 @@ public class XmlBasedBusIntrospector implements BusIntrospector
         return false;
     }
 
+    /* (non-Javadoc)
+     * @see com.at4wireless.alljoyn.core.introspection.BusIntrospector#isAncestorInterfacePresent(java.lang.String, java.lang.String)
+     */
     public boolean isAncestorInterfacePresent(String path, String ancestorInterfaceName) throws BusException, IOException, ParserConfigurationException, SAXException
     {
         if (path.lastIndexOf("/") != 0)
@@ -138,22 +189,49 @@ public class XmlBasedBusIntrospector implements BusIntrospector
         return false;
     }
 
+    /**
+     * Gets the introspection xml parser.
+     *
+     * @return the introspection xml parser
+     */
     IntrospectionXmlParser getIntrospectionXmlParser()
     {
         return introspectionXmlParser;
     }
 
+    /**
+     * Gets the classes.
+     *
+     * @param interfaceClass the interface class
+     * @return the classes
+     */
     Class<?>[] getClasses(Class<?> interfaceClass)
     {
         return new Class<?>[]
         { interfaceClass };
     }
 
+    /**
+     * Gets the input stream.
+     *
+     * @param introspectionXml the introspection xml
+     * @return the input stream
+     */
     ByteArrayInputStream getInputStream(String introspectionXml)
     {
         return new ByteArrayInputStream(introspectionXml.getBytes());
     }
 
+    /**
+     * Introspect using node detail.
+     *
+     * @param nodeDetail the node detail
+     * @return the list
+     * @throws BusException the bus exception
+     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws ParserConfigurationException the parser configuration exception
+     * @throws SAXException the SAX exception
+     */
     private List<NodeDetail> introspectUsingNodeDetail(NodeDetail nodeDetail) throws BusException, IOException, ParserConfigurationException, SAXException
     {
         List<IntrospectionSubNode> introspectionSubNodes = nodeDetail.getIntrospectionNode().getSubNodes();
@@ -171,6 +249,13 @@ public class XmlBasedBusIntrospector implements BusIntrospector
         return nodeDetailList;
     }
 
+    /**
+     * Determine path.
+     *
+     * @param pathPrefix the path prefix
+     * @param introspectionSubNode the introspection sub node
+     * @return the string
+     */
     private String determinePath(String pathPrefix, IntrospectionSubNode introspectionSubNode)
     {
         if (pathPrefix.endsWith(SLASH_CHARACTER))
@@ -183,6 +268,13 @@ public class XmlBasedBusIntrospector implements BusIntrospector
         }
     }
 
+    /**
+     * Determine introspection interfaces.
+     *
+     * @param nodeDetailList the node detail list
+     * @param interfaceName the interface name
+     * @return the list
+     */
     private List<InterfaceDetail> determineIntrospectionInterfaces(List<NodeDetail> nodeDetailList, String interfaceName)
     {
         List<InterfaceDetail> interfaceDetailList = new ArrayList<InterfaceDetail>();
@@ -201,6 +293,13 @@ public class XmlBasedBusIntrospector implements BusIntrospector
         return interfaceDetailList;
     }
 
+    /**
+     * Filter introspection interfaces.
+     *
+     * @param interfaces the interfaces
+     * @param interfaceName the interface name
+     * @return the list
+     */
     private List<IntrospectionInterface> filterIntrospectionInterfaces(List<IntrospectionInterface> interfaces, String interfaceName)
     {
         if (interfaceName.equals(ALL_STANDARDIZED_INTERFACES))
@@ -213,6 +312,13 @@ public class XmlBasedBusIntrospector implements BusIntrospector
         }
     }
 
+    /**
+     * Filter interfaces based on name.
+     *
+     * @param introspectionInterfaces the introspection interfaces
+     * @param interfaceName the interface name
+     * @return the list
+     */
     private List<IntrospectionInterface> filterInterfacesBasedOnName(List<IntrospectionInterface> introspectionInterfaces, String interfaceName)
     {
         List<IntrospectionInterface> filteredInterfaces = new ArrayList<IntrospectionInterface>();
@@ -228,6 +334,12 @@ public class XmlBasedBusIntrospector implements BusIntrospector
         return filteredInterfaces;
     }
 
+    /**
+     * Filter standardized interfaces.
+     *
+     * @param introspectionInterfaces the introspection interfaces
+     * @return the list
+     */
     private List<IntrospectionInterface> filterStandardizedInterfaces(List<IntrospectionInterface> introspectionInterfaces)
     {
         List<IntrospectionInterface> standardizedInterfaces = new ArrayList<IntrospectionInterface>();

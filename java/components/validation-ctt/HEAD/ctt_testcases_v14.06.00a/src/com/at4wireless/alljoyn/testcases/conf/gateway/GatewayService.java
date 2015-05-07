@@ -1,3 +1,18 @@
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *    Permission to use, copy, modify, and/or distribute this software for any
+ *    purpose with or without fee is hereby granted, provided that the above
+ *    copyright notice and this permission notice appear in all copies.
+ *
+ *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.at4wireless.alljoyn.testcases.conf.gateway;
 
 import java.io.IOException;
@@ -23,44 +38,82 @@ import com.at4wireless.alljoyn.core.introspection.BusIntrospector;
 import com.at4wireless.alljoyn.core.introspection.bean.InterfaceDetail;
 import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionInterface;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class GatewayService.
+ */
 public class GatewayService { 
 
 
 
-	 Boolean pass=true;
+	 /** The pass. */
+ 	Boolean pass=true;
+	
+	/** The tag. */
 	private  final String TAG = "GWAgentTestSuite";
+	
+	/** The logger. */
 	private  final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	
+	/** The bus application name. */
 	private  final String BUS_APPLICATION_NAME = "GWAgentTestSuite";
+	
+	/** The annoucement timeout in seconds. */
 	public  long ANNOUCEMENT_TIMEOUT_IN_SECONDS = 30;
+	
+	/** The session close timeout in seconds. */
 	private  long SESSION_CLOSE_TIMEOUT_IN_SECONDS = 5;
 
+	/** The gwagent helper. */
 	private  GWAgentHelper gwagentHelper;
+	
+	/** The about client. */
 	private  AboutClient aboutClient;
+	
+	/** The gateway controller. */
 	private  GatewayController gatewayController;
 
+	/** The device about announcement. */
 	private  AboutAnnouncementDetails deviceAboutAnnouncement;
 
 
+	/** The dut app id. */
 	private  UUID dutAppId;
+	
+	/** The dut device id. */
 	private  String dutDeviceId;
+	
+	/** The service availability handler. */
 	private  ServiceAvailabilityHandler serviceAvailabilityHandler;
+	
+	/** The key store path. */
 	private  String keyStorePath="/KeyStore";
 
 
 
 
-	 boolean ICSG_GatewayServiceFramework=false;
-	 boolean ICSG_ProfileManagementInterface=false;
-	 boolean ICSG_AppAccessInterface=false;
-	 boolean ICSG_AppManagementInterface=false;
+	 /** The ICS g_ gateway service framework. */
+ 	boolean ICSG_GatewayServiceFramework=false;
+	 
+ 	/** The ICS g_ profile management interface. */
+ 	boolean ICSG_ProfileManagementInterface=false;
+	 
+ 	/** The ICS g_ app access interface. */
+ 	boolean ICSG_AppAccessInterface=false;
+	 
+ 	/** The ICS g_ app management interface. */
+ 	boolean ICSG_AppManagementInterface=false;
 
 
 	////////////////
-	 String IXITCO_AppId=null;
+	 /** The IXITC o_ app id. */
+	String IXITCO_AppId=null;
 
-	 String IXITCO_DeviceId=null;
+	 /** The IXITC o_ device id. */
+ 	String IXITCO_DeviceId=null;
 
-	 String IXITCO_DefaultLanguage=null;
+	 /** The IXITC o_ default language. */
+ 	String IXITCO_DefaultLanguage=null;
 
 
 
@@ -68,15 +121,43 @@ public class GatewayService {
 
 
 
-	 String IXITG_AppMgmtVersion=null;
-	 String IXITG_CtrlAppVersion=null;
-	 String IXITG_CtrlAccessVersion=null;
-	 String IXITG_CtrlAclVersion=null;
-	 String IXITG_ConnAppVersion=null;
+	 /** The IXIT g_ app mgmt version. */
+	String IXITG_AppMgmtVersion=null;
+	 
+ 	/** The IXIT g_ ctrl app version. */
+ 	String IXITG_CtrlAppVersion=null;
+	 
+ 	/** The IXIT g_ ctrl access version. */
+ 	String IXITG_CtrlAccessVersion=null;
+	 
+ 	/** The IXIT g_ ctrl acl version. */
+ 	String IXITG_CtrlAclVersion=null;
+	 
+ 	/** The IXIT g_ conn app version. */
+ 	String IXITG_ConnAppVersion=null;
 
 
 
 
+	/**
+	 * Instantiates a new gateway service.
+	 *
+	 * @param testCase the test case
+	 * @param iCSG_GatewayServiceFramework the i cs g_ gateway service framework
+	 * @param iCSG_ProfileManagementInterface the i cs g_ profile management interface
+	 * @param iCSG_AppAccessInterface the i cs g_ app access interface
+	 * @param iCSG_AppManagementInterface the i cs g_ app management interface
+	 * @param iXITCO_AppId the i xitc o_ app id
+	 * @param iXITCO_DeviceId the i xitc o_ device id
+	 * @param iXITCO_DefaultLanguage the i xitc o_ default language
+	 * @param iXITG_AppMgmtVersion the i xit g_ app mgmt version
+	 * @param iXITG_CtrlAppVersion the i xit g_ ctrl app version
+	 * @param iXITG_CtrlAccessVersion the i xit g_ ctrl access version
+	 * @param iXITG_CtrlAclVersion the i xit g_ ctrl acl version
+	 * @param iXITG_ConnAppVersion the i xit g_ conn app version
+	 * @param gPCO_AnnouncementTimeout the g pc o_ announcement timeout
+	 * @param gPG_SessionClose the g p g_ session close
+	 */
 	public GatewayService(String testCase,
 			boolean iCSG_GatewayServiceFramework,
 			boolean iCSG_ProfileManagementInterface,
@@ -130,6 +211,12 @@ public class GatewayService {
 		}
 	}
 
+	/**
+	 * Run test case.
+	 *
+	 * @param testCase the test case
+	 * @throws Exception the exception
+	 */
 	public  void runTestCase(String testCase) throws Exception{
 		//setUp(IXITCO_DeviceId,IXITCO_AppId);		
 		setUp();
@@ -144,6 +231,11 @@ public class GatewayService {
 	}
 	
 	//private  void setUp(String iXITCO_DeviceId, String iXITCO_AppId) throws Exception {
+	/**
+	 * Sets the up.
+	 *
+	 * @throws Exception the exception
+	 */
 	private  void setUp() throws Exception {
 
 		System.out.println("====================================================");
@@ -171,6 +263,9 @@ public class GatewayService {
 		}
 	}
 	
+	/**
+	 * Tear down.
+	 */
 	private  void tearDown() {
 		System.out.println("====================================================");
 		logger.debug("test tearDown started");
@@ -180,6 +275,11 @@ public class GatewayService {
 
 	}
 
+	/**
+	 * Test gw agent_v1_01_ gw agent interfaces match definitions.
+	 *
+	 * @throws Exception the exception
+	 */
 	public void testGWAgent_v1_01_GWAgentInterfacesMatchDefinitions() throws Exception
 	{
 		List<InterfaceDetail> gwagentCtrlIntrospectionInterfacesExposedOnBus = new ArrayList<InterfaceDetail>();
@@ -237,21 +337,42 @@ public class GatewayService {
 
 
 
+	/**
+	 * Gets the interface validator.
+	 *
+	 * @return the interface validator
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws SAXException the SAX exception
+	 */
 	protected GWAgentInterfaceValidator getInterfaceValidator() throws IOException, ParserConfigurationException, SAXException
 	{
 		return new GWAgentInterfaceValidator();
 	}
 
+	/**
+	 * Gets the introspector.
+	 *
+	 * @return the introspector
+	 */
 	protected BusIntrospector getIntrospector()
 	{
 		return gwagentHelper.getBusIntrospector(aboutClient);
 	}
 
+	/**
+	 * Release resources.
+	 */
 	private  void releaseResources()
 	{
 		releaseGWAgentHelper();
 	}
 
+	/**
+	 * Inits the gw agent helper.
+	 *
+	 * @throws Exception the exception
+	 */
 	private  void initGWAgentHelper() throws Exception {
 		releaseGWAgentHelper();
 		gwagentHelper = createGWAgentHelper();
@@ -270,6 +391,14 @@ public class GatewayService {
 
 	}
 
+	/**
+	 * Wait for next announcement and check field value.
+	 *
+	 * @param fieldName the field name
+	 * @param fieldValue the field value
+	 * @return the about announcement details
+	 * @throws Exception the exception
+	 */
 	protected  AboutAnnouncementDetails waitForNextAnnouncementAndCheckFieldValue(String fieldName, String fieldValue) throws Exception
 	{
 		logger.info("Waiting for updating About announcement");
@@ -285,34 +414,65 @@ public class GatewayService {
 		return nextDeviceAnnouncement;
 	}
 
+	/**
+	 * Wait for next device announcement.
+	 *
+	 * @return the about announcement details
+	 * @throws Exception the exception
+	 */
 	private  AboutAnnouncementDetails waitForNextDeviceAnnouncement() throws Exception
 	{
 		logger.info("Waiting for About announcement");
 		return gwagentHelper.waitForNextDeviceAnnouncement(ANNOUCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS, true);
 	}
 
+	/**
+	 * Connect gateway controller.
+	 *
+	 * @param aboutAnnouncement the about announcement
+	 * @throws Exception the exception
+	 */
 	private  void connectGatewayController(
 			AboutAnnouncementDetails aboutAnnouncement) throws Exception {
 		gatewayController = gwagentHelper.connectGatewayController(aboutAnnouncement);
 
 	}
 
+	/**
+	 * Connect about client.
+	 *
+	 * @param aboutAnnouncement the about announcement
+	 * @throws Exception the exception
+	 */
 	private  void connectAboutClient(AboutAnnouncementDetails aboutAnnouncement) throws Exception
 	{
 		serviceAvailabilityHandler = createServiceAvailabilityHandler();
 	//	aboutClient = gwagentHelper.connectAboutClient(aboutAnnouncement, serviceAvailabilityHandler);
 	}
 
+	/**
+	 * Creates the service availability handler.
+	 *
+	 * @return the service availability handler
+	 */
 	protected  ServiceAvailabilityHandler createServiceAvailabilityHandler()
 	{
 		return new ServiceAvailabilityHandler();
 	}
 
+	/**
+	 * Creates the gw agent helper.
+	 *
+	 * @return the GW agent helper
+	 */
 	protected  GWAgentHelper createGWAgentHelper()
 	{
 		return new GWAgentHelper(logger);
 	}
 
+	/**
+	 * Release gw agent helper.
+	 */
 	private  void releaseGWAgentHelper() {
 		try
 		{
@@ -340,11 +500,21 @@ public class GatewayService {
 
 	}
 
+	/**
+	 * Wait for session to close.
+	 *
+	 * @throws Exception the exception
+	 */
 	private  void waitForSessionToClose() throws Exception {
 		logger.info("Waiting for session to close");
 		gwagentHelper.waitForSessionToClose(SESSION_CLOSE_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
 	}
 
+	/**
+	 * Gets the verdict.
+	 *
+	 * @return the verdict
+	 */
 	public String getVerdict() {
 
 		String verdict=null;
@@ -356,6 +526,13 @@ public class GatewayService {
 		return verdict;
 	}
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param errorMsg the error msg
+	 * @param string1 the string1
+	 * @param string2 the string2
+	 */
 	private  void assertEquals(String errorMsg,
 			String string1, String string2) {
 		
@@ -364,6 +541,12 @@ public class GatewayService {
 		}
 	}
 
+	/**
+	 * Assert true.
+	 *
+	 * @param errorMsg the error msg
+	 * @param bool the bool
+	 */
 	private  void assertTrue(String errorMsg,
 			boolean bool) {
 		
@@ -372,6 +555,11 @@ public class GatewayService {
 		}
 	}
 
+	/**
+	 * Fail.
+	 *
+	 * @param msg the msg
+	 */
 	private  void fail(String msg) {
 
 		logger.error(msg);

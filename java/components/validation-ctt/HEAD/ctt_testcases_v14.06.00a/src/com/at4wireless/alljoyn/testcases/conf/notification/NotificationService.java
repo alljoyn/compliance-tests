@@ -1,3 +1,18 @@
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *    Permission to use, copy, modify, and/or distribute this software for any
+ *    purpose with or without fee is hereby granted, provided that the above
+ *    copyright notice and this permission notice appear in all copies.
+ *
+ *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.at4wireless.alljoyn.testcases.conf.notification;
 
 import java.util.ArrayList;
@@ -30,30 +45,90 @@ import com.at4wireless.alljoyn.core.introspection.BusIntrospector;
 import com.at4wireless.alljoyn.core.notification.NotificationValidator;
 import com.at4wireless.alljoyn.core.notification.NotificationValidator.NotificationValidationExceptionHandler;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class NotificationService.
+ */
 public class NotificationService {
 
+	/** The pass. */
 	Boolean pass=true;
+	
+	/** The inconc. */
 	boolean inconc=false;
+	
+	/** The tag. */
 	private  final String TAG = "NotificationTestSuite";
+	
+	/** The bus application name. */
 	private  final String BUS_APPLICATION_NAME = "NotificationConsumerTestSuite";
+	
+	/** The notif. */
 	private  org.alljoyn.ns.Notification notif;
+	
+	/** The logger. */
 	private  final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	
+	/** The time out. */
 	private  int  timeOut=30;
+	
+	/** The port. */
 	private short PORT=1080;
+	
+	/** The executor service. */
 	private  ExecutorService executorService;
+	
+	/** The about client. */
 	private  AboutClient aboutClient;
+	
+	/** The device about announcement. */
 	private  AboutAnnouncementDetails deviceAboutAnnouncement;
+	
+	/** The service helper. */
 	private  ServiceHelper serviceHelper;
+	
+	/** The n sender. */
 	private  NotificationSender nSender;
+	
+	/** The property store. */
 	private  PropertyStore propertyStore;
+	
+	/** The notification assertion failure. */
 	private volatile  Exception notificationAssertionFailure = null;
+	
+	/** The waitingfor user input thread. */
 	private volatile Thread waitingforUserInputThread;
 
+	/** The notification validator. */
 	private NotificationValidator notificationValidator=null;
 
+	/** The ics. */
 	Map<String,Boolean> ics;
+	
+	/** The ixit. */
 	Map<String,String> ixit;
 
+	/**
+	 * Instantiates a new notification service.
+	 *
+	 * @param testCase the test case
+	 * @param iCSN_NotificationServiceFramework the i cs n_ notification service framework
+	 * @param iCSN_NotificationInterface the i cs n_ notification interface
+	 * @param iCSN_RichIconUrl the i cs n_ rich icon url
+	 * @param iCSN_RichAudioUrl the i cs n_ rich audio url
+	 * @param iCSN_RespObjectPath the i cs n_ resp object path
+	 * @param iCSN_NotificationProducerInterface the i cs n_ notification producer interface
+	 * @param iCSN_DismisserInterface the i cs n_ dismisser interface
+	 * @param iCSN_NotificationConsumer the i cs n_ notification consumer
+	 * @param iXITCO_AppId the i xitc o_ app id
+	 * @param iXITCO_DeviceId the i xitc o_ device id
+	 * @param iXITCO_DefaultLanguage the i xitc o_ default language
+	 * @param iXITN_NotificationVersion the i xit n_ notification version
+	 * @param iXITN_TTL the i xit n_ ttl
+	 * @param iXITN_NotificationProducerVersion the i xit n_ notification producer version
+	 * @param iXITN_NotificationDismisserVersion the i xit n_ notification dismisser version
+	 * @param gPCO_AnnouncementTimeout the g pc o_ announcement timeout
+	 */
 	public NotificationService(String testCase,
 			boolean iCSN_NotificationServiceFramework,
 			boolean iCSN_NotificationInterface, boolean iCSN_RichIconUrl,
@@ -103,6 +178,12 @@ public class NotificationService {
 		}
 	}
 
+	/**
+	 * Run test case.
+	 *
+	 * @param testCase the test case
+	 * @throws Exception the exception
+	 */
 	public  void runTestCase(String testCase) throws Exception{
 
 		if(testCase.equals("Notification-Consumer-v1-01")){
@@ -147,6 +228,11 @@ public class NotificationService {
 		tearDown();
 	}
 	
+	/**
+	 * Sets the up.
+	 *
+	 * @throws Exception the exception
+	 */
 	private  void setUp() throws Exception {
 		try
 		{ 
@@ -169,13 +255,18 @@ public class NotificationService {
 		}
 		catch (Exception e)
 		{
-			logger.error("Received exception during setup "+ e.toString());
+			logger.error("Received exception during setup "+ e.getMessage());
 			inconc = true;
 			releaseResources();
 			throw e;
 		}
 	}
 
+	/**
+	 * Sets the up receiver.
+	 *
+	 * @throws Exception the exception
+	 */
 	private void setUpReceiver() throws Exception {
 		System.out.println("====================================================");
 		logger.info("test setUp started");
@@ -211,13 +302,16 @@ public class NotificationService {
 		}
 		catch (Exception e)
 		{
-			logger.error("Exception in setup method", e);
+			logger.error("Received exception during setup "+ e.getMessage());
 			releaseResources();
 			throw e;
 		}
 		System.out.println("====================================================");
 	}
 	
+	/**
+	 * Tear down.
+	 */
 	private  void tearDown() {
 		System.out.println("====================================================");
 		logger.info("test tearDown started");
@@ -228,6 +322,11 @@ public class NotificationService {
 	
 	/* TestCases */
 
+	/**
+	 * Test notification_ consumer_v1_01.
+	 *
+	 * @throws NotificationServiceException the notification service exception
+	 */
 	private  void testNotification_Consumer_v1_01() throws NotificationServiceException {
 
 		String[] msgArray =
@@ -245,6 +344,11 @@ public class NotificationService {
 		checkUserInput(msgArray, msgToSend);
 	}
 
+	/**
+	 * Test notification_ consumer_v1_02.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testNotification_Consumer_v1_02() throws Exception
 	{
 		String[] msgArray =
@@ -293,6 +397,11 @@ public class NotificationService {
 		checkUserInput(msgArray, msgToSend);
 	}*/
 
+	/**
+	 * Test notification_ consumer_v1_04.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testNotification_Consumer_v1_04() throws Exception
 	{
 		String[] msgArray =
@@ -311,6 +420,11 @@ public class NotificationService {
 		checkUserInput(msgArray, msgToSend);
 	}
 
+	/**
+	 * Test notification_ consumer_v1_05.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testNotification_Consumer_v1_05() throws Exception
 	{
 
@@ -374,9 +488,14 @@ public class NotificationService {
 
 		String msgSent = buildPromptText(messagesToSend);
 
-		checkUserInput(selectionOptions.toArray(new String[selectionOptions.size()]), msgSent);
+		checkUserInputLongText(selectionOptions.toArray(new String[selectionOptions.size()]), msgSent);
 	}
 
+	/**
+	 * Test notification_ consumer_v1_06.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testNotification_Consumer_v1_06() throws Exception
 	{
 		//serviceHelper.initNotificationReceiver(notificationValidator);
@@ -399,6 +518,11 @@ public class NotificationService {
 		checkUserInput(msgArray, msgToSend);
 	}
 
+	/**
+	 * Test notifications received.
+	 *
+	 * @throws Exception the exception
+	 */
 	public void testNotificationsReceived() throws Exception
 	{
 		BusIntrospector busIntrospector = serviceHelper.getBusIntrospector(aboutClient);
@@ -429,16 +553,33 @@ public class NotificationService {
 	 *  Utilities 
 	 */
 
+	/**
+	 * Gets the notification validator.
+	 *
+	 * @return the notification validator
+	 */
 	protected NotificationValidator getNotificationValidator()
 	{
 		return new NotificationValidator(ixit.get("IXITCO_DeviceId"), UUID.fromString(ixit.get("IXITCO_AppId")));
 	}
 
 
+	/**
+	 * Gets the executor service.
+	 *
+	 * @return the executor service
+	 */
 	protected  ExecutorService getExecutorService()
 	{
 		return java.util.concurrent.Executors.newSingleThreadExecutor();
 	}
+	
+	/**
+	 * Builds the prompt text.
+	 *
+	 * @param messagesToSend the messages to send
+	 * @return the string
+	 */
 	protected  String buildPromptText(List<MsgSet> messagesToSend)
 	{
 		StringBuilder msgSent = new StringBuilder();
@@ -456,19 +597,38 @@ public class NotificationService {
 		return msgSent.toString();
 	}
 
+	/**
+	 * The Class MsgSet.
+	 */
 	private  class MsgSet
 	{
+		
+		/**
+		 * Instantiates a new msg set.
+		 *
+		 * @param text the text
+		 * @param priority the priority
+		 */
 		public MsgSet(String text, NotificationMessageType priority)
 		{
 			this.text = text;
 			this.priority = priority;
 		}
 
+		/** The text. */
 		public String text;
+		
+		/** The priority. */
 		public NotificationMessageType priority;
 	}
 
 
+	/**
+	 * Check user input.
+	 *
+	 * @param msgArray the msg array
+	 * @param msgToSend the msg to send
+	 */
 	private  void checkUserInput(String[] msgArray, String msgToSend) {
 
 		logger.info("Waiting for user response...");
@@ -480,13 +640,44 @@ public class NotificationService {
 		logger.info("Option selected: "+messageSelected);
 		assertEquals("Incorrect message option selected", msgToSend, messageSelected);
 	}
+	
+	/**
+	 * Check user input long text.
+	 *
+	 * @param msgArray the msg array
+	 * @param msgToSend the msg to send
+	 */
+	private void checkUserInputLongText(String[] msgArray, String msgToSend) {
+		logger.info("Waiting for user response...");
+		String[] buttons={"Message 1","Message 2","Message 3"};
+		UserInputDetails userResponse = new UserInputDetails(TAG,"Select the message(s) received: \n"+
+				"\n Message 1: "+msgArray[0]+"\n Message 2: "+msgArray[1]+"\n Message 3: "+msgArray[2], buttons);
 
+
+		assertTrue("A message option was not selected", userResponse.getOptionSelected() >= 0 && userResponse.getOptionSelected() < msgArray.length);
+		String messageSelected = msgArray[userResponse.getOptionSelected()];
+		logger.info("Option sent: "+msgToSend);
+		logger.info("Option selected: "+messageSelected);
+		assertEquals("Incorrect message option selected", msgToSend, messageSelected);
+	
+		
+	}
+	
+	/**
+	 * Gets the random number.
+	 *
+	 * @param n the n
+	 * @return the random number
+	 */
 	protected  int getRandomNumber(int n)
 	{
 		Random r = new Random();
 		return r.nextInt(n);
 	}
 
+	/**
+	 * Release resources.
+	 */
 	private  void releaseResources()
 	{
 		if (serviceHelper != null)
@@ -495,6 +686,11 @@ public class NotificationService {
 		}
 	}
 
+	/**
+	 * Gets the property store impl.
+	 *
+	 * @return the property store impl
+	 */
 	protected  PropertyStore getPropertyStoreImpl()
 
 	{
@@ -508,17 +704,34 @@ public class NotificationService {
 	}
 
 
+	/**
+	 * Gets the service helper.
+	 *
+	 * @return the service helper
+	 */
 	ServiceHelper getServiceHelper()
 	{
 		return new ServiceHelper();
 	}
 
+	/**
+	 * Fail.
+	 *
+	 * @param msg the msg
+	 */
 	private  void fail(String msg) {
 		logger.error(msg);
 		logger.info("Partial Verdict: FAIL");
 		pass=false;
 	}
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param errorMsg the error msg
+	 * @param string1 the string1
+	 * @param string2 the string2
+	 */
 	private  void assertEquals(String errorMsg,
 			String string1, String string2) {
 		if(!string1.equals(string2)){
@@ -528,6 +741,12 @@ public class NotificationService {
 		}
 	}
 
+	/**
+	 * Assert true.
+	 *
+	 * @param errorMsg the error msg
+	 * @param bool the bool
+	 */
 	private  void assertTrue(String errorMsg,
 			boolean bool) {
 		if(!bool){
@@ -537,6 +756,11 @@ public class NotificationService {
 		}
 	}
 
+	/**
+	 * Gets the verdict.
+	 *
+	 * @return the verdict
+	 */
 	public String getVerdict() {
 
 		String verdict=null;

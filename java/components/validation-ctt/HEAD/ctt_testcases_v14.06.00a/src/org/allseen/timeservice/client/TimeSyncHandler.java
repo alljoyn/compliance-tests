@@ -30,11 +30,16 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 
 
+// TODO: Auto-generated Javadoc
 /**
  * Singleton class that is responsible to receive {@link TimeAuthority#timeSync()} signals
  */
 class TimeSyncHandler {
+    
+    /** The Constant TAG. */
     private static final String TAG = "ajts" + TimeSyncHandler.class.getSimpleName();
+	
+	/** The Constant Log. */
 	private static final WindowsLoggerImpl Log =  new WindowsLoggerImpl(TAG);
 
     /**

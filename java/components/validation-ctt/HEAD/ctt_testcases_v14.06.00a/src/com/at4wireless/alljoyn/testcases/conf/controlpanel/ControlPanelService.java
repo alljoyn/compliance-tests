@@ -1,3 +1,18 @@
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *    Permission to use, copy, modify, and/or distribute this software for any
+ *    purpose with or without fee is hereby granted, provided that the above
+ *    copyright notice and this permission notice appear in all copies.
+ *
+ *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.at4wireless.alljoyn.testcases.conf.controlpanel;
 
 
@@ -86,32 +101,68 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.introspection.BusIntrospector;
 import com.at4wireless.alljoyn.core.introspection.bean.InterfaceDetail;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ControlPanelService.
+ */
 public class ControlPanelService {
 
+	/** The pass. */
 	boolean pass=true;
+	
+	/** The inconc. */
 	boolean inconc=false;
+	
+	/** The port. */
 	short port =91;
+	
+	/** The about client. */
 	private  AboutClient aboutClient;
+	
+	/** The device about announcement. */
 	private  AboutAnnouncementDetails deviceAboutAnnouncement;
+	
+	/** The service helper. */
 	private  ServiceHelper serviceHelper; 
+	
+	/** The bus introspector. */
 	private  BusIntrospector busIntrospector;
 
+	/** The Key store path. */
 	private  String  KeyStorePath="/KeyStore";
+	
+	/** The dut app id. */
 	private  UUID dutAppId;
+	
+	/** The dut device id. */
 	private  String dutDeviceId;
+	
+	/** The time out. */
 	private  int  timeOut=30;
 
 
+	/** The tag. */
 	private  final String TAG = "ControlPanelTestSuite";
+	
+	/** The logger. */
 	private  final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
 
+	/** The bus application name. */
 	private  final String BUS_APPLICATION_NAME = "ControlPanel";
+	
+	/** The two states list. */
 	private  final List<Integer> TWO_STATES_LIST = Arrays.asList(new Integer[]
 			{ 0, 1 });
+	
+	/** The property states list. */
 	private  final List<Integer> PROPERTY_STATES_LIST = Arrays.asList(new Integer[]
 			{ 0, 1, 2, 3 });
+	
+	/** The valid property control layout hints values. */
 	private  final List<Short> VALID_PROPERTY_CONTROL_LAYOUT_HINTS_VALUES = Arrays.asList(new Short[]
 			{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 });
+	
+	/** The numeric signatures. */
 	private  final List<String> NUMERIC_SIGNATURES = Arrays.asList(new String[]
 			{ "y", "n", "q", "i", "u", "x", "t", "d" });
 
@@ -120,39 +171,136 @@ public class ControlPanelService {
 
 
 
+	/** The ICSC p_ control panel service framework. */
 	boolean ICSCP_ControlPanelServiceFramework=false;
+	
+	/** The ICSC p_ control panel interface. */
 	boolean ICSCP_ControlPanelInterface=false;
+	
+	/** The ICSC p_ container interface. */
 	boolean ICSCP_ContainerInterface=false;
+	
+	/** The ICSC p_ secured container interface. */
 	boolean ICSCP_SecuredContainerInterface=false;
+	
+	/** The ICSC p_ property interface. */
 	boolean ICSCP_PropertyInterface=false;
+	
+	/** The ICSC p_ secured property interface. */
 	boolean ICSCP_SecuredPropertyInterface=false;
+	
+	/** The ICSC p_ label property interface. */
 	boolean ICSCP_LabelPropertyInterface=false;
+	
+	/** The ICSC p_ action interface. */
 	boolean ICSCP_ActionInterface=false;
+	
+	/** The ICSC p_ secured action interface. */
 	boolean ICSCP_SecuredActionInterface=false;
+	
+	/** The ICSC p_ notification action interface. */
 	boolean ICSCP_NotificationActionInterface=false;
+	
+	/** The ICSC p_ dialog interface. */
 	boolean ICSCP_DialogInterface=false;
+	
+	/** The ICSC p_ d i_ action2. */
 	boolean ICSCP_DI_Action2=false;
+	
+	/** The ICSC p_ d i_ action3. */
 	boolean ICSCP_DI_Action3=false;
+	
+	/** The ICSC p_ secured dialog interface. */
 	boolean ICSCP_SecuredDialogInterface=false;
+	
+	/** The ICSC p_ sd i_ action2. */
 	boolean ICSCP_SDI_Action2=false;
+	
+	/** The ICSC p_ sd i_ action3. */
 	boolean ICSCP_SDI_Action3=false;
+	
+	/** The ICSC p_ list property interface. */
 	boolean ICSCP_ListPropertyInterface=false;
+	
+	/** The ICSC p_ secured list property interface. */
 	boolean ICSCP_SecuredListPropertyInterface=false;
+	
+	/** The ICSC p_ http control interface. */
 	boolean ICSCP_HTTPControlInterface=false;
 	//
+	/** The IXITC o_ app id. */
 	String IXITCO_AppId=null;
+	
+	/** The IXITC o_ default language. */
 	String IXITCO_DefaultLanguage=null;
+	
+	/** The IXITC o_ device id. */
 	String IXITCO_DeviceId=null;
 	//
+	/** The IXITC p_ control panel version. */
 	String IXITCP_ControlPanelVersion=null;
+	
+	/** The IXITC p_ container version. */
 	String IXITCP_ContainerVersion=null;
+	
+	/** The IXITC p_ property version. */
 	String IXITCP_PropertyVersion=null;
+	
+	/** The IXITC p_ label property version. */
 	String IXITCP_LabelPropertyVersion=null;
+	
+	/** The IXITC p_ action version. */
 	String IXITCP_ActionVersion=null;
+	
+	/** The IXITC p_ notification action version. */
 	String IXITCP_NotificationActionVersion=null;
+	
+	/** The IXITC p_ dialog version. */
 	String IXITCP_DialogVersion=null;
+	
+	/** The IXITC p_ list property version. */
 	String IXITCP_ListPropertyVersion=null;
+	
+	/** The IXITC p_ http control version. */
 	String IXITCP_HTTPControlVersion=null;
+	
+	/**
+	 * Instantiates a new control panel service.
+	 *
+	 * @param testCase the test case
+	 * @param iCSCP_ControlPanelServiceFramework the i csc p_ control panel service framework
+	 * @param iCSCP_ControlPanelInterface the i csc p_ control panel interface
+	 * @param iCSCP_ContainerInterface the i csc p_ container interface
+	 * @param iCSCP_SecuredContainerInterface the i csc p_ secured container interface
+	 * @param iCSCP_PropertyInterface the i csc p_ property interface
+	 * @param iCSCP_SecuredPropertyInterface the i csc p_ secured property interface
+	 * @param iCSCP_LabelPropertyInterface the i csc p_ label property interface
+	 * @param iCSCP_ActionInterface the i csc p_ action interface
+	 * @param iCSCP_SecuredActionInterface the i csc p_ secured action interface
+	 * @param iCSCP_NotificationActionInterface the i csc p_ notification action interface
+	 * @param iCSCP_DialogInterface the i csc p_ dialog interface
+	 * @param iCSCP_DI_Action2 the i csc p_ d i_ action2
+	 * @param iCSCP_DI_Action3 the i csc p_ d i_ action3
+	 * @param iCSCP_SecuredDialogInterface the i csc p_ secured dialog interface
+	 * @param iCSCP_SDI_Action2 the i csc p_ sd i_ action2
+	 * @param iCSCP_SDI_Action3 the i csc p_ sd i_ action3
+	 * @param iCSCP_ListPropertyInterface the i csc p_ list property interface
+	 * @param iCSCP_SecuredListPropertyInterface the i csc p_ secured list property interface
+	 * @param iCSCP_HTTPControlInterface the i csc p_ http control interface
+	 * @param iXITCO_AppId the i xitc o_ app id
+	 * @param iXITCO_DeviceId the i xitc o_ device id
+	 * @param iXITCO_DefaultLanguage the i xitc o_ default language
+	 * @param iXITCP_ControlPanelVersion the i xitc p_ control panel version
+	 * @param iXITCP_ContainerVersion the i xitc p_ container version
+	 * @param iXITCP_PropertyVersion the i xitc p_ property version
+	 * @param iXITCP_LabelPropertyVersion the i xitc p_ label property version
+	 * @param iXITCP_ActionVersion the i xitc p_ action version
+	 * @param iXITCP_NotificationActionVersion the i xitc p_ notification action version
+	 * @param iXITCP_DialogVersion the i xitc p_ dialog version
+	 * @param iXITCP_ListPropertyVersion the i xitc p_ list property version
+	 * @param iXITCP_HTTPControlVersion the i xitc p_ http control version
+	 * @param gPCO_AnnouncementTimeout the g pc o_ announcement timeout
+	 */
 	public ControlPanelService(String testCase,
 			boolean iCSCP_ControlPanelServiceFramework,
 			boolean iCSCP_ControlPanelInterface,
@@ -178,7 +326,6 @@ public class ControlPanelService {
 			String iXITCP_DialogVersion, String iXITCP_ListPropertyVersion,
 			String iXITCP_HTTPControlVersion, String gPCO_AnnouncementTimeout) {
 
-		//INTERFACE_VERSION=Short.parseShort(iXITCP_ControlPanelVersion);
 		ICSCP_ControlPanelServiceFramework=iCSCP_ControlPanelServiceFramework;
 		ICSCP_ControlPanelInterface=iCSCP_ControlPanelInterface;
 		ICSCP_ContainerInterface=iCSCP_ContainerInterface;
@@ -231,6 +378,12 @@ public class ControlPanelService {
 		}
 	}
 
+	/**
+	 * Run test case.
+	 *
+	 * @param testCase the test case
+	 * @throws Exception the exception
+	 */
 	public  void runTestCase(String testCase) throws Exception{
 
 
@@ -278,6 +431,11 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Sets the up.
+	 *
+	 * @throws Exception the exception
+	 */
 	private  void setUp() throws Exception {
 
 		try
@@ -318,6 +476,12 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Assert not null.
+	 *
+	 * @param msg the msg
+	 * @param notNull the not null
+	 */
 	private  void assertNotNull(String msg,
 			Object notNull) {
 
@@ -331,6 +495,11 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Test control panel_v1_01_ validate control panel bus objects.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testControlPanel_v1_01_ValidateControlPanelBusObjects() throws Exception
 	{
 		List<InterfaceDetail> controlPanelInterfaceDetailListExposedOnBus = busIntrospector
@@ -350,6 +519,11 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Test control panel_v1_02_ validate container bus objects.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testControlPanel_v1_02_ValidateContainerBusObjects() throws Exception
 	{
 		List<InterfaceDetail> containerInterfaceDetailListExposedOnBus = busIntrospector.getInterfacesExposedOnBusBasedOnName(Container.IFNAME);
@@ -370,6 +544,11 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Test control panel_v1_03_ validate property bus objects.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testControlPanel_v1_03_ValidatePropertyBusObjects() throws Exception
 	{
 		List<InterfaceDetail> propertyInterfaceDetailListExposedOnBus = busIntrospector.getInterfacesExposedOnBusBasedOnName(PropertyControl.IFNAME);
@@ -391,6 +570,11 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Test control panel_v1_04_ validate label property bus objects.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testControlPanel_v1_04_ValidateLabelPropertyBusObjects() throws Exception
 	{
 		List<InterfaceDetail> labelPropertyInterfaceDetailListExposedOnBus = busIntrospector.getInterfacesExposedOnBusBasedOnName(Label.IFNAME);
@@ -409,6 +593,11 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Test control panel_v1_05_ validate action bus objects.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testControlPanel_v1_05_ValidateActionBusObjects() throws Exception
 	{
 		List<InterfaceDetail> actionInterfaceDetailListExposedOnBus = busIntrospector.getInterfacesExposedOnBusBasedOnName(ActionControl.IFNAME);
@@ -427,6 +616,11 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Test control panel_v1_06_ validate dialog bus objects.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testControlPanel_v1_06_ValidateDialogBusObjects() throws Exception
 	{
 		List<InterfaceDetail> dialogInterfaceDetailListExposedOnBus = busIntrospector.getInterfacesExposedOnBusBasedOnName(AlertDialog.IFNAME);
@@ -445,6 +639,11 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Test control panel_v1_07_ validate list property bus objects.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testControlPanel_v1_07_ValidateListPropertyBusObjects() throws Exception
 	{
 		List<InterfaceDetail> listPropertyInterfaceDetailListExposedOnBus = busIntrospector.getInterfacesExposedOnBusBasedOnName(ListPropertyControl.IFNAME);
@@ -463,6 +662,11 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Test control panel_v1_08_ validate notification action bus objects.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testControlPanel_v1_08_ValidateNotificationActionBusObjects() throws Exception
 	{
 		List<InterfaceDetail> notificationActionInterfaceDetailListExposedOnBus = busIntrospector.getInterfacesExposedOnBusBasedOnName(NotificationAction.IFNAME);
@@ -478,6 +682,11 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Test control panel_v1_09_ validate http control bus objects.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testControlPanel_v1_09_ValidateHttpControlBusObjects() throws Exception
 	{
 		List<InterfaceDetail> httpControlInterfaceDetailListExposedOnBus = busIntrospector.getInterfacesExposedOnBusBasedOnName(HTTPControl.IFNAME);
@@ -495,6 +704,11 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Test control panel_v1_10_ validate secured control panel bus objects.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testControlPanel_v1_10_ValidateSecuredControlPanelBusObjects() throws Exception
 	{
 		List<InterfaceDetail> securedContainerInterfaceDetailListExposedOnBus = busIntrospector.getInterfacesExposedOnBusBasedOnName(ContainerSecured.IFNAME);
@@ -519,6 +733,13 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Validate secured container invalid passcode interface detail list.
+	 *
+	 * @param securedContainerInterfaceDetailListExposedOnBus the secured container interface detail list exposed on bus
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private  void validateSecuredContainerInvalidPasscodeInterfaceDetailList(List<InterfaceDetail> securedContainerInterfaceDetailListExposedOnBus) throws BusException,
 	IOException
 	{
@@ -529,6 +750,13 @@ public class ControlPanelService {
 		}
 	}
 
+	/**
+	 * Validate secured property invalid passcode interface detail list.
+	 *
+	 * @param securedPropertyInterfaceDetailListExposedOnBus the secured property interface detail list exposed on bus
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private  void validateSecuredPropertyInvalidPasscodeInterfaceDetailList(List<InterfaceDetail> securedPropertyInterfaceDetailListExposedOnBus) throws BusException, IOException
 
 	{
@@ -539,6 +767,13 @@ public class ControlPanelService {
 		}
 	}
 
+	/**
+	 * Validate secured action invalid passcode interface detail list.
+	 *
+	 * @param actionInterfaceDetailListExposedOnBus the action interface detail list exposed on bus
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private  void validateSecuredActionInvalidPasscodeInterfaceDetailList(List<InterfaceDetail> actionInterfaceDetailListExposedOnBus) throws BusException, IOException
 
 	{
@@ -549,6 +784,13 @@ public class ControlPanelService {
 		}
 	}
 
+	/**
+	 * Validate secured dialog invalid passcode interface detail list.
+	 *
+	 * @param securedDialogInterfaceDetailListExposedOnBus the secured dialog interface detail list exposed on bus
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private  void validateSecuredDialogInvalidPasscodeInterfaceDetailList(List<InterfaceDetail> securedDialogInterfaceDetailListExposedOnBus) throws BusException, IOException
 
 	{
@@ -559,6 +801,13 @@ public class ControlPanelService {
 		}
 	}
 
+	/**
+	 * Validate secured list property invalid passcode interface detail list.
+	 *
+	 * @param listPropertyInterfaceDetailListExposedOnBus the list property interface detail list exposed on bus
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private  void validateSecuredListPropertyInvalidPasscodeInterfaceDetailList(List<InterfaceDetail> listPropertyInterfaceDetailListExposedOnBus) throws BusException, IOException
 
 	{
@@ -573,6 +822,13 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Validate secured container invalid passcode bus object.
+	 *
+	 * @param path the path
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private  void validateSecuredContainerInvalidPasscodeBusObject(String path) throws BusException, IOException
 	{
 		ContainerSecured securedContainer = busIntrospector.getInterface(path, ContainerSecured.class);
@@ -591,6 +847,13 @@ public class ControlPanelService {
 		}
 	}
 
+	/**
+	 * Validate secured property control invalid passcode bus object.
+	 *
+	 * @param path the path
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private  void validateSecuredPropertyControlInvalidPasscodeBusObject(String path) throws BusException, IOException
 	{
 		PropertyControlSecured propertyControl = busIntrospector.getInterface(path, PropertyControlSecured.class);
@@ -609,6 +872,13 @@ public class ControlPanelService {
 		}
 	}
 
+	/**
+	 * Validate secured action invalid passcode bus object.
+	 *
+	 * @param path the path
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private  void validateSecuredActionInvalidPasscodeBusObject(String path) throws BusException, IOException
 	{
 		ActionControlSecured action = busIntrospector.getInterface(path, ActionControlSecured.class);
@@ -627,6 +897,13 @@ public class ControlPanelService {
 		}
 	}
 
+	/**
+	 * Validate secured dialog invalid passcode bus object.
+	 *
+	 * @param path the path
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws BusException the bus exception
+	 */
 	private  void validateSecuredDialogInvalidPasscodeBusObject(String path) throws IOException, BusException
 	{
 		AlertDialogSecured securedDialog = busIntrospector.getInterface(path, AlertDialogSecured.class);
@@ -645,6 +922,13 @@ public class ControlPanelService {
 		}
 	}
 
+	/**
+	 * Validate secured list property invalid passcode bus object.
+	 *
+	 * @param path the path
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private  void validateSecuredListPropertyInvalidPasscodeBusObject(String path) throws BusException, IOException
 	{
 		ListPropertyControlSecured listPropertyControlSecured = busIntrospector.getInterface(path, ListPropertyControlSecured.class);
@@ -664,6 +948,11 @@ public class ControlPanelService {
 	}
 
 
+	/**
+	 * Handle bus exception on invalid password bus object access.
+	 *
+	 * @param busException the bus exception
+	 */
 	private  void handleBusExceptionOnInvalidPasswordBusObjectAccess(BusException busException)
 	{
 		logger.debug("Exception thrown on setting WrongPasscode", busException);
@@ -673,6 +962,9 @@ public class ControlPanelService {
 	}
 
 
+	/**
+	 * Sets the invalid password.
+	 */
 	private  void setInvalidPassword()
 	{
 		serviceHelper.clearPeerAuthenticationFlags(deviceAboutAnnouncement);
@@ -680,6 +972,11 @@ public class ControlPanelService {
 	}
 
 
+	/**
+	 * Invalid password access failure to throw exception.
+	 *
+	 * @param interfaceName the interface name
+	 */
 	private  void invalidPasswordAccessFailureToThrowException(String interfaceName)
 	{
 		fail("Exception should be thrown on connecting with the wrong password to retrieve " + interfaceName + " version!");
@@ -687,6 +984,16 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Checks if is empty.
+	 *
+	 * @param securedContainerInterfaceDetailListExposedOnBus the secured container interface detail list exposed on bus
+	 * @param securedPropertyInterfaceDetailListExposedOnBus the secured property interface detail list exposed on bus
+	 * @param securedActionInterfaceDetailListExposedOnBus the secured action interface detail list exposed on bus
+	 * @param securedDialogInterfaceDetailListExposedOnBus the secured dialog interface detail list exposed on bus
+	 * @param securedListPropertyInterfaceDetailListExposedOnBus the secured list property interface detail list exposed on bus
+	 * @return true, if is empty
+	 */
 	private  boolean isEmpty(List<InterfaceDetail> securedContainerInterfaceDetailListExposedOnBus, List<InterfaceDetail> securedPropertyInterfaceDetailListExposedOnBus,
 			List<InterfaceDetail> securedActionInterfaceDetailListExposedOnBus, List<InterfaceDetail> securedDialogInterfaceDetailListExposedOnBus,
 			List<InterfaceDetail> securedListPropertyInterfaceDetailListExposedOnBus)
@@ -698,6 +1005,13 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Validate http control interface detail list.
+	 *
+	 * @param httpControlInterfaceDetailListExposedOnBus the http control interface detail list exposed on bus
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private  void validateHttpControlInterfaceDetailList(List<InterfaceDetail> httpControlInterfaceDetailListExposedOnBus) throws BusException, IOException
 	{
 		for (InterfaceDetail interfaceDetail : httpControlInterfaceDetailListExposedOnBus)
@@ -710,6 +1024,13 @@ public class ControlPanelService {
 		}
 	}
 
+	/**
+	 * Validate http control bus object.
+	 *
+	 * @param path the path
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private  void validateHttpControlBusObject(String path) throws BusException, IOException
 	{
 		HTTPControl httpControl = busIntrospector.getInterface(path, HTTPControl.class);
@@ -718,6 +1039,12 @@ public class ControlPanelService {
 	}
 
 
+	/**
+	 * Validate root url.
+	 *
+	 * @param rootUrl the root url
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private  void validateRootUrl(String rootUrl) throws IOException
 	{
 		assertNotNull("Root URL returned is null", rootUrl);
@@ -728,12 +1055,23 @@ public class ControlPanelService {
 	}
 
 
-	 HttpClient getHttpClient()
+	 /**
+ 	 * Gets the http client.
+ 	 *
+ 	 * @return the http client
+ 	 */
+ 	HttpClient getHttpClient()
 	{
 		HttpClient httpClient = HttpClientBuilder.create().build();
 		return httpClient;
 	}
 
+	/**
+	 * Checks if is valid url.
+	 *
+	 * @param supportUrl the support url
+	 * @return true, if is valid url
+	 */
 	boolean isValidUrl(String supportUrl)
 	{
 		try
@@ -755,6 +1093,12 @@ public class ControlPanelService {
 	}
 
 
+	/**
+	 * Validate notification action interface detail list.
+	 *
+	 * @param notificationActionInterfaceDetailListExposedOnBus the notification action interface detail list exposed on bus
+	 * @throws Exception the exception
+	 */
 	private  void validateNotificationActionInterfaceDetailList(List<InterfaceDetail> notificationActionInterfaceDetailListExposedOnBus) throws Exception
 	{
 		for (InterfaceDetail interfaceDetail : notificationActionInterfaceDetailListExposedOnBus)
@@ -768,6 +1112,12 @@ public class ControlPanelService {
 	}
 
 
+	/**
+	 * Validate notification action bus object.
+	 *
+	 * @param path the path
+	 * @throws Exception the exception
+	 */
 	private  void validateNotificationActionBusObject(String path) throws Exception
 	{
 		NotificationAction notificationAction = busIntrospector.getInterface(path, NotificationAction.class);
@@ -776,6 +1126,15 @@ public class ControlPanelService {
 	}
 
 
+	/**
+	 * Assert container or dialog object exists.
+	 *
+	 * @param path the path
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws SAXException the SAX exception
+	 */
 	private  void assertContainerOrDialogObjectExists(String path) throws BusException, IOException, ParserConfigurationException, SAXException
 	{
 		List<InterfaceDetail> containerInterfaceDetailList = busIntrospector.getInterfacesExposedOnBusUnderSpecifiedPathBasedOnName(path, Container.IFNAME);
@@ -790,6 +1149,15 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Checks if is root container present.
+	 *
+	 * @param containerInterfaceDetailList the container interface detail list
+	 * @param securedContainerInterfaceDetailList the secured container interface detail list
+	 * @param dialogInterfaceDetailList the dialog interface detail list
+	 * @param securedDialogInterfaceDetailList the secured dialog interface detail list
+	 * @return true, if is root container present
+	 */
 	private  boolean isRootContainerPresent(List<InterfaceDetail> containerInterfaceDetailList, List<InterfaceDetail> securedContainerInterfaceDetailList,
 			List<InterfaceDetail> dialogInterfaceDetailList, List<InterfaceDetail> securedDialogInterfaceDetailList)
 	{
@@ -803,6 +1171,16 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Validate list property interface detail list.
+	 *
+	 * @param listPropertyInterfaceDetailListExposedOnBus the list property interface detail list exposed on bus
+	 * @param isSecured the is secured
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws SAXException the SAX exception
+	 */
 	private  void validateListPropertyInterfaceDetailList(List<InterfaceDetail> listPropertyInterfaceDetailListExposedOnBus, boolean isSecured) throws BusException, IOException,
 	ParserConfigurationException, SAXException
 	{
@@ -817,6 +1195,14 @@ public class ControlPanelService {
 	}
 
 
+	/**
+	 * Validate list property bus object.
+	 *
+	 * @param path the path
+	 * @param isSecured the is secured
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private  void validateListPropertyBusObject(String path, boolean isSecured) throws BusException, IOException
 	{
 		ListPropertyControlSuper listPropertyControl = null;
@@ -838,6 +1224,12 @@ public class ControlPanelService {
 	}
 
 
+	/**
+	 * Validate list property value.
+	 *
+	 * @param listPropertyControl the list property control
+	 * @throws BusException the bus exception
+	 */
 	private  void validateListPropertyValue(ListPropertyControlSuper listPropertyControl) throws BusException
 	{
 		ListPropertyWidgetRecordAJ[] listPropertyWidgetRecordAJs = listPropertyControl.getValue();
@@ -856,6 +1248,12 @@ public class ControlPanelService {
 	}
 
 
+	/**
+	 * Validate list property parameters.
+	 *
+	 * @param parameters the parameters
+	 * @throws BusException the bus exception
+	 */
 	private  void validateListPropertyParameters(Map<Short, Variant> parameters) throws BusException
 	{
 		validateOptionalParameter0(parameters);
@@ -864,6 +1262,16 @@ public class ControlPanelService {
 	}
 
 
+	/**
+	 * Validate dialog interface detail list.
+	 *
+	 * @param dialogInterfaceDetailListExposedOnBus the dialog interface detail list exposed on bus
+	 * @param isSecured the is secured
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws SAXException the SAX exception
+	 */
 	private  void validateDialogInterfaceDetailList(List<InterfaceDetail> dialogInterfaceDetailListExposedOnBus, boolean isSecured) throws BusException, IOException,
 	ParserConfigurationException, SAXException
 	{
@@ -904,6 +1312,14 @@ public class ControlPanelService {
 	}
 
 
+	/**
+	 * Action2 is present.
+	 *
+	 * @param path the path
+	 * @param isSecured the is secured
+	 * @return true, if successful
+	 * @throws BusException the bus exception
+	 */
 	private  boolean action2IsPresent(String path,Boolean isSecured) throws BusException {
 		AlertDialogSuper dialog = null;
 
@@ -928,6 +1344,14 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Action3 is present.
+	 *
+	 * @param path the path
+	 * @param isSecured the is secured
+	 * @return true, if successful
+	 * @throws BusException the bus exception
+	 */
 	private  boolean action3IsPresent(String path,Boolean isSecured) throws BusException {
 		AlertDialogSuper dialog = null;
 
@@ -953,6 +1377,15 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Assert valid ancestor is present for dialog.
+	 *
+	 * @param path the path
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws SAXException the SAX exception
+	 */
 	void assertValidAncestorIsPresentForDialog(String path) throws BusException, IOException, ParserConfigurationException, SAXException
 	{
 		assertTrue("No parent bus object that implements Action nor SecuredAction nor NotificationAction interface found",
@@ -966,6 +1399,14 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Validate dialog bus object.
+	 *
+	 * @param path the path
+	 * @param isSecured the is secured
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws BusException the bus exception
+	 */
 	private  void validateDialogBusObject(String path, boolean isSecured) throws IOException, BusException
 	{
 		AlertDialogSuper dialog = null;
@@ -988,6 +1429,13 @@ public class ControlPanelService {
 	}
 
 
+	/**
+	 * Validate dialog actions.
+	 *
+	 * @param dialog the dialog
+	 * @param numberOfActions the number of actions
+	 * @throws BusException the bus exception
+	 */
 	private  void validateDialogActions(AlertDialogSuper dialog, short numberOfActions) throws BusException
 	{
 		if (numberOfActions == 1)
@@ -1002,6 +1450,12 @@ public class ControlPanelService {
 		}
 	}
 
+	/**
+	 * Validate invoking dialog action2 throws exception.
+	 *
+	 * @param dialog the dialog
+	 * @throws BusException the bus exception
+	 */
 	private  void validateInvokingDialogAction2ThrowsException(AlertDialogSuper dialog) throws BusException
 	{
 		try
@@ -1015,6 +1469,12 @@ public class ControlPanelService {
 		}
 	}
 
+	/**
+	 * Validate invoking dialog action3 throws exception.
+	 *
+	 * @param dialog the dialog
+	 * @throws BusException the bus exception
+	 */
 	private  void validateInvokingDialogAction3ThrowsException(AlertDialogSuper dialog) throws BusException
 	{
 		try
@@ -1029,12 +1489,22 @@ public class ControlPanelService {
 	}
 
 
+	/**
+	 * Assert error is method not allowed.
+	 *
+	 * @param errorReplyBusException the error reply bus exception
+	 */
 	private  void assertErrorIsMethodNotAllowed(ErrorReplyBusException errorReplyBusException)
 	{
 		logger.debug("Expected exception caught while involing Action()", errorReplyBusException);
 		assertEquals("Error name does not match", AllJoynErrorReplyCodes.METHOD_NOT_ALLOWED, errorReplyBusException.getErrorName());
 	}
 
+	/**
+	 * Fail.
+	 *
+	 * @param msg the msg
+	 */
 	private  void fail(String msg) {
 
 
@@ -1048,6 +1518,13 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Validate dialog parameters.
+	 *
+	 * @param parameters the parameters
+	 * @param numberOfActions the number of actions
+	 * @throws BusException the bus exception
+	 */
 	private  void validateDialogParameters(Map<Short, Variant> parameters, short numberOfActions) throws BusException
 	{
 		validateOptionalParameter0(parameters);
@@ -1057,6 +1534,13 @@ public class ControlPanelService {
 	}
 
 
+	/**
+	 * Validate dialog parameter action label ids.
+	 *
+	 * @param parameters the parameters
+	 * @param numberOfActions the number of actions
+	 * @throws AnnotationBusException the annotation bus exception
+	 */
 	private  void validateDialogParameterActionLabelIds(Map<Short, Variant> parameters, short numberOfActions) throws AnnotationBusException
 	{
 		if (parameters.containsKey((short) 6))
@@ -1075,6 +1559,13 @@ public class ControlPanelService {
 		}
 	}
 
+	/**
+	 * Validate dialog parameter action label id.
+	 *
+	 * @param actionLabelIdVariant the action label id variant
+	 * @param key the key
+	 * @throws AnnotationBusException the annotation bus exception
+	 */
 	private  void validateDialogParameterActionLabelId(Variant actionLabelIdVariant, String key) throws AnnotationBusException
 	{
 		assertNotNull(String.format("Key %s is missing", key), actionLabelIdVariant);
@@ -1082,6 +1573,16 @@ public class ControlPanelService {
 	}
 
 
+	/**
+	 * Validate action interface detail list.
+	 *
+	 * @param actionInterfaceDetailListExposedOnBus the action interface detail list exposed on bus
+	 * @param isSecured the is secured
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws SAXException the SAX exception
+	 */
 	private  void validateActionInterfaceDetailList(List<InterfaceDetail> actionInterfaceDetailListExposedOnBus, boolean isSecured) throws BusException, IOException,
 	ParserConfigurationException, SAXException
 	{
@@ -1096,6 +1597,14 @@ public class ControlPanelService {
 	}
 
 
+	/**
+	 * Validate action bus object.
+	 *
+	 * @param path the path
+	 * @param isSecured the is secured
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private  void validateActionBusObject(String path, boolean isSecured) throws BusException, IOException
 	{
 		ActionControlSuper action = null;
@@ -1117,6 +1626,12 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Validate action parameters.
+	 *
+	 * @param parameters the parameters
+	 * @throws BusException the bus exception
+	 */
 	private  void validateActionParameters(Map<Short, Variant> parameters) throws BusException
 	{
 		validateOptionalParameter0(parameters);
@@ -1127,6 +1642,15 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Validate label property interface detail list.
+	 *
+	 * @param labelPropertyInterfaceDetailListExposedOnBus the label property interface detail list exposed on bus
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws SAXException the SAX exception
+	 */
 	private  void validateLabelPropertyInterfaceDetailList(List<InterfaceDetail> labelPropertyInterfaceDetailListExposedOnBus) throws BusException, IOException,
 	ParserConfigurationException, SAXException
 	{
@@ -1142,6 +1666,13 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Validate label property bus object.
+	 *
+	 * @param path the path
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private  void validateLabelPropertyBusObject(String path) throws BusException, IOException
 	{
 		Label label = busIntrospector.getInterface(path, Label.class);
@@ -1152,6 +1683,12 @@ public class ControlPanelService {
 	}
 
 
+	/**
+	 * Validate label property parameters.
+	 *
+	 * @param parameters the parameters
+	 * @throws BusException the bus exception
+	 */
 	private  void validateLabelPropertyParameters(Map<Short, Variant> parameters) throws BusException
 	{
 		validateOptionalParameter1(parameters);
@@ -1160,6 +1697,12 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Validate parameter layout hints.
+	 *
+	 * @param parameters the parameters
+	 * @throws BusException the bus exception
+	 */
 	private  void validateParameterLayoutHints(Map<Short, Variant> parameters) throws BusException
 	{
 		if (parameters.containsKey((short) 2))
@@ -1177,6 +1720,16 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Validate property interface detail list.
+	 *
+	 * @param propertyInterfaceDetailListExposedOnBus the property interface detail list exposed on bus
+	 * @param isSecured the is secured
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws SAXException the SAX exception
+	 */
 	private  void validatePropertyInterfaceDetailList(List<InterfaceDetail> propertyInterfaceDetailListExposedOnBus, boolean isSecured) throws BusException, IOException,
 	ParserConfigurationException, SAXException
 	{
@@ -1191,6 +1744,15 @@ public class ControlPanelService {
 	}
 
 
+	/**
+	 * Assert ancestor container is present.
+	 *
+	 * @param path the path
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws SAXException the SAX exception
+	 */
 	void assertAncestorContainerIsPresent(String path) throws BusException, IOException, ParserConfigurationException, SAXException
 	{
 		assertTrue("No parent bus object that implements Container nor SecuredContainer interface found", busIntrospector.isAncestorInterfacePresent(path, Container.IFNAME)
@@ -1198,6 +1760,14 @@ public class ControlPanelService {
 	}
 
 
+	/**
+	 * Validate property bus object.
+	 *
+	 * @param path the path
+	 * @param isSecured the is secured
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private  void validatePropertyBusObject(String path, boolean isSecured) throws BusException, IOException
 	{
 		PropertyControlSuper propertyControl = null;
@@ -1219,6 +1789,13 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Validate property control parameters.
+	 *
+	 * @param parameters the parameters
+	 * @param propertyValue the property value
+	 * @throws BusException the bus exception
+	 */
 	private  void validatePropertyControlParameters(Map<Short, Variant> parameters, Variant propertyValue) throws BusException
 	{
 		validateOptionalParameter0(parameters);
@@ -1232,6 +1809,12 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Validate property control optional parameter3.
+	 *
+	 * @param parameters the parameters
+	 * @throws AnnotationBusException the annotation bus exception
+	 */
 	private  void validatePropertyControlOptionalParameter3(Map<Short, Variant> parameters) throws AnnotationBusException
 	{
 		if (parameters.containsKey((short) 3))
@@ -1240,6 +1823,14 @@ public class ControlPanelService {
 		}
 	}
 
+	/**
+	 * Validate property control optional parameter4.
+	 *
+	 * @param parameters the parameters
+	 * @param propertyValue the property value
+	 * @throws AnnotationBusException the annotation bus exception
+	 * @throws BusException the bus exception
+	 */
 	private  void validatePropertyControlOptionalParameter4(Map<Short, Variant> parameters, Variant propertyValue) throws AnnotationBusException, BusException
 	{
 		if (parameters.containsKey((short) 4))
@@ -1255,6 +1846,14 @@ public class ControlPanelService {
 		}
 	}
 
+	/**
+	 * Validate property control optional parameter5.
+	 *
+	 * @param parameters the parameters
+	 * @param propertyValue the property value
+	 * @throws AnnotationBusException the annotation bus exception
+	 * @throws BusException the bus exception
+	 */
 	private  void validatePropertyControlOptionalParameter5(Map<Short, Variant> parameters, Variant propertyValue) throws AnnotationBusException, BusException
 	{
 		if (parameters.containsKey((short) 5))
@@ -1270,6 +1869,13 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Validate property control parameter layout hints.
+	 *
+	 * @param parameters the parameters
+	 * @param propertyValue the property value
+	 * @throws BusException the bus exception
+	 */
 	private  void validatePropertyControlParameterLayoutHints(Map<Short, Variant> parameters, Variant propertyValue) throws BusException
 	{
 		if (parameters.containsKey((short) 2))
@@ -1287,6 +1893,13 @@ public class ControlPanelService {
 	}
 
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param msg the msg
+	 * @param i the i
+	 * @param k the k
+	 */
 	private  void assertEquals(String msg, int i, int k) {
 
 		if(k!=i){
@@ -1301,6 +1914,15 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Validate based on layout hint id.
+	 *
+	 * @param parameters the parameters
+	 * @param propertyValue the property value
+	 * @param layoutHintId the layout hint id
+	 * @throws AnnotationBusException the annotation bus exception
+	 * @throws BusException the bus exception
+	 */
 	private  void validateBasedOnLayoutHintId(Map<Short, Variant> parameters, Variant propertyValue, short layoutHintId) throws AnnotationBusException, BusException
 	{
 		if (layoutHintId == (short) 1)
@@ -1331,6 +1953,15 @@ public class ControlPanelService {
 	}
 
 
+	/**
+	 * Validate date time hint.
+	 *
+	 * @param layoutHintId the layout hint id
+	 * @param propertyValue the property value
+	 * @param compositeType the composite type
+	 * @throws AnnotationBusException the annotation bus exception
+	 * @throws BusException the bus exception
+	 */
 	private  void validateDateTimeHint(short layoutHintId, Variant propertyValue, int compositeType) throws AnnotationBusException, BusException
 	{
 		assertEquals(String.format("Signature does not match for property Value when hint id is %d", layoutHintId), "q(qqq)", propertyValue.getSignature());
@@ -1338,6 +1969,14 @@ public class ControlPanelService {
 		assertEquals(String.format("The first value in the composite type does not match when hint id is %d", layoutHintId), compositeType, propertyWidgetThreeShortAJ.dataType);
 	}
 
+	/**
+	 * Assert optional parameter4 is present.
+	 *
+	 * @param parameters the parameters
+	 * @param layoutHintId the layout hint id
+	 * @throws AnnotationBusException the annotation bus exception
+	 * @throws BusException the bus exception
+	 */
 	private  void assertOptionalParameter4IsPresent(Map<Short, Variant> parameters, short layoutHintId) throws AnnotationBusException, BusException
 	{
 		assertTrue(String.format("Parameters should contain key 4 when hint id is %d", layoutHintId), parameters.containsKey((short) 4));
@@ -1351,6 +1990,16 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Validate container interface detail list.
+	 *
+	 * @param containerInterfaceDetailListExposedOnBus the container interface detail list exposed on bus
+	 * @param isSecured the is secured
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws SAXException the SAX exception
+	 */
 	private  void validateContainerInterfaceDetailList(List<InterfaceDetail> containerInterfaceDetailListExposedOnBus, boolean isSecured) throws BusException, IOException,
 	ParserConfigurationException, SAXException
 	{
@@ -1369,6 +2018,15 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Assert valid ancestor is present for container.
+	 *
+	 * @param path the path
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws SAXException the SAX exception
+	 */
 	void assertValidAncestorIsPresentForContainer(String path) throws BusException, IOException, ParserConfigurationException, SAXException
 	{
 
@@ -1386,6 +2044,14 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Validate container bus object.
+	 *
+	 * @param path the path
+	 * @param isSecured the is secured
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private  void validateContainerBusObject(String path, boolean isSecured) throws BusException, IOException
 	{
 		ContainerSuper container = null;
@@ -1404,12 +2070,27 @@ public class ControlPanelService {
 		validateContainerParameters(container.getOptParams());
 	}
 
+	/**
+	 * Checks if is valid state.
+	 *
+	 * @param state the state
+	 * @param validStates the valid states
+	 * @return true, if is valid state
+	 * @throws BusException the bus exception
+	 */
 	private  boolean isValidState(int state, List<Integer> validStates) throws BusException
 	{
 		return validStates.contains(state);
 	}
 
 
+	/**
+	 * Validate container parameters.
+	 *
+	 * @param parameters the parameters
+	 * @throws AnnotationBusException the annotation bus exception
+	 * @throws BusException the bus exception
+	 */
 	private  void validateContainerParameters(Map<Short, Variant> parameters) throws AnnotationBusException, BusException
 	{
 		validateOptionalParameter0(parameters);
@@ -1418,6 +2099,12 @@ public class ControlPanelService {
 	}
 
 
+	/**
+	 * Validate optional parameter0.
+	 *
+	 * @param parameters the parameters
+	 * @throws AnnotationBusException the annotation bus exception
+	 */
 	private  void validateOptionalParameter0(Map<Short, Variant> parameters) throws AnnotationBusException
 	{
 		if (parameters.containsKey((short) 0))
@@ -1427,6 +2114,12 @@ public class ControlPanelService {
 	}
 
 
+	/**
+	 * Validate container parameter layout hints.
+	 *
+	 * @param parameters the parameters
+	 * @throws BusException the bus exception
+	 */
 	private  void validateContainerParameterLayoutHints(Map<Short, Variant> parameters) throws BusException
 	{
 		if (parameters.containsKey((short) 2))
@@ -1446,6 +2139,12 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Validate layout hints signature.
+	 *
+	 * @param layoutHintsVariant the layout hints variant
+	 * @throws AnnotationBusException the annotation bus exception
+	 */
 	private  void validateLayoutHintsSignature(Variant layoutHintsVariant) throws AnnotationBusException
 	{
 		assertNotNull("Key 2 for LayoutHints is missing", layoutHintsVariant);
@@ -1459,6 +2158,13 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param msg the msg
+	 * @param sig the sig
+	 * @param signature the signature
+	 */
 	private  void assertEquals(String msg, String sig, String signature) {
 
 
@@ -1475,6 +2181,12 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Validate optional parameter1.
+	 *
+	 * @param parameters the parameters
+	 * @throws AnnotationBusException the annotation bus exception
+	 */
 	private  void validateOptionalParameter1(Map<Short, Variant> parameters) throws AnnotationBusException
 	{
 		if (parameters.containsKey((short) 1))
@@ -1484,6 +2196,12 @@ public class ControlPanelService {
 	}
 
 
+	/**
+	 * Validate control panel interface detail list.
+	 *
+	 * @param controlPanelInterfaceDetailListExposedOnBus the control panel interface detail list exposed on bus
+	 * @throws Exception the exception
+	 */
 	private  void validateControlPanelInterfaceDetailList(List<InterfaceDetail> controlPanelInterfaceDetailListExposedOnBus) throws Exception
 	{
 		for (InterfaceDetail interfaceDetail : controlPanelInterfaceDetailListExposedOnBus)
@@ -1498,6 +2216,12 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Assert true.
+	 *
+	 * @param msg the msg
+	 * @param bool the bool
+	 */
 	private  void assertTrue(String msg, boolean bool) {
 
 		if(!bool){
@@ -1512,6 +2236,13 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Checks if is valid path.
+	 *
+	 * @param pathPattern the path pattern
+	 * @param path the path
+	 * @return true, if is valid path
+	 */
 	boolean isValidPath(String pathPattern, String path)
 	{
 		Pattern pattern = Pattern.compile(pathPattern);
@@ -1520,6 +2251,12 @@ public class ControlPanelService {
 		return matcher.matches();
 	}
 
+	/**
+	 * Validate control panel bus object.
+	 *
+	 * @param path the path
+	 * @throws Exception the exception
+	 */
 	private  void validateControlPanelBusObject(String path) throws Exception
 	{
 		ControlPanel controlPanel = busIntrospector.getInterface(path, ControlPanel.class);
@@ -1528,6 +2265,13 @@ public class ControlPanelService {
 	}
 
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param msg the msg
+	 * @param interfaceVersion the interface version
+	 * @param version the version
+	 */
 	private  void assertEquals(String msg, short interfaceVersion,
 			short version) {
 
@@ -1543,6 +2287,15 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Assert container object exists.
+	 *
+	 * @param path the path
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws SAXException the SAX exception
+	 */
 	private  void assertContainerObjectExists(String path) throws BusException, IOException, ParserConfigurationException, SAXException
 	{
 		List<InterfaceDetail> containerInterfaceDetailList = busIntrospector.getInterfacesExposedOnBusUnderSpecifiedPathBasedOnName(path, Container.IFNAME);
@@ -1557,6 +2310,12 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Assert false.
+	 *
+	 * @param msg the msg
+	 * @param bool the bool
+	 */
 	private  void assertFalse(String msg, boolean bool) {
 
 
@@ -1567,6 +2326,11 @@ public class ControlPanelService {
 
 	}
 
+	/**
+	 * Tear down.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void tearDown() throws Exception
 	{	
 		System.out.println("====================================================");
@@ -1577,6 +2341,9 @@ public class ControlPanelService {
 	}
 
 
+	/**
+	 * Release resources.
+	 */
 	private  void releaseResources()
 	{
 		disconnectFromAboutClient();
@@ -1588,6 +2355,9 @@ public class ControlPanelService {
 		}
 	}
 
+	/**
+	 * Disconnect from about client.
+	 */
 	private  void disconnectFromAboutClient()
 	{
 		if (aboutClient != null)
@@ -1599,6 +2369,11 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Gets the service helper.
+	 *
+	 * @return the service helper
+	 */
 	protected  ServiceHelper getServiceHelper()
 	{
 		return new ServiceHelper( );
@@ -1606,6 +2381,12 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Gets the introspector.
+	 *
+	 * @return the introspector
+	 * @throws Exception the exception
+	 */
 	BusIntrospector getIntrospector() throws Exception
 	{
 		return serviceHelper.getBusIntrospector(aboutClient);
@@ -1613,6 +2394,11 @@ public class ControlPanelService {
 
 
 
+	/**
+	 * Gets the verdict.
+	 *
+	 * @return the verdict
+	 */
 	public String getVerdict() {
 
 		String verdict=null;

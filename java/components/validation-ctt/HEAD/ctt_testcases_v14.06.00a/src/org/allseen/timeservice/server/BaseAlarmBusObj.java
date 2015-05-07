@@ -34,6 +34,7 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 
 
+// TODO: Auto-generated Javadoc
 /**
  * This is the base class for all the classes implementing {@link Alarm}
  * interface. Extend this class to handle AllJoyn communication with this
@@ -44,7 +45,11 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 // interfaces in the SuperClasses
 // so they must be implemented by the leaf classes
 public abstract class BaseAlarmBusObj implements BusObject /* implements Alarm */{
+    
+    /** The Constant TAG. */
     private static final String TAG = "ajts" + BaseAlarmBusObj.class.getSimpleName();
+	
+	/** The Constant Log. */
 	private static final WindowsLoggerImpl Log =  new WindowsLoggerImpl(TAG);
 
     /**

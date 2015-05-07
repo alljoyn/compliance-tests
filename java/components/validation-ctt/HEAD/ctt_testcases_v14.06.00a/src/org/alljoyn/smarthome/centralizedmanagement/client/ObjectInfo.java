@@ -1,5 +1,5 @@
 /*
- *    Copyright (c) 2014, AllSeen Alliance. All rights reserved.
+ * Copyright AllSeen Alliance. All rights reserved.
  *
  *    Permission to use, copy, modify, and/or distribute this software for any
  *    purpose with or without fee is hereby granted, provided that the above
@@ -18,6 +18,7 @@ package org.alljoyn.smarthome.centralizedmanagement.client;
 import org.alljoyn.bus.Variant;
 import org.alljoyn.bus.annotation.Position;
 
+// TODO: Auto-generated Javadoc
 /**
  * 	This class used to describe the information of bus object.
  */
@@ -25,14 +26,17 @@ import org.alljoyn.bus.annotation.Position;
 public class ObjectInfo {
 	
 	// Interface Name
+	/** The interface name. */
 	@Position(0)
 	public String interfaceName;
 
 	// Bus Object Path
+	/** The object path. */
 	@Position(1)
 	public String objectPath;
 	
 	// The descriptions of arguments
+	/** The args descs. */
 	@Position(2)
 	public Variant argsDescs;
 	

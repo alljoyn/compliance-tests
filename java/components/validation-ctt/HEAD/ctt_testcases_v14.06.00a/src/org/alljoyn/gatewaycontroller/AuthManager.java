@@ -1,5 +1,5 @@
-/******************************************************************************
- * Copyright (c) 2014, AllSeen Alliance. All rights reserved.
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
  *
  *    Permission to use, copy, modify, and/or distribute this software for any
  *    purpose with or without fee is hereby granted, provided that the above
@@ -12,7 +12,7 @@
  *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
  *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- ******************************************************************************/
+ */
 
 package org.alljoyn.gatewaycontroller;
 
@@ -25,6 +25,7 @@ import com.at4wireless.alljoyn.core.commons.SrpAnonymousKeyListener;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 
+
 /**
  * Registers {@link AuthListener}. The default passcode is defined as in
  * {@link SrpAnonymousKeyListener#DEFAULT_PINCODE} If
@@ -33,7 +34,11 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
  * {@link GWControllerActions#GWC_PASSWORD_REQUIRED} intent is broadcasted.
  */
 public class AuthManager implements AuthPasswordHandler {
+    
+    /** The Constant TAG. */
     private static final String TAG = "gwcapp" + AuthManager.class.getSimpleName();
+	
+	/** The Constant Log. */
 	private static final WindowsLoggerImpl Log =  new WindowsLoggerImpl(TAG);
 
     /**
@@ -46,6 +51,7 @@ public class AuthManager implements AuthPasswordHandler {
      */
     private char[] passCode;
 
+	/** The key store file name. */
 	private String keyStoreFileName="/KeyStore";
 
     /**
