@@ -1,15 +1,28 @@
-/**
- *Author: AT4 Wireless
- *Date: 2015/02/25
- *Version: 1
- *Description: 
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
  *
+ *    Permission to use, copy, modify, and/or distribute this software for any
+ *    purpose with or without fee is hereby granted, provided that the above
+ *    copyright notice and this permission notice appear in all copies.
+ *
+ *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 package com.at4wireless.alljoyn;
 
-
+ 
+import java.awt.EventQueue;
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -62,12 +75,18 @@ import javax.xml.transform.stream.StreamResult;
 
 
 
+
+
+
+
+
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import com.at4wireless.alljoyn.core.commons.log.LoggerFactory;
@@ -91,270 +110,686 @@ import com.at4wireless.alljoyn.testcases.iop.lighting.LightingIOP;
 import com.at4wireless.alljoyn.testcases.iop.notification.NotificationIOP;
 import com.at4wireless.alljoyn.testcases.iop.onboarding.OnboardingIOP;
 
+
+
+/**
+ * The Class Manager.
+ */
 public class Manager extends Thread {
+
+	static {
+		System.loadLibrary("alljoyn_java");
+	}
+
+	/** The version. */
 	String versionKey="14.12.00a";
-	
-	Loader load=new Loader();
-	
-	boolean loadedLib=false;
+	/** The tescase name . */
 	String testKey = null;
+
+	/** The tescase verdict. */
 	String verdictKey =null;
+
+	/** The tescase description. */
 	String descriptionKey = null;
+
+	/** The date time. */
 	String dateTimeKey =null;
+
+	/** The testcase ID. */
 	String iDKey = null;
+
+	/** The tescase log. */
 	String logKey = null;
+
+	/** The running. */
 	boolean running=false;
+
+	/** The Constant TAG. */
 	protected static final String TAG = "TestRunner";
+
+	/** The Constant logger. */
 	private static final WindowsLoggerImpl logger =  LoggerFactory.getLogger(TAG);
+
+	/** The sql timestamp. */
 	Timestamp sqlTimestamp;
+
+	/** The doc. */
 	private Document doc;
+
+	/** The test name. */
 	private String testName;
+
+	/** The test service. */
 	private String testService;
-	private static String Verdict=null;
-	private static String TimeStamp=null;
+
+	/** The Verdict. */
+	private  String Verdict=null;
+
+	/** The Time stamp. */
+	private  String TimeStamp=null;
+
+	/** The test. */
 	String test=null;
+
+	/** The test names. */
 	static List<String> testNames=new ArrayList<String>();
+
+	/** The ICSCO date of manufacture. */
 	static boolean ICSCO_DateOfManufacture=false;
+
+	/** The ICSCO hardware version. */
 	static boolean ICSCO_HardwareVersion=false;
+
+	/** The ICSCO support url. */
 	static boolean ICSCO_SupportUrl=false;
+
+	/** The ICSCO icon interface. */
 	static boolean ICSCO_IconInterface=false;
+
+	/** The ICSCO device name. */
 	static boolean ICSCO_DeviceName=false; //JTF
 	/////////////////////////////////
+	/** The ICSN notification service framework. */
 	static boolean ICSN_NotificationServiceFramework=false;
+
+	/** The ICSN notification interface. */
 	static boolean ICSN_NotificationInterface=false;
+
+	/** The ICSN rich icon url. */
 	static boolean ICSN_RichIconUrl=false;
+
+	/** The ICSN rich audio url. */
 	static boolean ICSN_RichAudioUrl=false;
+
+	/** The ICSN resp object path. */
 	static boolean ICSN_RespObjectPath=false;
+
+	/** The ICSN notification producer interface. */
 	static boolean ICSN_NotificationProducerInterface=false;
+
+	/** The ICSN dismisser interface. */
 	static boolean ICSN_DismisserInterface=false;
+
+	/** The ICSN notification consumer. */
 	static boolean ICSN_NotificationConsumer=false; //JTF
 	///////////////////////////////
+	/** The ICSON onboarding service framework. */
 	static boolean ICSON_OnboardingServiceFramework=false;
+
+	/** The ICSON onboarding interface. */
 	static boolean ICSON_OnboardingInterface=false;
+
+	/** The ICSON channel switching. */
 	static boolean ICSON_ChannelSwitching=false;
+
+	/** The ICSON get scan info method. */
 	static boolean ICSON_GetScanInfoMethod=false;	
-	
-///////////////////////////////
+
+	///////////////////////////////
+	/** The ICSCP control panel service framework. */
 	static boolean ICSCP_ControlPanelServiceFramework=false;
+
+	/** The ICSCP control panel interface. */
 	static boolean ICSCP_ControlPanelInterface=false;
+
+	/** The ICSCP container interface. */
 	static boolean ICSCP_ContainerInterface=false;
+
+	/** The ICSCP secured container interface. */
 	static boolean ICSCP_SecuredContainerInterface=false;
+
+	/** The ICSCP property interface. */
 	static boolean ICSCP_PropertyInterface=false;
+
+	/** The ICSCP secured property interface. */
 	static boolean ICSCP_SecuredPropertyInterface=false;
+
+	/** The ICSCP label property interface. */
 	static boolean ICSCP_LabelPropertyInterface=false;
+
+	/** The ICSCP action interface. */
 	static boolean ICSCP_ActionInterface=false;
+
+	/** The ICSCP secured action interface. */
 	static boolean ICSCP_SecuredActionInterface=false;
+
+	/** The ICSCP notification action interface. */
 	static boolean ICSCP_NotificationActionInterface=false;
+
+	/** The ICSCP dialog interface. */
 	static boolean ICSCP_DialogInterface=false;
+
+	/** The ICSCP d i_ action2. */
 	static boolean ICSCP_DI_Action2=false;
+
+	/** The ICSCP d i_ action3. */
 	static boolean ICSCP_DI_Action3=false;
+
+	/** The ICSCP secured dialog interface. */
 	static boolean ICSCP_SecuredDialogInterface=false;
+
+	/** The ICSCP sd i_ action2. */
 	static boolean ICSCP_SDI_Action2=false;
+
+	/** The ICSCP sd i_ action3. */
 	static boolean ICSCP_SDI_Action3=false;
+
+	/** The ICSCP list property interface. */
 	static boolean ICSCP_ListPropertyInterface=false;
+
+	/** The ICSCP secured list property interface. */
 	static boolean ICSCP_SecuredListPropertyInterface=false;
+
+	/** The ICSCP http control interface. */
 	static boolean ICSCP_HTTPControlInterface=false;
 	////////////////////////////////////
+	/** The ICSCF configuration service framework. */
 	static boolean ICSCF_ConfigurationServiceFramework=false;
+
+	/** The ICSCF configuration interface. */
 	static boolean ICSCF_ConfigurationInterface=false;
+
+	/** The ICSCF factory reset method. */
 	static boolean ICSCF_FactoryResetMethod=false;
 	/////////////////////////////////////
+	/** The ICSAU audio service framework. */
 	static boolean ICSAU_AudioServiceFramework=false;
+
+	/** The ICSAU stream interface. */
 	static boolean ICSAU_StreamInterface=false;
+
+	/** The ICSAU stream port interface. */
 	static boolean ICSAU_StreamPortInterface=false;
+
+	/** The ICSAU port audio sink interface. */
 	static boolean ICSAU_PortAudioSinkInterface=false;
+
+	/** The ICSAU port audio source interface. */
 	static boolean ICSAU_PortAudioSourceInterface=false;
+
+	/** The ICSAU port image sink interface. */
 	static boolean ICSAU_PortImageSinkInterface=false;
+
+	/** The ICSAU port image source interface. */
 	static boolean ICSAU_PortImageSourceInterface=false;
+
+	/** The ICSAU port application metadata sink interface. */
 	static boolean ICSAU_PortApplicationMetadataSinkInterface=false;
+
+	/** The ICSAU port application metadata source interface. */
 	static boolean ICSAU_PortApplicationMetadataSourceInterface=false;
+
+	/** The ICSAU control volume interface. */
 	static boolean ICSAU_ControlVolumeInterface=false;
+
+	/** The ICSAU stream clock interface. */
 	static boolean ICSAU_StreamClockInterface=false;
+
+	/** The ICSAU audio xalac. */
 	static boolean ICSAU_AudioXalac=false;
+
+	/** The ICSAU image jpeg. */
 	static boolean ICSAU_ImageJpeg=false;
+
+	/** The ICSAU application xmetadata. */
 	static boolean ICSAU_ApplicationXmetadata=false;
+
+	/** The ICSAU volume control. */
 	static boolean ICSAU_VolumeControl=false;
 	/////////////////////////////////////////
+	/** The ICSL lighting service framework. */
 	static boolean ICSL_LightingServiceFramework=false;
+
+	/** The ICSL lamp service interface. */
 	static boolean ICSL_LampServiceInterface=false;
+
+	/** The ICSL lamp parameters interface. */
 	static boolean ICSL_LampParametersInterface=false;
+
+	/** The ICSL lamp details interface. */
 	static boolean ICSL_LampDetailsInterface=false;
+
+	/** The ICSL dimmable. */
 	static boolean ICSL_Dimmable=false;
+
+	/** The ICSL color. */
 	static boolean ICSL_Color=false;
 
+	/** The ICSL color temperature. */
 	static boolean ICSL_ColorTemperature=false;
+
+	/** The ICSL effects. */
 	static boolean ICSL_Effects=false;
+
+	/** The ICSL lamp state interface. */
 	static boolean ICSL_LampStateInterface=false;
 	/////////////////////////////////////////
 
+	/** The ICST time service framework. */
 	static boolean ICST_TimeServiceFramework=false;
+
+	/** The ICST clock interface. */
 	static boolean ICST_ClockInterface=false;
+
+	/** The ICST date. */
 	static boolean ICST_Date=false;
+
+	/** The ICST milliseconds. */
 	static boolean ICST_Milliseconds=false;
+
+	/** The ICST time authority interface. */
 	static boolean ICST_TimeAuthorityInterface=false;
+
+	/** The ICST alarm factory interface. */
 	static boolean ICST_AlarmFactoryInterface=false;
+
+	/** The ICST alarm interface. */
 	static boolean ICST_AlarmInterface=false;
+
+	/** The ICST timer factory interface. */
 	static boolean ICST_TimerFactoryInterface=false;
+
+	/** The ICST timer interface. */
 	static boolean ICST_TimerInterface=false;
 	///////////////////////////////////////////////////
+	/** The ICSG gateway service framework. */
 	static boolean ICSG_GatewayServiceFramework=false;
+
+	/** The ICSG profile management interface. */
 	static boolean ICSG_ProfileManagementInterface=false;
+
+	/** The ICSG app access interface. */
 	static boolean ICSG_AppAccessInterface=false;
+
+	/** The ICSG app management interface. */
 	static boolean ICSG_AppManagementInterface=false;
 	////////////////////////
+	/** The ICSSH smart home service framework. */
 	static boolean ICSSH_SmartHomeServiceFramework=false;
+
+	/** The ICSSH centralized management interface. */
 	static boolean ICSSH_CentralizedManagementInterface=false;
 	////////////////////////////
+	/** The ICSLC lighting controller service framework. */
 	static boolean ICSLC_LightingControllerServiceFramework=false;
+
+	/** The ICSLC controller service interface. */
 	static boolean ICSLC_ControllerServiceInterface=false;
+
+	/** The ICSLC controller service lamp interface. */
 	static boolean ICSLC_ControllerServiceLampInterface=false;
+
+	/** The ICSLC controller service lamp group interface. */
 	static boolean ICSLC_ControllerServiceLampGroupInterface=false;
+
+	/** The ICSLC controller service preset interface. */
 	static boolean ICSLC_ControllerServicePresetInterface=false;
+
+	/** The ICSLC controller service scene interface. */
 	static boolean ICSLC_ControllerServiceSceneInterface=false;
+
+	/** The ICSLC controller service master scene interface. */
 	static boolean ICSLC_ControllerServiceMasterSceneInterface=false;
+
+	/** The ICSLC leader election and state sync interface. */
 	static boolean ICSLC_LeaderElectionAndStateSyncInterface=false;
 
 	///////////////////////////////
+	/** The IXITCO about version. */
 	static String IXITCO_AboutVersion=null;
 
+	/** The IXITCO app id. */
 	static String IXITCO_AppId=null;
+
+	/** The IXITCO default language. */
 	static String IXITCO_DefaultLanguage=null;
 
+	/** The IXITCO device name. */
 	static String IXITCO_DeviceName=null;
+
+	/** The IXITCO device id. */
 	static String IXITCO_DeviceId=null;
+
+	/** The IXITCO app name. */
 	static String IXITCO_AppName=null;
 
+	/** The IXITCO manufacturer. */
 	static String IXITCO_Manufacturer=null;
+
+	/** The IXITCO model number. */
 	static String IXITCO_ModelNumber=null;
+
+	/** The IXITCO software version. */
 	static String IXITCO_SoftwareVersion=null;
+
+	/** The IXITCO aj software version. */
 	static String IXITCO_AJSoftwareVersion=null;
 
+	/** The IXITCO hardware version. */
 	static String IXITCO_HardwareVersion=null;
+
+	/** The IXITCO introspectable version. */
 	static String IXITCO_IntrospectableVersion=null;
-	
+
+	/** The IXITCO supported languages. */
 	static String IXITCO_SupportedLanguages=null;
+
+	/** The IXITCO description. */
 	static String IXITCO_Description=null;
+
+	/** The IXITCO date of manufacture. */
 	static String IXITCO_DateOfManufacture=null;
+
+	/** The IXITCO support url. */
 	static String IXITCO_SupportUrl=null;
 	////////////////////////////////////////////
+	/** The IXIT n_ notification version. */
 	static String IXITN_NotificationVersion=null;
 
+	/** The ixitn ttl. */
 	static String IXITN_TTL=null;
+
+	/** The IXIT n_ notification producer version. */
 	static String IXITN_NotificationProducerVersion=null;
+
+	/** The IXIT n_ notification dismisser version. */
 	static String IXITN_NotificationDismisserVersion=null;
 
 	///////////////////////////////////
 
+	/** The IXITON onboarding version. */
 	static String IXITON_OnboardingVersion=null;
+
+	/** The IXITON soft ap. */
 	static String IXITON_SoftAP=null;
+
+	/** The IXITON soft ap auth type. */
 	static String IXITON_SoftAPAuthType=null;
+
+	/** The IXITON soft a ppassphrase. */
 	static String IXITON_SoftAPpassphrase=null;
+
+	/** The IXITON personal ap. */
 	static String IXITON_PersonalAP=null;
+
+	/** The IXITON personal ap auth type. */
 	static String IXITON_PersonalAPAuthType=null;
+
+	/** The IXITON personal a ppassphrase. */
 	static String IXITON_PersonalAPpassphrase=null;
-	
+
 	////////////////////////////////
+	/** The IXITCP control panel version. */
 	static String IXITCP_ControlPanelVersion=null;
+
+	/** The IXITCP container version. */
 	static String IXITCP_ContainerVersion=null;
+
+	/** The IXITCP property version. */
 	static String IXITCP_PropertyVersion=null;
+
+	/** The IXITCP label property version. */
 	static String IXITCP_LabelPropertyVersion=null;
+
+	/** The IXITCP action version. */
 	static String IXITCP_ActionVersion=null;
+
+	/** The IXITCP notification action version. */
 	static String IXITCP_NotificationActionVersion=null;
+
+	/** The IXITCP dialog version. */
 	static String IXITCP_DialogVersion=null;
+
+	/** The IXITCP list property version. */
 	static String IXITCP_ListPropertyVersion=null;
+
+	/** The IXITCP http control version. */
 	static String IXITCP_HTTPControlVersion=null;
 	////////////////////////////////
+	/** The IXITCF config version. */
 	static String IXITCF_ConfigVersion=null;
+
+	/** The IXITCF passcode. */
 	static String IXITCF_Passcode=null; //JTF
 	/////////////////////////////////////
 
+	/** The IXITAU stream version. */
 	static String IXITAU_StreamVersion=null;
+
+	/** The IXITAU test object path. */
 	static String IXITAU_TestObjectPath=null;
+
+	/** The IXITAU port version. */
 	static String IXITAU_PortVersion=null;
 
+	/** The IXITAU audio sink version. */
 	static String IXITAU_AudioSinkVersion=null;
+
+	/** The IXITAUtime nanos. */
 	static String IXITAU_timeNanos=null;
+
+	/** The IXITAU audio source version. */
 	static String IXITAU_AudioSourceVersion=null;
 
+	/** The IXITAU image sink version. */
 	static String IXITAU_ImageSinkVersion=null;
+
+	/** The IXITAU image source version. */
 	static String IXITAU_ImageSourceVersion=null;
+
+	/** The IXITAU metadata sink version. */
 	static String IXITAU_MetadataSinkVersion=null;
+
+	/** The IXITAU metadata source version. */
 	static String IXITAU_MetadataSourceVersion=null;
+
+	/** The IXITAU control volume version. */
 	static String IXITAU_ControlVolumeVersion=null;
+
+	/** The IXITAUdelta. */
 	static String IXITAU_delta=null;
+
+	/** The IXITAUchange. */
 	static String IXITAU_change=null;
+
+	/** The IXITAU clock version. */
 	static String IXITAU_ClockVersion=null;
+
+	/** The IXITAUadjust nanos. */
 	static String IXITAU_adjustNanos=null;
 	//////////////////////////////////////
+	/** The IXITL lamp service version. */
 	static String IXITL_LampServiceVersion=null;
+
+	/** The IXITL lamp parameters version. */
 	static String IXITL_LampParametersVersion=null;
+
+	/** The IXITL lamp details version. */
 	static String IXITL_LampDetailsVersion=null;
+
+	/** The IXITL lamp state version. */
 	static String IXITL_LampStateVersion=null;
 	/////////////////////////////////////////////////
+	/** The IXITT clock version. */
 	static String IXITT_ClockVersion=null;
+
+	/** The IXITT time authority version. */
 	static String IXITT_TimeAuthorityVersion=null;
+
+	/** The IXITT alarm factory version. */
 	static String IXITT_AlarmFactoryVersion=null;
+
+	/** The IXITT alarm version. */
 	static String IXITT_AlarmVersion=null;
+
+	/** The IXITT timer factory version. */
 	static String IXITT_TimerFactoryVersion=null;
+
+	/** The IXITT timer version. */
 	static String IXITT_TimerVersion=null;
 	/////////////////////////////////
+	/** The IXITG app mgmt version. */
 	static String IXITG_AppMgmtVersion=null;
+
+	/** The IXITG ctrl app version. */
 	static String IXITG_CtrlAppVersion=null;
+
+	/** The IXITG ctrl access version. */
 	static String IXITG_CtrlAccessVersion=null;
+
+	/** The IXITG ctrl acl version. */
 	static String IXITG_CtrlAclVersion=null;
+
+	/** The IXITG conn app version. */
 	static String IXITG_ConnAppVersion=null;
 	///////////////////////////////////////////
+	/** The IXITSH centralized management version. */
 	static String IXITSH_CentralizedManagementVersion=null;
+
+	/** The IXITSH well known name. */
 	static String IXITSH_WellKnownName=null;
+
+	/** The IXITSH unique name. */
 	static String IXITSH_UniqueName=null;
+
+	/** The IXITSH device id. */
 	static String IXITSH_DeviceId=null;
+
+	/** The IXITSH heart beat interval. */
 	static String IXITSH_HeartBeatInterval=null;
 	////////////////////////////////////////
 
+	/** The IXITLC controller service version. */
 	static String IXITLC_ControllerServiceVersion=null;
+
+	/** The IXITLC controller service lamp version. */
 	static String IXITLC_ControllerServiceLampVersion=null;
+
+	/** The IXITLC controller service lamp group version. */
 	static String IXITLC_ControllerServiceLampGroupVersion=null;
+
+	/** The IXITLC controller service preset version. */
 	static String IXITLC_ControllerServicePresetVersion=null;
+
+	/** The IXITLC controller service scene version. */
 	static String IXITLC_ControllerServiceSceneVersion=null;
+
+	/** The IXITLC controller service master scene version. */
 	static String IXITLC_ControllerServiceMasterSceneVersion=null;
+
+	/** The IXITLC leader election and state sync version. */
 	static String IXITLC_LeaderElectionAndStateSyncVersion=null;
-	
+
 	////////////////////////////////////////////
-	
+
+	/** The GPCO announcement timeout. */
 	static String GPCO_AnnouncementTimeout=null;
+
+	/** The GPON wait soft ap. */
 	static String GPON_WaitSoftAP=null;
+
+	/** The GPON connect soft ap. */
 	static String GPON_ConnectSoftAP=null;
+
+	/** The GPON wait soft ap after offboard. */
 	static String GPON_WaitSoftAPAfterOffboard=null;
+
+	/** The GPON connect personal ap. */
 	static String GPON_ConnectPersonalAP=null;
+
+	/** The GPON disconnect. */
 	static String GPON_Disconnect=null;
+
+	/** The GPON next announcement. */
 	static String GPON_NextAnnouncement=null;
+
+	/** The GPCF session lost. */
 	static String GPCF_SessionLost=null;
+
+	/** The GPCF session close. */
 	static String GPCF_SessionClose=null;
+
+	/** The GPL session close. */
 	static String GPL_SessionClose=null;
+
+	/** The GPAU signal. */
 	static String GPAU_Signal=null;
+
+	/** The GPAU link. */
 	static String GPAU_Link=null;
+
+	/** The GPG session close. */
 	static String GPG_SessionClose=null;
+
+	/** The GPSH signal. */
 	static String GPSH_Signal=null;
+
+	/** The GPLC session close. */
 	static String GPLC_SessionClose=null;
 
-	public static void main(String arg[]){
+	/**
+	 * The main method.
+	 *
+	 * @param arg the arguments
+	 */
+	public static void main(final String arg[]){
+
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
 
 
+				try {
+					//Manager manager = new Manager("About-v1-01","/cfg.xml",false);
+					Manager manager = new Manager(arg[0], arg[1]); 
+					manager.run();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 
-	public Manager(String testName, Document doc,Boolean loadedLib){
 
 
-		this.loadedLib=loadedLib;
-		this.doc=doc;
-		this.testName=testName;
+	/**
+	 * Instantiates a new manager.
+	 *
+	 * @param testName the test name
+	 * @param docName the doc name
+	 */
+	public Manager(String testName, String docName) {
+		this.testName = testName;
 
+		//String path = File.separator+"cfg.xml";
+		String path = docName;
 
+		byte[] encoded;
+		try {
+			encoded = Files.readAllBytes(Paths.get(path));
+			String xml = new String(encoded, StandardCharsets.UTF_8);
+
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = null;
+			dBuilder = dbFactory.newDocumentBuilder();
+			this.doc = dBuilder.parse(new InputSource(new StringReader(xml)));
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Thread#run()
+	 */
 	public void run() {
 
-		
+
 		running=true;
 		try { 
 
@@ -403,7 +838,7 @@ public class Manager extends Thread {
 
 
 			NodeList ics = doc.getElementsByTagName("Ics");
-			
+
 
 
 
@@ -449,7 +884,7 @@ public class Manager extends Thread {
 				}
 
 			}
-			
+
 			NodeList parameter = doc.getElementsByTagName("Parameter");
 			//System.out.println("==========================");
 
@@ -516,6 +951,11 @@ public class Manager extends Thread {
 
 
 
+	/**
+	 * Run test.
+	 *
+	 * @return true, if successful
+	 */
 	private boolean runTest() {
 
 		logger.info("started:"+testName);	
@@ -535,14 +975,14 @@ public class Manager extends Thread {
 		dateTimeKey=timeStamp;
 
 		if(test.equals("ABOUT")){
-			
+
 			System.out.println("====================================================");
 			System.out.println("ICSCO_DateOfManufacture: "+ICSCO_DateOfManufacture);
 			System.out.println("ICSCO_HardwareVersion: "+ICSCO_HardwareVersion);
 			System.out.println("ICSCO_SupportUrl: "+ICSCO_SupportUrl);
 			System.out.println("ICSCO_IconInterface: "+ICSCO_IconInterface);
 			System.out.println("ICSCO_DeviceName: "+ICSCO_DeviceName);
-			
+
 			System.out.println("IXITCO_AboutVersion: "+IXITCO_AboutVersion);
 			System.out.println("IXITCO_AppId: "+IXITCO_AppId);
 			System.out.println("IXITCO_DefaultLanguage: "+IXITCO_DefaultLanguage);
@@ -561,7 +1001,7 @@ public class Manager extends Thread {
 			System.out.println("IXITCO_SupportUrl: "+IXITCO_SupportUrl);
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 			//System.out.println("====================================================");
-			
+
 			AboutServ AboutTest=new AboutServ(
 					testName,
 					ICSCO_DateOfManufacture,
@@ -610,7 +1050,7 @@ public class Manager extends Thread {
 			System.out.println("ICSN_NotificationProducerInterface: "+ICSN_NotificationProducerInterface);
 			System.out.println("ICSN_DismisserInterface: "+ICSN_DismisserInterface);
 			System.out.println("ICSN_NotificationConsumer: "+ICSN_NotificationConsumer);
-			
+
 			System.out.println("IXITCO_AppId: "+IXITCO_AppId);
 			System.out.println("IXITCO_DeviceId: "+IXITCO_DeviceId);
 			System.out.println("IXITCO_DefaultLanguage: "+IXITCO_DefaultLanguage);
@@ -618,7 +1058,7 @@ public class Manager extends Thread {
 			System.out.println("IXITN_TTL: "+IXITN_TTL);
 			System.out.println("IXITN_NotificationProducerVersion: "+IXITN_NotificationProducerVersion);
 			System.out.println("IXITN_NotificationDismisserVersion: "+IXITN_NotificationDismisserVersion);
-			
+
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 
 			NotificationService NotificationTest=new NotificationService(
@@ -670,8 +1110,8 @@ public class Manager extends Thread {
 			System.out.println("ICSCP_ListPropertyInterface: "+ICSCP_ListPropertyInterface);
 			System.out.println("ICSCP_SecuredListPropertyInterface: "+ICSCP_SecuredListPropertyInterface);
 			System.out.println("ICSCP_HTTPControlInterface: "+ICSCP_HTTPControlInterface);
-			
-			
+
+
 			System.out.println("IXITCO_AppId: "+IXITCO_AppId);
 			System.out.println("IXITCO_DeviceId: "+IXITCO_DeviceId);
 			System.out.println("IXITCO_DefaultLanguage: "+IXITCO_DefaultLanguage);
@@ -684,7 +1124,7 @@ public class Manager extends Thread {
 			System.out.println("IXITCP_DialogVersion: "+IXITCP_DialogVersion);
 			System.out.println("IXITCP_ListPropertyVersion: "+IXITCP_ListPropertyVersion);
 			System.out.println("IXITCP_HTTPControlVersion: "+IXITCP_HTTPControlVersion);
-			
+
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 
 			ControlPanelService ControlPanelTest=new ControlPanelService(
@@ -727,18 +1167,18 @@ public class Manager extends Thread {
 
 
 			verdictKey=verdict;
-			
-			
-			
+
+
+
 		}else if(test.equals("ONBOARDING")){
-			
+
 			System.out.println("====================================================");
 			System.out.println("ICSON_OnboardingServiceFramework: "+ICSON_OnboardingServiceFramework);
 			System.out.println("ICSON_OnboardingInterface: "+ICSON_OnboardingInterface);
 			System.out.println("ICSON_ChannelSwitching: "+ICSON_ChannelSwitching);
 			System.out.println("ICSON_GetScanInfoMethod: "+ICSON_GetScanInfoMethod);
-			
-			
+
+
 			System.out.println("IXITCO_AppId: "+IXITCO_AppId);
 			System.out.println("IXITCO_DeviceId: "+IXITCO_DeviceId);
 			System.out.println("IXITCO_DefaultLanguage: "+IXITCO_DefaultLanguage);
@@ -749,7 +1189,7 @@ public class Manager extends Thread {
 			System.out.println("IXITON_PersonalAP: "+IXITON_PersonalAP);
 			System.out.println("IXITON_PersonalAPAuthType: "+IXITON_PersonalAPAuthType);
 			System.out.println("IXITON_PersonalAPpassphrase: "+IXITON_PersonalAPpassphrase);
-			
+
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 			System.out.println("GPON_WaitSoftAP: "+GPON_WaitSoftAP);
 			System.out.println("GPON_ConnectSoftAP: "+GPON_ConnectSoftAP);
@@ -761,59 +1201,59 @@ public class Manager extends Thread {
 			OnBoardingService ControlPanelTest=new OnBoardingService(
 					testName,
 					ICSON_OnboardingServiceFramework,
-					 ICSON_OnboardingInterface,
-					 ICSON_ChannelSwitching,
-					 ICSON_GetScanInfoMethod,	
+					ICSON_OnboardingInterface,
+					ICSON_ChannelSwitching,
+					ICSON_GetScanInfoMethod,	
 					IXITCO_AppId,  //
 					IXITCO_DeviceId,  //
 					IXITCO_DefaultLanguage,  //
 					IXITON_OnboardingVersion,
 					IXITON_SoftAP,
-					 IXITON_SoftAPAuthType,
-					 IXITON_SoftAPpassphrase,
-					 IXITON_PersonalAP,
-					 IXITON_PersonalAPAuthType,
-					 IXITON_PersonalAPpassphrase,
-					 GPCO_AnnouncementTimeout,
-					 GPON_WaitSoftAP,
-					 GPON_ConnectSoftAP,
-					 GPON_WaitSoftAPAfterOffboard,
-					 GPON_ConnectPersonalAP,
-					 GPON_Disconnect,
-					 GPON_NextAnnouncement
+					IXITON_SoftAPAuthType,
+					IXITON_SoftAPpassphrase,
+					IXITON_PersonalAP,
+					IXITON_PersonalAPAuthType,
+					IXITON_PersonalAPpassphrase,
+					GPCO_AnnouncementTimeout,
+					GPON_WaitSoftAP,
+					GPON_ConnectSoftAP,
+					GPON_WaitSoftAPAfterOffboard,
+					GPON_ConnectPersonalAP,
+					GPON_Disconnect,
+					GPON_NextAnnouncement
 					);
-			
-			
+
+
 			existTest = true;
 			String verdict =ControlPanelTest.getVerdict();
 			this.Verdict=verdict;
 
 
 			verdictKey=verdict;
-			
-			
-			
-			
-			
-			
+
+
+
+
+
+
 		}else if(test.equals("CONFIGURATION")){
-			
+
 			System.out.println("====================================================");
 			System.out.println("ICSCF_ConfigurationServiceFramework: "+ICSCF_ConfigurationServiceFramework);
 			System.out.println("ICSCF_ConfigurationInterface: "+ICSCF_ConfigurationInterface);
 			System.out.println("ICSCF_FactoryResetMethod: "+ICSCF_FactoryResetMethod);
-			
-			
+
+
 			System.out.println("IXITCO_AppId: "+IXITCO_AppId);
 			System.out.println("IXITCO_DeviceId: "+IXITCO_DeviceId);
 			System.out.println("IXITCO_DefaultLanguage: "+IXITCO_DefaultLanguage);
 			System.out.println("IXITCF_ConfigVersion: "+IXITCF_ConfigVersion);
 			System.out.println("IXITCF_Passcode: "+IXITCF_Passcode);
-			
+
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 			System.out.println("GPCF_SessionLost: "+GPCF_SessionLost);
 			System.out.println("GPCF_SessionClose: "+GPCF_SessionClose);
-			
+
 			ConfigurationService ConfigurationTest=new ConfigurationService(
 					testName,
 					ICSCF_ConfigurationServiceFramework,
@@ -834,7 +1274,7 @@ public class Manager extends Thread {
 
 			verdictKey=verdict;
 		}else if(test.equals("AUDIO")){
-			
+
 			System.out.println("====================================================");
 			System.out.println("ICSAU_AudioServiceFramework: "+ICSAU_AudioServiceFramework);
 			System.out.println("ICSAU_StreamInterface: "+ICSAU_StreamInterface);
@@ -851,7 +1291,7 @@ public class Manager extends Thread {
 			System.out.println("ICSAU_ImageJpeg: "+ICSAU_ImageJpeg);
 			System.out.println("ICSAU_ApplicationXmetadata: "+ICSAU_ApplicationXmetadata);
 			System.out.println("ICSAU_VolumeControl: "+ICSAU_VolumeControl);
-			
+
 			System.out.println("IXITCO_AppId: "+IXITCO_AppId);
 			System.out.println("IXITCO_DeviceId: "+IXITCO_DeviceId);
 			System.out.println("IXITCO_DefaultLanguage: "+IXITCO_DefaultLanguage);
@@ -870,11 +1310,11 @@ public class Manager extends Thread {
 			System.out.println("IXITAU_change: "+IXITAU_change);
 			System.out.println("IXITAU_ClockVersion: "+IXITAU_ClockVersion);
 			System.out.println("IXITAU_adjustNanos: "+IXITAU_adjustNanos);
-			
+
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 			System.out.println("GPAU_Signal: "+GPAU_Signal);
 			System.out.println("GPAU_Link: "+GPAU_Link);
-			
+
 			AudioService AudioTest=new AudioService(
 					testName,
 					ICSAU_AudioServiceFramework,
@@ -918,9 +1358,9 @@ public class Manager extends Thread {
 			String verdict =AudioTest.getVerdict();
 			this.Verdict=verdict;
 			verdictKey=verdict;
-			
+
 		}else if(test.equals("LIGHTING")){
-			
+
 			System.out.println("====================================================");
 			System.out.println("ICSL_LightingServiceFramework: "+ICSL_LightingServiceFramework);
 			System.out.println("ICSL_LampServiceInterface: "+ICSL_LampServiceInterface);
@@ -931,7 +1371,7 @@ public class Manager extends Thread {
 			System.out.println("ICSL_ColorTemperature: "+ICSL_ColorTemperature);
 			System.out.println("ICSL_Effects: "+ICSL_Effects);
 			System.out.println("ICSL_LampStateInterface: "+ICSL_LampStateInterface);
-			
+
 			System.out.println("IXITCO_AppId: "+IXITCO_AppId);
 			System.out.println("IXITCO_DeviceId: "+IXITCO_DeviceId);
 			System.out.println("IXITCO_DefaultLanguage: "+IXITCO_DefaultLanguage);
@@ -939,10 +1379,10 @@ public class Manager extends Thread {
 			System.out.println("IXITL_LampParametersVersion: "+IXITL_LampParametersVersion);
 			System.out.println("IXITL_LampDetailsVersion: "+IXITL_LampDetailsVersion);
 			System.out.println("IXITL_LampStateVersion: "+IXITL_LampStateVersion);
-			
+
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 			System.out.println("GPL_SessionClose: "+GPL_SessionClose);
-			
+
 			LightingService lightingTest=new LightingService(
 					testName,
 					ICSL_LightingServiceFramework,
@@ -970,7 +1410,7 @@ public class Manager extends Thread {
 			this.Verdict=verdict;
 			verdictKey=verdict;
 		}else if(test.equals("LIGHTINGCONTROLLER")){
-			
+
 			System.out.println("====================================================");
 			System.out.println("ICSLC_LightingControllerServiceFramework: "+ICSLC_LightingControllerServiceFramework);
 			System.out.println("ICSLC_ControllerServiceInterface: "+ICSLC_ControllerServiceInterface);
@@ -980,7 +1420,7 @@ public class Manager extends Thread {
 			System.out.println("ICSLC_ControllerServiceSceneInterface: "+ICSLC_ControllerServiceSceneInterface);
 			System.out.println("ICSLC_ControllerServiceMasterSceneInterface: "+ICSLC_ControllerServiceMasterSceneInterface);
 			System.out.println("ICSLC_LeaderElectionAndStateSyncInterface: "+ICSLC_LeaderElectionAndStateSyncInterface);
-			
+
 			System.out.println("IXITCO_AppId: "+IXITCO_AppId);
 			System.out.println("IXITCO_DeviceId: "+IXITCO_DeviceId);
 			System.out.println("IXITCO_DefaultLanguage: "+IXITCO_DefaultLanguage);
@@ -991,7 +1431,7 @@ public class Manager extends Thread {
 			System.out.println("IXITLC_ControllerServiceSceneVersion: "+IXITLC_ControllerServiceSceneVersion);
 			System.out.println("IXITLC_ControllerServiceMasterSceneVersion: "+IXITLC_ControllerServiceMasterSceneVersion);
 			System.out.println("IXITLC_LeaderElectionAndStateSyncVersion: "+IXITLC_LeaderElectionAndStateSyncVersion);
-			
+
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 			System.out.println("GPLC_SessionClose: "+GPLC_SessionClose);
 
@@ -999,7 +1439,7 @@ public class Manager extends Thread {
 					testName,
 					ICSLC_LightingControllerServiceFramework,
 					ICSLC_ControllerServiceInterface,
-					
+
 					ICSLC_ControllerServiceLampInterface,
 					ICSLC_ControllerServiceLampGroupInterface,
 					ICSLC_ControllerServicePresetInterface,
@@ -1029,7 +1469,7 @@ public class Manager extends Thread {
 
 
 		}else if(test.equals("TIME")){
-			
+
 			System.out.println("====================================================");
 			System.out.println("ICST_TimeServiceFramework: "+ICST_TimeServiceFramework);
 			System.out.println("ICST_ClockInterface: "+ICST_ClockInterface);
@@ -1039,8 +1479,8 @@ public class Manager extends Thread {
 			System.out.println("ICST_AlarmFactoryInterface: "+ICST_AlarmFactoryInterface);
 			System.out.println("ICST_AlarmInterface: "+ICST_AlarmInterface);
 			System.out.println("ICST_TimerFactoryInterface: "+ICST_TimerFactoryInterface);
-			
-			
+
+
 			System.out.println("IXITCO_AppId: "+IXITCO_AppId);
 			System.out.println("IXITCO_DeviceId: "+IXITCO_DeviceId);
 			System.out.println("IXITCO_DefaultLanguage: "+IXITCO_DefaultLanguage);
@@ -1050,9 +1490,9 @@ public class Manager extends Thread {
 			System.out.println("IXITT_AlarmVersion: "+IXITT_AlarmVersion);
 			System.out.println("IXITT_TimerFactoryVersion: "+IXITT_TimerFactoryVersion);
 			System.out.println("IXITT_TimerVersion: "+IXITT_TimerVersion);
-			
+
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
-			
+
 			TimeService TimeTest=new TimeService(
 					testName,
 					ICST_TimeServiceFramework,
@@ -1082,14 +1522,14 @@ public class Manager extends Thread {
 			verdictKey=verdict;
 
 		}else if(test.equals("GATEWAY")){
-			
+
 			System.out.println("====================================================");
 			System.out.println("ICSG_GatewayServiceFramework: "+ICSG_GatewayServiceFramework);
 			System.out.println("ICSG_ProfileManagementInterface: "+ICSG_ProfileManagementInterface);
 			System.out.println("ICSG_AppAccessInterface: "+ICSG_AppAccessInterface);
 			System.out.println("ICSG_AppManagementInterface: "+ICSG_AppManagementInterface);
-		
-			
+
+
 			System.out.println("IXITCO_AppId: "+IXITCO_AppId);
 			System.out.println("IXITCO_DeviceId: "+IXITCO_DeviceId);
 			System.out.println("IXITCO_DefaultLanguage: "+IXITCO_DefaultLanguage);
@@ -1098,10 +1538,10 @@ public class Manager extends Thread {
 			System.out.println("IXITG_CtrlAccessVersion: "+IXITG_CtrlAccessVersion);
 			System.out.println("IXITG_CtrlAclVersion: "+IXITG_CtrlAclVersion);
 			System.out.println("IXITG_ConnAppVersion: "+IXITG_ConnAppVersion);
-			
+
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 			System.out.println("GPG_SessionClose: "+GPG_SessionClose);
-			
+
 			GatewayService GatewayTest=new GatewayService(
 					testName,
 					ICSG_GatewayServiceFramework,
@@ -1124,11 +1564,11 @@ public class Manager extends Thread {
 			this.Verdict=verdict;
 			verdictKey=verdict;
 		}else if(test.equals("SMARTHOME")){
-			
+
 			System.out.println("====================================================");
 			System.out.println("ICSSH_SmartHomeServiceFramework: "+ICSSH_SmartHomeServiceFramework);
 			System.out.println("ICSSH_CentralizedManagementInterface: "+ICSSH_CentralizedManagementInterface);
-			
+
 			System.out.println("IXITCO_AppId: "+IXITCO_AppId);
 			System.out.println("IXITCO_DeviceId: "+IXITCO_DeviceId);
 			System.out.println("IXITCO_DefaultLanguage: "+IXITCO_DefaultLanguage);
@@ -1136,10 +1576,10 @@ public class Manager extends Thread {
 			System.out.println("IXITSH_UniqueName: "+IXITSH_UniqueName);
 			System.out.println("IXITSH_DeviceId: "+IXITSH_DeviceId);
 			System.out.println("IXITSH_HeartBeatInterval: "+IXITSH_HeartBeatInterval);
-			
+
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 			System.out.println("GPSH_Signal: "+GPSH_Signal);
-			
+
 			SmartHomeService SmartHomeTest=new SmartHomeService(
 					testName,
 					ICSSH_SmartHomeServiceFramework,
@@ -1162,9 +1602,9 @@ public class Manager extends Thread {
 
 
 		}else if(test.equals("IOP_ABOUT")){
-			
-			
-			
+
+
+
 			System.out.println("====================================================");
 			showGU();
 			System.out.println("ICSCO_DateOfManufacture: "+ICSCO_DateOfManufacture);
@@ -1172,7 +1612,7 @@ public class Manager extends Thread {
 			System.out.println("ICSCO_SupportUrl: "+ICSCO_SupportUrl);
 			System.out.println("ICSCO_IconInterface: "+ICSCO_IconInterface);
 			System.out.println("ICSCO_DeviceName: "+ICSCO_DeviceName);
-			
+
 			System.out.println("IXITCO_AboutVersion: "+IXITCO_AboutVersion);
 			System.out.println("IXITCO_AppId: "+IXITCO_AppId);
 			System.out.println("IXITCO_DefaultLanguage: "+IXITCO_DefaultLanguage);
@@ -1190,8 +1630,8 @@ public class Manager extends Thread {
 			System.out.println("IXITCO_DateOfManufacture: "+IXITCO_DateOfManufacture);
 			System.out.println("IXITCO_SupportUrl: "+IXITCO_SupportUrl);
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
-			
-			
+
+
 			AboutIOP aboutIOP=new AboutIOP(testName);
 			existTest = true;
 
@@ -1200,20 +1640,20 @@ public class Manager extends Thread {
 			verdictKey=verdict;
 
 		}else if(test.equals("IOP_CONFIG")){
-			
+
 			System.out.println("====================================================");
 			showGU();
 			System.out.println("ICSCF_ConfigurationServiceFramework: "+ICSCF_ConfigurationServiceFramework);
 			System.out.println("ICSCF_ConfigurationInterface: "+ICSCF_ConfigurationInterface);
 			System.out.println("ICSCF_FactoryResetMethod: "+ICSCF_FactoryResetMethod);
-			
-			
+
+
 			System.out.println("IXITCO_AppId: "+IXITCO_AppId);
 			System.out.println("IXITCO_DeviceId: "+IXITCO_DeviceId);
 			System.out.println("IXITCO_DefaultLanguage: "+IXITCO_DefaultLanguage);
 			System.out.println("IXITCF_ConfigVersion: "+IXITCF_ConfigVersion);
 			System.out.println("IXITCF_Passcode: "+IXITCF_Passcode);
-			
+
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 			System.out.println("GPCF_SessionLost: "+GPCF_SessionLost);
 			System.out.println("GPCF_SessionClose: "+GPCF_SessionClose);
@@ -1226,15 +1666,15 @@ public class Manager extends Thread {
 
 
 		}else if(test.equals("IOP_ONBOARDING")){
-			
+
 			System.out.println("====================================================");
 			showGU();
 			System.out.println("ICSON_OnboardingServiceFramework: "+ICSON_OnboardingServiceFramework);
 			System.out.println("ICSON_OnboardingInterface: "+ICSON_OnboardingInterface);
 			System.out.println("ICSON_ChannelSwitching: "+ICSON_ChannelSwitching);
 			System.out.println("ICSON_GetScanInfoMethod: "+ICSON_GetScanInfoMethod);
-			
-			
+
+
 			System.out.println("IXITCO_AppId: "+IXITCO_AppId);
 			System.out.println("IXITCO_DeviceId: "+IXITCO_DeviceId);
 			System.out.println("IXITCO_DefaultLanguage: "+IXITCO_DefaultLanguage);
@@ -1245,7 +1685,7 @@ public class Manager extends Thread {
 			System.out.println("IXITON_PersonalAP: "+IXITON_PersonalAP);
 			System.out.println("IXITON_PersonalAPAuthType: "+IXITON_PersonalAPAuthType);
 			System.out.println("IXITON_PersonalAPpassphrase: "+IXITON_PersonalAPpassphrase);
-			
+
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 			System.out.println("GPON_WaitSoftAP: "+GPON_WaitSoftAP);
 			System.out.println("GPON_ConnectSoftAP: "+GPON_ConnectSoftAP);
@@ -1263,7 +1703,7 @@ public class Manager extends Thread {
 
 
 		}else if(test.equals("IOP_CONTROLPANEL")){
-			
+
 			System.out.println("====================================================");
 			showGU();
 			System.out.println("ICSCP_ControlPanelServiceFramework: "+ICSCP_ControlPanelServiceFramework);
@@ -1282,8 +1722,8 @@ public class Manager extends Thread {
 			System.out.println("ICSCP_ListPropertyInterface: "+ICSCP_ListPropertyInterface);
 			System.out.println("ICSCP_SecuredListPropertyInterface: "+ICSCP_SecuredListPropertyInterface);
 			System.out.println("ICSCP_HTTPControlInterface: "+ICSCP_HTTPControlInterface);
-			
-			
+
+
 			System.out.println("IXITCO_AppId: "+IXITCO_AppId);
 			System.out.println("IXITCO_DeviceId: "+IXITCO_DeviceId);
 			System.out.println("IXITCO_DefaultLanguage: "+IXITCO_DefaultLanguage);
@@ -1296,7 +1736,7 @@ public class Manager extends Thread {
 			System.out.println("IXITCP_DialogVersion: "+IXITCP_DialogVersion);
 			System.out.println("IXITCP_ListPropertyVersion: "+IXITCP_ListPropertyVersion);
 			System.out.println("IXITCP_HTTPControlVersion: "+IXITCP_HTTPControlVersion);
-			
+
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 
 			ControlPanelIOP controlPanelIOP=new ControlPanelIOP(testName);
@@ -1307,8 +1747,8 @@ public class Manager extends Thread {
 			verdictKey=verdict;
 
 		}else if(test.equals("IOP_NOTIFICATION")){
-			
-			
+
+
 			System.out.println("====================================================");
 			showGU();
 			System.out.println("ICSN_NotificationServiceFramework: "+ICSN_NotificationServiceFramework);
@@ -1319,7 +1759,7 @@ public class Manager extends Thread {
 			System.out.println("ICSN_NotificationProducerInterface: "+ICSN_NotificationProducerInterface);
 			System.out.println("ICSN_DismisserInterface: "+ICSN_DismisserInterface);
 			System.out.println("ICSN_NotificationConsumer: "+ICSN_NotificationConsumer);
-			
+
 			System.out.println("IXITCO_AppId: "+IXITCO_AppId);
 			System.out.println("IXITCO_DeviceId: "+IXITCO_DeviceId);
 			System.out.println("IXITCO_DefaultLanguage: "+IXITCO_DefaultLanguage);
@@ -1327,7 +1767,7 @@ public class Manager extends Thread {
 			System.out.println("IXITN_TTL: "+IXITN_TTL);
 			System.out.println("IXITN_NotificationProducerVersion: "+IXITN_NotificationProducerVersion);
 			System.out.println("IXITN_NotificationDismisserVersion: "+IXITN_NotificationDismisserVersion);
-			
+
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 
 			NotificationIOP notificationIOP=new NotificationIOP(testName);
@@ -1337,7 +1777,7 @@ public class Manager extends Thread {
 			this.Verdict=verdict;
 			verdictKey=verdict;
 		}else if(test.equals("IOP_AUDIO")){
-			
+
 			System.out.println("====================================================");
 			showGU();
 			System.out.println("ICSAU_AudioServiceFramework: "+ICSAU_AudioServiceFramework);
@@ -1355,7 +1795,7 @@ public class Manager extends Thread {
 			System.out.println("ICSAU_ImageJpeg: "+ICSAU_ImageJpeg);
 			System.out.println("ICSAU_ApplicationXmetadata: "+ICSAU_ApplicationXmetadata);
 			System.out.println("ICSAU_VolumeControl: "+ICSAU_VolumeControl);
-			
+
 			System.out.println("IXITCO_AppId: "+IXITCO_AppId);
 			System.out.println("IXITCO_DeviceId: "+IXITCO_DeviceId);
 			System.out.println("IXITCO_DefaultLanguage: "+IXITCO_DefaultLanguage);
@@ -1374,7 +1814,7 @@ public class Manager extends Thread {
 			System.out.println("IXITAU_change: "+IXITAU_change);
 			System.out.println("IXITAU_ClockVersion: "+IXITAU_ClockVersion);
 			System.out.println("IXITAU_adjustNanos: "+IXITAU_adjustNanos);
-			
+
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 			System.out.println("GPAU_Signal: "+GPAU_Signal);
 			System.out.println("GPAU_Link: "+GPAU_Link);
@@ -1385,7 +1825,7 @@ public class Manager extends Thread {
 			this.Verdict=verdict;
 			verdictKey=verdict;
 		}else if(test.equals("IOP_LSF")){
-			
+
 			System.out.println("====================================================");
 			showGU();
 			System.out.println("ICSL_LightingServiceFramework: "+ICSL_LightingServiceFramework);
@@ -1397,7 +1837,7 @@ public class Manager extends Thread {
 			System.out.println("ICSL_ColorTemperature: "+ICSL_ColorTemperature);
 			System.out.println("ICSL_Effects: "+ICSL_Effects);
 			System.out.println("ICSL_LampStateInterface: "+ICSL_LampStateInterface);
-			
+
 			System.out.println("IXITCO_AppId: "+IXITCO_AppId);
 			System.out.println("IXITCO_DeviceId: "+IXITCO_DeviceId);
 			System.out.println("IXITCO_DefaultLanguage: "+IXITCO_DefaultLanguage);
@@ -1405,7 +1845,7 @@ public class Manager extends Thread {
 			System.out.println("IXITL_LampParametersVersion: "+IXITL_LampParametersVersion);
 			System.out.println("IXITL_LampDetailsVersion: "+IXITL_LampDetailsVersion);
 			System.out.println("IXITL_LampStateVersion: "+IXITL_LampStateVersion);
-			
+
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 			System.out.println("GPL_SessionClose: "+GPL_SessionClose);
 			LightingIOP lightingIOP=new LightingIOP(testName);
@@ -1430,9 +1870,12 @@ public class Manager extends Thread {
 
 
 
+	/**
+	 * Show gu.
+	 */
 	private void showGU() {
 		NodeList goldenUnit = doc.getElementsByTagName("GoldenUnit");
-		
+
 
 
 
@@ -1444,19 +1887,29 @@ public class Manager extends Thread {
 				String goldenUnitName=getValue("Name", element);
 				int num=i+1;
 				System.out.println("Golden Unit "+num+": "+goldenUnitName);
-				
+
 
 			}
 		}
-				
+
 	}
 
+	/**
+	 * Gets the verdict.
+	 *
+	 * @return the verdict
+	 */
 	public String getVerdict(){
 
-		
+
 		return Verdict;
 	}
 
+	/**
+	 * Gets the time stamp.
+	 *
+	 * @return the time stamp
+	 */
 	public String getTimeStamp(){
 
 
@@ -1466,6 +1919,11 @@ public class Manager extends Thread {
 
 
 
+	/**
+	 * Checks if is running.
+	 *
+	 * @return true, if is running
+	 */
 	public boolean isRunning(){
 		return running;
 
@@ -1482,6 +1940,17 @@ public class Manager extends Thread {
 
 
 
+	/**
+	 * Generate xml.
+	 *
+	 * @param iDKey the i d key
+	 * @param testKey the test key
+	 * @param descriptionKey the description key
+	 * @param dateTimeKey the date time key
+	 * @param verdictKey the verdict key
+	 * @param versionKey the version key
+	 * @param logKey the log key
+	 */
 	private static void generateXML(String iDKey,String testKey,
 			String descriptionKey, String dateTimeKey,
 			String verdictKey, String versionKey, String logKey) {
@@ -1546,7 +2015,7 @@ public class Manager extends Thread {
 
 
 		//Main Node
-		Element raiz = document.getDocumentElement();
+		Element root = document.getDocumentElement();
 
 		//Item Node
 		Element itemNode = document.createElement("TestCase"); 
@@ -1618,7 +2087,7 @@ public class Manager extends Thread {
 
 
 		//append itemNode to raiz
-		raiz.appendChild(itemNode); //pegamos el elemento a la raiz "Documento"
+		root.appendChild(itemNode); 
 
 
 
@@ -1626,7 +2095,7 @@ public class Manager extends Thread {
 		//Generate XML
 		Source source = new DOMSource(document);
 
-		Result result = new StreamResult(new java.io.File(name+".xml")); //nombre del archivo
+		Result result = new StreamResult(new java.io.File(name+".xml"));
 		Transformer transformer = null;
 		try {
 			transformer = TransformerFactory.newInstance().newTransformer();
@@ -1649,6 +2118,12 @@ public class Manager extends Thread {
 
 
 
+	/**
+	 * Gets the test.
+	 *
+	 * @param testName the test name
+	 * @return the test
+	 */
 	private static String getTest(String testName) {
 		// TODO Auto-generated method stub
 		String test="";
@@ -1685,12 +2160,15 @@ public class Manager extends Thread {
 
 		}else if(testName.startsWith("SmartHome")){
 			test="SMARTHOME";
-			
-			
+
+
 		}else if(testName.startsWith("IOP_About")){
 			test="IOP_ABOUT";
 		}else if(testName.startsWith("IOP_Config")){
 			test="IOP_CONFIG";
+
+		}else if(testName.startsWith("IOP_ControlPanel")){
+			test="IOP_CONTROLPANEL";
 		}else if(testName.startsWith("IOP_Onboarding")){
 			test="IOP_ONBOARDING";
 		}else if(testName.startsWith("IOP_Notification")){
@@ -1713,6 +2191,12 @@ public class Manager extends Thread {
 
 
 
+	/**
+	 * Sets the ics.
+	 *
+	 * @param icsName the ics name
+	 * @param icsValue the ics value
+	 */
 	private static void setIcs(String icsName, String icsValue) {
 		// TODO Auto-generated method stub
 
@@ -1907,7 +2391,7 @@ public class Manager extends Thread {
 			ICSLC_ControllerServiceMasterSceneInterface= Boolean.parseBoolean(icsValue);
 		}else if(icsName.equals("ICSLC_LeaderElectionAndStateSyncInterface")){
 			ICSLC_LeaderElectionAndStateSyncInterface= Boolean.parseBoolean(icsValue);
-		
+
 
 
 
@@ -1923,8 +2407,14 @@ public class Manager extends Thread {
 
 
 
+	/**
+	 * Sets the ixit.
+	 *
+	 * @param ixitName the ixit name
+	 * @param ixitValue the ixit value
+	 */
 	private static void setIxit(String ixitName, String ixitValue) {
-		
+
 
 
 		/*System.out.println("Ixit Name: " + ixitName);
@@ -1932,7 +2422,7 @@ public class Manager extends Thread {
 
 		if(ixitName.equals("IXITCO_AboutVersion")){
 			IXITCO_AboutVersion=ixitValue;
-			
+
 		}else if(ixitName.equals("IXITCO_AppId")){
 			IXITCO_AppId=ixitValue;
 		}else if(ixitName.equals("IXITCO_DefaultLanguage")){
@@ -2082,7 +2572,7 @@ public class Manager extends Thread {
 			IXITSH_DeviceId=ixitValue;
 		}else if(ixitName.equals("IXITSH_HeartBeatInterval")){
 			IXITSH_HeartBeatInterval=ixitValue;
-			
+
 		}else if(ixitName.equals("IXITLC_ControllerServiceVersion")){
 			IXITLC_ControllerServiceVersion=ixitValue;
 		}else if(ixitName.equals("IXITLC_ControllerServiceLampVersion")){
@@ -2097,8 +2587,8 @@ public class Manager extends Thread {
 			IXITLC_ControllerServiceMasterSceneVersion=ixitValue;
 		}else if(ixitName.equals("IXITLC_LeaderElectionAndStateSyncVersion")){
 			IXITLC_LeaderElectionAndStateSyncVersion=ixitValue;
-			
-			
+
+
 		}else if(ixitName.equals("IXITON_OnboardingVersion")){
 			IXITON_OnboardingVersion=ixitValue;
 		}else if(ixitName.equals("IXITON_SoftAP")){
@@ -2126,7 +2616,13 @@ public class Manager extends Thread {
 		}
 
 	}
-	
+
+	/**
+	 * Sets the parameter.
+	 *
+	 * @param pName the name
+	 * @param pValue the value
+	 */
 	private static void setParameter(String pName, String pValue) {
 
 		if(pName.equals("GPCO_AnnouncementTimeout")) {
@@ -2167,6 +2663,13 @@ public class Manager extends Thread {
 
 
 
+	/**
+	 * Gets the value.
+	 *
+	 * @param tag the tag
+	 * @param element the element
+	 * @return the value
+	 */
 	private static String getValue(String tag, Element element) {
 		String value="";
 		NodeList nodes = element.getElementsByTagName(tag).item(0).getChildNodes();

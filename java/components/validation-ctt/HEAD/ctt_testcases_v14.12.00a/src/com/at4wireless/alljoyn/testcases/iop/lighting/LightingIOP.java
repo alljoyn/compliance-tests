@@ -1,3 +1,18 @@
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *    Permission to use, copy, modify, and/or distribute this software for any
+ *    purpose with or without fee is hereby granted, provided that the above
+ *    copyright notice and this permission notice appear in all copies.
+ *
+ *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.at4wireless.alljoyn.testcases.iop.lighting;
 
 import javax.swing.JFrame;
@@ -6,15 +21,33 @@ import javax.swing.JOptionPane;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.iop.IOPMessage;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class LightingIOP.
+ */
 public class LightingIOP {
 
+	/** The frame. */
 	private  JFrame frame;
+	
+	/** The pass. */
 	Boolean pass=true;
+	
+	/** The tag. */
 	protected  final String TAG = "LightingIOPTestSuite";
+	
+	/** The logger. */
 	private  final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	
+	/** The message. */
 	IOPMessage message=new IOPMessage(logger);
 
 
+	/**
+	 * Instantiates a new lighting iop.
+	 *
+	 * @param testCase the test case
+	 */
 	public LightingIOP(String testCase) {
 		frame=new JFrame();
 
@@ -30,6 +63,11 @@ public class LightingIOP {
 
 
 
+	/**
+	 * The main method.
+	 *
+	 * @param arg the arguments
+	 */
 	public  void main(String arg[]){
 
 		String testCase="IOP_LSF_Lamp-v1-09";
@@ -48,6 +86,12 @@ public class LightingIOP {
 
 
 
+	/**
+	 * Run test case.
+	 *
+	 * @param testCase the test case
+	 * @throws Exception the exception
+	 */
 	public  void runTestCase(String testCase) throws Exception{
 		frame=new JFrame();
 		showPreconditions();		
@@ -85,6 +129,9 @@ public class LightingIOP {
 
 
 
+	/**
+	 * IOP ls f_ lamp_v1_13.
+	 */
 	private  void IOP_LSF_Lamp_v1_13() {
 		message.showMessage("Initial Conditions","DUT and TBADs are switched off.");
 		message.showMessage("Test Procedure","Step 1) Switch on DUT.");
@@ -142,6 +189,9 @@ public class LightingIOP {
 
 
 
+	/**
+	 * IOP ls f_ lamp_v1_12.
+	 */
 	private  void IOP_LSF_Lamp_v1_12() {
 		message.showMessage("Initial Conditions","DUT and TBADs are switched off.");
 		message.showMessage("Test Procedure","Step 1) Switch on DUT.");
@@ -184,6 +234,9 @@ public class LightingIOP {
 
 
 
+	/**
+	 * IOP ls f_ lamp_v1_11.
+	 */
 	private  void IOP_LSF_Lamp_v1_11() {
 		message.showMessage("Initial Conditions","DUT and TBADs are switched off.");
 		message.showMessage("Test Procedure","Step 1) Switch on DUT.");
@@ -232,6 +285,9 @@ public class LightingIOP {
 
 
 
+	/**
+	 * IOP ls f_ lamp_v1_10.
+	 */
 	private  void IOP_LSF_Lamp_v1_10() {
 		message.showMessage("Initial Conditions","DUT and TBADs are switched off.");
 		message.showMessage("Test Procedure","Step 1) Switch on DUT.");
@@ -283,6 +339,9 @@ public class LightingIOP {
 
 
 
+	/**
+	 * IOP ls f_ lamp_v1_08.
+	 */
 	private  void IOP_LSF_Lamp_v1_08() {
 		message.showMessage("Initial Conditions","DUT and TBADs are switched off.");
 		message.showMessage("Test Procedure","Step 1) Switch on DUT.");
@@ -423,6 +482,9 @@ public class LightingIOP {
 
 
 
+	/**
+	 * IOP ls f_ lamp_v1_09.
+	 */
 	private  void IOP_LSF_Lamp_v1_09() {
 		message.showMessage("Initial Conditions","DUT and TBADs are switched off.");
 		message.showMessage("Test Procedure","Step 1) Switch on DUT.");
@@ -487,6 +549,9 @@ public class LightingIOP {
 
 
 
+	/**
+	 * IOP ls f_ lamp_v1_07.
+	 */
 	private  void IOP_LSF_Lamp_v1_07() {
 		message.showMessage("Initial Conditions","DUT and TBADs are switched off.");
 		message.showMessage("Test Procedure","Step 1) Switch on DUT.");
@@ -635,6 +700,9 @@ public class LightingIOP {
 
 
 
+	/**
+	 * IOP ls f_ lamp_v1_06.
+	 */
 	private  void IOP_LSF_Lamp_v1_06() {
 		message.showMessage("Initial Conditions","DUT and TBADs are switched off.");
 		message.showMessage("Test Procedure","Step 1) Switch on DUT.");
@@ -733,6 +801,9 @@ public class LightingIOP {
 
 
 
+	/**
+	 * IOP ls f_ lamp_v1_05.
+	 */
 	private  void IOP_LSF_Lamp_v1_05() {
 		message.showMessage("Initial Conditions","DUT and TBADs are switched off.");
 		message.showMessage("Test Procedure","Step 1) Switch on DUT.");
@@ -863,6 +934,9 @@ public class LightingIOP {
 
 
 
+	/**
+	 * IOP ls f_ lamp_v1_04.
+	 */
 	private  void IOP_LSF_Lamp_v1_04() {
 		message.showMessage("Initial Conditions","DUT and TBADs are switched off.");
 		message.showMessage("Test Procedure","Step 1) Switch on DUT.");
@@ -1001,6 +1075,9 @@ public class LightingIOP {
 
 
 
+	/**
+	 * IOP ls f_ controller_v1_01.
+	 */
 	private  void IOP_LSF_Controller_v1_01() {
 
 
@@ -1095,6 +1172,9 @@ public class LightingIOP {
 			return;}
 	}
 
+	/**
+	 * IOP ls f_ lamp_v1_02.
+	 */
 	private  void IOP_LSF_Lamp_v1_02() {
 		message.showMessage("Initial Conditions","DUT and TBADs are switched off.");
 		message.showMessage("Test Procedure","Step 1) Switch on DUT.");
@@ -1157,6 +1237,9 @@ public class LightingIOP {
 
 
 
+	/**
+	 * IOP ls f_ lamp_v1_03.
+	 */
 	private  void IOP_LSF_Lamp_v1_03() {
 
 		message.showMessage("Initial Conditions","DUT and TBADs are switched off.");
@@ -1289,6 +1372,9 @@ public class LightingIOP {
 
 
 
+	/**
+	 * Show preconditions.
+	 */
 	private  void showPreconditions() {
 		frame.setTitle("Preconditions");
 		String msg="Step 1) The passcode for the DUT is set to the default passcode \"000000\""
@@ -1308,6 +1394,11 @@ public class LightingIOP {
 
 	
 
+	/**
+	 * Fail.
+	 *
+	 * @param msg the msg
+	 */
 	private  void fail(String msg) {
 
 
@@ -1319,6 +1410,11 @@ public class LightingIOP {
 
 
 
+	/**
+	 * Gets the verdict.
+	 *
+	 * @return the verdict
+	 */
 	public String getVerdict() {
 
 		String verdict=null;

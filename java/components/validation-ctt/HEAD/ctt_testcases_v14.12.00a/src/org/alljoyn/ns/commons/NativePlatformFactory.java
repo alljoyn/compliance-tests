@@ -16,6 +16,7 @@
 
 package org.alljoyn.ns.commons;
 
+// TODO: Auto-generated Javadoc
 /**
  * The factory class for the classes extending {@link NativePlatformAbstrImpl} <br>
  * According to the platform that the service is running on, the appropriate platform dependent class is 
@@ -26,8 +27,14 @@ public class NativePlatformFactory {
 	 * Supported OS platforms 
 	 */
 	private static enum OSPlatform {
-		WINDOWS ("Windows","com.at4wireless.alljoyn.core.commons.NativePlatformWindows"),//AT4WIRELESS 03/24/2015
+		
+		/** The windows. */
+		WINDOWS ("Windows","com.at4wireless.alljoyn.core.notification.NativePlatformWindows"),
+		
+		/** The android. */
 		ANDROID ("Android","org.alljoyn.ns.nativeplatform.NativePlatformAndroid"),
+		
+		/** The linux. */
 		LINUX   ("Linux", "");
 		
 		/**
