@@ -1,0 +1,415 @@
+package com.at4wireless.alljoyn.core.lightingcontroller;
+
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.alljoyn.bus.Variant;
+
+import com.at4wireless.alljoyn.core.commons.log.Logger;
+import com.at4wireless.alljoyn.core.commons.log.LoggerFactory;
+
+public class ControllerServiceSignalListener
+{
+    private static final String TAG     = "SignalListener";
+    private static final Logger logger  = LoggerFactory.getLogger(TAG);
+
+    private enum Signals {
+        LIGHTING_RESET,
+        LAMP_NAME_CHANGED,
+        LAMP_STATE_CHANGED,
+        LAMPS_FOUND,
+        LAMPS_LOST,
+        LAMP_GROUPS_NAME_CHANGED,
+        LAMP_GROUPS_CREATED,
+        LAMP_GROUPS_UPDATED,
+        LAMP_GROUPS_DELETED,
+        DEFAULT_LAMP_STATE_CHANGED,
+        PRESETS_NAME_CHANGED,
+        PRESETS_CREATED,
+        PRESETS_UPDATED,
+        PRESETS_DELETED,
+        SCENES_NAME_CHANGED,
+        SCENES_CREATED,
+        SCENES_UPDATED,
+        SCENES_DELETED,
+        SCENES_APPLIED,
+        MASTER_SCENES_NAME_CHANGED,
+        MASTER_SCENES_CREATED,
+        MASTER_SCENES_UPDATED,
+        MASTER_SCENES_DELETED,
+        MASTER_SCENES_APPLIED,
+        BLOB_CHANGED
+    }
+
+    private String[] payload;
+    private Set<Signals> signalsReceived;
+
+    public ControllerServiceSignalListener()
+    {
+        signalsReceived = new HashSet<Signals>();
+        payload = null;
+    }
+
+    public void reset()
+    {
+        signalsReceived.clear();
+        payload = null;
+    }
+
+    // Return the payload of the LAST signal received
+    public String[] getSignalPayload()
+    {
+        return payload;
+    }
+
+    /******
+     * Signal: LightingReset
+     ******/
+    public void handleLightingReset()
+    {
+        logger.info("LightingReset signal received");
+        signalsReceived.add(Signals.LIGHTING_RESET);
+    }
+
+    public boolean didLightingReset()
+    {
+        return signalsReceived.contains(Signals.LIGHTING_RESET);
+    }
+
+    /******
+    * Signal: LampNameChanged
+    ******/
+    public void handleLampNameChanged(String lampID, String lampName)
+    {
+        logger.info("LampsNameChanged signal received");
+        signalsReceived.add(Signals.LAMP_NAME_CHANGED);
+    }
+
+    public boolean didLampNameChanged()
+    {
+        return signalsReceived.contains(Signals.LAMP_NAME_CHANGED);
+    }
+
+    /******
+    * Signal: LampsStateChanged
+    ******/
+    public void handleLampStateChanged(String lampID, Map<String, Variant> lampState)
+    {
+        logger.info("LampsStateChanged signal received");
+        signalsReceived.add(Signals.LAMP_STATE_CHANGED);
+    }
+
+    public boolean didLampStateChanged()
+    {
+        return signalsReceived.contains(Signals.LAMP_STATE_CHANGED);
+    }
+
+    /******
+    * Signal: LampsFound
+    ******/
+    public void handleLampsFound(String[] lampIDs)
+    {
+        logger.info("LampsFound signal received");
+        signalsReceived.add(Signals.LAMPS_FOUND);
+    }
+
+    public boolean didLampsFound()
+    {
+        return signalsReceived.contains(Signals.LAMPS_FOUND);
+    }
+
+    /******
+    * Signal: LampsLost
+    ******/
+    public void handleLampsLost(String[] lampIDs)
+    {
+        logger.info("LampsLost signal received");
+        signalsReceived.add(Signals.LAMPS_LOST);
+    }
+
+    public boolean didLampsLost()
+    {
+        return signalsReceived.contains(Signals.LAMPS_LOST);
+    }
+
+    /******
+    * Signal: LampGroupsNameChanged
+    ******/
+    public void handleLampGroupsNameChanged(String[] lampGroupsIDs)
+    {
+        logger.info("LampGroupsNameChanged signal received");
+        signalsReceived.add(Signals.LAMP_GROUPS_NAME_CHANGED);
+    }
+
+    public boolean didLampGroupsNameChanged()
+    {
+        return signalsReceived.contains(Signals.LAMP_GROUPS_NAME_CHANGED);
+    }
+
+    /******
+    * Signal: LampGroupsCreated
+    ******/
+    public void handleLampGroupsCreated(String[] lampGroupsIDs)
+    {
+        logger.info("LampGroupsCreated signal received");
+        signalsReceived.add(Signals.LAMP_GROUPS_CREATED);
+    }
+
+    public boolean didLampGroupsCreated()
+    {
+        return signalsReceived.contains(Signals.LAMP_GROUPS_CREATED);
+    }
+
+    /******
+    * Signal: LampGroupsUpdated
+    ******/
+    public void handleLampGroupsUpdated(String[] lampGroupsIDs)
+    {
+        logger.info("LampGroupsUpdated signal received");
+        signalsReceived.add(Signals.LAMP_GROUPS_UPDATED);
+    }
+
+    public boolean didLampGroupsUpdated()
+    {
+        return signalsReceived.contains(Signals.LAMP_GROUPS_UPDATED);
+    }
+
+    /******
+    * Signal: LampsGroupdsDeleted
+    ******/
+    public void handleLampGroupsDeleted(String[] lampGroupsIDs)
+    {
+        logger.info("LampGroupsDeleted signal received");
+        signalsReceived.add(Signals.LAMP_GROUPS_DELETED);
+    }
+
+    public boolean didLampGroupsDeleted()
+    {
+        return signalsReceived.contains(Signals.LAMP_GROUPS_DELETED);
+    }
+
+    /******
+    * Signal: DefaultLampStateChanged
+    ******/
+    public void handleDefaultLampStateChanged()
+    {
+        logger.info("DefaultLampStateChanges signal received");
+        signalsReceived.add(Signals.DEFAULT_LAMP_STATE_CHANGED);
+    }
+
+    public boolean didDefaultLampStateChanged()
+    {
+        return signalsReceived.contains(Signals.DEFAULT_LAMP_STATE_CHANGED);
+    }
+
+    /******
+    * Signal: PresetsNameChanged
+    ******/
+    public void handlePresetsNameChanged(String[] presetsIDs)
+    {
+        logger.info("PresetsNameChanged signal received");
+        signalsReceived.add(Signals.PRESETS_NAME_CHANGED);
+    }
+
+    public boolean didPresetsNameChanged()
+    {
+        return signalsReceived.contains(Signals.PRESETS_NAME_CHANGED);
+    }
+
+    /******
+    * Signal: PresetsCreated
+    ******/
+    public void handlePresetsCreated(String[] presetsIDs)
+    {
+        logger.info("PresetsCreated signal received");
+        signalsReceived.add(Signals.PRESETS_CREATED);
+    }
+
+    public boolean didPresetsCreated()
+    {
+        return signalsReceived.contains(Signals.PRESETS_CREATED);
+    }
+
+    /******
+    * Signal: PresetsUpdated
+    ******/
+    public void handlePresetsUpdated(String[] presetsIDs)
+    {
+        logger.info("PresetsUpdated signal received");
+        signalsReceived.add(Signals.PRESETS_UPDATED);
+    }
+
+    public boolean didPresetsUpdated()
+    {
+        return signalsReceived.contains(Signals.PRESETS_UPDATED);
+    }
+
+    /******
+    * Signal: PresetsDeleted
+    ******/
+    public void handlePresetsDeleted(String[] presetsIDs)
+    {
+        logger.info("PresetsDeleted signal received");
+        signalsReceived.add(Signals.PRESETS_DELETED);
+    }
+
+    public boolean didPresetsDeleted()
+    {
+        return signalsReceived.contains(Signals.PRESETS_DELETED);
+    }
+
+    /******
+    * Signal: ScenesNameChanged
+    ******/
+    public void handleScenesNameChanged(String[] sceneIDs)
+    {
+        logger.info("ScenesNameChanged signal received");
+        signalsReceived.add(Signals.SCENES_NAME_CHANGED);
+    }
+
+    public boolean didScenesNameChanged()
+    {
+        return signalsReceived.contains(Signals.SCENES_NAME_CHANGED);
+    }
+
+    /******
+    * Signal: ScenesCreated
+    ******/
+    public void handleScenesCreated(String[] sceneIDs)
+    {
+        logger.info("ScenesCreated signal received");
+        signalsReceived.add(Signals.SCENES_CREATED);
+    }
+
+    public boolean didScenesCreated()
+    {
+        return signalsReceived.contains(Signals.SCENES_CREATED);
+    }
+
+    /******
+    * Signal: ScenesUpdated
+    ******/
+    public void handleScenesUpdated(String[] sceneIDs)
+    {
+        logger.info("ScenesUpdated signal received");
+        signalsReceived.add(Signals.SCENES_UPDATED);
+    }
+
+    public boolean didScenesUpdated()
+    {
+        return signalsReceived.contains(Signals.SCENES_UPDATED);
+    }
+
+    /******
+    * Signal: ScenesDeleted
+    ******/
+    public void handleScenesDeleted(String[] sceneIDs)
+    {
+        logger.info("ScenesDeleted signal received");
+        signalsReceived.add(Signals.SCENES_DELETED);
+    }
+
+    public boolean didScenesDeleted()
+    {
+        return signalsReceived.contains(Signals.SCENES_DELETED);
+    }
+
+    /******
+    * Signal: ScenesApplied
+    ******/
+    public void handleScenesApplied(String[] sceneIDs)
+    {
+        logger.info("ScenesApplied signal received");
+        signalsReceived.add(Signals.SCENES_APPLIED);
+    }
+
+    public boolean didScenesApplied()
+    {
+        return signalsReceived.contains(Signals.SCENES_APPLIED);
+    }
+
+    /******
+    * Signal: MasterScenesNameChanged
+    ******/
+    public void handleMasterScenesNameChanged(String[] masterSceneIDs)
+    {
+        logger.info("MasterScenesNameChanged signal received");
+        signalsReceived.add(Signals.MASTER_SCENES_NAME_CHANGED);
+    }
+
+    public boolean didMasterScenesNameChanged()
+    {
+        return signalsReceived.contains(Signals.MASTER_SCENES_NAME_CHANGED);
+    }
+
+    /******
+    * Signal: MasterScenesCreated
+    ******/
+    public void handleMasterScenesCreated(String[] masterSceneIDs)
+    {
+        logger.info("MasterScenesCreated signal received");
+        signalsReceived.add(Signals.MASTER_SCENES_CREATED);
+    }
+
+    public boolean didMasterScenesCreated()
+    {
+        return signalsReceived.contains(Signals.MASTER_SCENES_CREATED);
+    }
+
+    /******
+    * Signal: MasterScenesUpdated
+    ******/
+    public void handleMasterScenesUpdated(String[] masterSceneIDs)
+    {
+        logger.info("MasterScenesUpdated signal received");
+        signalsReceived.add(Signals.MASTER_SCENES_UPDATED);
+    }
+
+    public boolean didMasterScenesUpdated()
+    {
+        return signalsReceived.contains(Signals.MASTER_SCENES_UPDATED);
+    }
+
+    /******
+    * Signal: MasterScenesDeleted
+    ******/
+    public void handleMasterScenesDeleted(String[] masterSceneIDs)
+    {
+        logger.info("MasterScenesDeleted signal received");
+        signalsReceived.add(Signals.MASTER_SCENES_DELETED);
+    }
+
+    public boolean didMasterScenesDeleted()
+    {
+        return signalsReceived.contains(Signals.MASTER_SCENES_DELETED);
+    }
+
+    /******
+    * Signal: MasterScenesApplied
+    ******/
+    public void handleMasterScenesApplied(String[] masterSceneIDs)
+    {
+        logger.info("MasterScenesApplied signal received");
+        signalsReceived.add(Signals.MASTER_SCENES_APPLIED);
+    }
+
+    public boolean didMasterScenesApplied()
+    {
+        return signalsReceived.contains(Signals.MASTER_SCENES_APPLIED);
+    }
+
+    /******
+    * Signal: BlobChanged
+    ******/
+    public void handleBlobChanged(int blobType, String blob, int checksum, long timestamp)
+    {
+        logger.info("BlobChanged signal received");
+        signalsReceived.add(Signals.BLOB_CHANGED);
+    }
+
+    public boolean didBlobChanged()
+    {
+        return signalsReceived.contains(Signals.BLOB_CHANGED);
+    }
+}
