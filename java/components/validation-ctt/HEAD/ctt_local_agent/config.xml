@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Configuration>
+
+<CertificationReleasePath>TestCases/</CertificationReleasePath>
+<ResultPath>results/</ResultPath>
+<LogPath>log/</LogPath>
+<TestToolWebAppUrl>https://www.at4wireless.com/TestToolWebApp/</TestToolWebAppUrl>
+<GetListOfProjectsUrl>rest/getList/</GetListOfProjectsUrl>
+<GetTestCases>rest/getProject/</GetTestCases>
+<GetResults>rest/getResults/</GetResults>
+<GetTechnology>rest/getTechnology/</GetTechnology>
+<GetLog>rest/getFullLog/</GetLog>
+<SendResultsUrl>rest/sendResult/</SendResultsUrl>
+<AuthenticateUrl>oauth/token</AuthenticateUrl>
+<UploadLogFile>rest/upload/</UploadLogFile>
+<InstalledTestToolPackages></InstalledTestToolPackages>
+<isLastVersion>rest/isLastVersion/</isLastVersion>
+<DownloadPath>downloads/</DownloadPath>
+<getLastVersion>rest/getLastVersion</getLastVersion>
+</Configuration>
