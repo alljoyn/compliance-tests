@@ -1,5 +1,5 @@
-/******************************************************************************
- * Copyright (c) 2014, AllSeen Alliance. All rights reserved.
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
  *
  *    Permission to use, copy, modify, and/or distribute this software for any
  *    purpose with or without fee is hereby granted, provided that the above
@@ -12,22 +12,28 @@
  *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
  *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- ******************************************************************************/
+ */
 
 package org.alljoyn.gatewaycontroller;
 
+// TODO: Auto-generated Javadoc
 /**
  * Action constants list
  */
 public enum GWControllerActions {
 
     // Auth actions
+    /** The gwc password required. */
     GWC_PASSWORD_REQUIRED,
 
     // Session actions
-    GWC_SESSION_JOINED, GWC_SESSION_JOIN_FAILED,
+    /** The gwc session joined. */
+    GWC_SESSION_JOINED, 
+ /** The gwc session join failed. */
+ GWC_SESSION_JOIN_FAILED,
 
     // Gateway actions
+    /** The gwc gateway announce received. */
     GWC_GATEWAY_ANNOUNCE_RECEIVED,
     ;
 }

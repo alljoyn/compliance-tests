@@ -16,13 +16,16 @@
 
 package org.allseen.timeservice;
 
+// TODO: Auto-generated Javadoc
 /**
  * Date & Time data type
  */
 public class DateTime {
 
+    /** The date. */
     private final Date date;
 
+    /** The time. */
     private final Time time;
 
     /**
@@ -55,10 +58,20 @@ public class DateTime {
         this.offsetMinutes = offsetMinutes;
     }
 
+    /**
+     * Gets the date.
+     *
+     * @return the date
+     */
     public Date getDate() {
         return date;
     }
 
+    /**
+     * Gets the time.
+     *
+     * @return the time
+     */
     public Time getTime() {
         return time;
     }

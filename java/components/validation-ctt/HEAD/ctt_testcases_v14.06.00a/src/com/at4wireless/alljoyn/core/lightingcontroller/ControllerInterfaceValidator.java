@@ -1,3 +1,18 @@
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *    Permission to use, copy, modify, and/or distribute this software for any
+ *    purpose with or without fee is hereby granted, provided that the above
+ *    copyright notice and this permission notice appear in all copies.
+ *
+ *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.at4wireless.alljoyn.core.lightingcontroller;
 
 import java.io.InputStream;
@@ -18,20 +33,34 @@ import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionInterface;
 import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionNode;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ControllerInterfaceValidator.
+ */
 public class ControllerInterfaceValidator
 {
+    
+    /** The Constant TAG. */
     private static final String TAG = "CIValidator";
+    
+    /** The Constant logger. */
     private static final Logger logger = LoggerFactory.getLogger(TAG);
 
+    /** The Constant INTROSPECT_FILES. */
     private static final String[] INTROSPECT_FILES = {
         "introspection-xml/ControllerService.xml",
         "introspection-xml/LeaderElectionAndStateSync.xml"
     };
 
+    /** The validator. */
     private static ControllerInterfaceValidator validator = null;
 
+    /** The xml introspection nodes. */
     private List<IntrospectionNode> xmlIntrospectionNodes;
 
+    /**
+     * Instantiates a new controller interface validator.
+     */
     private ControllerInterfaceValidator()
     {
         xmlIntrospectionNodes = buildIntrospectionNodes();
@@ -39,6 +68,11 @@ public class ControllerInterfaceValidator
 
     // Create introspection nodes from XML files. Use created nodes as master
     // copy to match DUT interfaces against.
+    /**
+     * Builds the introspection nodes.
+     *
+     * @return the list
+     */
     private List<IntrospectionNode> buildIntrospectionNodes()
     {
         List<IntrospectionNode> nodes = new ArrayList<IntrospectionNode>();
@@ -68,11 +102,22 @@ public class ControllerInterfaceValidator
         return nodes;
     }
 
+    /**
+     * Gets the validator.
+     *
+     * @return the validator
+     */
     public static ControllerInterfaceValidator getValidator()
     {
         return (validator == null)? new ControllerInterfaceValidator() : validator;
     }
 
+    /**
+     * Validate.
+     *
+     * @param ifaceDetails the iface details
+     * @return the validation result
+     */
     public ValidationResult validate(List<InterfaceDetail> ifaceDetails)
     {
         // validate each InterfaceDetail in the List
@@ -88,6 +133,12 @@ public class ControllerInterfaceValidator
         return new ValidationResult(true, "");
     }
 
+    /**
+     * Validate.
+     *
+     * @param ifaceDetail the iface detail
+     * @return the validation result
+     */
     public ValidationResult validate(InterfaceDetail ifaceDetail)
     {
         // validate each IntrospectionInterface of the InterfaceDetail
@@ -103,6 +154,13 @@ public class ControllerInterfaceValidator
         return new ValidationResult(true, "");
     }
 
+    /**
+     * Validate interface.
+     *
+     * @param iface the iface
+     * @param path the path
+     * @return the validation result
+     */
     private ValidationResult validateInterface(IntrospectionInterface iface, String path)
     {
         // Fetch expected interface specs
@@ -133,6 +191,13 @@ public class ControllerInterfaceValidator
         return new ValidationResult(true, "");
     }
 
+    /**
+     * Interface comparator.
+     *
+     * @param expected the expected
+     * @param actual the actual
+     * @return the validation result
+     */
     private ValidationResult interfaceComparator(IntrospectionInterface expected, IntrospectionInterface actual)
     {
         // Collect results
@@ -159,6 +224,13 @@ public class ControllerInterfaceValidator
         return new ValidationResult(isValid, failureReason.toString());
     }
 
+    /**
+     * Compare.
+     *
+     * @param expected the expected
+     * @param actual the actual
+     * @return the validation result
+     */
     private ValidationResult compare(Set<? extends IntrospectionBaseTag> expected, Set<? extends IntrospectionBaseTag> actual)
     {
         // Ensure both parameters are HashSets for proper comparison when passed
@@ -177,6 +249,13 @@ public class ControllerInterfaceValidator
         return sv.validate(expected, actual);
     }
 
+    /**
+     * Gets the expected interface by name.
+     *
+     * @param nodes the nodes
+     * @param ifaceName the iface name
+     * @return the expected interface by name
+     */
     private InterfaceDetail getExpectedInterfaceByName(List<IntrospectionNode> nodes, String ifaceName)
     {
         for (IntrospectionNode node : nodes)

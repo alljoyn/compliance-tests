@@ -30,12 +30,17 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 
 
+// TODO: Auto-generated Javadoc
 /**
  * This class implements {@link TimerFactory} interface and realizes AllJoyn
  * communication with this TimerFactory
  */
 class TimerFactoryBusObj implements TimerFactory {
+    
+    /** The Constant TAG. */
     private static final String TAG = "ajts" + TimerFactoryBusObj.class.getSimpleName();
+	
+	/** The Constant Log. */
 	private static final WindowsLoggerImpl Log =  new WindowsLoggerImpl(TAG);
 
     /**

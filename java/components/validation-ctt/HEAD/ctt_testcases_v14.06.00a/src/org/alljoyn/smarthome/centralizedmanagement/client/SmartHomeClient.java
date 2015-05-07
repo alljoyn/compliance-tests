@@ -1,5 +1,5 @@
 /*
- *    Copyright (c) 2014, AllSeen Alliance. All rights reserved.
+ * Copyright AllSeen Alliance. All rights reserved.
  *
  *    Permission to use, copy, modify, and/or distribute this software for any
  *    purpose with or without fee is hereby granted, provided that the above
@@ -22,6 +22,7 @@ import org.alljoyn.bus.annotation.BusMethod;
 import org.alljoyn.bus.annotation.BusProperty;
 import org.alljoyn.bus.annotation.BusSignal;
 
+// TODO: Auto-generated Javadoc
 /**
  * The interface used to interact with AllJoyn SmartHome gateway and implement some specific functions.
  */
@@ -34,6 +35,12 @@ public interface SmartHomeClient {
 	
 	
 	
+	/**
+	 * Gets the version.
+	 *
+	 * @return the version
+	 * @throws BusException the bus exception
+	 */
 	@BusProperty(signature="u")
 	public int getVersion() throws BusException;
 	

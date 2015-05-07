@@ -21,6 +21,7 @@ import org.allseen.timeservice.Schedule;
 import org.allseen.timeservice.Schedule.WeekDay;
 import org.allseen.timeservice.ajinterfaces.DateTimeAJ.TimeAJ;
 
+// TODO: Auto-generated Javadoc
 /**
  * Schedule structure for communicating with {@link Alarm}
  */

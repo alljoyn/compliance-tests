@@ -1,3 +1,18 @@
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *    Permission to use, copy, modify, and/or distribute this software for any
+ *    purpose with or without fee is hereby granted, provided that the above
+ *    copyright notice and this permission notice appear in all copies.
+ *
+ *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.at4wireless.alljoyn.testcases.conf.smarthome;
 
 import java.util.HashMap;
@@ -20,25 +35,57 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.introspection.BusIntrospector;
 import com.at4wireless.alljoyn.core.lighting.LampServiceBusInterface;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SmartHomeService.
+ */
 public class SmartHomeService {
 
 
+	/** The pass. */
 	Boolean pass=true;
+	
+	/** The tag. */
 	protected  final String TAG = "SmartHomeTestSuite";
+	
+	/** The bus application name. */
 	private  final String BUS_APPLICATION_NAME = "SmartHome";
+	
+	/** The bus object path. */
 	public  String BUS_OBJECT_PATH = "/org/alljoyn/SmartHome/CentralizedManagement";
+	
+	/** The signal timeout in seconds. */
 	private long SIGNAL_TIMEOUT_IN_SECONDS = 30;
+	
+	/** The logger. */
 	private  final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	
+	/** The device about announcement. */
 	protected  AboutAnnouncementDetails deviceAboutAnnouncement;
+	
+	/** The service helper. */
 	private  ServiceHelper serviceHelper;
+	
+	/** The dut app id. */
 	private  UUID dutAppId;
+	
+	/** The dut device id. */
 	private  String dutDeviceId;
+	
+	/** The bus introspector. */
 	private  BusIntrospector busIntrospector;
+	
+	/** The about client. */
 	private  AboutClient aboutClient;
+	
+	/** The time out. */
 	private  int  timeOut=30;
 
 
+	/** The ICSS h_ smart home service framework. */
 	boolean ICSSH_SmartHomeServiceFramework=false;
+	
+	/** The ICSS h_ centralized management interface. */
 	boolean ICSSH_CentralizedManagementInterface=false;
 
 	/*String  IXITCO_AppId=null;
@@ -51,8 +98,26 @@ public class SmartHomeService {
 	String IXITSH_DeviceId=null;
 	String IXITSH_HeartBeatInterval=null;*/
 
+	/** The ixit. */
 	Map<String,String> ixit;
 
+	/**
+	 * Instantiates a new smart home service.
+	 *
+	 * @param testCase the test case
+	 * @param iCSSH_SmartHomeServiceFramework the i css h_ smart home service framework
+	 * @param iCSSH_CentralizedManagementInterface the i css h_ centralized management interface
+	 * @param iXITCO_AppId the i xitc o_ app id
+	 * @param iXITCO_DeviceId the i xitc o_ device id
+	 * @param iXITCO_DefaultLanguage the i xitc o_ default language
+	 * @param iXITSH_CentralizedManagementVersion the i xits h_ centralized management version
+	 * @param iXITSH_WellKnownName the i xits h_ well known name
+	 * @param iXITSH_UniqueName the i xits h_ unique name
+	 * @param iXITSH_DeviceId the i xits h_ device id
+	 * @param iXITSH_HeartBeatInterval the i xits h_ heart beat interval
+	 * @param gPCO_AnnouncementTimeout the g pc o_ announcement timeout
+	 * @param gPSH_Signal the g ps h_ signal
+	 */
 	public SmartHomeService(String testCase,
 			boolean iCSSH_SmartHomeServiceFramework,
 			boolean iCSSH_CentralizedManagementInterface, String iXITCO_AppId,
@@ -100,6 +165,12 @@ public class SmartHomeService {
 		}
 	}
 
+	/**
+	 * Run test case.
+	 *
+	 * @param testCase the test case
+	 * @throws Exception the exception
+	 */
 	private  void runTestCase(String testCase) throws Exception {
 
 		//setUp(IXITCO_DeviceId,IXITCO_AppId);
@@ -123,6 +194,11 @@ public class SmartHomeService {
 	}
 	
 	//private  void setUp(String iXITCO_DeviceId, String iXITCO_AppId) throws Exception {
+	/**
+	 * Sets the up.
+	 *
+	 * @throws Exception the exception
+	 */
 	private  void setUp() throws Exception {		
 		try
 		{
@@ -162,6 +238,11 @@ public class SmartHomeService {
 		}
 	}
 	
+	/**
+	 * Tear down.
+	 *
+	 * @throws Exception the exception
+	 */
 	protected  void tearDown() throws Exception {
 		System.out.println("====================================================");
 		logger.debug("test tearDown started");
@@ -174,6 +255,11 @@ public class SmartHomeService {
 	 * TestCases
 	 */
 	
+	/**
+	 * Test smart home_v1_01.
+	 *
+	 * @throws Exception the exception
+	 */
 	private  void testSmartHome_v1_01() throws Exception {
 
 		
@@ -201,6 +287,11 @@ public class SmartHomeService {
 	}
 
 
+	/**
+	 * Test smart home_v1_02.
+	 *
+	 * @throws Exception the exception
+	 */
 	private  void testSmartHome_v1_02() throws Exception {
 		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
 				new Class[] { SmartHomeClient.class });
@@ -223,27 +314,44 @@ public class SmartHomeService {
 
 	}
 	
+	/**
+	 * Test smart home_v1_03.
+	 */
 	private  void testSmartHome_v1_03() {
 		// TODO Auto-generated method stub
 
 	}
 	
+	/**
+	 * Test smart home_v1_04.
+	 */
 	private  void testSmartHome_v1_04() {
 		// TODO Auto-generated method stub
 
 	}
 	
+	/**
+	 * Test smart home_v1_05.
+	 */
 	private  void testSmartHome_v1_05() {
 		// TODO Auto-generated method stub
 
 	}
 
 
+	/**
+	 * Gets the signal timeout.
+	 *
+	 * @return the signal timeout
+	 */
 	long getSignalTimeout()
 	{
 		return SIGNAL_TIMEOUT_IN_SECONDS;
 	}
 
+	/**
+	 * Release resources.
+	 */
 	private  void releaseResources() {
 
 		if (serviceHelper != null) {
@@ -254,6 +362,12 @@ public class SmartHomeService {
 
 
 
+	/**
+	 * Assert not null.
+	 *
+	 * @param msg the msg
+	 * @param notNull the not null
+	 */
 	private  void assertNotNull(String msg,
 			Object notNull) {
 
@@ -266,6 +380,11 @@ public class SmartHomeService {
 
 
 
+	/**
+	 * Gets the service helper.
+	 *
+	 * @return the service helper
+	 */
 	protected  ServiceHelper getServiceHelper()
 	{
 		return new ServiceHelper();
@@ -273,6 +392,11 @@ public class SmartHomeService {
 
 
 
+	/**
+	 * Fail.
+	 *
+	 * @param msg the msg
+	 */
 	private  void fail(String msg) {
 
 
@@ -282,6 +406,13 @@ public class SmartHomeService {
 	}
 
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param errorMsg the error msg
+	 * @param i the i
+	 * @param j the j
+	 */
 	private  void assertEquals(String errorMsg, int i, int j) {
 		if(i!=j){
 			fail(errorMsg);
@@ -293,6 +424,12 @@ public class SmartHomeService {
 	}
 
 
+	/**
+	 * Assert true.
+	 *
+	 * @param errorMsg the error msg
+	 * @param bool the bool
+	 */
 	private  void assertTrue(String errorMsg,
 			boolean bool) {
 
@@ -303,6 +440,11 @@ public class SmartHomeService {
 
 	}
 
+	/**
+	 * Gets the verdict.
+	 *
+	 * @return the verdict
+	 */
 	public String getVerdict() {
 
 		String verdict=null;

@@ -1,9 +1,25 @@
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *    Permission to use, copy, modify, and/or distribute this software for any
+ *    purpose with or without fee is hereby granted, provided that the above
+ *    copyright notice and this permission notice appear in all copies.
+ *
+ *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.at4wireless.alljoyn.core.interfacevalidator;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 
 
 import com.at4wireless.alljoyn.core.commons.log.Logger;
@@ -19,19 +35,39 @@ import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionSignal;
 
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class InterfaceValidator.
+ */
 public class InterfaceValidator
 {
+    
+    /** The introspection nodes loaded from xml files. */
     private List<IntrospectionNode> introspectionNodesLoadedFromXmlFiles = new ArrayList<IntrospectionNode>();
+    
+    /** The introspection xml parser. */
     private IntrospectionXmlParser introspectionXmlParser;
     
+    /** The Constant TAG. */
     private static final String TAG = "InterfaceValidator";
+    
+    /** The Constant logger. */
     private static final Logger logger = LoggerFactory.getLogger(TAG);
 
+    /**
+     * Instantiates a new interface validator.
+     */
     public InterfaceValidator()
     {
         
     } 
 
+    /**
+     * Validate.
+     *
+     * @param interfaceDetail the interface detail
+     * @return the validation result
+     */
     public ValidationResult validate(InterfaceDetail interfaceDetail)
     {
         StringBuilder failureReasonBuilder = new StringBuilder();
@@ -51,6 +87,12 @@ public class InterfaceValidator
         return new ValidationResult(valid, failureReasonBuilder.toString());
     }
 
+    /**
+     * Validate.
+     *
+     * @param interfaceDetailList the interface detail list
+     * @return the validation result
+     */
     public ValidationResult validate(List<InterfaceDetail> interfaceDetailList)
     {
         StringBuilder failureReasonBuilder = new StringBuilder();
@@ -73,6 +115,11 @@ public class InterfaceValidator
         return new ValidationResult(valid, failureReasonBuilder.toString());
     }
 
+    /**
+     * Gets the xml files to be loaded.
+     *
+     * @return the xml files to be loaded
+     */
     List<String> getXmlFilesToBeLoaded()
     {
         return Arrays.asList(IntrospectionXmlFile.About.getValue(), IntrospectionXmlFile.Action.getValue(), IntrospectionXmlFile.Audio.getValue(),
@@ -86,6 +133,13 @@ public class InterfaceValidator
                 IntrospectionXmlFile.Property.getValue());
     }
 
+    /**
+     * Validate interface.
+     *
+     * @param standardizedIntrospectionInterface the standardized introspection interface
+     * @param path the path
+     * @return the validation result
+     */
     private ValidationResult validateInterface(IntrospectionInterface standardizedIntrospectionInterface, String path)
     {
         ValidationResult validationResult = null;
@@ -104,6 +158,14 @@ public class InterfaceValidator
         return validationResult;
     }
 
+    /**
+     * Compare.
+     *
+     * @param interfaceDetail the interface detail
+     * @param standardizedIntrospectionInterface the standardized introspection interface
+     * @param path the path
+     * @return the validation result
+     */
     private ValidationResult compare(InterfaceDetail interfaceDetail, IntrospectionInterface standardizedIntrospectionInterface, String path)
     {
         boolean valid = true;
@@ -169,6 +231,13 @@ public class InterfaceValidator
         return new ValidationResult(valid, failureReasonBuilder.toString());
     }
 
+    /**
+     * Checks if is version property missing.
+     *
+     * @param expectedIntrospectionInterface the expected introspection interface
+     * @param propertyValidationResult the property validation result
+     * @return true, if is version property missing
+     */
     private boolean isVersionPropertyMissing(IntrospectionInterface expectedIntrospectionInterface, ValidationResult propertyValidationResult)
     {
         return !propertyValidationResult.isValid()
@@ -176,18 +245,37 @@ public class InterfaceValidator
                 && propertyValidationResult.getFailureReason().equals(" - Missing Property [name=Version, type=q, access=read]");
     }
 
+    /**
+     * Checks if is undefined method present for config interface.
+     *
+     * @param expectedIntrospectionInterface the expected introspection interface
+     * @param methodValidationResult the method validation result
+     * @return true, if is undefined method present for config interface
+     */
     private boolean isUndefinedMethodPresentForConfigInterface(IntrospectionInterface expectedIntrospectionInterface, ValidationResult methodValidationResult)
     {
         return !methodValidationResult.isValid() && expectedIntrospectionInterface.getName().equals("org.alljoyn.Config")
                 && methodValidationResult.getFailureReason().equals(" - Undefined Method [name=getVersion, args=[[type=q]], annotations=[]]");
     }
 
+    /**
+     * Checks if is annotation missing for peer authentication interface.
+     *
+     * @param expectedIntrospectionInterface the expected introspection interface
+     * @param annotationValidationResult the annotation validation result
+     * @return true, if is annotation missing for peer authentication interface
+     */
     private boolean isAnnotationMissingForPeerAuthenticationInterface(IntrospectionInterface expectedIntrospectionInterface, ValidationResult annotationValidationResult)
     {
         return !annotationValidationResult.isValid() && expectedIntrospectionInterface.getName().equals("org.alljoyn.Bus.Peer.Authentication")
                 && annotationValidationResult.getFailureReason().contains("Missing Annotation") && !annotationValidationResult.getFailureReason().contains("Undefined Annotation");
     }
 
+    /**
+     * Gets the introspection nodes loaded from xml files.
+     *
+     * @return the introspection nodes loaded from xml files
+     */
     private List<IntrospectionNode> getIntrospectionNodesLoadedFromXmlFiles()
     {
         if (introspectionNodesLoadedFromXmlFiles.isEmpty())
@@ -199,6 +287,9 @@ public class InterfaceValidator
         return introspectionNodesLoadedFromXmlFiles;
     }
 
+    /**
+     * Builds the introspection nodes from xml files.
+     */
     private void buildIntrospectionNodesFromXmlFiles()
     {
         for (String xmlFileToBeLoaded : getXmlFilesToBeLoaded())
@@ -217,6 +308,13 @@ public class InterfaceValidator
         }
     }
 
+    /**
+     * Gets the interface detail.
+     *
+     * @param introspectionNodes the introspection nodes
+     * @param introspectionInterfaceName the introspection interface name
+     * @return the interface detail
+     */
     private InterfaceDetail getInterfaceDetail(List<IntrospectionNode> introspectionNodes, String introspectionInterfaceName)
     {
         for (IntrospectionNode introspectionNode : introspectionNodes)
@@ -236,6 +334,12 @@ public class InterfaceValidator
         return null;
     }
 
+    /**
+     * Append to failure reason.
+     *
+     * @param failureReasonBuilder the failure reason builder
+     * @param reason the reason
+     */
     private void appendToFailureReason(StringBuilder failureReasonBuilder, String reason)
     {
         if (!reason.trim().isEmpty())

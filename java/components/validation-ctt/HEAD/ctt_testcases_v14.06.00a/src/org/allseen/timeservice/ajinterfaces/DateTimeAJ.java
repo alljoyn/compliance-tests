@@ -21,6 +21,7 @@ import org.allseen.timeservice.Date;
 import org.allseen.timeservice.DateTime;
 import org.allseen.timeservice.Time;
 
+// TODO: Auto-generated Javadoc
 /**
  * Date Time structure for communicating with {@link Clock}
  */
@@ -31,12 +32,15 @@ public class DateTimeAJ {
      */
     public static class DateAJ {
 
+        /** The year. */
         @Position(0)
         public short year;
 
+        /** The month. */
         @Position(1)
         public byte month;
 
+        /** The day. */
         @Position(2)
         public byte day;
 
@@ -83,18 +87,22 @@ public class DateTimeAJ {
     public static class TimeAJ {
 
         //0-23
+        /** The hour. */
         @Position(0)
         public byte hour;
 
         //0-59
+        /** The minute. */
         @Position(1)
         public byte minute;
 
         //0-59
+        /** The second. */
         @Position(2)
         public byte second;
 
         //0-999
+        /** The millisecond. */
         @Position(3)
         public short millisecond;
 
@@ -136,12 +144,15 @@ public class DateTimeAJ {
         }
     }
 
+    /** The date. */
     @Position(0)
     public DateAJ date;
 
+    /** The time. */
     @Position(1)
     public TimeAJ time;
 
+    /** The offset minutes. */
     @Position(2)
     public short offsetMinutes;
 

@@ -1,3 +1,18 @@
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *    Permission to use, copy, modify, and/or distribute this software for any
+ *    purpose with or without fee is hereby granted, provided that the above
+ *    copyright notice and this permission notice appear in all copies.
+ *
+ *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.at4wireless.alljoyn.testcases.conf.lightingcontroller;
 
 import java.lang.reflect.Type;
@@ -88,91 +103,199 @@ import com.at4wireless.alljoyn.core.lightingcontroller.LeaderElectionBusInterfac
 import com.at4wireless.alljoyn.core.lightingcontroller.LeaderElectionBusObject;
 import com.at4wireless.alljoyn.core.lightingcontroller.LeaderElectionSignalHandler;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class LightingControllerService.
+ */
 public class LightingControllerService {
 
+	/** The pass. */
 	boolean pass=true;
+	
+	/** The inconc. */
 	boolean inconc=false;
 	// Logging constants
+	/** The tag. */
 	private  final String TAG     = "LSF_ControllerTestSuite";
+	
+	/** The logger. */
 	private  final WindowsLoggerImpl logger  = new WindowsLoggerImpl(TAG);
 
 	// AJ testing constants
+	/** The bus application name. */
 	private  final String BUS_APPLICATION_NAME            = "ControllerTestSuite";
+	
+	/** The announcement timeout in seconds. */
 	private  long ANNOUNCEMENT_TIMEOUT_IN_SECONDS   = 30;
+	
+	/** The session close timeout in seconds. */
 	private  long SESSION_CLOSE_TIMEOUT_IN_SECONDS  = 5;
 
 	// Controller service constants
+	/** The controller bus object path. */
 	private  final String CONTROLLER_BUS_OBJECT_PATH          = "/org/allseen/LSF/ControllerService";
+	
+	/** The leader election bus object path. */
 	private  final String LEADER_ELECTION_BUS_OBJECT_PATH     = "/org/allseen/LeaderElectionAndStateSync";
+	
+	/** The controllerservice interface name. */
 	private  final String CONTROLLERSERVICE_INTERFACE_NAME    = "org.allseen.LSF.ControllerService";
+	
+	/** The lamp interface name. */
 	private  final String LAMP_INTERFACE_NAME                 = "org.allseen.LSF.ControllerService.Lamp";
+	
+	/** The lampgroup interface name. */
 	private  final String LAMPGROUP_INTERFACE_NAME            = "org.allseen.LSF.ControllerService.LampGroup";
+	
+	/** The preset interface name. */
 	private  final String PRESET_INTERFACE_NAME               = "org.allseen.LSF.ControllerService.Preset";
+	
+	/** The scene interface name. */
 	private  final String SCENE_INTERFACE_NAME                = "org.allseen.LSF.ControllerService.Scene";
+	
+	/** The masterscene interface name. */
 	private  final String MASTERSCENE_INTERFACE_NAME          = "org.allseen.LSF.ControllerService.MasterScene";
+	
+	/** The leader election interface name. */
 	private  final String LEADER_ELECTION_INTERFACE_NAME      = "org.allseen.LeaderElectionAndStateSync";
 
+	/** The IXITL c_ controller service version. */
 	String IXITLC_ControllerServiceVersion=null;
+	
+	/** The IXITL c_ controller service lamp version. */
 	String IXITLC_ControllerServiceLampVersion=null;
+	
+	/** The IXITL c_ controller service lamp group version. */
 	String IXITLC_ControllerServiceLampGroupVersion=null;
+	
+	/** The IXITL c_ controller service preset version. */
 	String IXITLC_ControllerServicePresetVersion=null;
+	
+	/** The IXITL c_ controller service scene version. */
 	String IXITLC_ControllerServiceSceneVersion=null;
+	
+	/** The IXITL c_ controller service master scene version. */
 	String IXITLC_ControllerServiceMasterSceneVersion=null;
+	
+	/** The IXITL c_ leader election and state sync version. */
 	String IXITLC_LeaderElectionAndStateSyncVersion=null;
 	//
+	/** The IXITC o_ app id. */
 	String IXITCO_AppId=null;
+	
+	/** The IXITC o_ default language. */
 	String IXITCO_DefaultLanguage=null;
+	
+	/** The IXITC o_ device id. */
 	String IXITCO_DeviceId=null;
 	//
+	/** The ICSL c_ lighting controller service framework. */
 	boolean ICSLC_LightingControllerServiceFramework=false;
+	
+	/** The ICSL c_ controller service interface. */
 	boolean ICSLC_ControllerServiceInterface=false;
+	
+	/** The ICSL c_ controller service lamp interface. */
 	boolean ICSLC_ControllerServiceLampInterface=false;
+	
+	/** The ICSL c_ controller service lamp group interface. */
 	boolean ICSLC_ControllerServiceLampGroupInterface=false;
+	
+	/** The ICSL c_ controller service preset interface. */
 	boolean ICSLC_ControllerServicePresetInterface=false;
+	
+	/** The ICSL c_ controller service scene interface. */
 	boolean ICSLC_ControllerServiceSceneInterface=false;
+	
+	/** The ICSL c_ controller service master scene interface. */
 	boolean ICSLC_ControllerServiceMasterSceneInterface=false;
+	
+	/** The ICSL c_ leader election and state sync interface. */
 	boolean ICSLC_LeaderElectionAndStateSyncInterface=false;
 	// Ivars
+	/** The service helper. */
 	private  ControllerServiceHelper serviceHelper;
+	
+	/** The device about announcement. */
 	private  AboutAnnouncementDetails deviceAboutAnnouncement;
 
+	/** The dut app id. */
 	private  UUID dutAppId;
+	
+	/** The dut device id. */
 	private  String dutDeviceId;
+	
+	/** The signal listener. */
 	private  ControllerServiceSignalListener signalListener;
 
 	// Objects for org.allseen.LSF.ControllerService
+	/** The controller service bus object. */
 	private  ControllerServiceBusObject controllerServiceBusObject;
+	
+	/** The controller service signal handler. */
 	private  ControllerServiceSignalHandler controllerServiceSignalHandler;
+	
+	/** The controller iface. */
 	private  ControllerServiceBusInterface controllerIface;
 
 	// Object for org.allseen.LSF.ControllerService.Lamp
+	/** The lamp bus object. */
 	private  ControllerServiceLampBusObject lampBusObject;
+	
+	/** The lamp signal handler. */
 	private  ControllerServiceLampSignalHandler lampSignalHandler;
+	
+	/** The lamp iface. */
 	private  ControllerServiceLampBusInterface lampIface;
 
 	// Object for org.allseen.LSF.ControllerService.LampGroup
+	/** The lamp group bus object. */
 	private  ControllerServiceLampGroupBusObject lampGroupBusObject;
+	
+	/** The lamp group signal handler. */
 	private  ControllerServiceLampGroupSignalHandler lampGroupSignalHandler;
+	
+	/** The lamp group iface. */
 	private  ControllerServiceLampGroupBusInterface lampGroupIface;
 
 	// Object for org.allseen.LSF.ControllerService.Preset
+	/** The preset bus object. */
 	private  ControllerServicePresetBusObject presetBusObject;
+	
+	/** The preset signal handler. */
 	private  ControllerServicePresetSignalHandler presetSignalHandler;
+	
+	/** The preset iface. */
 	private  ControllerServicePresetBusInterface presetIface;
 
 	// Object for org.allseen.LSF.ControllerService.Scene
+	/** The scene bus object. */
 	private  ControllerServiceSceneBusObject sceneBusObject;
+	
+	/** The scene signal handler. */
 	private  ControllerServiceSceneSignalHandler sceneSignalHandler;
+	
+	/** The scene iface. */
 	private  ControllerServiceSceneBusInterface sceneIface;
 
 	// Object for org.allseen.LSF.ControllerService.MasterScene
+	/** The master scene bus object. */
 	private  ControllerServiceMasterSceneBusObject masterSceneBusObject;
+	
+	/** The master scene signal handler. */
 	private  ControllerServiceMasterSceneSignalHandler masterSceneSignalHandler;
+	
+	/** The master scene iface. */
 	private  ControllerServiceMasterSceneBusInterface masterSceneIface;
 
 	// Object for org.allseen.LeaderElectionAndStateSync
+	/** The leader election bus object. */
 	private  LeaderElectionBusObject leaderElectionBusObject;
+	
+	/** The leader election signal handler. */
 	private  LeaderElectionSignalHandler leaderElectionSignalHandler;
+	
+	/** The leader election iface. */
 	private  LeaderElectionBusInterface leaderElectionIface;
 
 
@@ -180,6 +303,31 @@ public class LightingControllerService {
 
 
 
+	/**
+	 * Instantiates a new lighting controller service.
+	 *
+	 * @param testCase the test case
+	 * @param iCSLC_LightingControllerServiceFramework the i csl c_ lighting controller service framework
+	 * @param iCSLC_ControllerServiceInterface the i csl c_ controller service interface
+	 * @param iCSLC_ControllerServiceLampInterface the i csl c_ controller service lamp interface
+	 * @param iCSLC_ControllerServiceLampGroupInterface the i csl c_ controller service lamp group interface
+	 * @param iCSLC_ControllerServicePresetInterface the i csl c_ controller service preset interface
+	 * @param iCSLC_ControllerServiceSceneInterface the i csl c_ controller service scene interface
+	 * @param iCSLC_ControllerServiceMasterSceneInterface the i csl c_ controller service master scene interface
+	 * @param iCSLC_LeaderElectionAndStateSyncInterface the i csl c_ leader election and state sync interface
+	 * @param iXITCO_AppId the i xitc o_ app id
+	 * @param iXITCO_DeviceId the i xitc o_ device id
+	 * @param iXITCO_DefaultLanguage the i xitc o_ default language
+	 * @param iXITLC_ControllerServiceVersion the i xitl c_ controller service version
+	 * @param iXITLC_ControllerServiceLampVersion the i xitl c_ controller service lamp version
+	 * @param iXITLC_ControllerServiceLampGroupVersion the i xitl c_ controller service lamp group version
+	 * @param iXITLC_ControllerServicePresetVersion the i xitl c_ controller service preset version
+	 * @param iXITLC_ControllerServiceSceneVersion the i xitl c_ controller service scene version
+	 * @param iXITLC_ControllerServiceMasterSceneVersion the i xitl c_ controller service master scene version
+	 * @param iXITLC_LeaderElectionAndStateSyncVersion the i xitl c_ leader election and state sync version
+	 * @param gPCO_AnnouncementTimeout the g pc o_ announcement timeout
+	 * @param gPLC_SessionClose the g pl c_ session close
+	 */
 	public LightingControllerService(String testCase,
 			boolean iCSLC_LightingControllerServiceFramework,
 			boolean iCSLC_ControllerServiceInterface,
@@ -238,6 +386,12 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Run test case.
+	 *
+	 * @param testCase the test case
+	 * @throws Exception the exception
+	 */
 	public  void runTestCase(String testCase) throws Exception{
 		setUp();
 		logger.info("Running testcase: "+testCase);
@@ -315,6 +469,11 @@ public class LightingControllerService {
 		tearDown();
 	}
 
+	/**
+	 * Sets the up.
+	 *
+	 * @throws Exception the exception
+	 */
 	private  void setUp() throws Exception {
 		
 		System.out.println("====================================================");
@@ -344,6 +503,12 @@ public class LightingControllerService {
 		System.out.println("====================================================");
 	} 
 
+	/**
+	 * Inits the service helper.
+	 *
+	 * @throws BusException the bus exception
+	 * @throws Exception the exception
+	 */
 	private void initServiceHelper() throws BusException, Exception
 	{
 		releaseServiceHelper();
@@ -406,6 +571,9 @@ public class LightingControllerService {
 		connectControllerService(deviceAboutAnnouncement);
 	}
 
+	/**
+	 * Inits the proxy bus objects.
+	 */
 	private void initProxyBusObjects()
 	{
 		ProxyBusObject proxy = null;
@@ -446,6 +614,9 @@ public class LightingControllerService {
 		leaderElectionIface = proxy.getInterface(LeaderElectionBusInterface.class);
 	}
 
+	/**
+	 * Release service helper.
+	 */
 	private  void releaseServiceHelper()
 	{
 		try
@@ -472,18 +643,35 @@ public class LightingControllerService {
 		}
 	}
 
+	/**
+	 * Wait for next device announcement.
+	 *
+	 * @return the about announcement details
+	 * @throws Exception the exception
+	 */
 	private  AboutAnnouncementDetails waitForNextDeviceAnnouncement() throws Exception
 	{
 		logger.info("Waiting for About annoucement");
 		return serviceHelper.waitForNextDeviceAnnouncement(ANNOUNCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS, true);
 	}
 
+	/**
+	 * Connect controller service.
+	 *
+	 * @param aboutAnnouncement the about announcement
+	 * @throws Exception the exception
+	 */
 	private  void connectControllerService(AboutAnnouncementDetails aboutAnnouncement) throws Exception
 	{
 		ServiceAvailabilityHandler serviceAvailabilityHandler = new ServiceAvailabilityHandler();
 		serviceHelper.connect(aboutAnnouncement);
 	}
 
+	/**
+	 * Wait for session to close.
+	 *
+	 * @throws Exception the exception
+	 */
 	private  void waitForSessionToClose() throws Exception
 	{
 		logger.info("Waiting for session to close");
@@ -502,6 +690,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_02_ version field.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testLSF_Controller_v1_02_VersionField() throws Exception
 	{
 		try
@@ -547,6 +740,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_03_ lighting reset.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testLSF_Controller_v1_03_LightingReset() throws Exception
 	{
 		try
@@ -567,6 +765,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_04_ lamp info.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_04_LampInfo() throws Exception
 	{
 		try
@@ -596,6 +799,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_05_ lamp name.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_05_LampName() throws Exception
 	{
 		try
@@ -626,6 +834,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_06_ lamp details.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_06_LampDetails() throws Exception
 	{
 		try
@@ -651,6 +864,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_07_ lamp parameters.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_07_LampParameters() throws Exception
 	{
 		try
@@ -686,6 +904,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_08_ lamp state fields.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_08_LampStateFields() throws Exception
 	{
 		try
@@ -721,6 +944,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_09_ lamp state transition.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_09_LampStateTransition() throws Exception
 	{
 		try
@@ -771,6 +999,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_10_ lamp state pulse.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_10_LampStatePulse() throws Exception
 	{
 		try
@@ -795,6 +1028,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_11_ lamp state presets.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_11_LampStatePresets() throws Exception
 	{
 		try
@@ -824,6 +1062,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_12_ lamp reset.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_12_LampReset() throws Exception
 	{
 		try
@@ -857,6 +1100,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_13_ lamp faults.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_13_LampFaults() throws Exception
 	{
 		// make sure you can call GetLamp faults and ClearLamp faults without
@@ -882,6 +1130,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_14_ lamp group crud.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_14_LampGroupCRUD() throws Exception
 	{
 		try
@@ -940,6 +1193,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_15_ lamp group name.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_15_LampGroupName() throws Exception
 	{
 		try
@@ -969,6 +1227,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_16_ lamp group state transition.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_16_LampGroupStateTransition() throws Exception
 	{
 		try
@@ -1009,6 +1272,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_17_ lamp group state pulse.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_17_LampGroupStatePulse() throws Exception
 	{
 		try
@@ -1033,6 +1301,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_18_ lamp group reset.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_18_LampGroupReset() throws Exception
 	{
 		try
@@ -1068,6 +1341,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_19_ lamp group state presets.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_19_LampGroupStatePresets() throws Exception
 	{
 		try
@@ -1098,6 +1376,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_20_ default lamp state.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_20_DefaultLampState() throws Exception
 	{
 		try
@@ -1131,6 +1414,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_21_ preset crud.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_21_PresetCRUD() throws Exception
 	{
 		try
@@ -1191,6 +1479,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_22_ preset name change.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_22_PresetNameChange() throws Exception
 	{
 		try
@@ -1223,6 +1516,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_23_ scene create.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_23_SceneCreate() throws Exception
 	{
 		try
@@ -1244,6 +1542,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_24_ scene update delete.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_24_SceneUpdateDelete() throws Exception
 	{
 		try
@@ -1284,6 +1587,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_25_ scene apply.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_25_SceneApply() throws Exception
 	{
 		try
@@ -1305,6 +1613,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_26_ scene name changed.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_26_SceneNameChanged() throws Exception
 	{
 		try
@@ -1332,6 +1645,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_27_ master scene create.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_27_MasterSceneCreate() throws Exception
 	{
 		try
@@ -1352,6 +1670,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_28_ master scene update delete.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_28_MasterSceneUpdateDelete() throws Exception
 	{
 		try
@@ -1388,6 +1711,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_29_ master scene apply.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_29_MasterSceneApply() throws Exception
 	{
 		try
@@ -1409,6 +1737,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_30_ master scene name changed.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_30_MasterSceneNameChanged() throws Exception
 	{
 		try
@@ -1436,6 +1769,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_31_ leader election blobs.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_31_LeaderElectionBlobs() throws Exception
 	{
 		try
@@ -1460,6 +1798,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_32_ leader election blob changed.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_32_LeaderElectionBlobChanged() throws Exception
 	{
 		try
@@ -1479,6 +1822,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Test ls f_ controller_v1_33_ leader election overthrow.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testLSF_Controller_v1_33_LeaderElectionOverthrow() throws Exception
 	{
 		try
@@ -1502,9 +1850,10 @@ public class LightingControllerService {
 	private  void verifyInterfacesFromAnnouncement() throws Exception
 	{
 		Set<String> interfacesSeen = new HashSet<String>();
-		ControllerInterfaceValidator ciValidator = ControllerInterfaceValidator.getValidator();
-		BusIntrospector introspector = serviceHelper.getBusIntrospector();
 
+		ControllerInterfaceValidator ciValidator = ControllerInterfaceValidator.getValidator();
+
+		BusIntrospector introspector = serviceHelper.getBusIntrospector();
 		// Validate interfaces from about announcement
 		for (BusObjectDescription description : deviceAboutAnnouncement.getObjectDescriptions())
 		{
@@ -1528,7 +1877,6 @@ public class LightingControllerService {
 				}
 			}
 		}
-
 		// Ensure all expected interfaces were found that were supposed to be
 		List<String> expectedInterfaces = Arrays.asList(CONTROLLERSERVICE_INTERFACE_NAME, LAMP_INTERFACE_NAME,
 				LAMPGROUP_INTERFACE_NAME, PRESET_INTERFACE_NAME,
@@ -1537,6 +1885,7 @@ public class LightingControllerService {
 		{
 			if (!interfacesSeen.contains(iface))
 			{
+				
 				fail(String.format("Failed to find interface %s", iface));
 				inconc = true;
 			}
@@ -1544,6 +1893,11 @@ public class LightingControllerService {
 	}
 
 	// Used in LSF_Controller-v1-01
+	/**
+	 * Verify leader election and state sync interface.
+	 *
+	 * @throws Exception the exception
+	 */
 	private  void verifyLeaderElectionAndStateSyncInterface() throws Exception
 	{
 		// Validate LeaderElection interface which is not announced
@@ -1565,6 +1919,12 @@ public class LightingControllerService {
 	}
 
 	// Fetch any one lamp that is connected to the controller service
+	/**
+	 * Gets the connected lamp.
+	 *
+	 * @return the connected lamp
+	 * @throws BusException the bus exception
+	 */
 	private  String getConnectedLamp() throws BusException
 	{
 		GetAllLampIDsValues values = lampIface.GetAllLampIDs();
@@ -1574,6 +1934,16 @@ public class LightingControllerService {
 	}
 
 	// Create a lamp state map based on the input args
+	/**
+	 * New lamp state.
+	 *
+	 * @param onOff the on off
+	 * @param brightness the brightness
+	 * @param hue the hue
+	 * @param saturation the saturation
+	 * @param colorTemp the color temp
+	 * @return the map
+	 */
 	private    Map<String,Variant> newLampState(boolean onOff, long brightness, int hue, int saturation, int colorTemp)
 	{
 		Map<String, Variant> lampState = new HashMap<String, Variant>();
@@ -1587,6 +1957,12 @@ public class LightingControllerService {
 	}
 
 	// Create a group with the first lamp seen
+	/**
+	 * Creates the group.
+	 *
+	 * @return the string
+	 * @throws Exception the exception
+	 */
 	private   String createGroup() throws Exception
 	{
 		// create group
@@ -1600,6 +1976,12 @@ public class LightingControllerService {
 	}
 
 	// Create a scene with a single transition effect element.
+	/**
+	 * Creates the transition scene.
+	 *
+	 * @return the string
+	 * @throws Exception the exception
+	 */
 	private   String createTransitionScene() throws Exception
 	{
 		String lampID = getConnectedLamp();
@@ -1626,6 +2008,12 @@ public class LightingControllerService {
 	}
 
 	// Create a scene with a single pulse effect element.
+	/**
+	 * Creates the pulse scene.
+	 *
+	 * @return the string
+	 * @throws Exception the exception
+	 */
 	private   String createPulseScene() throws Exception
 	{
 		String lampID = getConnectedLamp();
@@ -1654,6 +2042,12 @@ public class LightingControllerService {
 	}
 
 	// Create a master scene which contains a single scene within it
+	/**
+	 * Creates the master scene.
+	 *
+	 * @return the string
+	 * @throws Exception the exception
+	 */
 	private  String createMasterScene() throws Exception
 	{
 		String pulseSceneID = createPulseScene();
@@ -1666,6 +2060,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Tear down.
+	 *
+	 * @throws Exception the exception
+	 */
 	protected  void tearDown() throws Exception
 	{
 		System.out.println("====================================================");
@@ -1677,6 +2076,11 @@ public class LightingControllerService {
 	}
 
 
+	/**
+	 * Fail.
+	 *
+	 * @param msg the msg
+	 */
 	private  void fail(String msg) {
 		// TODO Auto-generated method stub
 
@@ -1685,6 +2089,13 @@ public class LightingControllerService {
 
 	}
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param errorMsg the error msg
+	 * @param string1 the string1
+	 * @param string2 the string2
+	 */
 	private  void assertEquals(String errorMsg,
 			String string1, String string2) {
 
@@ -1698,6 +2109,13 @@ public class LightingControllerService {
 
 
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param errorMsg the error msg
+	 * @param int1 the int1
+	 * @param int2 the int2
+	 */
 	private  void assertEquals(String errorMsg,
 			int  int1, int int2) {
 		if(!(int1==int2)){
@@ -1708,6 +2126,12 @@ public class LightingControllerService {
 
 	}
 
+	/**
+	 * Assert true.
+	 *
+	 * @param errorMsg the error msg
+	 * @param bool the bool
+	 */
 	private  void assertTrue(String errorMsg,
 			boolean bool) {
 
@@ -1719,13 +2143,17 @@ public class LightingControllerService {
 
 	}
 
+	/**
+	 * Gets the verdict.
+	 *
+	 * @return the verdict
+	 */
 	public String getVerdict() {
 
 		String verdict=null;
 		if(inconc){
 			verdict="INCONC";
-		}
-		if(pass){
+		}else if(pass){
 			verdict="PASS";
 		}else if(!pass){
 			verdict="FAIL";

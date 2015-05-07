@@ -24,6 +24,7 @@ import org.alljoyn.bus.annotation.BusSignal;
 import org.allseen.timeservice.TimeServiceConst;
 import org.allseen.timeservice.server.TimeAuthorityClock;
 
+// TODO: Auto-generated Javadoc
 /**
  * Time Service Time Authority interface. {@link BusObject} implementing this
  * interface declares that it is a Time Authority.

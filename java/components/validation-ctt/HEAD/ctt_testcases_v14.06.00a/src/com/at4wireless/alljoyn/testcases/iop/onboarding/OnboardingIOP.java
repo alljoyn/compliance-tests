@@ -1,3 +1,18 @@
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *    Permission to use, copy, modify, and/or distribute this software for any
+ *    purpose with or without fee is hereby granted, provided that the above
+ *    copyright notice and this permission notice appear in all copies.
+ *
+ *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.at4wireless.alljoyn.testcases.iop.onboarding;
 
 import javax.swing.JFrame;
@@ -6,14 +21,32 @@ import javax.swing.JOptionPane;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.iop.IOPMessage;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OnboardingIOP.
+ */
 public class OnboardingIOP {
 
+	/** The frame. */
 	private  JFrame frame;
+	
+	/** The pass. */
 	Boolean pass=true;
+	
+	/** The tag. */
 	protected  final String TAG = "OnboardingIOPTestSuite";
+	
+	/** The logger. */
 	private  final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	
+	/** The message. */
 	IOPMessage message=new IOPMessage(logger);
 
+	/**
+	 * Instantiates a new onboarding iop.
+	 *
+	 * @param testCase the test case
+	 */
 	public OnboardingIOP(String testCase) {
 		frame=new JFrame();
 
@@ -29,6 +62,11 @@ public class OnboardingIOP {
 
 
 
+	/**
+	 * The main method.
+	 *
+	 * @param arg the arguments
+	 */
 	public  void main(String arg[]){
 
 		String testCase="IOP_Onboarding-v1-07";
@@ -47,6 +85,12 @@ public class OnboardingIOP {
 
 
 
+	/**
+	 * Run test case.
+	 *
+	 * @param testCase the test case
+	 * @throws Exception the exception
+	 */
 	public  void runTestCase(String testCase) throws Exception{
 		frame=new JFrame();
 		showPreconditions();		
@@ -73,6 +117,9 @@ public class OnboardingIOP {
 
 
 
+	/**
+	 * IOP onboarding_v1_01.
+	 */
 	private  void IOP_Onboarding_v1_01() {
 		// TODO Auto-generated method stub
 		String testBed="TBAD1";
@@ -103,6 +150,9 @@ public class OnboardingIOP {
 
 
 
+	/**
+	 * IOP onboarding_v1_02.
+	 */
 	private  void IOP_Onboarding_v1_02() {
 		// TODO Auto-generated method stub
 		String testBed="TBAD1";
@@ -126,6 +176,9 @@ public class OnboardingIOP {
 
 
 
+	/**
+	 * IOP onboarding_v1_03.
+	 */
 	private  void IOP_Onboarding_v1_03() {
 		// TODO Auto-generated method stub
 		String testBed="TBAD1";
@@ -189,6 +242,9 @@ public class OnboardingIOP {
 
 
 
+	/**
+	 * IOP onboarding_v1_04.
+	 */
 	private  void IOP_Onboarding_v1_04() {
 		// TODO Auto-generated method stub
 		String testBed="TBAD1";
@@ -253,6 +309,9 @@ public class OnboardingIOP {
 
 
 
+	/**
+	 * IOP onboarding_v1_05.
+	 */
 	private  void IOP_Onboarding_v1_05() {
 		// TODO Auto-generated method stub
 		String testBed="TBAD1";
@@ -435,6 +494,9 @@ public class OnboardingIOP {
 
 
 
+	/**
+	 * IOP onboarding_v1_06.
+	 */
 	private  void IOP_Onboarding_v1_06() {
 		// TODO Auto-generated method stub
 		String testBed="TBAD1";
@@ -480,6 +542,9 @@ public class OnboardingIOP {
 
 
 
+	/**
+	 * IOP onboarding_v1_07.
+	 */
 	private  void IOP_Onboarding_v1_07() {
 		// TODO Auto-generated method stub
 
@@ -607,6 +672,9 @@ public class OnboardingIOP {
 
 
 
+	/**
+	 * Show preconditions.
+	 */
 	private  void showPreconditions() {
 		frame.setTitle("Preconditions");
 		String msg="Step 1) The passcode for the DUT is set to the default passcode \"000000\""
@@ -627,6 +695,11 @@ public class OnboardingIOP {
 
 
 
+	/**
+	 * Fail.
+	 *
+	 * @param msg the msg
+	 */
 	private  void fail(String msg) {
 
 
@@ -638,6 +711,11 @@ public class OnboardingIOP {
 
 
 
+	/**
+	 * Gets the verdict.
+	 *
+	 * @return the verdict
+	 */
 	public String getVerdict() {
 
 		String verdict=null;

@@ -1,7 +1,17 @@
-/*Author: AT4 wireless
- *Date: 2014/12/01
- *Version: 1
- *Description: Our Implementation of PropertyStore
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *    Permission to use, copy, modify, and/or distribute this software for any
+ *    purpose with or without fee is hereby granted, provided that the above
+ *    copyright notice and this permission notice appear in all copies.
+ *
+ *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 package com.at4wireless.alljoyn.core.commons;
 
@@ -18,6 +28,10 @@ import org.alljoyn.services.common.PropertyStoreException;
 
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PropertyStoreImpl.
+ */
 public class PropertyStoreImpl  implements PropertyStore
 {
 	
@@ -51,6 +65,9 @@ public class PropertyStoreImpl  implements PropertyStore
 
 
 
+	/**
+	 * Instantiates a new property store impl.
+	 */
 	public PropertyStoreImpl() {
 		// TODO Auto-generated constructor stub
 	}
@@ -127,6 +144,13 @@ public class PropertyStoreImpl  implements PropertyStore
 
 
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param aboutkey the aboutkey
+	 * @param value the value
+	 * @param lang the lang
+	 */
 	public void setValue(String aboutkey, String value, String lang) {
 		// TODO Auto-generated method stub
 		
@@ -140,6 +164,13 @@ public class PropertyStoreImpl  implements PropertyStore
 
 
 
+	/**
+	 * Sets the value.
+	 *
+	 * @param aboutkeys the aboutkeys
+	 * @param appId the app id
+	 * @param lang the lang
+	 */
 	public void setValue(String aboutkeys, UUID appId, String lang) {
 		// TODO Auto-generated method stub
 		

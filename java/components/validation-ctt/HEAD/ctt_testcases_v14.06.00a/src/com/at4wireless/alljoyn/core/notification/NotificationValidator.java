@@ -1,3 +1,18 @@
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *    Permission to use, copy, modify, and/or distribute this software for any
+ *    purpose with or without fee is hereby granted, provided that the above
+ *    copyright notice and this permission notice appear in all copies.
+ *
+ *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.at4wireless.alljoyn.core.notification;
 
 import java.net.MalformedURLException;
@@ -19,31 +34,73 @@ import com.at4wireless.alljoyn.core.notification.NotificationHandler;
 
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class NotificationValidator.
+ */
 public class NotificationValidator implements NotificationReceiver, Runnable
 {
 	
     
+    /** The IXIT n_ notification version. */
     private static int IXITN_NotificationVersion;
+    
+    /** The ICS n_ rich icon url. */
     private static boolean ICSN_RichIconUrl;
+    
+    /** The ICS n_ rich audio url. */
     private static boolean  ICSN_RichAudioUrl;
+    
+    /** The ICS n_ resp object path. */
     private static boolean  ICSN_RespObjectPath;
+    
+    /** The Constant TAG. */
     private static final String TAG = "NotificationValidator";
+	
+	/** The Constant logger. */
 	private static final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+    
+    /** The notification counter. */
     private AtomicInteger notificationCounter = new AtomicInteger();
+    
+    /** The bus introspector. */
     private BusIntrospector busIntrospector;
+    
+    /** The device id. */
     String deviceId;
+    
+    /** The app id. */
     UUID appId;
     
+    /** The notification validation exception handler. */
     private NotificationValidationExceptionHandler notificationValidationExceptionHandler;
+    
+    /** The device about announcement. */
     private AboutAnnouncementDetails deviceAboutAnnouncement;
     
+    /** The notification handler. */
     private NotificationHandler notificationHandler;
 
+    /**
+     * The Interface NotificationValidationExceptionHandler.
+     */
     public interface NotificationValidationExceptionHandler
     {
+        
+        /**
+         * On notification validation exception.
+         *
+         * @param exception the exception
+         */
         void onNotificationValidationException(Exception exception);
     }
 
+    /**
+     * Instantiates a new notification validator.
+     *
+     * @param dutDeviceId the dut device id
+     * @param dutAppIddeviceId the dut app iddevice id
+     */
     public NotificationValidator(String dutDeviceId, UUID dutAppIddeviceId)
     {
     	deviceId=dutDeviceId;
@@ -53,11 +110,23 @@ public class NotificationValidator implements NotificationReceiver, Runnable
    
     }
 
+    /**
+     * Gets the notification handler.
+     *
+     * @return the notification handler
+     */
     protected NotificationHandler getNotificationHandler()
     {
         return new NotificationHandler();
     }
 
+    /**
+     * Initialize for device.
+     *
+     * @param deviceAboutAnnouncement the device about announcement
+     * @param busIntrospector the bus introspector
+     * @param notificationValidationExceptionHandler the notification validation exception handler
+     */
     public void initializeForDevice(AboutAnnouncementDetails deviceAboutAnnouncement, BusIntrospector busIntrospector,
             NotificationValidationExceptionHandler notificationValidationExceptionHandler)
     {
@@ -66,17 +135,26 @@ public class NotificationValidator implements NotificationReceiver, Runnable
         this.notificationValidationExceptionHandler = notificationValidationExceptionHandler;
     }
 
+    /* (non-Javadoc)
+     * @see org.alljoyn.ns.NotificationReceiver#receive(org.alljoyn.ns.Notification)
+     */
     @Override
     public void receive(Notification notification)
     {
         notificationHandler.receive(notification);
     }
 
+    /* (non-Javadoc)
+     * @see org.alljoyn.ns.NotificationReceiver#dismiss(int, java.util.UUID)
+     */
     @Override
     public void dismiss(int arg0, UUID arg1)
     {
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Runnable#run()
+     */
     @Override
     public void run()
     {
@@ -196,6 +274,13 @@ public class NotificationValidator implements NotificationReceiver, Runnable
     
     
 
+    /**
+     * Assert not null.
+     *
+     * @param errorMsg the error msg
+     * @param messageType the message type
+     * @throws Exception the exception
+     */
     private void assertNotNull(String errorMsg,
 			NotificationMessageType messageType) throws Exception {
 		// TODO Auto-generated method stub
@@ -208,6 +293,14 @@ public class NotificationValidator implements NotificationReceiver, Runnable
 		
 	}
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param errorMsg the error msg
+	 * @param appName the app name
+	 * @param notifAppName the notif app name
+	 * @throws Exception the exception
+	 */
 	private void assertEquals(String errorMsg, String appName, String notifAppName) throws Exception {
 		// TODO Auto-generated method stub
 		if(appName.equals(notifAppName)){
@@ -218,6 +311,14 @@ public class NotificationValidator implements NotificationReceiver, Runnable
 		}
 	}
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param errorMsg the error msg
+	 * @param notificationServiceVersion the notification service version
+	 * @param version the version
+	 * @throws Exception the exception
+	 */
 	private void assertEquals(String errorMsg, int notificationServiceVersion,
 			int version) throws Exception {
 		// TODO Auto-generated method stub
@@ -228,11 +329,24 @@ public class NotificationValidator implements NotificationReceiver, Runnable
 		}
 	}
 
+	/**
+	 * Gets the number of notifications received.
+	 *
+	 * @return the number of notifications received
+	 */
 	public int getNumberOfNotificationsReceived()
     {
         return notificationCounter.get();
     }
 
+	/**
+	 * Sets the test parameters.
+	 *
+	 * @param iCSN_RichIconUrl the i cs n_ rich icon url
+	 * @param iCSN_RichAudioUrl the i cs n_ rich audio url
+	 * @param iCSN_RespObjectPath the i cs n_ resp object path
+	 * @param iXITN_NotificationVersion the i xit n_ notification version
+	 */
 	public void setTestParameters(boolean iCSN_RichIconUrl ,boolean iCSN_RichAudioUrl,boolean iCSN_RespObjectPath, String iXITN_NotificationVersion) {
 		// TODO Auto-generated method stub
 		

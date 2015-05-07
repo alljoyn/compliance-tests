@@ -1,18 +1,18 @@
-/*******************************************************************************
- *  Copyright (c) 2013 - 2014, AllSeen Alliance. All rights reserved.
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
  *
- *     Permission to use, copy, modify, and/or distribute this software for any
- *     purpose with or without fee is hereby granted, provided that the above
- *     copyright notice and this permission notice appear in all copies.
+ *    Permission to use, copy, modify, and/or distribute this software for any
+ *    purpose with or without fee is hereby granted, provided that the above
+ *    copyright notice and this permission notice appear in all copies.
  *
- *     THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
- *     WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
- *     MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
- *     ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
- *     WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
- *     ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
- *     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- *******************************************************************************/
+ *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.at4wireless.alljoyn.core.introspection.bean;
 
 import java.util.ArrayList;
@@ -20,27 +20,51 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class IntrospectionMethod.
+ */
 public class IntrospectionMethod extends IntrospectionBaseTag implements Comparable<IntrospectionMethod>
 {
+    
+    /** The args. */
     private List<IntrospectionArg> args = new ArrayList<IntrospectionArg>();
+    
+    /** The annotations. */
     private Set<IntrospectionAnnotation> annotations = new TreeSet<IntrospectionAnnotation>();
 
+    /**
+     * Gets the args.
+     *
+     * @return the args
+     */
     public List<IntrospectionArg> getArgs()
     {
         return args;
     }
 
+    /**
+     * Gets the annotations.
+     *
+     * @return the annotations
+     */
     public Set<IntrospectionAnnotation> getAnnotations()
     {
         return annotations;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
     @Override
     public int compareTo(IntrospectionMethod introspectionMethod)
     {
         return getName().compareTo(introspectionMethod.getName());
     }
 
+    /* (non-Javadoc)
+     * @see com.at4wireless.alljoyn.core.introspection.bean.IntrospectionBaseTag#hashCode()
+     */
     @Override
     public int hashCode()
     {
@@ -52,6 +76,9 @@ public class IntrospectionMethod extends IntrospectionBaseTag implements Compara
         return result;
     }
 
+    /* (non-Javadoc)
+     * @see com.at4wireless.alljoyn.core.introspection.bean.IntrospectionBaseTag#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object obj)
     {
@@ -94,6 +121,9 @@ public class IntrospectionMethod extends IntrospectionBaseTag implements Compara
         return true;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString()
     {

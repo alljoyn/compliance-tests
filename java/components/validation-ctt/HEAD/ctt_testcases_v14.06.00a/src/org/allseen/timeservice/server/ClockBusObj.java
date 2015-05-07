@@ -19,6 +19,7 @@ package org.allseen.timeservice.server;
 import org.allseen.timeservice.TimeServiceException;
 import org.allseen.timeservice.ajinterfaces.Clock;
 
+// TODO: Auto-generated Javadoc
 /**
  * This class implements {@link Clock} interface and realizes AllJoyn
  * communication with this clock.

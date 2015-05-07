@@ -1,39 +1,50 @@
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *    Permission to use, copy, modify, and/or distribute this software for any
+ *    purpose with or without fee is hereby granted, provided that the above
+ *    copyright notice and this permission notice appear in all copies.
+ *
+ *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.at4wireless.alljoyn.testcases.iop.about;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dialog;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
-
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.iop.IOPMessage;
 
+
+/**
+ * The Class AboutIOP.
+ */
 public class AboutIOP {
 	
+	/** The dialog. */
 	private  JDialog dialog;
-	 Boolean pass=true;
+	 
+ 	/** The pass. */
+ 	Boolean pass=true;
+	
+	/** The tag. */
 	protected  final String TAG = "AboutIOPTestSuite";
+	
+	/** The logger. */
 	private  final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	
+	/** The message. */
 	IOPMessage message=new IOPMessage(logger);
 
+	/**
+	 * Instantiates a new about iop.
+	 *
+	 * @param testCase the test case
+	 */
 	public AboutIOP(String testCase) {
 
 		dialog=new JDialog();
@@ -50,6 +61,11 @@ public class AboutIOP {
 	
 	
 	
+	/**
+	 * The main method.
+	 *
+	 * @param arg the arguments
+	 */
 	public  void main(String arg[]){
 		
 		String testCase="IOP_About-v1-03";
@@ -68,6 +84,12 @@ public class AboutIOP {
 	
 	
 	
+	/**
+	 * Run test case.
+	 *
+	 * @param testCase the test case
+	 * @throws Exception the exception
+	 */
 	public  void runTestCase(String testCase) throws Exception{
 		
 		showPreconditions();		
@@ -96,6 +118,9 @@ public class AboutIOP {
 
 	
 	
+	/**
+	 * IOP about_v1_01.
+	 */
 	private  void IOP_About_v1_01() {
 		
 		String testBed="TBAD1";
@@ -135,6 +160,9 @@ public class AboutIOP {
 	
  
 
+	/**
+	 * IOP about_v1_02.
+	 */
 	private  void IOP_About_v1_02() {
 
 		String testBed="TBAD1";
@@ -189,6 +217,9 @@ public class AboutIOP {
 	}
 	
 
+	/**
+	 * IOP about_v1_03.
+	 */
 	private  void IOP_About_v1_03() {
 
 		String testBed="TBAD1";
@@ -261,6 +292,9 @@ public class AboutIOP {
 	
 	
 
+	/**
+	 * IOP about_v1_04.
+	 */
 	private  void IOP_About_v1_04() {
 		
 		String testBed="TBAD1";
@@ -296,6 +330,9 @@ public class AboutIOP {
 	
 	
 	
+	/**
+	 * Show preconditions.
+	 */
 	private  void showPreconditions() {
 		dialog.setTitle("Preconditions");
 		String msg="Step 1) The passcode for the DUT is set to the default passcode \"000000\"."
@@ -315,6 +352,11 @@ public class AboutIOP {
 	
 	
 	
+/**
+ * Fail.
+ *
+ * @param msg the msg
+ */
 private  void fail(String msg) {
 
 
@@ -326,6 +368,11 @@ private  void fail(String msg) {
 	
 	
 	
+	/**
+	 * Gets the verdict.
+	 *
+	 * @return the verdict
+	 */
 	public String getVerdict() {
 
 		String verdict=null;

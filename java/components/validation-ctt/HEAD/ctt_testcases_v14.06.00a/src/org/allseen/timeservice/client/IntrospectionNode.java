@@ -42,15 +42,26 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 
 
+// TODO: Auto-generated Javadoc
 /**
  * Utility class for introspection
  */
 class IntrospectionNode {
+    
+    /** The Constant TAG. */
     private static final String TAG = "ajts" + IntrospectionNode.class.getSimpleName();
+	
+	/** The Constant Log. */
 	private static final WindowsLoggerImpl Log =  new WindowsLoggerImpl(TAG);
 
+    /**
+     * The Class NoOpEntityResolver.
+     */
     private static class NoOpEntityResolver implements EntityResolver {
 
+        /* (non-Javadoc)
+         * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String, java.lang.String)
+         */
         @Override
         public InputSource resolveEntity(String publicId, String systemId) throws SAXException, java.io.IOException {
             return new InputSource(new ByteArrayInputStream("".getBytes()));
@@ -64,14 +75,31 @@ class IntrospectionNode {
      */
     class IntrospectionParser extends DefaultHandler {
 
+        /** The xml reader. */
         private XMLReader xmlReader           = null;
+        
+        /** The sax parser. */
         private SAXParser saxParser           = null;
 
+        /** The current node. */
         private IntrospectionNode currentNode = null;
+        
+        /** The saw root node. */
         private boolean sawRootNode           = false;
+        
+        /** The search root node desc. */
         private boolean searchRootNodeDesc    = false;
+        
+        /** The found root node desc. */
         private boolean foundRootNodeDesc     = false;
 
+        /**
+         * Instantiates a new introspection parser.
+         *
+         * @throws IOException Signals that an I/O exception has occurred.
+         * @throws ParserConfigurationException the parser configuration exception
+         * @throws SAXException the SAX exception
+         */
         public IntrospectionParser() throws IOException, ParserConfigurationException, SAXException {
 
             SAXParserFactory spf = SAXParserFactory.newInstance();
@@ -104,6 +132,9 @@ class IntrospectionNode {
             this.currentNode = null;
         }
 
+        /* (non-Javadoc)
+         * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
+         */
         @Override
         public void startElement(String namespaceURI, String localName, String qName, Attributes attrs) throws SAXException {
 
@@ -134,6 +165,9 @@ class IntrospectionNode {
             }
         }
 
+        /* (non-Javadoc)
+         * @see org.xml.sax.helpers.DefaultHandler#characters(char[], int, int)
+         */
         @Override
         public void characters(char[] ch, int start, int length) throws SAXException {
 

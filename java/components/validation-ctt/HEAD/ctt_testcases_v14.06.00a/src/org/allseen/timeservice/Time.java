@@ -16,17 +16,22 @@
 
 package org.allseen.timeservice;
 
+// TODO: Auto-generated Javadoc
 /**
  * Time data type which is used by the Alarm and Clock
  */
 public class Time {
 
+    /** The hour. */
     private final byte HOUR;
 
+    /** The minute. */
     private final byte MINUTE;
 
+    /** The second. */
     private final byte SECOND ;
 
+    /** The millisecond. */
     private final short MILLISECOND ;
 
     /**
@@ -47,18 +52,38 @@ public class Time {
         MILLISECOND  = millisecond;
     }
 
+    /**
+     * Gets the hour.
+     *
+     * @return the hour
+     */
     public byte getHour() {
         return HOUR;
     }
 
+    /**
+     * Gets the minute.
+     *
+     * @return the minute
+     */
     public byte getMinute() {
         return MINUTE;
     }
 
+    /**
+     * Gets the seconds.
+     *
+     * @return the seconds
+     */
     public byte getSeconds() {
         return SECOND ;
     }
 
+    /**
+     * Gets the milliseconds.
+     *
+     * @return the milliseconds
+     */
     public short getMilliseconds() {
         return MILLISECOND ;
     }

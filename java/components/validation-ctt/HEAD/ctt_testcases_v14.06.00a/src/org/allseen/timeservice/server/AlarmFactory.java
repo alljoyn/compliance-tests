@@ -23,11 +23,16 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 
 
+// TODO: Auto-generated Javadoc
 /**
  * Extend this class to receive events related to this {@link AlarmFactory} object
  */
 public abstract class AlarmFactory {
+    
+    /** The Constant TAG. */
     private static final String TAG = "ajts" + AlarmFactory.class.getSimpleName();
+	
+	/** The Constant Log. */
 	private static final WindowsLoggerImpl Log =  new WindowsLoggerImpl(TAG);
 
     /**

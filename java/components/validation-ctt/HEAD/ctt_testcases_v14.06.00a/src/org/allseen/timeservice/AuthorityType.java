@@ -18,15 +18,25 @@ package org.allseen.timeservice;
 
 import org.allseen.timeservice.server.TimeAuthorityClock;
 
+// TODO: Auto-generated Javadoc
 /**
  * The different sources a {@link TimeAuthorityClock} can synchronize its time against.
  */
 public enum AuthorityType {
 
+    /** The other. */
     OTHER((byte)0),
+    
+    /** The ntp. */
     NTP((byte)1),
+    
+    /** The cellular. */
     CELLULAR((byte)2),
+    
+    /** The gps. */
     GPS((byte)3),
+    
+    /** The user designated. */
     USER_DESIGNATED((byte)4)
     ;
 

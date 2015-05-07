@@ -28,12 +28,17 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 
 
+// TODO: Auto-generated Javadoc
 /**
  * This class implements {@link Clock} and {@link TimeAuthority} interfaces and
  * realizes AllJoyn communication with this Time Authority Clock.
  */
 class TimeAuthorityClockBusObj extends BaseClockBusObj implements Clock, TimeAuthority {
+    
+    /** The Constant TAG. */
     private static final String TAG = "ajts" + TimeAuthorityClockBusObj.class.getSimpleName();
+	
+	/** The Constant Log. */
 	private static final WindowsLoggerImpl Log =  new WindowsLoggerImpl(TAG);
 
     /**

@@ -22,12 +22,17 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 
 
+// TODO: Auto-generated Javadoc
 /**
  * Extend this class to receive events related to this {@link TimeAuthorityClock} object
  * and send {@link TimeAuthorityClock#timeSync()} signal.
  */
 public abstract class TimeAuthorityClock extends Clock {
+    
+    /** The Constant TAG. */
     private static final String TAG = "ajts" + TimeAuthorityClock.class.getSimpleName();
+	
+	/** The Constant Log. */
 	private static final WindowsLoggerImpl Log =  new WindowsLoggerImpl(TAG);
 
     /**

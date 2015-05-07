@@ -1,5 +1,5 @@
-/******************************************************************************
- * Copyright (c) 2014, AllSeen Alliance. All rights reserved.
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
  *
  *    Permission to use, copy, modify, and/or distribute this software for any
  *    purpose with or without fee is hereby granted, provided that the above
@@ -12,7 +12,7 @@
  *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
  *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- ******************************************************************************/
+ */
 
 package org.alljoyn.gatewaycontroller.sdk.ajcommunication;
 
@@ -31,11 +31,16 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 
 
+// TODO: Auto-generated Javadoc
 /**
  * Utility class for AllJoyn communication
  */
 public class CommunicationUtil {
+    
+    /** The Constant TAG. */
     private static final String TAG = "gwc" + CommunicationUtil.class.getSimpleName();
+	
+	/** The Constant Log. */
 	private static final WindowsLoggerImpl Log =  new WindowsLoggerImpl(TAG);
 
     /**
@@ -92,6 +97,17 @@ public class CommunicationUtil {
 
     // ==========================================//
 
+    /**
+     * The listener interface for receiving controllerOnJoinSession events.
+     * The class that is interested in processing a controllerOnJoinSession
+     * event implements this interface, and the object created
+     * with that class is registered with a component using the
+     * component's <code>addControllerOnJoinSessionListener<code> method. When
+     * the controllerOnJoinSession event occurs, that object's appropriate
+     * method is invoked.
+     *
+     * @see ControllerOnJoinSessionEvent
+     */
     static class ControllerOnJoinSessionListener extends OnJoinSessionListener {
 
         /**
@@ -116,6 +132,9 @@ public class CommunicationUtil {
 
     // ==========================================//
 
+    /**
+     * Instantiates a new communication util.
+     */
     private CommunicationUtil() {
     }
 

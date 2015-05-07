@@ -1,18 +1,18 @@
-/*******************************************************************************
- *  Copyright (c) 2013 - 2014, AllSeen Alliance. All rights reserved.
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
  *
- *     Permission to use, copy, modify, and/or distribute this software for any
- *     purpose with or without fee is hereby granted, provided that the above
- *     copyright notice and this permission notice appear in all copies.
+ *    Permission to use, copy, modify, and/or distribute this software for any
+ *    purpose with or without fee is hereby granted, provided that the above
+ *    copyright notice and this permission notice appear in all copies.
  *
- *     THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
- *     WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
- *     MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
- *     ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
- *     WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
- *     ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
- *     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- *******************************************************************************/
+ *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package  com.at4wireless.alljoyn.core.onboarding;
 
 import java.io.UnsupportedEncodingException;
@@ -41,39 +41,92 @@ import com.at4wireless.alljoyn.core.onboarding.WifiNetworkConfig;
 
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OnboardingHelper.
+ */
 public class OnboardingHelper
 {
+    
+    /** The Constant TIME_TO_WAIT_FOR_SCAN_RESULTS_IN_SECONDS. */
     private static final int TIME_TO_WAIT_FOR_SCAN_RESULTS_IN_SECONDS = 2;
+    
+    /** The Constant TAG. */
     private static final String TAG = "OnboardingHelper";
+	
+	/** The Constant logger. */
 	private static final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+    
+    /** The onboarding client. */
     private OnboardingClient onboardingClient;
+    
+    /** The wifi helper. */
     private WifiHelper wifiHelper;
+    
+    /** The service helper. */
     private ServiceHelper serviceHelper;
+    
+    /** The Constant BUS_APPLICATION_NAME. */
     private static final String BUS_APPLICATION_NAME = "OnboardingTestSuite";
+    
+    /** The Constant NUMBER_OF_DEVICE_ID_DIGITS_IN_SOFT_AP. */
     private static final int NUMBER_OF_DEVICE_ID_DIGITS_IN_SOFT_AP = 7;
+    
+    /** The app id. */
     private UUID appId;
+    
+    /** The device id. */
     private String deviceId;
 
+    /** The personal ap config. */
     private WifiNetworkConfig personalAPConfig;
+    
+    /** The soft ap config. */
     private WifiNetworkConfig softAPConfig;
+    
+    /** The device id suffix. */
     private String deviceIdSuffix;
 
+    /** The key store path. */
     private String keyStorePath;
    
+    /** The Constant TIME_TO_WAIT_FOR_SOFT_AP_IN_MS_SHORT. */
     protected static final long TIME_TO_WAIT_FOR_SOFT_AP_IN_MS_SHORT = 120000;
+    
+    /** The Constant TIME_TO_WAIT_TO_CONNECT_TO_PERSONAL_AP_IN_MS. */
     protected static final long TIME_TO_WAIT_TO_CONNECT_TO_PERSONAL_AP_IN_MS = 60000;
+    
+    /** The Constant TIME_TO_WAIT_TO_CONNECT_TO_SOFT_AP_IN_MS. */
     protected static final long TIME_TO_WAIT_TO_CONNECT_TO_SOFT_AP_IN_MS = 60000;
+    
+    /** The Constant TIME_TO_WAIT_FOR_NEXT_DEVICE_ANNOUNCEMENT_IN_MS. */
     protected static final long TIME_TO_WAIT_FOR_NEXT_DEVICE_ANNOUNCEMENT_IN_MS = 180000;
+    
+    /** The Constant TIME_TO_WAIT_FOR_DISCONNECT_IN_MS. */
     protected static final long TIME_TO_WAIT_FOR_DISCONNECT_IN_MS = 30000;
 
+    /** The Constant OBS_CONFIGURE_WIFI_RETURN_NO_CHANNEL_SWITCHING. */
     protected static final short OBS_CONFIGURE_WIFI_RETURN_NO_CHANNEL_SWITCHING = 1;
+    
+    /** The Constant OBS_CONFIGURE_WIFI_RETURN_SUPPORTS_CHANNEL_SWITCHING. */
     protected static final short OBS_CONFIGURE_WIFI_RETURN_SUPPORTS_CHANNEL_SWITCHING = 2;
 
+    /**
+     * Instantiates a new onboarding helper.
+     */
     public OnboardingHelper()
     {
         
     }
 
+    /**
+     * Initialize.
+     *
+     * @param keyStorePath the key store path
+     * @param deviceId the device id
+     * @param appId the app id
+     * @throws Exception the exception
+     */
     public void initialize(String keyStorePath, String deviceId, UUID appId) throws Exception
     {
         this.deviceId = deviceId;
@@ -94,16 +147,31 @@ public class OnboardingHelper
         }
     }
 
+    /**
+     * Release.
+     */
     public void release()
     {
         releaseResources();
     }
 
+    /**
+     * Sets the passcode.
+     *
+     * @param aboutAnnouncement the about announcement
+     * @param passcode the passcode
+     */
     public void setPasscode(AboutAnnouncementDetails aboutAnnouncement, char[] passcode)
     {
         serviceHelper.setAuthPassword(aboutAnnouncement, passcode);
     }
 
+    /**
+     * Connect to dut on soft ap.
+     *
+     * @return the string
+     * @throws Exception the exception
+     */
     public String connectToDUTOnSoftAP() throws Exception
     {
 
@@ -169,6 +237,11 @@ public class OnboardingHelper
         return ssid;
     }
 
+    /**
+     * Gets the soft ap ssid.
+     *
+     * @return the soft ap ssid
+     */
     private String getSoftAPSsid()
     {
         String softAPssid = null;
@@ -179,12 +252,26 @@ public class OnboardingHelper
         return softAPssid;
     } 
 
+    /**
+     * Soft ap matches device id.
+     *
+     * @param ssid the ssid
+     * @param deviceId the device id
+     * @return true, if successful
+     */
     private boolean softAPMatchesDeviceId(String ssid, String deviceId)
     {
         String deviceIdSuffix = ssid.substring(ssid.length() - NUMBER_OF_DEVICE_ID_DIGITS_IN_SOFT_AP);
         return deviceId.endsWith(deviceIdSuffix);
     }
 
+    /**
+     * Call configure wi fi.
+     *
+     * @param networkConfig the network config
+     * @return the short
+     * @throws Exception the exception
+     */
     public short callConfigureWiFi(WifiNetworkConfig networkConfig) throws Exception
     {
         String ssid = networkConfig.getSsid();
@@ -201,6 +288,12 @@ public class OnboardingHelper
         return configureWifiMode.getValue();
     }
 
+    /**
+     * Verify onboarding state.
+     *
+     * @param expectedState the expected state
+     * @throws Exception the exception
+     */
     private void verifyOnboardingState(short expectedState) throws Exception
     {
         logger.info("Retrieving the State property from the Onboarding interface");
@@ -211,6 +304,11 @@ public class OnboardingHelper
         }
     }
 
+    /**
+     * Call connect wi fi and wait for soft ap disconnect.
+     *
+     * @throws Exception the exception
+     */
     public void callConnectWiFiAndWaitForSoftAPDisconnect() throws Exception
     {
         logger.info("Calling Onboarding.connectWiFi() method");
@@ -219,6 +317,11 @@ public class OnboardingHelper
         waitForSoftAPDisconnect();
     }
 
+    /**
+     * Connect to personal ap if needed.
+     *
+     * @throws Exception the exception
+     */
     public void connectToPersonalAPIfNeeded() throws Exception
     {
         String personalAPNetworkName = personalAPConfig.getSsid();
@@ -229,6 +332,11 @@ public class OnboardingHelper
         }
     }
 
+    /**
+     * Connect to personal ap.
+     *
+     * @throws Exception the exception
+     */
     public void connectToPersonalAP() throws Exception
     {
     	
@@ -258,6 +366,12 @@ public class OnboardingHelper
         initServiceHelper();
     }
 
+    /**
+     * Wait for about announcement and then connect.
+     *
+     * @return the about announcement details
+     * @throws Exception the exception
+     */
     public AboutAnnouncementDetails waitForAboutAnnouncementAndThenConnect() throws Exception
     {
         boolean foundMatch = false;
@@ -329,6 +443,11 @@ public class OnboardingHelper
         return deviceAboutAnnouncement;
     }
 
+    /**
+     * Gets the soft ap ssid.
+     *
+     * @return the soft ap ssid
+     */
     protected String getSoftApSsid()
     {
         String softAPSsid = null;
@@ -339,6 +458,13 @@ public class OnboardingHelper
         return softAPSsid;
     }
 
+    /**
+     * Wait for next about announcement from device.
+     *
+     * @param timeRemaining the time remaining
+     * @return the about announcement details
+     * @throws Exception the exception
+     */
     private AboutAnnouncementDetails waitForNextAboutAnnouncementFromDevice(long timeRemaining) throws Exception
     {
         AboutAnnouncementDetails deviceAboutAnnouncement = serviceHelper.waitForNextDeviceAnnouncement(timeRemaining, TimeUnit.MILLISECONDS);
@@ -352,17 +478,34 @@ public class OnboardingHelper
         return deviceAboutAnnouncement;
     }
 
+    /**
+     * Announcement matches device id suffix.
+     *
+     * @param deviceAboutAnnouncement the device about announcement
+     * @return true, if successful
+     * @throws BusException the bus exception
+     */
     protected boolean announcementMatchesDeviceIdSuffix(AboutAnnouncementDetails deviceAboutAnnouncement) throws BusException
     {
         return deviceAboutAnnouncement.getDeviceId() != null && deviceAboutAnnouncement.getDeviceId().endsWith(deviceIdSuffix)
                 && deviceAboutAnnouncement.supportsInterface(OnboardingTransport.INTERFACE_NAME);
     }
 
+    /**
+     * Have device id and app id.
+     *
+     * @return true, if successful
+     */
     protected boolean haveDeviceIdAndAppId()
     {
         return (deviceId != null) && (appId != null);
     }
 
+    /**
+     * Call offboard.
+     *
+     * @throws Exception the exception
+     */
     public void callOffboard() throws Exception
     {
         logger.info("Retrieving the Version property of the Onboarding interfaces");
@@ -374,30 +517,60 @@ public class OnboardingHelper
         
     }
 
+    /**
+     * Retrieve version property.
+     *
+     * @return the short
+     * @throws BusException the bus exception
+     */
     public short retrieveVersionProperty() throws BusException
     {
         logger.info("Calling Onboarding.getVersion() method");
         return onboardingClient.getVersion();
     }
 
+    /**
+     * Retrieve state property.
+     *
+     * @return the short
+     * @throws BusException the bus exception
+     */
     public short retrieveStateProperty() throws BusException
     {
         logger.info("Calling Onboarding.getState() method");
         return onboardingClient.getState();
     }
 
+    /**
+     * Retrieve last error property.
+     *
+     * @return the OB last error
+     * @throws BusException the bus exception
+     */
     public OBLastError retrieveLastErrorProperty() throws BusException
     {
         logger.info("Calling Onboarding.GetLastError() method");
         return onboardingClient.GetLastError();
     }
 
+    /**
+     * Call scan info.
+     *
+     * @return the scan info
+     * @throws BusException the bus exception
+     */
     public ScanInfo callScanInfo() throws BusException
     {
         logger.info("Calling Onboarding.getScanInfo() method");
         return onboardingClient.getScanInfo();
     }
 
+    /**
+     * Checks if is device in onboarded state.
+     *
+     * @return true, if is device in onboarded state
+     * @throws Exception the exception
+     */
     public boolean isDeviceInOnboardedState() throws Exception
     {
         boolean isDeviceInOnboardedState = false;
@@ -461,16 +634,35 @@ public class OnboardingHelper
         return isDeviceInOnboardedState;
     }
 
+    /**
+     * Connect about client.
+     *
+     * @param deviceAboutAnnouncement the device about announcement
+     * @return the about client
+     * @throws Exception the exception
+     */
     public AboutClient connectAboutClient(AboutAnnouncementDetails deviceAboutAnnouncement) throws Exception
     {
         return serviceHelper.connectAboutClient(deviceAboutAnnouncement);
     }
 
+    /**
+     * Connect config client.
+     *
+     * @param deviceAboutAnnouncement the device about announcement
+     * @return the config client
+     * @throws Exception the exception
+     */
     public ConfigClient connectConfigClient(AboutAnnouncementDetails deviceAboutAnnouncement) throws Exception
     {
         return serviceHelper.connectConfigClient(deviceAboutAnnouncement);
     }
 
+    /**
+     * Inits the service helper.
+     *
+     * @throws Exception the exception
+     */
     private void initServiceHelper() throws Exception
     {
         releaseServiceHelper();
@@ -482,22 +674,41 @@ public class OnboardingHelper
         serviceHelper.enableAuthentication(keyStorePath);
     }
 
+    /**
+     * Release resources.
+     */
     private void releaseResources()
     {
         releaseWifiHelper();
         releaseServiceHelper();
     }
 
+    /**
+     * Gets the service helper.
+     *
+     * @return the service helper
+     */
     protected ServiceHelper getServiceHelper()
     {
     	return new ServiceHelper();
     }
 
+    /**
+     * Gets the wifi helper.
+     *
+     * @return the wifi helper
+     */
     protected WifiHelper getWifiHelper()
     {
         return new WifiHelperImpl();
     }
 
+    /**
+     * Connect to soft ap network.
+     *
+     * @return true, if successful
+     * @throws Exception the exception
+     */
     private boolean connectToSoftAPNetwork() throws Exception
     {
         String ssid = getSoftAPConfig().getSsid();
@@ -513,6 +724,12 @@ public class OnboardingHelper
         return ssid.equals(connectedSsid);
     }
 
+    /**
+     * Gets the auth type.
+     *
+     * @param securityType the security type
+     * @return the auth type
+     */
     public short getAuthType(String securityType)
     {
         short authType = -1;
@@ -580,6 +797,12 @@ public class OnboardingHelper
         return authType;
     }
 
+    /**
+     * Gets the onboarding service auth type.
+     *
+     * @param securityType the security type
+     * @return the onboarding service auth type
+     */
     public AuthType getOnboardingServiceAuthType(String securityType)
     {
         AuthType authType = AuthType.ANY;
@@ -655,6 +878,12 @@ public class OnboardingHelper
         return authType;
     }
 
+    /**
+     * Map auth type to auth type string.
+     *
+     * @param authType the auth type
+     * @return the string
+     */
     public String mapAuthTypeToAuthTypeString(short authType)
     {
         String authTypeString;
@@ -707,6 +936,12 @@ public class OnboardingHelper
         return authTypeString;
     }
 
+    /**
+     * Convert to hex.
+     *
+     * @param networkPassword the network password
+     * @return the string
+     */
     private String convertToHex(String networkPassword)
     {
         StringBuilder sb = new StringBuilder();
@@ -724,6 +959,11 @@ public class OnboardingHelper
         return sb.toString();
     }
 
+    /**
+     * Wait for soft ap disconnect.
+     *
+     * @throws Exception the exception
+     */
     public void waitForSoftAPDisconnect() throws Exception
     {
 
@@ -734,6 +974,9 @@ public class OnboardingHelper
         }
     }
 
+    /**
+     * Release wifi helper.
+     */
     private void releaseWifiHelper()
     {
         if (wifiHelper != null)
@@ -743,6 +986,9 @@ public class OnboardingHelper
         }
     }
 
+    /**
+     * Release service helper.
+     */
     private void releaseServiceHelper()
     {
         try
@@ -760,6 +1006,9 @@ public class OnboardingHelper
         }
     }
 
+    /**
+     * Disconnect onboarding client.
+     */
     private void disconnectOnboardingClient()
     {
         if (onboardingClient != null)
@@ -770,21 +1019,41 @@ public class OnboardingHelper
         }
     }
 
+    /**
+     * Gets the personal ap config.
+     *
+     * @return the personal ap config
+     */
     public WifiNetworkConfig getPersonalAPConfig()
     {
         return personalAPConfig;
     }
 
+    /**
+     * Sets the personal ap config.
+     *
+     * @param personalAPConfig the new personal ap config
+     */
     public void setPersonalAPConfig(WifiNetworkConfig personalAPConfig)
     {
         this.personalAPConfig = personalAPConfig;
     }
 
+    /**
+     * Gets the soft ap config.
+     *
+     * @return the soft ap config
+     */
     public WifiNetworkConfig getSoftAPConfig()
     {
         return softAPConfig;
     }
 
+    /**
+     * Sets the soft ap config.
+     *
+     * @param softAPConfig the new soft ap config
+     */
     public void setSoftAPConfig(WifiNetworkConfig softAPConfig)
     {
         this.softAPConfig = softAPConfig;
@@ -795,11 +1064,20 @@ public class OnboardingHelper
         }
     }
 
+    /**
+     * Checks if is authentication failed.
+     *
+     * @param aboutAnnouncementDetails the about announcement details
+     * @return true, if is authentication failed
+     */
     public boolean isAuthenticationFailed(AboutAnnouncementDetails aboutAnnouncementDetails)
     {
         return !serviceHelper.isPeerAuthenticationSuccessful(aboutAnnouncementDetails);
     }
 
+    /**
+     * Clear queued device announcements.
+     */
     public void clearQueuedDeviceAnnouncements()
     {
         serviceHelper.clearQueuedDeviceAnnouncements();

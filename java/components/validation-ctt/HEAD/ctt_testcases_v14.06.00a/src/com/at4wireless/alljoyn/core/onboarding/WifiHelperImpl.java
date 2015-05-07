@@ -1,9 +1,17 @@
-/**
- *Author: AT4 Wireless
- *Date: 2015/03/23
- *Version: 1
- *Description: We use this to manage the wifi in java
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
  *
+ *    Permission to use, copy, modify, and/or distribute this software for any
+ *    purpose with or without fee is hereby granted, provided that the above
+ *    copyright notice and this permission notice appear in all copies.
+ *
+ *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 package  com.at4wireless.alljoyn.core.onboarding;
 
@@ -41,22 +49,36 @@ import com.at4wireless.alljoyn.core.onboarding.WifiHelper;
 import com.at4wireless.alljoyn.core.onboarding.WifiNetworkConfig;
 import com.at4wireless.alljoyn.core.onboarding.WifiNotEnabledException;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class WifiHelperImpl.
+ */
 public class WifiHelperImpl implements WifiHelper {
 
 
 
+	/** The ssid. */
 	String SSID=null;
 
+	/** The Constant TAG. */
 	private static final String TAG = "WifiHelperImpl";
+	
+	/** The Constant logger. */
 	private static final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
 
 
+	/* (non-Javadoc)
+	 * @see com.at4wireless.alljoyn.core.onboarding.WifiHelper#initialize()
+	 */
 	@Override
 	public void initialize() {
 		SSID=null;
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.at4wireless.alljoyn.core.onboarding.WifiHelper#isWifiEnabled()
+	 */
 	@Override
 	public boolean isWifiEnabled() {
 		// TODO Auto-generated method stub
@@ -64,12 +86,18 @@ public class WifiHelperImpl implements WifiHelper {
 		return true;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.at4wireless.alljoyn.core.onboarding.WifiHelper#getCurrentSSID()
+	 */
 	@Override
 	public String getCurrentSSID() {
 
 		return SSID;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.at4wireless.alljoyn.core.onboarding.WifiHelper#waitForScanResults(long, java.util.concurrent.TimeUnit)
+	 */
 	@Override
 	public List<ScanResult> waitForScanResults(long timeout, TimeUnit unit)
 			throws InterruptedException {
@@ -90,6 +118,9 @@ public class WifiHelperImpl implements WifiHelper {
 	}
 
 
+	/* (non-Javadoc)
+	 * @see com.at4wireless.alljoyn.core.onboarding.WifiHelper#waitForDisconnect(long, java.util.concurrent.TimeUnit)
+	 */
 	@Override
 	public String waitForDisconnect(long timeout, TimeUnit unit)
 			throws InterruptedException {
@@ -119,6 +150,9 @@ public class WifiHelperImpl implements WifiHelper {
 
 
 
+	/* (non-Javadoc)
+	 * @see com.at4wireless.alljoyn.core.onboarding.WifiHelper#waitForConnect(java.lang.String, long, java.util.concurrent.TimeUnit)
+	 */
 	@Override
 	public String waitForConnect(String ssid, long timeout, TimeUnit unit)
 			throws InterruptedException {
@@ -145,6 +179,9 @@ public class WifiHelperImpl implements WifiHelper {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.at4wireless.alljoyn.core.onboarding.WifiHelper#waitForNetworkAvailable(java.lang.String, long, java.util.concurrent.TimeUnit)
+	 */
 	@Override
 	public boolean waitForNetworkAvailable(String ssid, long timeout, TimeUnit unit) throws InterruptedException
 	{
@@ -175,6 +212,9 @@ public class WifiHelperImpl implements WifiHelper {
 		return isAvailable;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.at4wireless.alljoyn.core.onboarding.WifiHelper#connectToNetwork(com.at4wireless.alljoyn.core.onboarding.WifiNetworkConfig, boolean, long, java.util.concurrent.TimeUnit)
+	 */
 	@Override
 	public String connectToNetwork(WifiNetworkConfig wifiNetworkConfig,
 			boolean recreate, long timeout, TimeUnit unit)
@@ -195,6 +235,9 @@ public class WifiHelperImpl implements WifiHelper {
 
 
 
+	/* (non-Javadoc)
+	 * @see com.at4wireless.alljoyn.core.onboarding.WifiHelper#release()
+	 */
 	@Override
 	public void release() {
 		SSID=null;
@@ -210,6 +253,12 @@ public class WifiHelperImpl implements WifiHelper {
 
 
 
+	/**
+	 * Connect to profile.
+	 *
+	 * @param profileName the profile name
+	 * @return true, if successful
+	 */
 	private boolean connectToProfile(String profileName) {
 
 
@@ -250,13 +299,22 @@ public class WifiHelperImpl implements WifiHelper {
 
 
 
+	/**
+	 * Creates the wifi profile to connects WIFI using netsh.
+	 *
+	 * @param profileName the profile name
+	 * @param ssid the ssid
+	 * @param securityType the security type
+	 * @param passphrase the passphrase
+	 * @return the boolean
+	 */
 	private Boolean createWifiProfile(String profileName,String ssid, String securityType,
 			String passphrase) {
-		//Creates the xml to conect the wifi
+		
 		String profile=null;
 
 		Boolean correctSecurityType=true;
-		if(securityType.equals("WPA2_AUTO")){
+		if(securityType.startsWith("WPA2")){
 			profile="<?xml version=\"1.0\"?>"
 					+ "<WLANProfile xmlns=\"http://www.microsoft.com/networking/WLAN/profile/v1\">"
 					+ "	<name>"+profileName+"</name>"
@@ -284,7 +342,7 @@ public class WifiHelperImpl implements WifiHelper {
 					+ "</WLANProfile>";
 
 
-		}else if(securityType.equals("WPA_AUTO")||securityType.equals("WPA_TKIP")){
+		}else if(securityType.startsWith("WPA")){
 			profile="<?xml version=\"1.0\"?>"
 					+ "		<WLANProfile xmlns=\"http://www.microsoft.com/networking/WLAN/profile/v1\">"
 					+ "			<name>"+profileName+"</name>"
@@ -311,7 +369,7 @@ public class WifiHelperImpl implements WifiHelper {
 					+ "				</MSM>"
 					+ "			</WLANProfile>";
 
-		}else if(securityType.equals("OPEN")){	
+		}else if(securityType.equalsIgnoreCase("OPEN")){	
 
 			profile="<?xml version=\"1.0\"?>"
 					+ "	<WLANProfile xmlns=\"http://www.microsoft.com/networking/WLAN/profile/v1\">"
@@ -381,6 +439,11 @@ public class WifiHelperImpl implements WifiHelper {
 
 
 
+	/**
+	 * Gets the scan results.
+	 *
+	 * @return the scan results
+	 */
 	private List<ScanResult> getScanResults() {
 
 		List<ScanResult> scanResults= new ArrayList<ScanResult>();
@@ -423,6 +486,9 @@ public class WifiHelperImpl implements WifiHelper {
 	}
 
 
+	/**
+	 * Check for wifi enabled.
+	 */
 	private void checkForWifiEnabled()
 	{
 		if (false == isWifiEnabled())
@@ -431,6 +497,11 @@ public class WifiHelperImpl implements WifiHelper {
 		}
 	}
 
+	/**
+	 * Disconnect.
+	 *
+	 * @return true, if successful
+	 */
 	private boolean disconnect() {
 
 

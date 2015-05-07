@@ -21,6 +21,7 @@ import org.alljoyn.bus.ProxyBusObject;
 import org.allseen.timeservice.TimeServiceException;
 import org.allseen.timeservice.server.TimeServiceServer;
 
+// TODO: Auto-generated Javadoc
 /**
  * The base class for Time Service client classes
  */

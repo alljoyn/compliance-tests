@@ -1,5 +1,5 @@
-/******************************************************************************
- * Copyright (c) 2013-2014, AllSeen Alliance. All rights reserved.
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
  *
  *    Permission to use, copy, modify, and/or distribute this software for any
  *    purpose with or without fee is hereby granted, provided that the above
@@ -12,7 +12,7 @@
  *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
  *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- ******************************************************************************/
+ */
 
 package com.at4wireless.alljoyn.core.about;
 
@@ -38,9 +38,20 @@ import com.at4wireless.alljoyn.core.commons.log.LoggerFactory;
 
 
 
+
+/**
+ * The Class EvAcIntrospectionNode.
+ */
 public class EvAcIntrospectionNode {
 
+    /**
+     * The Class NoOpEntityResolver.
+     */
     class NoOpEntityResolver implements EntityResolver {
+            
+            /* (non-Javadoc)
+             * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String, java.lang.String)
+             */
             public InputSource resolveEntity(String publicId, String systemId)
                                         throws SAXException, java.io.IOException {
                 return new InputSource(new ByteArrayInputStream("".getBytes()));
@@ -50,14 +61,30 @@ public class EvAcIntrospectionNode {
 
     //=============================================//
 
+    /**
+     * The Class IntrospectionParser.
+     */
     class IntrospectionParser extends DefaultHandler{
 
+        /** The xml reader. */
         private XMLReader xmlReader = null;
+        
+        /** The sax parser. */
         private SAXParser saxParser = null;
 
+        /** The current node. */
         private EvAcIntrospectionNode currentNode = null;
+        
+        /** The saw root node. */
         private boolean sawRootNode = false;
 
+        /**
+         * Instantiates a new introspection parser.
+         *
+         * @throws IOException Signals that an I/O exception has occurred.
+         * @throws ParserConfigurationException the parser configuration exception
+         * @throws SAXException the SAX exception
+         */
         public IntrospectionParser() throws IOException, ParserConfigurationException, SAXException {
             SAXParserFactory spf = SAXParserFactory.newInstance();
             spf.setNamespaceAware(false);
@@ -67,17 +94,27 @@ public class EvAcIntrospectionNode {
             xmlReader.setEntityResolver(new NoOpEntityResolver());
         }
 
+        /**
+         * Parses the xml.
+         *
+         * @param node the node
+         * @param xml the xml
+         * @throws SAXException the SAX exception
+         */
         public void parse(EvAcIntrospectionNode node, String xml) throws SAXException {
             this.currentNode = node;
             sawRootNode = false;
             try{
                 xmlReader.parse(new InputSource(new StringReader(xml)));
             }catch(IOException cantReallyHappen) {
-                //Logger.error("Failed to read the XML: '" + cantReallyHappen.getMessage() + "'", cantReallyHappen);
+               // Logger.error("Failed to read the XML: '" + cantReallyHappen.getMessage() + "'", cantReallyHappen);
             }
             this.currentNode = null;
         }
 
+        /* (non-Javadoc)
+         * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
+         */
         public void startElement(String namespaceURI, String localName,
                         String qName, Attributes attrs) throws SAXException {
             if(qName.equals("node")) {
@@ -93,6 +130,13 @@ public class EvAcIntrospectionNode {
 
         }
 
+        /**
+         * Gets the name attributes.
+         *
+         * @param attrs the attributes.
+         * @return the name attributes.
+         * @throws SAXException the SAX exception
+         */
         private String getNameAttr(Attributes attrs) throws SAXException {
             int i = attrs.getIndex("name");
             if(-1 == i) throw new SAXException("inner node without a name");
@@ -104,26 +148,56 @@ public class EvAcIntrospectionNode {
     //                END OF NESTED CLASSES           //
     //================================================//
 
+    /** The Constant TAG. */
     private static final String TAG    = "EvAcIntrospectionNode";
+    
+    /** The Constant logger. */
     private static final Logger logger = LoggerFactory.getLogger(TAG);
 
+    /** The parsed. */
     private boolean parsed                       = false;
+    
+    /** The path. */
     private String path                          = null;
+    
+    /** The parser. */
     private IntrospectionParser parser           = null;
 
+    /** The children. */
     private List<EvAcIntrospectionNode> children = new LinkedList<EvAcIntrospectionNode>();
+    
+    /** The interfaces. */
     private List<String> interfaces              = new LinkedList<String>();
 
+    /**
+     * Instantiates a new event and action introspection node.
+     *
+     * @param path the path
+     * @throws ParserConfigurationException the parser configuration exception
+     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws SAXException the SAX exception
+     */
     public EvAcIntrospectionNode(String path) throws ParserConfigurationException, IOException, SAXException {
         this.path   = path;
         this.parser = new IntrospectionParser();
     }
 
+    /**
+     * Instantiates a new event and action introspection node.
+     *
+     * @param path the path
+     * @param parser the parser
+     */
     private EvAcIntrospectionNode(String path, IntrospectionParser parser){
         this.path   = path;
         this.parser = parser;
     }
 
+    /**
+     * Adds the child.
+     *
+     * @param name the name
+     */
     protected void addChild(String name) {
         StringBuilder sb = new StringBuilder(path);
         if(!name.endsWith("/")) sb.append('/');
@@ -131,14 +205,27 @@ public class EvAcIntrospectionNode {
         children.add(new EvAcIntrospectionNode(sb.toString(), parser));
     }
 
+    /**
+     * Gets the path.
+     *
+     * @return the path
+     */
     public String getPath() {
         return path;
     }
 
+    /**
+     * Checks if is parsed.
+     *
+     * @return true, if is parsed
+     */
     public boolean isParsed() {
         return parsed;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(path);
@@ -173,10 +260,20 @@ public class EvAcIntrospectionNode {
         parsed = true;
     }//parse
 
+    /**
+     * Gets the chidren.
+     *
+     * @return the chidren
+     */
     public List<EvAcIntrospectionNode> getChidren() {
         return children;
     }
 
+    /**
+     * Gets the interfaces.
+     *
+     * @return the interfaces
+     */
     public List<String> getInterfaces() {
         return interfaces;
     }

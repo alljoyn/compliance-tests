@@ -1,3 +1,18 @@
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *    Permission to use, copy, modify, and/or distribute this software for any
+ *    purpose with or without fee is hereby granted, provided that the above
+ *    copyright notice and this permission notice appear in all copies.
+ *
+ *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.at4wireless.alljoyn.testcases.conf.configuration;
 
 import java.util.Arrays;
@@ -11,7 +26,6 @@ import org.alljoyn.about.client.AboutClient;
 import org.alljoyn.bus.BusException;
 import org.alljoyn.bus.ErrorReplyBusException;
 import org.alljoyn.config.client.ConfigClient;
-import org.alljoyn.ns.nativeplatform.WindowsLogger;
 import org.alljoyn.onboarding.transport.OnboardingTransport;
 
 import com.at4wireless.alljoyn.core.about.AboutAnnouncementDetails;
@@ -25,50 +39,123 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.introspection.BusIntrospector;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ConfigurationService.
+ */
 public class ConfigurationService {
 
 
+	/** The pass. */
 	boolean pass=true;
+	
+	/** The inconc. */
 	boolean inconc=false;
+	
+	/** The about client. */
 	private  AboutClient aboutClient;
+	
+	/** The config client. */
 	private  ConfigClient configClient = null;
+	
+	/** The service availability handler. */
 	private  ServiceAvailabilityHandler serviceAvailabilityHandler;
+	
+	/** The device about announcement. */
 	private  AboutAnnouncementDetails deviceAboutAnnouncement;
+	
+	/** The service helper. */
 	private  ServiceHelper serviceHelper; 
+	
+	/** The bus introspector. */
 	private  BusIntrospector busIntrospector;
 
+	/** The key store path. */
 	private  String  keyStorePath="/KeyStore";
+	
+	/** The dut app id. */
 	private  UUID dutAppId;
+	
+	/** The dut device id. */
 	private  String dutDeviceId;
+	
+	/** The time out. */
 	private  int  timeOut=30;
 
+	/** The about announcement timeout. */
 	private  long aboutAnnouncementTimeout;
 
+	/** The bus application name. */
 	private  final String BUS_APPLICATION_NAME = "ConfigTestSuite";
+	
+	/** The tag. */
 	private  final String TAG = "ConfigTestSuite";
+	
+	/** The logger. */
 	private  final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
 
+	/** The new device name. */
 	private  final String NEW_DEVICE_NAME = "newDeviceName";
+	
+	/** The invalid language code. */
 	private  final String INVALID_LANGUAGE_CODE = "INVALID";
+	
+	/** The device name field. */
 	private  final String[] DEVICE_NAME_FIELD = new String[]
 			{ AboutKeys.ABOUT_DEVICE_NAME };
+	
+	/** The default language field. */
 	private  final String[] DEFAULT_LANGUAGE_FIELD = new String[]
 			{ AboutKeys.ABOUT_DEFAULT_LANGUAGE };
+	
+	/** The both fields. */
 	private  final String[] BOTH_FIELDS = new String[]
 			{ AboutKeys.ABOUT_DEVICE_NAME, AboutKeys.ABOUT_DEFAULT_LANGUAGE };
+	
+	/** The invalid field. */
 	private  final String[] INVALID_FIELD = new String[]
 			{ "INVALID" };
+	
+	/** The new passcode. */
 	private  final char[] NEW_PASSCODE = "111111".toCharArray();
+	
+	/** The single char passcode. */
 	private  final char[] SINGLE_CHAR_PASSCODE = "1".toCharArray();
+	
+	/** The default pincode. */
 	private  final char[] DEFAULT_PINCODE = SrpAnonymousKeyListener.DEFAULT_PINCODE;
+	
+	/** The special chars passcode. */
 	private  final char[] SPECIAL_CHARS_PASSCODE = "!@#$%^".toCharArray();
 
+	/** The session lost timeout in seconds. */
 	public long SESSION_LOST_TIMEOUT_IN_SECONDS = 30;
+	
+	/** The session close timeout in seconds. */
 	private long SESSION_CLOSE_TIMEOUT_IN_SECONDS = 5;
 
+	/** The ics. */
 	Map<String,Boolean> ics;
+	
+	/** The ixit. */
 	Map<String,String> ixit;
 
+	/**
+	 * Instantiates a new configuration service.
+	 *
+	 * @param testCase the test case
+	 * @param iCSCF_ConfigurationServiceFramework the i csc f_ configuration service framework
+	 * @param iCSCF_ConfigurationInterface the i csc f_ configuration interface
+	 * @param iCSCF_FactoryResetMethod the i csc f_ factory reset method
+	 * @param iXITCO_AppId the i xitc o_ app id
+	 * @param iXITCO_DeviceId the i xitc o_ device id
+	 * @param iXITCO_DefaultLanguage the i xitc o_ default language
+	 * @param iXITCF_ConfigVersion the i xitc f_ config version
+	 * @param iXITCF_Passcode the i xitc f_ passcode
+	 * @param gPCO_AnnouncementTimeout the g pc o_ announcement timeout
+	 * @param gPCF_SessionLost the g pc f_ session lost
+	 * @param gPCF_SessionClose the g pc f_ session close
+	 */
 	public ConfigurationService(String testCase,
 			boolean iCSCF_ConfigurationServiceFramework,
 			boolean iCSCF_ConfigurationInterface,
@@ -109,6 +196,12 @@ public class ConfigurationService {
 		}
 	}
 
+	/**
+	 * Run test case.
+	 *
+	 * @param testCase the test case
+	 * @throws Exception the exception
+	 */
 	public  void runTestCase(String testCase) throws Exception{
 		setUp();
 		logger.info("Running testcase: "+testCase);
@@ -176,6 +269,11 @@ public class ConfigurationService {
 
 	}
 	
+	/**
+	 * Sets the up.
+	 *
+	 * @throws Exception the exception
+	 */
 	protected  void setUp() throws Exception
 	{
 
@@ -200,7 +298,7 @@ public class ConfigurationService {
 		}
 		catch (Exception e)
 		{
-			inconc("test setUp thrown an exception: "+e.toString());
+			inconc("test setUp thrown an exception: "+e.getMessage());
 			releaseResources();
 			throw e;
 		}
@@ -208,6 +306,11 @@ public class ConfigurationService {
 		System.out.println("====================================================");
 	}
 	
+	/**
+	 * Tear down.
+	 *
+	 * @throws Exception the exception
+	 */
 	protected  void tearDown() throws Exception
 	{
 		System.out.println("====================================================");
@@ -219,6 +322,11 @@ public class ConfigurationService {
 	
 	/*TestCases*/
 
+	/**
+	 * Test config_v1_01 app id equals device id.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testConfig_v1_01AppIdEqualsDeviceId() throws Exception
 	{
 		UUID dutAppId = deviceAboutAnnouncement.getAppId();
@@ -235,6 +343,11 @@ public class ConfigurationService {
 		}
 	}
 
+	/**
+	 * Test config_v1_02 connect with wrong passcode.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testConfig_v1_02ConnectWithWrongPasscode() throws Exception
 	{
 		reconnectClients();
@@ -276,6 +389,11 @@ public class ConfigurationService {
 
 
 
+	/**
+	 * Test config_v1_04 get configurations with default language.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testConfig_v1_04GetConfigurationsWithDefaultLanguage() throws Exception
 	{
 		logger.info("Partial Verdict: PASS");
@@ -285,6 +403,11 @@ public class ConfigurationService {
 	}
 
 
+	/**
+	 * Test config_v1_05 unspecified language.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testConfig_v1_05UnspecifiedLanguage() throws Exception
 	{
 		Map<String, Object> configMapWithDefaultLanguage = callGetConfigurationsWithDefaultLanguage();
@@ -301,6 +424,11 @@ public class ConfigurationService {
 
 
 
+	/**
+	 * Test config_v1_06 lang consistence.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testConfig_v1_06LangConsistence() throws Exception
 	{
 		Map<String, Object> aboutMap = callGetAboutForDefaultLanguage();
@@ -331,6 +459,11 @@ public class ConfigurationService {
 
 
 
+	/**
+	 * Test config_v1_07 unsupported language.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testConfig_v1_07UnsupportedLanguage() throws Exception
 	{
 		String expectedError = AllJoynErrorReplyCodes.LANGUAGE_NOT_SUPPORTED;
@@ -356,6 +489,11 @@ public class ConfigurationService {
 	}
 
 
+	/**
+	 * Test config_v1_08 update configurations with a new device name.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testConfig_v1_08UpdateConfigurationsWithANewDeviceName() throws Exception
 	{
 		testUpdateConfigurations(AboutKeys.ABOUT_DEVICE_NAME, NEW_DEVICE_NAME);
@@ -363,12 +501,22 @@ public class ConfigurationService {
 
 
 
+	/**
+	 * Test config_v1_12 device name special.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testConfig_v1_12DeviceNameSpecial() throws Exception
 	{
 		testUpdateConfigurations(AboutKeys.ABOUT_DEVICE_NAME, getDeviceNameWithSpecialCharacters());
 	}
 
 
+	/**
+	 * Test config_v1_13 update unsupported language.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testConfig_v1_13UpdateUnsupportedLanguage() throws Exception
 	{
 		String origDeviceName = deviceAboutAnnouncement.getDeviceName();
@@ -397,6 +545,11 @@ public class ConfigurationService {
 	}
 
 
+	/**
+	 * Test config_v1_14 update default lang.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testConfig_v1_14UpdateDefaultLang() throws Exception
 	{
 		String newLang = getAnotherSupportedLanguage();
@@ -413,6 +566,11 @@ public class ConfigurationService {
 
 
 
+	/**
+	 * Test config_v1_15 update default language to unsupported language.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testConfig_v1_15UpdateDefaultLanguageToUnsupportedLanguage() throws Exception
 	{
 		String defaultLanguage = deviceAboutAnnouncement.getDefaultLanguage();
@@ -441,6 +599,11 @@ public class ConfigurationService {
 
 
 
+	/**
+	 * Test config_v1_16 test changeto unspecified language.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testConfig_v1_16TestChangetoUnspecifiedLanguage() throws Exception
 	{
 		String expectedError = AllJoynErrorReplyCodes.LANGUAGE_NOT_SUPPORTED;
@@ -469,6 +632,11 @@ public class ConfigurationService {
 		}
 	}
 
+	/**
+	 * Test config_v1_19 test update invalid field.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testConfig_v1_19TestUpdateInvalidField() throws Exception
 	{
 		String defaultLanguage = deviceAboutAnnouncement.getDefaultLanguage();
@@ -499,6 +667,11 @@ public class ConfigurationService {
 
 
 
+	/**
+	 * Test config_v1_20 test reset device name.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testConfig_v1_20TestResetDeviceName() throws Exception
 	{
 		String defaultLanguage = deviceAboutAnnouncement.getDefaultLanguage();
@@ -534,6 +707,11 @@ public class ConfigurationService {
 		verifyValueForAboutAndConfig(aboutMap, configMap, AboutKeys.ABOUT_DEVICE_NAME, originalDeviceName);
 	}
 
+	/**
+	 * Test config_v1_21 reset default language.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testConfig_v1_21ResetDefaultLanguage() throws Exception
 	{
 		String defaultLanguage = deviceAboutAnnouncement.getDefaultLanguage();
@@ -547,6 +725,11 @@ public class ConfigurationService {
 	}
 
 
+	/**
+	 * Test config_v1_22 reset default multi language.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testConfig_v1_22ResetDefaultMultiLanguage() throws Exception
 	{
 		String newDefaultLanguage = getAnotherSupportedLanguage();
@@ -592,6 +775,11 @@ public class ConfigurationService {
 		}
 	}
 
+	/**
+	 * Test config_v1_24 fail reset unsupported lang.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testConfig_v1_24FailResetUnsupportedLang() throws Exception
 	{
 		boolean exceptionThrown = false;
@@ -613,6 +801,11 @@ public class ConfigurationService {
 		}
 	}
 
+	/**
+	 * Test config_v1_25 fail reset invalid field.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testConfig_v1_25FailResetInvalidField() throws Exception
 	{
 		boolean exceptionThrown = false;
@@ -634,6 +827,11 @@ public class ConfigurationService {
 		}
 	}
 
+	/**
+	 * Test config_v1_26 device restart.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testConfig_v1_26DeviceRestart() throws Exception
 	{
 		reconnectClients();
@@ -647,6 +845,11 @@ public class ConfigurationService {
 	}
 
 	
+	/**
+	 * Test config_v1_27 device restart remember conf data.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testConfig_v1_27DeviceRestartRememberConfData() throws Exception
 	{
 		reconnectClients();
@@ -670,24 +873,44 @@ public class ConfigurationService {
 	}
 
 
+	/**
+	 * Test config_v1_29 passcode changed.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testConfig_v1_29PasscodeChanged() throws Exception
 	{
 		testChangePasscode(NEW_PASSCODE);
 	}
 
 
+	/**
+	 * Test config_v1_30 passcode changed single char.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testConfig_v1_30PasscodeChangedSingleChar() throws Exception
 	{
 		testChangePasscode(SINGLE_CHAR_PASSCODE);
 	}
 
 
+	/**
+	 * Test config_v1_31 passcode changed special chars.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testConfig_v1_31PasscodeChangedSpecialChars() throws Exception
 	{
 		testChangePasscode(SPECIAL_CHARS_PASSCODE);
 	}
 
 
+	/**
+	 * Test config_v1_32 passcode changed persist on restart.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testConfig_v1_32PasscodeChangedPersistOnRestart() throws Exception
 	{
 		changePasscodeAndReconnect(NEW_PASSCODE);
@@ -710,6 +933,11 @@ public class ConfigurationService {
 
 
 
+	/**
+	 * Test config_v1_33 factory reset no update configuratins.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testConfig_v1_33FactoryResetNoUpdateConfiguratins() throws Exception
 	{
 		String deviceNameBeforeReset = null;
@@ -774,6 +1002,11 @@ public class ConfigurationService {
 
 
 
+	/**
+	 * Test config_v1_34 factory reset after update configurations.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testConfig_v1_34FactoryResetAfterUpdateConfigurations() throws Exception
 	{
 		String defaultDeviceName = null;
@@ -842,6 +1075,11 @@ public class ConfigurationService {
 
 
 
+	/**
+	 * Test config_v1_35 factory reset resets passcode.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void  testConfig_v1_35FactoryResetResetsPasscode() throws Exception
 	{
 		if (deviceAboutAnnouncement.supportsInterface(OnboardingTransport.INTERFACE_NAME))
@@ -901,6 +1139,11 @@ public class ConfigurationService {
 	 *  Utilities
 	 */
 
+	/**
+	 * Creates the user input details.
+	 *
+	 * @return the user input details
+	 */
 	protected  UserInputDetails createUserInputDetails()
 	{
 		String[] msg={"Continue"};
@@ -909,6 +1152,11 @@ public class ConfigurationService {
 	}
 
 
+	/**
+	 * Call factory reset on config.
+	 *
+	 * @throws BusException the bus exception
+	 */
 	private  void callFactoryResetOnConfig() throws BusException
 	{
 		logger.info("Calling FactoryReset() on Config");
@@ -917,6 +1165,13 @@ public class ConfigurationService {
 
 
 
+	/**
+	 * Test change passcode.
+	 *
+	 * @param newPasscode the new passcode
+	 * @throws BusException the bus exception
+	 * @throws Exception the exception
+	 */
 	private  void testChangePasscode(char[] newPasscode) throws BusException, Exception
 	{
 		changePasscodeAndReconnect(newPasscode);
@@ -925,6 +1180,11 @@ public class ConfigurationService {
 	}
 
 
+	/**
+	 * Call restart on config.
+	 *
+	 * @throws BusException the bus exception
+	 */
 	private  void callRestartOnConfig() throws BusException
 	{
 		logger.info("Calling Restart() on Config");
@@ -932,12 +1192,25 @@ public class ConfigurationService {
 	}
 
 
+	/**
+	 * Call reset configurations.
+	 *
+	 * @param languageTag the language tag
+	 * @param fields the fields
+	 * @throws BusException the bus exception
+	 */
 	private  void callResetConfigurations(String languageTag, String[] fields) throws BusException
 	{
 		logger.info(String.format("Calling ResetConfigurations() with language: \"%s\" and %s", languageTag, Arrays.toString(fields)));
 		configClient.ResetConfigurations(languageTag, fields);
 	}
 
+	/**
+	 * Gets the another supported language.
+	 *
+	 * @return the another supported language
+	 * @throws BusException the bus exception
+	 */
 	private  String getAnotherSupportedLanguage() throws BusException
 	{
 		String defaultLanguage = deviceAboutAnnouncement.getDefaultLanguage();
@@ -962,6 +1235,11 @@ public class ConfigurationService {
 		return newLang;
 	}
 
+	/**
+	 * Gets the device name with special characters.
+	 *
+	 * @return the device name with special characters
+	 */
 	protected  String getDeviceNameWithSpecialCharacters()
 	{
 		StringBuilder builder = new StringBuilder();
@@ -973,6 +1251,13 @@ public class ConfigurationService {
 	}
 
 
+	/**
+	 * Append chars.
+	 *
+	 * @param builder the builder
+	 * @param startIdx the start idx
+	 * @param endIdx the end idx
+	 */
 	private  void appendChars(StringBuilder builder, int startIdx, int endIdx)
 	{
 		for (int asciiCode = startIdx; asciiCode < endIdx; asciiCode++)
@@ -981,6 +1266,14 @@ public class ConfigurationService {
 		}
 	}
 
+	/**
+	 * Test update configurations.
+	 *
+	 * @param fieldName the field name
+	 * @param newFieldValue the new field value
+	 * @throws BusException the bus exception
+	 * @throws Exception the exception
+	 */
 	private  void testUpdateConfigurations(String fieldName, String newFieldValue) throws BusException, Exception
 	{
 		String defaultLanguage = deviceAboutAnnouncement.getDefaultLanguage();
@@ -1001,6 +1294,14 @@ public class ConfigurationService {
 
 
 
+	/**
+	 * Update configurations and verify result.
+	 *
+	 * @param fieldName the field name
+	 * @param newFieldValue the new field value
+	 * @throws BusException the bus exception
+	 * @throws Exception the exception
+	 */
 	private  void updateConfigurationsAndVerifyResult(String fieldName, String newFieldValue) throws BusException, Exception
 	{
 		String defaultLanguage = deviceAboutAnnouncement.getDefaultLanguage();
@@ -1010,6 +1311,13 @@ public class ConfigurationService {
 		watiForNextAnnouncementAndVerifyFieldValue(fieldName, newFieldValue);
 	}
 
+	/**
+	 * Call update configurations.
+	 *
+	 * @param languageTag the language tag
+	 * @param configMap the config map
+	 * @throws BusException the bus exception
+	 */
 	private  void callUpdateConfigurations(String languageTag, Map<String, Object> configMap) throws BusException
 	{
 		logger.info(String.format("Calling UpdateConfigurations() with language: \"%s\" and %s", languageTag, configMap));
@@ -1017,6 +1325,14 @@ public class ConfigurationService {
 	}
 
 
+	/**
+	 * Wati for next announcement and verify field value.
+	 *
+	 * @param fieldName the field name
+	 * @param newFieldValue the new field value
+	 * @throws Exception the exception
+	 * @throws BusException the bus exception
+	 */
 	private  void watiForNextAnnouncementAndVerifyFieldValue(String fieldName, String newFieldValue) throws Exception, BusException
 	{
 		deviceAboutAnnouncement = waitForNextAnnouncementAndCheckFieldValue(fieldName, newFieldValue);
@@ -1026,6 +1342,14 @@ public class ConfigurationService {
 		verifyValueForAboutAndConfig(aboutMap, configMap, fieldName, newFieldValue);
 	}
 
+	/**
+	 * Verify value for about and config.
+	 *
+	 * @param aboutMap the about map
+	 * @param configMap the config map
+	 * @param key the key
+	 * @param verifyValue the verify value
+	 */
 	private  void verifyValueForAboutAndConfig(Map<String, Object> aboutMap, Map<String, Object> configMap, String key, String verifyValue)
 	{
 		logger.info("Checking if "+key+" from GetConfigurations() matches expected value");
@@ -1034,6 +1358,14 @@ public class ConfigurationService {
 		assertEquals(String.format("Value for %s retrieved from GetAboutData() does not match expected value", key), verifyValue, (String) aboutMap.get(key));
 	}
 
+	/**
+	 * Wait for next announcement and check field value.
+	 *
+	 * @param fieldName the field name
+	 * @param fieldValue the field value
+	 * @return the about announcement details
+	 * @throws Exception the exception
+	 */
 	protected  AboutAnnouncementDetails waitForNextAnnouncementAndCheckFieldValue(String fieldName, String fieldValue) throws Exception
 	{
 		logger.info("Waiting for updating About announcement");
@@ -1050,18 +1382,37 @@ public class ConfigurationService {
 	}
 
 
+	/**
+	 * Call get about for default language.
+	 *
+	 * @return the map
+	 * @throws BusException the bus exception
+	 */
 	private  Map<String, Object> callGetAboutForDefaultLanguage() throws BusException
 	{
 		String defaultLanguage = deviceAboutAnnouncement.getDefaultLanguage();
 		return callGetAbout(defaultLanguage);
 	}
 
+	/**
+	 * Call get about.
+	 *
+	 * @param language the language
+	 * @return the map
+	 * @throws BusException the bus exception
+	 */
 	private  Map<String, Object> callGetAbout(String language) throws BusException
 	{
 		logger.info(String.format("Calling getAboutData() with the language: \"%s\"", language));
 		return aboutClient.getAbout(language);
 	}
 
+	/**
+	 * Gets the supported languages.
+	 *
+	 * @param aboutMap the about map
+	 * @return the supported languages
+	 */
 	private  String[] getSupportedLanguages(Map<String, Object> aboutMap)
 	{
 		String[] suppLangs = (String[]) aboutMap.get(AboutKeys.ABOUT_SUPPORTED_LANGUAGES);
@@ -1069,6 +1420,13 @@ public class ConfigurationService {
 		return suppLangs;
 	}
 
+	/**
+	 * Compare maps.
+	 *
+	 * @param map1 the map1
+	 * @param map2 the map2
+	 * @throws Exception the exception
+	 */
 	private  void compareMaps(Map<String, Object> map1, Map<String, Object> map2) throws Exception
 	{
 		logger.info("Comparing DeviceName");
@@ -1077,6 +1435,14 @@ public class ConfigurationService {
 		compareMapsForField(AboutKeys.ABOUT_DEFAULT_LANGUAGE, map1, map2);
 	}
 
+	/**
+	 * Compare maps for field.
+	 *
+	 * @param fieldName the field name
+	 * @param map1 the map1
+	 * @param map2 the map2
+	 * @throws Exception the exception
+	 */
 	private  void compareMapsForField(String fieldName, Map<String, Object> map1, Map<String, Object> map2) throws Exception
 	{
 		logger.info("Comparing GetConfigurations() and GetAbout() "+fieldName+" field");
@@ -1084,6 +1450,12 @@ public class ConfigurationService {
 	}
 
 
+	/**
+	 * Call get configurations with default language.
+	 *
+	 * @return the map
+	 * @throws BusException the bus exception
+	 */
 	private  Map<String, Object> callGetConfigurationsWithDefaultLanguage() throws BusException
 	{
 		String defaultLanguage = deviceAboutAnnouncement.getDefaultLanguage();
@@ -1091,6 +1463,11 @@ public class ConfigurationService {
 		return configMap;
 	}
 
+	/**
+	 * Check map for required fields.
+	 *
+	 * @param map the map
+	 */
 	private  void checkMapForRequiredFields(Map<String, Object> map)
 	{
 		logger.info("Checking that DeviceName field is present");
@@ -1099,6 +1476,12 @@ public class ConfigurationService {
 		assertTrue("Required DefaultLanguage field not present in map", map.containsKey(AboutKeys.ABOUT_DEFAULT_LANGUAGE));
 	}
 
+	/**
+	 * Check consistency with about announcement.
+	 *
+	 * @param configMap the config map
+	 * @throws BusException the bus exception
+	 */
 	private  void checkConsistencyWithAboutAnnouncement(Map<String, Object> configMap) throws BusException
 	{
 		logger.info("Checking that DeviceName and DefaultLanguage from GetConfigurations() matches the values in About announcemment");
@@ -1112,6 +1495,12 @@ public class ConfigurationService {
 		}*/
 	}
 
+	/**
+	 * Call get version on config.
+	 *
+	 * @return the short
+	 * @throws BusException the bus exception
+	 */
 	private  short callGetVersionOnConfig() throws BusException
 	{
 		short version = configClient.getVersion();
@@ -1120,12 +1509,25 @@ public class ConfigurationService {
 	}
 
 
+	/**
+	 * Checks if is app id equal to device id.
+	 *
+	 * @param dutAppId the dut app id
+	 * @param dutDeviceId the dut device id
+	 * @return true, if is app id equal to device id
+	 */
 	private  boolean isAppIdEqualToDeviceId(UUID dutAppId, String dutDeviceId)
 	{
 		logger.info(String.format("Comparing DeviceId: %s to AppId: %s", dutDeviceId, dutAppId.toString().replace("-", "")));
 		return dutDeviceId.equals(dutAppId.toString().replace("-", ""));
 	}
 
+	/**
+	 * Inits the service helper.
+	 *
+	 * @throws BusException the bus exception
+	 * @throws Exception the exception
+	 */
 	protected  void initServiceHelper() throws BusException, Exception
 	{
 		releaseServiceHelper();
@@ -1147,17 +1549,32 @@ public class ConfigurationService {
 		serviceHelper.enableAuthentication(keyStorePath);
 	}
 
+	/**
+	 * Creates the service helper.
+	 *
+	 * @return the service helper
+	 */
 	protected  ServiceHelper createServiceHelper()
 	{
 		return new ServiceHelper();
 	}
 
 
+	/**
+	 * Release resources.
+	 *
+	 * @throws Exception the exception
+	 */
 	private  void releaseResources() throws Exception
 	{
 		releaseServiceHelper();
 	} 
 
+	/**
+	 * Release service helper.
+	 *
+	 * @throws Exception the exception
+	 */
 	private  void releaseServiceHelper() throws Exception
 	{
 
@@ -1180,34 +1597,67 @@ public class ConfigurationService {
 
 	}
 
+	/**
+	 * Reconnect clients.
+	 *
+	 * @throws Exception the exception
+	 */
 	private  void reconnectClients() throws Exception
 	{
 		releaseServiceHelper();
 		initServiceHelper();
 	}
 
+	/**
+	 * Connect config client.
+	 *
+	 * @param aboutAnnouncement the about announcement
+	 * @throws Exception the exception
+	 */
 	private  void connectConfigClient(AboutAnnouncementDetails aboutAnnouncement) throws Exception
 	{
 		configClient = serviceHelper.connectConfigClient(aboutAnnouncement);
 	}
 
+	/**
+	 * Connect about client.
+	 *
+	 * @param aboutAnnouncement the about announcement
+	 * @throws Exception the exception
+	 */
 	private  void connectAboutClient(AboutAnnouncementDetails aboutAnnouncement) throws Exception
 	{
 		serviceAvailabilityHandler = createServiceAvailabilityHandler();
 		aboutClient = serviceHelper.connectAboutClient(aboutAnnouncement, serviceAvailabilityHandler);
 	}
 
+	/**
+	 * Creates the service availability handler.
+	 *
+	 * @return the service availability handler
+	 */
 	protected  ServiceAvailabilityHandler createServiceAvailabilityHandler()
 	{
 		return new ServiceAvailabilityHandler();
 	}
 
+	/**
+	 * Wait for next device announcement.
+	 *
+	 * @return the about announcement details
+	 * @throws Exception the exception
+	 */
 	private  AboutAnnouncementDetails waitForNextDeviceAnnouncement() throws Exception
 	{
 		logger.info("Waiting for About announcement");
 		return serviceHelper.waitForNextDeviceAnnouncement(aboutAnnouncementTimeout, TimeUnit.SECONDS, true);
 	}
 
+	/**
+	 * Wait for session to close.
+	 *
+	 * @throws Exception the exception
+	 */
 	private  void waitForSessionToClose() throws Exception 
 	{
 		logger.info("Waiting for session to close");
@@ -1216,6 +1666,11 @@ public class ConfigurationService {
 
 	}
 
+	/**
+	 * Reset passcode if needed.
+	 *
+	 * @throws Exception the exception
+	 */
 	private  void resetPasscodeIfNeeded() throws Exception
 	{
 		try
@@ -1244,6 +1699,12 @@ public class ConfigurationService {
 
 
 
+	/**
+	 * Sets the passcode.
+	 *
+	 * @param pwd the new passcode
+	 * @throws Exception the exception
+	 */
 	private  void setPasscode(char[] pwd) throws Exception
 	{
 		serviceHelper.clearKeyStore();
@@ -1252,6 +1713,13 @@ public class ConfigurationService {
 		changePasscodeAndReconnect(DEFAULT_PINCODE);
 	}
 
+	/**
+	 * Change passcode and reconnect.
+	 *
+	 * @param newPasscode the new passcode
+	 * @throws BusException the bus exception
+	 * @throws Exception the exception
+	 */
 	private  void changePasscodeAndReconnect(char[] newPasscode) throws BusException, Exception
 	{
 		callSetPasscodeOnConfig(newPasscode);
@@ -1264,6 +1732,12 @@ public class ConfigurationService {
 		callMethodToCheckAuthentication();
 	}
 
+	/**
+	 * Call set passcode on config.
+	 *
+	 * @param newPasscode the new passcode
+	 * @throws BusException the bus exception
+	 */
 	private  void callSetPasscodeOnConfig(char[] newPasscode) throws BusException
 	{
 		String realm = "";
@@ -1272,6 +1746,12 @@ public class ConfigurationService {
 
 	}
 
+	/**
+	 * Call method to check authentication.
+	 *
+	 * @return the short
+	 * @throws BusException the bus exception
+	 */
 	private short callMethodToCheckAuthentication() throws BusException
 	{
 		//callGetConfigurations("");
@@ -1283,6 +1763,13 @@ public class ConfigurationService {
 
 
 
+	/**
+	 * Call get configurations.
+	 *
+	 * @param languageTag the language tag
+	 * @return the map
+	 * @throws BusException the bus exception
+	 */
 	private  Map<String, Object> callGetConfigurations(String languageTag) throws BusException
 	{
 		logger.info(String.format("Calling GetConfigurations() with language: \"%s\"", languageTag));
@@ -1296,6 +1783,11 @@ public class ConfigurationService {
 	 */
 	
 
+	/**
+	 * Fail.
+	 *
+	 * @param msg the msg
+	 */
 	private  void fail(String msg) {
 		logger.error(msg);
 		logger.info("Partial Verdict: FAIL");
@@ -1303,12 +1795,24 @@ public class ConfigurationService {
 
 	}
 
+	/**
+	 * Inconc.
+	 *
+	 * @param msg the msg
+	 */
 	private void inconc(String msg) {
 		logger.error(msg);
 		logger.info("Partial Verdict: INCONC");
 		inconc = true;
 	}
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param errorMsg the error msg
+	 * @param string1 the string1
+	 * @param string2 the string2
+	 */
 	private  void assertEquals(String errorMsg,
 			String string1, String string2) {
 		if(!string1.equals(string2)){
@@ -1319,6 +1823,12 @@ public class ConfigurationService {
 
 	}
 
+	/**
+	 * Assert true.
+	 *
+	 * @param errorMsg the error msg
+	 * @param bool the bool
+	 */
 	private  void assertTrue(String errorMsg,
 			boolean bool) {
 		if(!bool){
@@ -1330,6 +1840,12 @@ public class ConfigurationService {
 	}
 
 
+	/**
+	 * Assert false.
+	 *
+	 * @param errorMsg the error msg
+	 * @param bool the bool
+	 */
 	private  void assertFalse(String errorMsg,
 			boolean bool) {
 		if(bool){
@@ -1340,6 +1856,12 @@ public class ConfigurationService {
 
 	}
 
+	/**
+	 * Assert not null.
+	 *
+	 * @param msgError the msg error
+	 * @param notNull the not null
+	 */
 	private  void assertNotNull(String msgError, String notNull) {
 
 		if(notNull==null){
@@ -1354,6 +1876,11 @@ public class ConfigurationService {
 	 * Verdict
 	 */
 
+	/**
+	 * Gets the verdict.
+	 *
+	 * @return the verdict
+	 */
 	public String getVerdict() {
 		String verdict=null;
 		if(inconc){

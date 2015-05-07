@@ -29,12 +29,17 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 
 
+// TODO: Auto-generated Javadoc
 /**
  * This class introspects the object identified by the Object Path provided in the class constructor.
  * The introspection is done with AllJoyn {@link AllSeenIntrospectable} interface.
  */
 abstract class ObjectIntrospector extends TimeClientBase {
+    
+    /** The Constant TAG. */
     private static final String TAG = "ajts" + ObjectIntrospector.class.getSimpleName();
+	
+	/** The Constant Log. */
 	private static final WindowsLoggerImpl Log =  new WindowsLoggerImpl(TAG);
 
     /**

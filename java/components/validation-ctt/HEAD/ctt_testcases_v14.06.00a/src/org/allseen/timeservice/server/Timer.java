@@ -24,12 +24,17 @@ import org.allseen.timeservice.TimeServiceException;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * Extend this class to receive events related to this {@link Timer} object
  * and send {@link Timer#timerEvent()} signal.
  */
 public abstract class Timer {
+    
+    /** The Constant TAG. */
     private static final String TAG = "ajts" + Timer.class.getSimpleName();
+	
+	/** The Constant Log. */
 	private static final WindowsLoggerImpl Log =  new WindowsLoggerImpl(TAG);
 
     /**
