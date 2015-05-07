@@ -9,7 +9,11 @@
 				<attribute name="Class-Path" value="."/>
 			</manifest>
             <fileset dir="../bin"/>
-			<zipfileset dir="..\lib"/>
+			<zipfileset dir="..\lib">
+				<exclude name="alljoyn.jar"/>
+				<exclude name="alljoyn_about.jar"/>
+			</zipfileset>
+			<zipfileset dir="..\..\copy"/>
 		</jar>
     </target>
 	<target name="compile" depends="clean">
