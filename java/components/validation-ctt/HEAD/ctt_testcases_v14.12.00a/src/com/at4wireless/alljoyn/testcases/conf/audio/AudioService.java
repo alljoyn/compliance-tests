@@ -1,3 +1,18 @@
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *    Permission to use, copy, modify, and/or distribute this software for any
+ *    purpose with or without fee is hereby granted, provided that the above
+ *    copyright notice and this permission notice appear in all copies.
+ *
+ *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.at4wireless.alljoyn.testcases.conf.audio;
 
 import java.io.IOException;
@@ -26,6 +41,7 @@ import org.alljoyn.bus.Status;
 import org.alljoyn.bus.Variant;
 import org.alljoyn.services.common.ClientBase;
 import org.xml.sax.SAXException;
+
 
 
 
@@ -222,6 +238,7 @@ import static com.at4wireless.alljoyn.core.audio.MediaType.ImageJpeg;
 
 
 
+
 import com.at4wireless.alljoyn.core.about.AboutAnnouncementDetails;
 import com.at4wireless.alljoyn.core.audio.AudioSinkParameter;
 import com.at4wireless.alljoyn.core.audio.AudioSinkPlayStateChangedSignal;
@@ -253,72 +270,180 @@ import com.at4wireless.alljoyn.core.introspection.bean.NodeDetail;
 
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AudioService.
+ */
 public class AudioService {
 
 
-	 Boolean pass=true;
+	 /** The pass. */
+ 	Boolean pass=true;
+	 
+ 	/** The inconc. */
+ 	Boolean inconc=false;
+	
+	/** The tag. */
 	private  final String TAG = "AudioTestSuite";
+	
+	/** The logger. */
 	private  final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	
+	/** The time out. */
 	private  int  timeOut=30;
+
+/** The port. */
 private  short port=91;
 
+	/** The data size. */
 	private  final int DATA_SIZE = 16 * 1024;
+	
+	/** The data. */
 	private  final byte[] DATA = new byte[DATA_SIZE];
+	
+	/** The invalid high volume. */
 	private  final int INVALID_HIGH_VOLUME = 32767;
+	
+	/** The invalid low volume. */
 	private  final int INVALID_LOW_VOLUME = -32768;
+	
+	/** The volume interface name. */
 	private  final String VOLUME_INTERFACE_NAME = "org.alljoyn.Control.Volume";
+	
+	/** The audio sink interface name. */
 	private  final String AUDIO_SINK_INTERFACE_NAME = "org.alljoyn.Stream.Port.AudioSink";
+	
+	/** The image sink interface name. */
 	private  final String IMAGE_SINK_INTERFACE_NAME = "org.alljoyn.Stream.Port.ImageSink";
+	
+	/** The metadata sink interface name. */
 	private  final String METADATA_SINK_INTERFACE_NAME = "org.alljoyn.Stream.Port.Application.MetadataSink";
+	
+	/** The port interface name. */
 	private  final String PORT_INTERFACE_NAME = "org.alljoyn.Stream.Port";
+	
+	/** The er bus reply is error message. */
 	private  final String ER_BUS_REPLY_IS_ERROR_MESSAGE = "ER_BUS_REPLY_IS_ERROR_MESSAGE";
+	
+	/** The time difference in nanoseconds. */
 	private  final int TIME_DIFFERENCE_IN_NANOSECONDS = 1000000000;
+	
+	/** The number of nanoseconds in one millisecond. */
 	private  final int NUMBER_OF_NANOSECONDS_IN_ONE_MILLISECOND = 1000000;
+	
+	/** The album title value. */
 	private  final String ALBUM_TITLE_VALUE = "album title";
+	
+	/** The album title key. */
 	private  final String ALBUM_TITLE_KEY = "Album";
+	
+	/** The item name value. */
 	private  final String ITEM_NAME_VALUE = "item name";
+	
+	/** The item name key. */
 	private  final String ITEM_NAME_KEY = "Name";
+	
+	/** The metadata source path. */
 	private  final String METADATA_SOURCE_PATH = "/Player/Out/Metadata";
+	
+	/** The image source path. */
 	private  final String IMAGE_SOURCE_PATH = "/Player/Out/Image";
+	
+	/** The audio source path. */
 	private  final String AUDIO_SOURCE_PATH = "/Player/Out/Audio";
+	
+	/** The mandatory rate one. */
 	private  final short MANDATORY_RATE_ONE = -21436;
+	
+	/** The mandatory rate two. */
 	private  final short MANDATORY_RATE_TWO = -17536;
+	
+	/** The mandatory format. */
 	private  final String MANDATORY_FORMAT = "s16le";
+	
+	/** The mandatory channel one. */
 	private  final byte MANDATORY_CHANNEL_ONE = 1;
+	
+	/** The mandatory channel two. */
 	private  final byte MANDATORY_CHANNEL_TWO = 2;
 	//private  final short INTERFACE_VERSION = 1;
+	/** The slash character. */
 	private  final String SLASH_CHARACTER = "/";
+	
+	/** The bus application name. */
 	private  final String BUS_APPLICATION_NAME = "Audio";
+	
+	/** The signal timeout in seconds. */
 	private  long SIGNAL_TIMEOUT_IN_SECONDS = 30;
+	
+	/** The link timeout in seconds. */
 	private  int LINK_TIMEOUT_IN_SECONDS = 120;
+	
+	/** The port direction. */
 	private  final byte PORT_DIRECTION = 1;
 
+	/** The about client. */
 	private  AboutClient aboutClient;
+	
+	/** The device about announcement. */
 	private  AboutAnnouncementDetails deviceAboutAnnouncement;
+	
+	/** The service helper. */
 	private  ServiceHelper serviceHelper;
+	
+	/** The stream object path. */
 	private  String streamObjectPath;
+	
+	/** The stream. */
 	private  Stream stream;
 
 	/*private  UUID dutAppId;
 	private  String dutDeviceId;*/
 
-	 boolean ICSAU_AudioServiceFramework=false;
-	 boolean ICSAU_StreamInterface=false;
-	 boolean ICSAU_StreamPortInterface=false;
-	 boolean ICSAU_PortAudioSinkInterface=false;
-	 boolean ICSAU_PortAudioSourceInterface=false;
-	 boolean ICSAU_PortImageSinkInterface=false;
-	 boolean ICSAU_PortImageSourceInterface=false;
-	 boolean ICSAU_PortApplicationMetadataSinkInterface=false;
-	 boolean ICSAU_PortApplicationMetadataSourceInterface=false;
-	 boolean ICSAU_ControlVolumeInterface=false;
+	 /** The ICSA u_ audio service framework. */
+	boolean ICSAU_AudioServiceFramework=false;
+	 
+ 	/** The ICSA u_ stream interface. */
+ 	boolean ICSAU_StreamInterface=false;
+	 
+ 	/** The ICSA u_ stream port interface. */
+ 	boolean ICSAU_StreamPortInterface=false;
+	 
+ 	/** The ICSA u_ port audio sink interface. */
+ 	boolean ICSAU_PortAudioSinkInterface=false;
+	 
+ 	/** The ICSA u_ port audio source interface. */
+ 	boolean ICSAU_PortAudioSourceInterface=false;
+	 
+ 	/** The ICSA u_ port image sink interface. */
+ 	boolean ICSAU_PortImageSinkInterface=false;
+	 
+ 	/** The ICSA u_ port image source interface. */
+ 	boolean ICSAU_PortImageSourceInterface=false;
+	 
+ 	/** The ICSA u_ port application metadata sink interface. */
+ 	boolean ICSAU_PortApplicationMetadataSinkInterface=false;
+	 
+ 	/** The ICSA u_ port application metadata source interface. */
+ 	boolean ICSAU_PortApplicationMetadataSourceInterface=false;
+	 
+ 	/** The ICSA u_ control volume interface. */
+ 	boolean ICSAU_ControlVolumeInterface=false;
 
-	 boolean ICSAU_StreamClockInterface=false;
+	 /** The ICSA u_ stream clock interface. */
+ 	boolean ICSAU_StreamClockInterface=false;
 
-	 boolean ICSAU_AudioXalac=false;
-	 boolean ICSAU_ImageJpeg=false;
-	 boolean ICSAU_ApplicationXmetadata=false;
-	 boolean ICSAU_VolumeControl=false;
+	 /** The ICSA u_ audio xalac. */
+ 	boolean ICSAU_AudioXalac=false;
+	 
+ 	/** The ICSA u_ image jpeg. */
+ 	boolean ICSAU_ImageJpeg=false;
+	 
+ 	/** The ICSA u_ application xmetadata. */
+ 	boolean ICSAU_ApplicationXmetadata=false;
+	 
+ 	/** The ICSA u_ volume control. */
+ 	boolean ICSAU_VolumeControl=false;
 	//
 	 /*String IXITCO_AppId=null;
 	 String IXITCO_DefaultLanguage=null;
@@ -343,8 +468,50 @@ private  short port=91;
 	 String IXITAU_ClockVersion=null;
 	 String IXITAU_adjustNanos=null;*/
 	 
-	 Map<String,String> ixit;
+	 /** The ixit. */
+	Map<String,String> ixit;
 
+	/**
+	 * Instantiates a new audio service.
+	 *
+	 * @param testCase the test case
+	 * @param iCSAU_AudioServiceFramework the i csa u_ audio service framework
+	 * @param iCSAU_StreamInterface the i csa u_ stream interface
+	 * @param iCSAU_StreamPortInterface the i csa u_ stream port interface
+	 * @param iCSAU_PortAudioSinkInterface the i csa u_ port audio sink interface
+	 * @param iCSAU_PortAudioSourceInterface the i csa u_ port audio source interface
+	 * @param iCSAU_PortImageSinkInterface the i csa u_ port image sink interface
+	 * @param iCSAU_PortImageSourceInterface the i csa u_ port image source interface
+	 * @param iCSAU_PortApplicationMetadataSinkInterface the i csa u_ port application metadata sink interface
+	 * @param iCSAU_PortApplicationMetadataSourceInterface the i csa u_ port application metadata source interface
+	 * @param iCSAU_ControlVolumeInterface the i csa u_ control volume interface
+	 * @param iCSAU_StreamClockInterface the i csa u_ stream clock interface
+	 * @param iCSAU_AudioXalac the i csa u_ audio xalac
+	 * @param iCSAU_ImageJpeg the i csa u_ image jpeg
+	 * @param iCSAU_ApplicationXmetadata the i csa u_ application xmetadata
+	 * @param iCSAU_VolumeControl the i csa u_ volume control
+	 * @param iXITCO_AppId the i xitc o_ app id
+	 * @param iXITCO_DeviceId the i xitc o_ device id
+	 * @param iXITCO_DefaultLanguage the i xitc o_ default language
+	 * @param iXITAU_StreamVersion the i xita u_ stream version
+	 * @param iXITAU_TestObjectPath the i xita u_ test object path
+	 * @param iXITAU_PortVersion the i xita u_ port version
+	 * @param iXITAU_AudioSinkVersion the i xita u_ audio sink version
+	 * @param iXITAU_timeNanos the i xita u_time nanos
+	 * @param iXITAU_AudioSourceVersion the i xita u_ audio source version
+	 * @param iXITAU_ImageSinkVersion the i xita u_ image sink version
+	 * @param iXITAU_ImageSourceVersion the i xita u_ image source version
+	 * @param iXITAU_MetadataSinkVersion the i xita u_ metadata sink version
+	 * @param iXITAU_MetadataSourceVersion the i xita u_ metadata source version
+	 * @param iXITAU_ControlVolumeVersion the i xita u_ control volume version
+	 * @param iXITAU_delta the i xita u_delta
+	 * @param iXITAU_change the i xita u_change
+	 * @param iXITAU_ClockVersion the i xita u_ clock version
+	 * @param iXITAU_adjustNanos the i xita u_adjust nanos
+	 * @param gPCO_AnnouncementTimeout the g pc o_ announcement timeout
+	 * @param gPAU_Signal the g pa u_ signal
+	 * @param gPAU_Link the g pa u_ link
+	 */
 	public AudioService(String testCase, boolean iCSAU_AudioServiceFramework,
 			boolean iCSAU_StreamInterface, boolean iCSAU_StreamPortInterface,
 			boolean iCSAU_PortAudioSinkInterface,
@@ -385,24 +552,7 @@ private  short port=91;
 		ICSAU_ImageJpeg=iCSAU_ImageJpeg;
 		ICSAU_ApplicationXmetadata=iCSAU_ApplicationXmetadata;
 		ICSAU_VolumeControl=iCSAU_VolumeControl;
-		/*IXITCO_AppId=iXITCO_AppId;
-		IXITCO_DeviceId=iXITCO_DeviceId;
-		IXITCO_DefaultLanguage=iXITCO_DefaultLanguage;
-		IXITAU_StreamVersion=iXITAU_StreamVersion;
-		IXITAU_TestObjectPath=iXITAU_TestObjectPath;
-		IXITAU_PortVersion=iXITAU_PortVersion;
-		IXITAU_AudioSinkVersion=iXITAU_AudioSinkVersion;
-		IXITAU_timeNanos=iXITAU_timeNanos;
-		IXITAU_AudioSourceVersion=iXITAU_AudioSourceVersion;
-		IXITAU_ImageSinkVersion=iXITAU_ImageSinkVersion;
-		IXITAU_ImageSourceVersion=iXITAU_ImageSourceVersion;
-		IXITAU_MetadataSinkVersion=iXITAU_MetadataSinkVersion;
-		IXITAU_MetadataSourceVersion=iXITAU_MetadataSourceVersion;
-		IXITAU_ControlVolumeVersion=iXITAU_ControlVolumeVersion;
-		IXITAU_delta=iXITAU_delta;
-		IXITAU_change=iXITAU_change;
-		IXITAU_ClockVersion=iXITAU_ClockVersion;
-		IXITAU_adjustNanos=iXITAU_adjustNanos;*/
+	
 
 
 		ixit = new HashMap<String,String>();
@@ -432,6 +582,7 @@ private  short port=91;
 		try{
 			runTestCase(testCase);
 		}catch(Exception e){
+			inconc=true;
 			if(e.getMessage().equals("Timed out waiting for About announcement")){
 				fail("Timed out waiting for About announcement");
 			}else{
@@ -441,8 +592,14 @@ private  short port=91;
 	}
 
 
+	/**
+	 * Run test case.
+	 *
+	 * @param testCase the test case
+	 * @throws Exception the exception
+	 */
 	public  void runTestCase(String testCase) throws Exception{
-		//setUp(IXITCO_DeviceId,IXITCO_AppId);
+		
 		setUp();
 		logger.info("Running testcase: "+testCase);
 
@@ -510,6 +667,11 @@ private  short port=91;
 	}
 
 
+	/**
+	 * Test audio_v1_01_ validate stream objects.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAudio_v1_01_ValidateStreamObjects() throws Exception
 	{
 		BusIntrospector busIntrospector = getIntrospector();
@@ -535,6 +697,11 @@ private  short port=91;
 
 
 
+	/**
+	 * Test audio_v1_02_ open stream object.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAudio_v1_02_OpenStreamObject() throws Exception
 	{
 		stream.Open();
@@ -543,6 +710,11 @@ private  short port=91;
 
 
 
+	/**
+	 * Test audio_v1_03_ open and close stream object.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAudio_v1_03_OpenAndCloseStreamObject() throws Exception
 	{
 		stream.Open();
@@ -550,6 +722,11 @@ private  short port=91;
 	}
 
 
+	/**
+	 * Test audio_v1_04_ close unopened stream object.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAudio_v1_04_CloseUnopenedStreamObject() throws Exception
 	{
 		stream.Open();
@@ -568,6 +745,11 @@ private  short port=91;
 
 
 
+	/**
+	 * Test audio_v1_05_ verify audio sink capabilities.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAudio_v1_05_VerifyAudioSinkCapabilities() throws Exception
 	{
 		Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -587,6 +769,11 @@ private  short port=91;
 
 
 
+	/**
+	 * Test audio_v1_06_ verify image sink capabilities.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAudio_v1_06_VerifyImageSinkCapabilities() throws Exception
 	{
 		Port imageSinkPort = getImageSinkPort(streamObjectPath, getIntrospector());
@@ -605,6 +792,11 @@ private  short port=91;
 
 
 
+	/**
+	 * Test audio_v1_07_ verify application metadata capabilities.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAudio_v1_07_VerifyApplicationMetadataCapabilities() throws Exception
 	{
 		Port metadataSinkPort = getMetadataSinkPort(streamObjectPath, getIntrospector());
@@ -623,6 +815,11 @@ private  short port=91;
 
 
 
+	/**
+	 * Test audio_v1_08_ configure audio sink port.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAudio_v1_08_ConfigureAudioSinkPort() throws Exception
 	{
 		Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -642,6 +839,11 @@ private  short port=91;
 
 
 
+	/**
+	 * Test audio_v1_09_ configure audio sink port with invalid configuration.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAudio_v1_09_ConfigureAudioSinkPortWithInvalidConfiguration() throws Exception
 	{
 		Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -661,6 +863,11 @@ private  short port=91;
 
 
 
+	/**
+	 * Test audio_v1_10_ configure audio sink port twice.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAudio_v1_10_ConfigureAudioSinkPortTwice() throws Exception
 	{
 		Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -679,6 +886,11 @@ private  short port=91;
 	}
 
 
+	/**
+	 * Test audio_v1_11_ check ownership lost signal.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAudio_v1_11_CheckOwnershipLostSignal() throws Exception
 	{
 		Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -701,6 +913,11 @@ private  short port=91;
 
 
 
+	/**
+	 * Test audio_v1_12_ playback audio sink.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAudio_v1_12_PlaybackAudioSink() throws Exception
 	{
 		Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -732,6 +949,11 @@ private  short port=91;
 
 
 
+	/**
+	 * Test audio_v1_13_ pause audio sink playback.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAudio_v1_13_PauseAudioSinkPlayback() throws Exception
 	{
 		Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -762,6 +984,11 @@ private  short port=91;
 
 
 
+	/**
+	 * Test audio_v1_14_ flush paused audio sink.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAudio_v1_14_FlushPausedAudioSink() throws Exception
 	{
 		Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -798,6 +1025,11 @@ private  short port=91;
 
 
 
+	/**
+	 * Test audio_v1_15_ flush playing audio sink.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAudio_v1_15_FlushPlayingAudioSink() throws Exception
 	{
 		Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -828,6 +1060,11 @@ private  short port=91;
 
 
 
+	/**
+	 * Test audio_v1_16_ verify paused audio sink remains paused after sending data.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAudio_v1_16_VerifyPausedAudioSinkRemainsPausedAfterSendingData() throws Exception
 	{
 		Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -856,6 +1093,11 @@ private  short port=91;
 	}
 
 
+	/**
+	 * Test audio_v1_17_ verify playing empty audio sink remains idle.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAudio_v1_17_VerifyPlayingEmptyAudioSinkRemainsIdle() throws Exception
 	{
 		Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -882,6 +1124,11 @@ private  short port=91;
 
 
 
+	/**
+	 * Test audio_v1_18_ flush idle audio sink.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAudio_v1_18_FlushIdleAudioSink() throws Exception
 	{
 		Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -909,6 +1156,11 @@ private  short port=91;
 
 
 
+	/**
+	 * Test audio_v1_19_ send data to image sink.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAudio_v1_19_SendDataToImageSink() throws Exception
 	{
 		Port imageSinkPort = getImageSinkPort(streamObjectPath, getIntrospector());
@@ -930,6 +1182,11 @@ private  short port=91;
 
 
 
+	/**
+	 * Test audio_v1_20_ send data to metadata sink.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAudio_v1_20_SendDataToMetadataSink() throws Exception
 	{
 		Port metadataSinkPort = getMetadataSinkPort(streamObjectPath, getIntrospector());
@@ -951,6 +1208,11 @@ private  short port=91;
 
 
 
+	/**
+	 * Test audio_v1_21_ verify audio sink can be muted unmuted.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAudio_v1_21_VerifyAudioSinkCanBeMutedUnmuted() throws Exception
 	{
 		Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -978,6 +1240,11 @@ private  short port=91;
 
 
 
+	/**
+	 * Test audio_v1_22_ verify volume can be set on audio sink.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAudio_v1_22_VerifyVolumeCanBeSetOnAudioSink() throws Exception
 	{
 		Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -1020,6 +1287,11 @@ private  short port=91;
 	}
 
 
+	/**
+	 * Test audio_v1_23_ set invalid volume on audio sink.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAudio_v1_23_SetInvalidVolumeOnAudioSink() throws Exception
 	{
 		Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -1058,6 +1330,11 @@ private  short port=91;
 
 
 
+	/**
+	 * Test audio_v1_24_ verify independence of mute and volume on audio sink.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAudio_v1_24_VerifyIndependenceOfMuteAndVolumeOnAudioSink() throws Exception
 	{
 		Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -1099,6 +1376,11 @@ private  short port=91;
 
 
 
+	/**
+	 * Test audio_v1_25_ synchronize clocks on audio sink.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAudio_v1_25_SynchronizeClocksOnAudioSink() throws Exception
 	{
 		Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -1133,6 +1415,11 @@ private  short port=91;
 	}
 
 
+	/**
+	 * Test audio_v1_26_ verify volume can be adjusted on audio sink.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAudio_v1_26_VerifyVolumeCanBeAdjustedOnAudioSink() throws Exception
 	{
 		Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -1179,6 +1466,11 @@ private  short port=91;
 
 
 
+	/**
+	 * Test audio_v1_27_ verify volume can be adjusted by percent on audio sink.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAudio_v1_27_VerifyVolumeCanBeAdjustedByPercentOnAudioSink() throws Exception
 	{
 		Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -1227,6 +1519,11 @@ private  short port=91;
 
 
 
+	/**
+	 * Test audio_v1_28_ verify volume not adjustable when disabled.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAudio_v1_28_VerifyVolumeNotAdjustableWhenDisabled() throws Exception
 	{
 		Port audioSinkPort = getAudioSinkPort(streamObjectPath, getIntrospector());
@@ -1293,6 +1590,12 @@ private  short port=91;
 
 
 
+	/**
+	 * Gets the clock.
+	 *
+	 * @param path the path
+	 * @return the clock
+	 */
 	private  Clock getClock(String path)
 	{
 		Clock clock = null;
@@ -1309,11 +1612,23 @@ private  short port=91;
 	}
 
 
-	 short getMidRangeVolumeProperty(VolumeRange volumeRange)
+	 /**
+ 	 * Gets the mid range volume property.
+ 	 *
+ 	 * @param volumeRange the volume range
+ 	 * @return the mid range volume property
+ 	 */
+ 	short getMidRangeVolumeProperty(VolumeRange volumeRange)
 	{
 		return (short) ((short) volumeRange.low + (((volumeRange.high - volumeRange.low) / volumeRange.step / 2) * volumeRange.step));
 	}
 
+	/**
+	 * Sets the invalid volume value.
+	 *
+	 * @param volume the volume
+	 * @param newVolumeProperty the new volume property
+	 */
 	private  void setInvalidVolumeValue(Volume volume, short newVolumeProperty)
 	{
 		logger.info("New Volume Property : " + newVolumeProperty);
@@ -1337,6 +1652,13 @@ private  short port=91;
 
 
 
+	/**
+	 * Gets the new volume property value.
+	 *
+	 * @param volumeProperty the volume property
+	 * @param volumeRange the volume range
+	 * @return the new volume property value
+	 */
 	public  short getNewVolumePropertyValue(short volumeProperty, VolumeRange volumeRange)
 	{
 		short newVolumeProperty = volumeProperty;
@@ -1366,12 +1688,27 @@ private  short port=91;
 	}
 
 
+	/**
+	 * Sets the volume property.
+	 *
+	 * @param volume the volume
+	 * @param volumeProperty the volume property
+	 * @throws BusException the bus exception
+	 */
 	private  void setVolumeProperty(Volume volume, short volumeProperty) throws BusException
 	{
 		volume.setVolume(volumeProperty);
 		assertEquals("The volume has not been set correctly",volumeProperty, volume.getVolume());
 	}
 
+	/**
+	 * Validate original volume property.
+	 *
+	 * @param high the high
+	 * @param low the low
+	 * @param step the step
+	 * @param originalVolumeProperty the original volume property
+	 */
 	private  void validateOriginalVolumeProperty(short high, short low, short step, short originalVolumeProperty)
 	{
 		if (originalVolumeProperty < low || originalVolumeProperty > high || ((originalVolumeProperty - low) % step) != 0)
@@ -1380,6 +1717,13 @@ private  short port=91;
 		}
 	}
 
+	/**
+	 * Validate volume range properties.
+	 *
+	 * @param high the high
+	 * @param low the low
+	 * @param step the step
+	 */
 	private  void validateVolumeRangeProperties(short high, short low, short step)
 	{
 		if (low > high)
@@ -1396,6 +1740,13 @@ private  short port=91;
 		}
 	}
 
+	/**
+	 * Assert volume changed signal is received.
+	 *
+	 * @param newVolume the new volume
+	 * @param volumeControlSignalHandler the volume control signal handler
+	 * @throws InterruptedException the interrupted exception
+	 */
 	private  void assertVolumeChangedSignalIsReceived(short newVolume, VolumeControlSignalHandler volumeControlSignalHandler) throws InterruptedException
 	{
 		Short volumeChangedSignalValue = volumeControlSignalHandler.waitForNextVolumeChangedSignal(getSignalTimeout(), TimeUnit.SECONDS);
@@ -1404,6 +1755,14 @@ private  short port=91;
 	}
 
 
+	/**
+	 * Invert mute value on volume.
+	 *
+	 * @param volume the volume
+	 * @param volumeControlSignalHandler the volume control signal handler
+	 * @throws BusException the bus exception
+	 * @throws InterruptedException the interrupted exception
+	 */
 	private  void invertMuteValueOnVolume(Volume volume, VolumeControlSignalHandler volumeControlSignalHandler) throws BusException, InterruptedException
 	{
 		boolean volumeMuteProperty = getMutePropertyOnVolume(volume);
@@ -1422,6 +1781,13 @@ private  short port=91;
 
 
 
+	/**
+	 * Sets the mute property.
+	 *
+	 * @param volume the volume
+	 * @param mute the mute
+	 * @throws BusException the bus exception
+	 */
 	private  void setMuteProperty(Volume volume, boolean mute) throws BusException
 	{
 		volume.setMute(mute);
@@ -1429,6 +1795,12 @@ private  short port=91;
 	}
 
 
+	/**
+	 * Invert mute property.
+	 *
+	 * @param volumeMuteProperty the volume mute property
+	 * @return true, if successful
+	 */
 	private  boolean invertMuteProperty(boolean volumeMuteProperty)
 	{
 		boolean muteInverted = !volumeMuteProperty;
@@ -1436,6 +1808,13 @@ private  short port=91;
 		return muteInverted;
 	}
 
+	/**
+	 * Gets the mute property on volume.
+	 *
+	 * @param volume the volume
+	 * @return the mute property on volume
+	 * @throws BusException the bus exception
+	 */
 	private  boolean getMutePropertyOnVolume(Volume volume) throws BusException
 	{
 		boolean volumeMuteProperty = volume.getMute();
@@ -1443,6 +1822,13 @@ private  short port=91;
 		return volumeMuteProperty;
 	}
 
+	/**
+	 * Register volume control signal handler.
+	 *
+	 * @param path the path
+	 * @param volumeControlSignalHandler the volume control signal handler
+	 * @throws BusException the bus exception
+	 */
 	private  void registerVolumeControlSignalHandler(String path, VolumeControlSignalHandler volumeControlSignalHandler) throws BusException
 	{
 		serviceHelper.registerBusObject(volumeControlSignalHandler, path);
@@ -1451,12 +1837,28 @@ private  short port=91;
 	}
 
 
-	 VolumeControlSignalHandler createVolumeControlSignalHandler()
+	 /**
+ 	 * Creates the volume control signal handler.
+ 	 *
+ 	 * @return the volume control signal handler
+ 	 */
+ 	VolumeControlSignalHandler createVolumeControlSignalHandler()
 	{
 		return new VolumeControlSignalHandler();
 	}
 
 
+	/**
+	 * Gets the volume.
+	 *
+	 * @param path the path
+	 * @param busIntrospector the bus introspector
+	 * @return the volume
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws SAXException the SAX exception
+	 */
 	private  Volume getVolume(String path, BusIntrospector busIntrospector) throws BusException, IOException, ParserConfigurationException, SAXException
 	{
 		NodeDetail nodeDetail = busIntrospector.introspect(path);
@@ -1475,6 +1877,11 @@ private  short port=91;
 		return null;
 	}
 
+	/**
+	 * Emit metadata data signal.
+	 *
+	 * @throws BusException the bus exception
+	 */
 	private  void emitMetadataDataSignal() throws BusException
 	{
 		MetadataSourceObject metadataSourceObject = new MetadataSourceObject();
@@ -1485,6 +1892,11 @@ private  short port=91;
 
 
 
+	/**
+	 * Construct metadata signal data.
+	 *
+	 * @return the map
+	 */
 	private  Map<String, Variant> constructMetadataSignalData()
 	{
 		Map<String, Variant> dictionary = new HashMap<String, Variant>();
@@ -1495,12 +1907,24 @@ private  short port=91;
 	}
 
 
+	/**
+	 * Connect.
+	 *
+	 * @param port the port
+	 * @param sourcePath the source path
+	 * @throws BusException the bus exception
+	 */
 	private  void connect(Port port, String sourcePath) throws BusException
 	{
 		Configuration[] configurations = port.getCapabilities();
 		port.Connect(serviceHelper.getBusUniqueName(), sourcePath, configurations[0]);
 	}
 
+	/**
+	 * Emit image data signal.
+	 *
+	 * @throws BusException the bus exception
+	 */
 	private  void emitImageDataSignal() throws BusException
 	{
 		ImageSourceObject imageSourceObject = new ImageSourceObject();
@@ -1511,11 +1935,25 @@ private  short port=91;
 
 
 
+	/**
+	 * Assert fifo position changed signal is received.
+	 *
+	 * @param audioSinkSignalHandler the audio sink signal handler
+	 * @throws InterruptedException the interrupted exception
+	 */
 	private  void assertFifoPositionChangedSignalIsReceived(AudioSinkSignalHandler audioSinkSignalHandler) throws InterruptedException
 	{
 		assertNotNull("Timed out waiting for FifoPositionChanged signal", audioSinkSignalHandler.waitForNextFifoPositionChangedSignal(getSignalTimeout(), TimeUnit.SECONDS));
 	}
 
+	/**
+	 * Assert play state changed signal is received.
+	 *
+	 * @param audioSinkSignalHandler the audio sink signal handler
+	 * @param oldState the old state
+	 * @param newState the new state
+	 * @throws InterruptedException the interrupted exception
+	 */
 	private  void assertPlayStateChangedSignalIsReceived(AudioSinkSignalHandler audioSinkSignalHandler, byte oldState, byte newState) throws InterruptedException
 	{
 		AudioSinkPlayStateChangedSignal audioSinkPlayStateChangedSignal = audioSinkSignalHandler.waitForNextPlayStateChangedSignal(getSignalTimeout(), TimeUnit.SECONDS);
@@ -1524,6 +1962,13 @@ private  short port=91;
 		assertEquals("The state has not change correctly",newState, audioSinkPlayStateChangedSignal.getNewState());
 	}
 
+	/**
+	 * Emit audio source data signals.
+	 *
+	 * @param fifoSize the fifo size
+	 * @throws BusException the bus exception
+	 * @throws InterruptedException the interrupted exception
+	 */
 	private  void emitAudioSourceDataSignals(int fifoSize) throws BusException, InterruptedException
 	{
 		int numberOfDataPackets = fifoSize / DATA_SIZE;
@@ -1543,6 +1988,12 @@ private  short port=91;
 
 
 
+	/**
+	 * Emit audio source data signal.
+	 *
+	 * @param data the data
+	 * @throws BusException the bus exception
+	 */
 	private  void emitAudioSourceDataSignal(byte[] data) throws BusException
 	{
 		AudioSourceObject audioSourceObject = new AudioSourceObject();
@@ -1553,7 +2004,13 @@ private  short port=91;
 
 
 
-	 SignalEmitter createSignalEmitter(BusObject busObject)
+	 /**
+ 	 * Creates the signal emitter.
+ 	 *
+ 	 * @param busObject the bus object
+ 	 * @return the signal emitter
+ 	 */
+ 	SignalEmitter createSignalEmitter(BusObject busObject)
 	{
 		SignalEmitter signalEmitter = new SignalEmitter(busObject, aboutClient.getSessionId(), SignalEmitter.GlobalBroadcast.Off);
 		signalEmitter.setSessionlessFlag(false);
@@ -1561,6 +2018,14 @@ private  short port=91;
 
 		return signalEmitter;
 	}
+	
+	/**
+	 * Register audio sink signal handler.
+	 *
+	 * @param path the path
+	 * @param audioSinkSignalHandler the audio sink signal handler
+	 * @throws BusException the bus exception
+	 */
 	private  void registerAudioSinkSignalHandler(String path, AudioSinkSignalHandler audioSinkSignalHandler) throws BusException
 	{
 		serviceHelper.registerBusObject(audioSinkSignalHandler, path);
@@ -1569,13 +2034,29 @@ private  short port=91;
 
 
 
-	 AudioSinkSignalHandler getAudioSinkSignalHandler()
+	 /**
+ 	 * Gets the audio sink signal handler.
+ 	 *
+ 	 * @return the audio sink signal handler
+ 	 */
+ 	AudioSinkSignalHandler getAudioSinkSignalHandler()
 	{
 		return new AudioSinkSignalHandler();
 	}
 
 
 
+	/**
+	 * Gets the audio sink.
+	 *
+	 * @param path the path
+	 * @param busIntrospector the bus introspector
+	 * @return the audio sink
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws SAXException the SAX exception
+	 */
 	private  AudioSink getAudioSink(String path, BusIntrospector busIntrospector) throws BusException, IOException, ParserConfigurationException, SAXException
 	{
 		NodeDetail nodeDetail = busIntrospector.introspect(path);
@@ -1596,6 +2077,12 @@ private  short port=91;
 
 
 
+	/**
+	 * Validate audio sink properties can be retrieved.
+	 *
+	 * @param audioSink the audio sink
+	 * @throws BusException the bus exception
+	 */
 	private  void validateAudioSinkPropertiesCanBeRetrieved(AudioSink audioSink) throws BusException
 	{
 		audioSink.getFifoSize();
@@ -1609,6 +2096,13 @@ private  short port=91;
 
 
 
+	/**
+	 * Register ownership lost signal handler.
+	 *
+	 * @param path the path
+	 * @param ownershipLostSignalHandler the ownership lost signal handler
+	 * @throws BusException the bus exception
+	 */
 	private  void registerOwnershipLostSignalHandler(String path, OwnershipLostSignalHandler ownershipLostSignalHandler) throws BusException
 	{
 		serviceHelper.registerBusObject(ownershipLostSignalHandler, path);
@@ -1617,6 +2111,12 @@ private  short port=91;
 
 
 
+	/**
+	 * Open new stream.
+	 *
+	 * @param countDownLatch the count down latch
+	 * @param ownershipLostSignalHandler the ownership lost signal handler
+	 */
 	private  void openNewStream(CountDownLatch countDownLatch, OwnershipLostSignalHandler ownershipLostSignalHandler)
 	{
 		BusAttachmentMgr busAttachmentManager = null;
@@ -1661,13 +2161,25 @@ private  short port=91;
 
 
 
-	 long getSignalTimeout()
+	 /**
+ 	 * Gets the signal timeout.
+ 	 *
+ 	 * @return the signal timeout
+ 	 */
+ 	long getSignalTimeout()
 	{
 		return SIGNAL_TIMEOUT_IN_SECONDS;
 	}
 
 
-	 AboutClient createAboutClient(BusAttachment busAttachment) throws Exception
+	 /**
+ 	 * Creates the about client.
+ 	 *
+ 	 * @param busAttachment the bus attachment
+ 	 * @return the about client
+ 	 * @throws Exception the exception
+ 	 */
+ 	AboutClient createAboutClient(BusAttachment busAttachment) throws Exception
 	{
 		AboutClient newAboutClient = new AboutClientImpl(deviceAboutAnnouncement.getServiceName(), busAttachment, null, deviceAboutAnnouncement.getPort());
 		logger.info(String.format("Connecting AboutClient for serviceName: %s", deviceAboutAnnouncement.getServiceName()));
@@ -1683,6 +2195,15 @@ private  short port=91;
 
 
 
+	/**
+	 * Connect client.
+	 *
+	 * @param client the client
+	 * @param busAttachment the bus attachment
+	 * @return the status
+	 * @throws BusException the bus exception
+	 * @throws Exception the exception
+	 */
 	private  Status connectClient(ClientBase client, BusAttachment busAttachment) throws BusException, Exception
 	{
 		Status status = client.connect();
@@ -1701,6 +2222,13 @@ private  short port=91;
 	}
 
 
+	/**
+	 * Sets the link timeout.
+	 *
+	 * @param clientBase the client base
+	 * @param busAttachment the bus attachment
+	 * @throws BusException the bus exception
+	 */
 	private  void setLinkTimeout(ClientBase clientBase, BusAttachment busAttachment) throws BusException
 	{
 		Status linkTimeoutstatus = busAttachment.setLinkTimeout(clientBase.getSessionId(), new IntegerValue(LINK_TIMEOUT_IN_SECONDS));
@@ -1711,7 +2239,13 @@ private  short port=91;
 		}
 	}
 
-	 BusAttachmentMgr createBusAttachmentManager() throws BusException
+	 /**
+ 	 * Creates the bus attachment manager.
+ 	 *
+ 	 * @return the bus attachment mgr
+ 	 * @throws BusException the bus exception
+ 	 */
+ 	BusAttachmentMgr createBusAttachmentManager() throws BusException
 	{
 		BusAttachmentMgr busAttachmentManager = new BusAttachmentMgr();
 		busAttachmentManager.create(BUS_APPLICATION_NAME, RemoteMessage.Receive);
@@ -1720,6 +2254,12 @@ private  short port=91;
 		return busAttachmentManager;
 	}
 
+	/**
+	 * Validate connecting to audio sink twice throws exception.
+	 *
+	 * @param audioSinkPort the audio sink port
+	 * @throws BusException the bus exception
+	 */
 	private  void validateConnectingToAudioSinkTwiceThrowsException(Port audioSinkPort) throws BusException
 	{
 		audioSinkPort.Connect(serviceHelper.getBusUniqueName(), AUDIO_SOURCE_PATH, getValidSinkConfiguration());
@@ -1738,6 +2278,12 @@ private  short port=91;
 
 
 
+	/**
+	 * Validate connecting to audio sink with invalid configuration throws exception.
+	 *
+	 * @param audioSinkPort the audio sink port
+	 * @throws BusException the bus exception
+	 */
 	private  void validateConnectingToAudioSinkWithInvalidConfigurationThrowsException(Port audioSinkPort) throws BusException
 	{
 		try
@@ -1750,6 +2296,12 @@ private  short port=91;
 			logger.info("Exception caught while connecting to stream"+ errorReplyBusException.toString());
 		}
 	}
+	
+	/**
+	 * Gets the invalid sink configuration.
+	 *
+	 * @return the invalid sink configuration
+	 */
 	private  Configuration getInvalidSinkConfiguration()
 	{
 		Configuration configuration = new Configuration();
@@ -1759,6 +2311,11 @@ private  short port=91;
 		return configuration;
 	}
 
+	/**
+	 * Gets the valid sink configuration.
+	 *
+	 * @return the valid sink configuration
+	 */
 	private  Configuration getValidSinkConfiguration()
 	{
 		Configuration configuration = new Configuration();
@@ -1768,6 +2325,11 @@ private  short port=91;
 		return configuration;
 	}
 
+	/**
+	 * Gets the sink configuration parameters.
+	 *
+	 * @return the sink configuration parameters
+	 */
 	private  Map<String, Variant> getSinkConfigurationParameters()
 	{
 		Map<String, Variant> parameters = new HashMap<String, Variant>();
@@ -1778,6 +2340,17 @@ private  short port=91;
 		return parameters;
 	}
 
+	/**
+	 * Gets the metadata sink port.
+	 *
+	 * @param path the path
+	 * @param busIntrospector the bus introspector
+	 * @return the metadata sink port
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws SAXException the SAX exception
+	 */
 	private  Port getMetadataSinkPort(String path, BusIntrospector busIntrospector) throws BusException, IOException, ParserConfigurationException, SAXException
 	{
 		NodeDetail nodeDetail = busIntrospector.introspect(path);
@@ -1796,6 +2369,13 @@ private  short port=91;
 		return null;
 	}
 
+	/**
+	 * Validate metadata sink capabilities.
+	 *
+	 * @param configurations the configurations
+	 * @throws BusException the bus exception
+	 * @throws AnnotationBusException the annotation bus exception
+	 */
 	private  void validateMetadataSinkCapabilities(Configuration[] configurations) throws BusException, AnnotationBusException
 	{
 		assertNotNull("No capabilities found", configurations);
@@ -1812,6 +2392,13 @@ private  short port=91;
 
 
 
+	/**
+	 * Validate image sink capabilities.
+	 *
+	 * @param configurations the configurations
+	 * @throws BusException the bus exception
+	 * @throws AnnotationBusException the annotation bus exception
+	 */
 	private  void validateImageSinkCapabilities(Configuration[] configurations) throws BusException, AnnotationBusException
 	{
 		assertNotNull("No capabilities found", configurations);
@@ -1834,6 +2421,17 @@ private  short port=91;
 	}
 
 
+	/**
+	 * Gets the image sink port.
+	 *
+	 * @param path the path
+	 * @param busIntrospector the bus introspector
+	 * @return the image sink port
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws SAXException the SAX exception
+	 */
 	private  Port getImageSinkPort(String path, BusIntrospector busIntrospector) throws BusException, IOException, ParserConfigurationException, SAXException
 	{
 		NodeDetail nodeDetail = busIntrospector.introspect(path);
@@ -1852,6 +2450,13 @@ private  short port=91;
 		return null;
 	}
 
+	/**
+	 * Validate audio sink capabilities.
+	 *
+	 * @param configurations the configurations
+	 * @throws BusException the bus exception
+	 * @throws AnnotationBusException the annotation bus exception
+	 */
 	private  void validateAudioSinkCapabilities(Configuration[] configurations) throws BusException, AnnotationBusException
 	{
 		assertNotNull("No capabilities found", configurations);
@@ -1886,6 +2491,12 @@ private  short port=91;
 
 
 
+	/**
+	 * Validate audio configuration leniently.
+	 *
+	 * @param configuration the configuration
+	 * @throws AnnotationBusException the annotation bus exception
+	 */
 	private  void validateAudioConfigurationLeniently(Configuration configuration) throws AnnotationBusException
 	{
 		String mediaType = configuration.mediaType;
@@ -1911,6 +2522,13 @@ private  short port=91;
 
 
 
+	/**
+	 * Validate rate parameter leniently.
+	 *
+	 * @param parameters the parameters
+	 * @param mediaType the media type
+	 * @throws AnnotationBusException the annotation bus exception
+	 */
 	private  void validateRateParameterLeniently(Map<String, Variant> parameters, String mediaType) throws AnnotationBusException
 	{
 		String parameterSignature = parameters.get(AudioSinkParameter.Rate.name()).getSignature();
@@ -1919,6 +2537,13 @@ private  short port=91;
 						Rate.getValue(), mediaType), parameterSignature.equals(Rate.getValue()));
 	}
 
+	/**
+	 * Validate format parameter leniently.
+	 *
+	 * @param parameters the parameters
+	 * @param mediaType the media type
+	 * @throws AnnotationBusException the annotation bus exception
+	 */
 	private  void validateFormatParameterLeniently(Map<String, Variant> parameters, String mediaType) throws AnnotationBusException
 	{
 		String parameterSignature = parameters.get(AudioSinkParameter.Format.name()).getSignature();
@@ -1927,6 +2552,13 @@ private  short port=91;
 						Format.getValue(), mediaType), parameterSignature.equals(Format.getValue()));
 	}
 
+	/**
+	 * Validate channels parameter leniently.
+	 *
+	 * @param parameters the parameters
+	 * @param mediaType the media type
+	 * @throws AnnotationBusException the annotation bus exception
+	 */
 	private  void validateChannelsParameterLeniently(Map<String, Variant> parameters, String mediaType) throws AnnotationBusException
 	{
 		String parameterSignature = parameters.get(AudioSinkParameter.Channels.name()).getSignature();
@@ -1936,6 +2568,12 @@ private  short port=91;
 
 
 
+	/**
+	 * Validate audio configuration strictly.
+	 *
+	 * @param configuration the configuration
+	 * @throws BusException the bus exception
+	 */
 	private  void validateAudioConfigurationStrictly(Configuration configuration) throws BusException
 	{
 		String mediaType = configuration.mediaType;
@@ -1961,6 +2599,12 @@ private  short port=91;
 	}
 
 
+	/**
+	 * Assert mandatory parameters are present.
+	 *
+	 * @param parameterNames the parameter names
+	 * @param mediaType the media type
+	 */
 	private  void assertMandatoryParametersArePresent(Set<String> parameterNames, String mediaType)
 	{
 		assertTrue(String.format("%s parameter does not exist for media type %s", AudioSinkParameter.Channels.name(), mediaType),
@@ -1973,6 +2617,13 @@ private  short port=91;
 
 
 
+	/**
+	 * Validate rate parameter strictly.
+	 *
+	 * @param parameters the parameters
+	 * @param mediaType the media type
+	 * @throws BusException the bus exception
+	 */
 	private  void validateRateParameterStrictly(Map<String, Variant> parameters, String mediaType) throws BusException
 	{
 		short[] rates = parameters.get(AudioSinkParameter.Rate.name()).getObject(short[].class);
@@ -1980,12 +2631,26 @@ private  short port=91;
 		assertTrue(String.format("Mandatory rate value %s not found for media type %s", MANDATORY_RATE_TWO, mediaType), isElementPresentInArray(rates, MANDATORY_RATE_TWO));
 	}
 
+	/**
+	 * Validate format parameter strictly.
+	 *
+	 * @param parameters the parameters
+	 * @param mediaType the media type
+	 * @throws BusException the bus exception
+	 */
 	private  void validateFormatParameterStrictly(Map<String, Variant> parameters, String mediaType) throws BusException
 	{
 		String[] formats = parameters.get(AudioSinkParameter.Format.name()).getObject(String[].class);
 		assertTrue(String.format("Mandatory format value %s not found for media type %s", MANDATORY_FORMAT, mediaType), isElementPresentInArray(formats, MANDATORY_FORMAT));
 	}
 
+	/**
+	 * Validate channels parameter strictly.
+	 *
+	 * @param parameters the parameters
+	 * @param mediaType the media type
+	 * @throws BusException the bus exception
+	 */
 	private  void validateChannelsParameterStrictly(Map<String, Variant> parameters, String mediaType) throws BusException
 	{
 		byte[] channels = parameters.get(AudioSinkParameter.Channels.name()).getObject(byte[].class);
@@ -1997,6 +2662,13 @@ private  short port=91;
 
 
 
+	/**
+	 * Checks if is element present in array.
+	 *
+	 * @param array the array
+	 * @param element the element
+	 * @return true, if is element present in array
+	 */
 	private  boolean isElementPresentInArray(short[] array, short element)
 	{
 		for (short arrayElement : array)
@@ -2010,6 +2682,13 @@ private  short port=91;
 		return false;
 	}
 
+	/**
+	 * Checks if is element present in array.
+	 *
+	 * @param array the array
+	 * @param element the element
+	 * @return true, if is element present in array
+	 */
 	private  boolean isElementPresentInArray(String[] array, String element)
 	{
 		for (String arrayElement : array)
@@ -2023,6 +2702,13 @@ private  short port=91;
 		return false;
 	}
 
+	/**
+	 * Checks if is element present in array.
+	 *
+	 * @param array the array
+	 * @param element the element
+	 * @return true, if is element present in array
+	 */
 	private  boolean isElementPresentInArray(byte[] array, byte element)
 	{
 		for (byte arrayElement : array)
@@ -2036,6 +2722,17 @@ private  short port=91;
 		return false;
 	}
 
+	/**
+	 * Gets the audio sink port.
+	 *
+	 * @param path the path
+	 * @param busIntrospector the bus introspector
+	 * @return the audio sink port
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws SAXException the SAX exception
+	 */
 	private  Port getAudioSinkPort(String path, BusIntrospector busIntrospector) throws BusException, IOException, ParserConfigurationException, SAXException
 	{
 		logger.info("Introspecting " + path);
@@ -2059,6 +2756,13 @@ private  short port=91;
 
 
 
+	/**
+	 * Validate stream interface.
+	 *
+	 * @param path the path
+	 * @param busIntrospector the bus introspector
+	 * @throws BusException the bus exception
+	 */
 	private  void validateStreamInterface(String path, BusIntrospector busIntrospector) throws BusException
 	{
 		Stream stream = busIntrospector.getInterface(path, Stream.class);
@@ -2066,6 +2770,16 @@ private  short port=91;
 	}
 
 
+	/**
+	 * Validate port interface.
+	 *
+	 * @param path the path
+	 * @param busIntrospector the bus introspector
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws SAXException the SAX exception
+	 */
 	private  void validatePortInterface(String path, BusIntrospector busIntrospector) throws BusException, IOException, ParserConfigurationException, SAXException
 	{
 		Port port = busIntrospector.getInterface(path, Port.class);
@@ -2086,6 +2800,16 @@ private  short port=91;
 
 
 
+	/**
+	 * Assert media type specific port interface is present.
+	 *
+	 * @param path the path
+	 * @param busIntrospector the bus introspector
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws SAXException the SAX exception
+	 */
 	private  void assertMediaTypeSpecificPortInterfaceIsPresent(String path, BusIntrospector busIntrospector) throws BusException, IOException, ParserConfigurationException,
 	SAXException
 	{
@@ -2095,16 +2819,49 @@ private  short port=91;
 		}
 	}
 
+	/**
+	 * Checks if is metadata sink interface present.
+	 *
+	 * @param path the path
+	 * @param busIntrospector the bus introspector
+	 * @return true, if is metadata sink interface present
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws SAXException the SAX exception
+	 */
 	private  boolean isMetadataSinkInterfacePresent(String path, BusIntrospector busIntrospector) throws BusException, IOException, ParserConfigurationException, SAXException
 	{
 		return busIntrospector.isInterfacePresent(path, METADATA_SINK_INTERFACE_NAME);
 	}
 
+	/**
+	 * Checks if is image sink interface present.
+	 *
+	 * @param path the path
+	 * @param busIntrospector the bus introspector
+	 * @return true, if is image sink interface present
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws SAXException the SAX exception
+	 */
 	private  boolean isImageSinkInterfacePresent(String path, BusIntrospector busIntrospector) throws BusException, IOException, ParserConfigurationException, SAXException
 	{
 		return busIntrospector.isInterfacePresent(path, IMAGE_SINK_INTERFACE_NAME);
 	}
 
+	/**
+	 * Checks if is audio sink interface present.
+	 *
+	 * @param path the path
+	 * @param busIntrospector the bus introspector
+	 * @return true, if is audio sink interface present
+	 * @throws BusException the bus exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws SAXException the SAX exception
+	 */
 	private  boolean isAudioSinkInterfacePresent(String path, BusIntrospector busIntrospector) throws BusException, IOException, ParserConfigurationException, SAXException
 	{
 		return busIntrospector.isInterfacePresent(path, AUDIO_SINK_INTERFACE_NAME);
@@ -2112,6 +2869,9 @@ private  short port=91;
 
 
 
+	/**
+	 * Tear down.
+	 */
 	private  void tearDown() {
 		System.out.println("====================================================");
 		logger.info("test tearDown started");
@@ -2125,6 +2885,11 @@ private  short port=91;
 
 
 	//private  void setUp(String iXITCO_DeviceId, String iXITCO_AppId) throws Exception {
+	/**
+	 * Sets the up.
+	 *
+	 * @throws Exception the exception
+	 */
 	private  void setUp() throws Exception {
 
 		try
@@ -2184,18 +2949,37 @@ private  short port=91;
 
 
 
-	 BusIntrospector getIntrospector()
+	 /**
+ 	 * Gets the introspector.
+ 	 *
+ 	 * @return the introspector
+ 	 */
+ 	BusIntrospector getIntrospector()
 	{
 		return serviceHelper.getBusIntrospector(deviceAboutAnnouncement);
 	}
 
 
 
-	 BusIntrospector getIntrospector(BusAttachment busAttachment, AboutClient newAboutClient)
+	 /**
+ 	 * Gets the introspector.
+ 	 *
+ 	 * @param busAttachment the bus attachment
+ 	 * @param newAboutClient the new about client
+ 	 * @return the introspector
+ 	 */
+ 	BusIntrospector getIntrospector(BusAttachment busAttachment, AboutClient newAboutClient)
 	{
 		return new XmlBasedBusIntrospector(busAttachment, newAboutClient.getPeerName(), newAboutClient.getSessionId());
 	}
 
+	/**
+	 * Gets the introspector.
+	 *
+	 * @param serviceHelper the service helper
+	 * @param aboutClient the about client
+	 * @return the introspector
+	 */
 	BusIntrospector getIntrospector(ServiceHelper serviceHelper, AboutClient aboutClient)
 	{
 		return serviceHelper.getBusIntrospector(deviceAboutAnnouncement);
@@ -2203,6 +2987,11 @@ private  short port=91;
 
 
 
+	/**
+	 * Determine about announcement timeout.
+	 *
+	 * @return the long
+	 */
 	private  long determineAboutAnnouncementTimeout() {
 		// TODO Auto-generated method stub
 		return timeOut;
@@ -2212,6 +3001,9 @@ private  short port=91;
 
 
 
+	/**
+	 * Release resources.
+	 */
 	private  void releaseResources()
 	{
 		disconnectFromAboutClient();
@@ -2224,6 +3016,9 @@ private  short port=91;
 	}
 
 
+	/**
+	 * Disconnect from about client.
+	 */
 	private  void disconnectFromAboutClient()
 	{
 		if (aboutClient != null)
@@ -2234,7 +3029,12 @@ private  short port=91;
 	}
 
 
-	 ServiceHelper getServiceHelper()
+	 /**
+ 	 * Gets the service helper.
+ 	 *
+ 	 * @return the service helper
+ 	 */
+ 	ServiceHelper getServiceHelper()
 	{
 		return new ServiceHelper(logger);
 	}
@@ -2243,6 +3043,11 @@ private  short port=91;
 
 
 
+	/**
+	 * Fail.
+	 *
+	 * @param msg the msg
+	 */
 	private  void fail(String msg) {
 		// TODO Auto-generated method stub
 
@@ -2253,6 +3058,13 @@ private  short port=91;
 	}
 
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param errorMsg the error msg
+	 * @param Version the version
+	 * @param version the version
+	 */
 	private  void assertEquals(String errorMsg,
 			String Version, short version) {
 		// TODO Auto-generated method stub
@@ -2268,6 +3080,13 @@ private  short port=91;
 
 
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param errorMsg the error msg
+	 * @param i the i
+	 * @param j the j
+	 */
 	private  void assertEquals(String errorMsg, int i, int j) {
 		if(i!=j){
 			fail(errorMsg);
@@ -2278,6 +3097,13 @@ private  short port=91;
 
 	}
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param errorMsg the error msg
+	 * @param string1 the string1
+	 * @param string2 the string2
+	 */
 	private  void assertEquals(String errorMsg,
 			String string1, String string2) {
 		// TODO Auto-generated method stub
@@ -2291,6 +3117,13 @@ private  short port=91;
 	}
 
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param errorMsg the error msg
+	 * @param byte1 the byte1
+	 * @param byte2 the byte2
+	 */
 	private  void assertEquals(String errorMsg, byte byte1,
 			byte byte2) {
 		if(!(byte1==byte2)){
@@ -2303,6 +3136,13 @@ private  short port=91;
 
 
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param errorMsg the error msg
+	 * @param bool the bool
+	 * @param booleanValue the boolean value
+	 */
 	private  void assertEquals(String errorMsg, boolean bool,
 			boolean booleanValue) {
 		if(bool!=booleanValue){
@@ -2311,6 +3151,12 @@ private  short port=91;
 
 	}
 
+	/**
+	 * Assert true.
+	 *
+	 * @param errorMsg the error msg
+	 * @param bool the bool
+	 */
 	private  void assertTrue(String errorMsg,
 			boolean bool) {
 		// TODO Auto-generated method stub
@@ -2333,6 +3179,12 @@ private  short port=91;
 	}*/
 
 
+	/**
+	 * Assert not null.
+	 *
+	 * @param msgError the msg error
+	 * @param notNull the not null
+	 */
 	private  void assertNotNull(String msgError, Object notNull) {
 
 		if(notNull==null){
@@ -2342,6 +3194,12 @@ private  short port=91;
 	}
 
 
+	/**
+	 * Assert null.
+	 *
+	 * @param msgError the msg error
+	 * @param Null the null
+	 */
 	private  void assertNull(String msgError,
 			Object Null) {
 		if(Null!=null){
@@ -2350,9 +3208,18 @@ private  short port=91;
 
 	}
 
+	/**
+	 * Gets the verdict.
+	 *
+	 * @return the verdict
+	 */
 	public String getVerdict() {
+
 		String verdict=null;
-		if(pass){
+
+		if(inconc){
+			verdict="INCONC";
+		}else if(pass){
 			verdict="PASS";
 		}else if(!pass){
 			verdict="FAIL";

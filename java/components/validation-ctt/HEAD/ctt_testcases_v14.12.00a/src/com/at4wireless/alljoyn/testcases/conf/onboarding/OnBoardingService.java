@@ -1,3 +1,18 @@
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *    Permission to use, copy, modify, and/or distribute this software for any
+ *    purpose with or without fee is hereby granted, provided that the above
+ *    copyright notice and this permission notice appear in all copies.
+ *
+ *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.at4wireless.alljoyn.testcases.conf.onboarding;
 
 import java.util.HashMap;
@@ -23,76 +38,196 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.onboarding.OnboardingHelper;
 import com.at4wireless.alljoyn.core.onboarding.WifiNetworkConfig;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OnBoardingService.
+ */
 public class OnBoardingService {
 
+	/** The pass. */
 	private  Boolean pass=true;
+	
+	/** The inconc. */
 	private  Boolean inconc=false;
+	
+	/** The tag. */
 	private  final String TAG = "OnboardingTestSuite";
+	
+	/** The logger. */
 	private  final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	
+	/** The time out. */
 	private  int  timeOut=30;
+	
+	/** The port. */
 	private  short port=91;
 
+	/** The dut app id. */
 	private  UUID dutAppId;
+	
+	/** The dut device id. */
 	private  String dutDeviceId;
+	
+	/** The key store path. */
 	private  String keyStorePath="/KeyStore";
 
 
+	/** The personal ap config. */
 	private  WifiNetworkConfig personalAPConfig;
+	
+	/** The soft ap config. */
 	private  WifiNetworkConfig softAPConfig;
+	
+	/** The soft a pssid. */
 	private  String softAPssid;
 
+	/** The invalid network name. */
 	protected  final String INVALID_NETWORK_NAME = "InvalidPersonalAP";
+	
+	/** The invalid network passphrase. */
 	protected  final String INVALID_NETWORK_PASSPHRASE = "InvalidNetworkPassphrase";
+	
+	/** The invalid auth type. */
 	protected  final short INVALID_AUTH_TYPE = 9999;
 
+	/** The time to wait for soft ap in ms short. */
 	protected  long TIME_TO_WAIT_FOR_SOFT_AP_IN_MS_SHORT = 120000;
+	
+	/** The time to wait to connect to soft ap in ms. */
 	protected  long TIME_TO_WAIT_TO_CONNECT_TO_SOFT_AP_IN_MS = 60000;
+	
+	/** The time to wait for soft ap after offboard. */
 	protected  long TIME_TO_WAIT_FOR_SOFT_AP_AFTER_OFFBOARD = 15000;
+	
+	/** The time to wait to connect to personal ap in ms. */
 	protected  long TIME_TO_WAIT_TO_CONNECT_TO_PERSONAL_AP_IN_MS = 60000;
+	
+	/** The time to wait for disconnect in ms. */
 	protected  long TIME_TO_WAIT_FOR_DISCONNECT_IN_MS = 30000;
+	
+	/** The time to wait for next device announcement in ms. */
 	protected  long TIME_TO_WAIT_FOR_NEXT_DEVICE_ANNOUNCEMENT_IN_MS = 180000;
 
+	/** The obs state personal ap not configured. */
 	public  final short OBS_STATE_PERSONAL_AP_NOT_CONFIGURED = OnboardingService.OnboardingState.PERSONAL_AP_NOT_CONFIGURED.getStateId();
+	
+	/** The obs state personal ap not validated. */
 	public  final short OBS_STATE_PERSONAL_AP_NOT_VALIDATED = OnboardingService.OnboardingState.PERSONAL_AP_CONFIGURED_NOT_VALIDATED.getStateId();
+	
+	/** The obs state personal ap configured validated. */
 	public  final short OBS_STATE_PERSONAL_AP_CONFIGURED_VALIDATED = OnboardingService.OnboardingState.PERSONAL_AP_CONFIGURED_VALIDATED.getStateId();
+	
+	/** The obs state personal ap configured error. */
 	public  final short OBS_STATE_PERSONAL_AP_CONFIGURED_ERROR = OnboardingService.OnboardingState.PERSONAL_AP_CONFIGURED_ERROR.getStateId();
 
+	/** The obs lasterror validated. */
 	public  final short OBS_LASTERROR_VALIDATED = 0;
+	
+	/** The obs lasterror unreachable. */
 	public  final short OBS_LASTERROR_UNREACHABLE = 1;
+	
+	/** The obs lasterror unauthorized. */
 	public  final short OBS_LASTERROR_UNAUTHORIZED = 3;
 
+	/** The obs configure wifi return no channel switching. */
 	protected  final short OBS_CONFIGURE_WIFI_RETURN_NO_CHANNEL_SWITCHING = 1;
+	
+	/** The obs configure wifi return supports channel switching. */
 	protected  final short OBS_CONFIGURE_WIFI_RETURN_SUPPORTS_CHANNEL_SWITCHING = 2;
 
+	/** The alljoyn error feature not available. */
 	protected  final String ALLJOYN_ERROR_FEATURE_NOT_AVAILABLE = "org.alljoyn.Error.FeatureNotAvailable";
 
+	/** The config client. */
 	private  ConfigClient configClient;
+	
+	/** The about client. */
 	private  AboutClient aboutClient;
+	
+	/** The onboarding helper. */
 	private  OnboardingHelper onboardingHelper;
+	
+	/** The valid default passcode. */
 	private  final char[] VALID_DEFAULT_PASSCODE = SrpAnonymousKeyListener.DEFAULT_PINCODE;
+	
+	/** The temp passcode. */
 	private  final char[] TEMP_PASSCODE = "111111".toCharArray();
+	
+	/** The invalid passcode. */
 	private  final char[] INVALID_PASSCODE = "123456".toCharArray();
 
+	/** The new device name. */
 	protected  final String NEW_DEVICE_NAME = "newDeviceName";
 
-	 boolean ICSON_OnboardingServiceFramework=false;
-	 boolean ICSON_OnboardingInterface=false;
-	 boolean ICSON_ChannelSwitching=false;
-	 boolean ICSON_GetScanInfoMethod=false;	
+	 /** The ICSO n_ onboarding service framework. */
+ 	boolean ICSON_OnboardingServiceFramework=false;
+	 
+ 	/** The ICSO n_ onboarding interface. */
+ 	boolean ICSON_OnboardingInterface=false;
+	 
+ 	/** The ICSO n_ channel switching. */
+ 	boolean ICSON_ChannelSwitching=false;
+	 
+ 	/** The ICSO n_ get scan info method. */
+ 	boolean ICSON_GetScanInfoMethod=false;	
 
 	//
-	 String IXITCO_AppId=null;
-	 String IXITCO_DefaultLanguage=null;
-	 String IXITCO_DeviceId=null;
+	 /** The IXITC o_ app id. */
+	String IXITCO_AppId=null;
+	 
+ 	/** The IXITC o_ default language. */
+ 	String IXITCO_DefaultLanguage=null;
+	 
+ 	/** The IXITC o_ device id. */
+ 	String IXITCO_DeviceId=null;
 	//
-	 String IXITON_OnboardingVersion=null;
-	 String IXITON_SoftAP=null;
-	 String IXITON_SoftAPAuthType=null;
-	 String IXITON_SoftAPpassphrase=null;
-	 String IXITON_PersonalAP=null;
-	 String IXITON_PersonalAPAuthType=null;
-	 String IXITON_PersonalAPpassphrase=null;
+	 /** The IXITO n_ onboarding version. */
+	String IXITON_OnboardingVersion=null;
+	 
+ 	/** The IXITO n_ soft ap. */
+ 	String IXITON_SoftAP=null;
+	 
+ 	/** The IXITO n_ soft ap auth type. */
+ 	String IXITON_SoftAPAuthType=null;
+	 
+ 	/** The IXITO n_ soft a ppassphrase. */
+ 	String IXITON_SoftAPpassphrase=null;
+	 
+ 	/** The IXITO n_ personal ap. */
+ 	String IXITON_PersonalAP=null;
+	 
+ 	/** The IXITO n_ personal ap auth type. */
+ 	String IXITON_PersonalAPAuthType=null;
+	 
+ 	/** The IXITO n_ personal a ppassphrase. */
+ 	String IXITON_PersonalAPpassphrase=null;
 
+	/**
+	 * Instantiates a new on boarding service.
+	 *
+	 * @param testCase the test case
+	 * @param iCSON_OnboardingServiceFramework the i cso n_ onboarding service framework
+	 * @param iCSON_OnboardingInterface the i cso n_ onboarding interface
+	 * @param iCSON_ChannelSwitching the i cso n_ channel switching
+	 * @param iCSON_GetScanInfoMethod the i cso n_ get scan info method
+	 * @param iXITCO_AppId the i xitc o_ app id
+	 * @param iXITCO_DeviceId the i xitc o_ device id
+	 * @param iXITCO_DefaultLanguage the i xitc o_ default language
+	 * @param iXITON_OnboardingVersion the i xito n_ onboarding version
+	 * @param iXITON_SoftAP the i xito n_ soft ap
+	 * @param iXITON_SoftAPAuthType the i xito n_ soft ap auth type
+	 * @param iXITON_SoftAPpassphrase the i xito n_ soft a ppassphrase
+	 * @param iXITON_PersonalAP the i xito n_ personal ap
+	 * @param iXITON_PersonalAPAuthType the i xito n_ personal ap auth type
+	 * @param iXITON_PersonalAPpassphrase the i xito n_ personal a ppassphrase
+	 * @param gPCO_AnnouncementTimeout the g pc o_ announcement timeout
+	 * @param gPON_WaitSoftAP the g po n_ wait soft ap
+	 * @param gPON_ConnectSoftAP the g po n_ connect soft ap
+	 * @param gPON_WaitSoftAPAfterOffboard the g po n_ wait soft ap after offboard
+	 * @param gPON_ConnectPersonalAP the g po n_ connect personal ap
+	 * @param gPON_Disconnect the g po n_ disconnect
+	 * @param gPON_NextAnnouncement the g po n_ next announcement
+	 */
 	public OnBoardingService(String testCase,
 			boolean iCSON_OnboardingServiceFramework,
 			boolean iCSON_OnboardingInterface, boolean iCSON_ChannelSwitching,
@@ -166,6 +301,12 @@ public class OnBoardingService {
 
 
 
+	/**
+	 * Run test case.
+	 *
+	 * @param testCase the test case
+	 * @throws Exception the exception
+	 */
 	public  void runTestCase(String testCase) throws Exception {
 		
 		setUp();
@@ -213,17 +354,23 @@ public class OnBoardingService {
 
 
 
+	/**
+	 * Tear down.
+	 */
 	private  void tearDown() {
 		System.out.println("====================================================");
-		logger.debug("test tearDown started");
+		logger.info("test tearDown started");
 		releaseResources();
-		logger.debug("test tearDown done");
+		logger.info("test tearDown done");
 		System.out.println("====================================================");
 	}
 
 
 
 
+	/**
+	 * Release resources.
+	 */
 	private  void releaseResources() {
 
 		try
@@ -238,27 +385,33 @@ public class OnBoardingService {
 		}
 		catch (Exception ex)
 		{
-			logger.debug("Exception releasing resources", ex);
+			logger.info("Exception releasing resources", ex);
 		}
 
 
 	}
 
+	/**
+	 * Disconnect config client.
+	 */
 	private  void disconnectConfigClient()
 	{
 		if (configClient != null)
 		{
-			logger.debug("Disconnecting config client");
+			logger.info("Disconnecting config client");
 			configClient.disconnect();
 			configClient = null;
 		}
 	}
 
+	/**
+	 * Disconnect about client.
+	 */
 	private  void disconnectAboutClient()
 	{
 		if (aboutClient != null)
 		{
-			logger.debug("Disconnecting about client");
+			logger.info("Disconnecting about client");
 			aboutClient.disconnect();
 			aboutClient = null;
 		}
@@ -267,34 +420,39 @@ public class OnBoardingService {
 
 
 
+	/**
+	 * Sets the up.
+	 *
+	 * @throws Exception the exception
+	 */
 	private   void setUp() throws Exception {
 		System.out.println("====================================================");
-		logger.debug("test setUp started");
+		logger.info("test setUp started");
 
 		try
 		{
 
 			dutDeviceId = IXITCO_DeviceId;
-			logger.debug(String.format("Running Onboarding test case against Device ID: %s", dutDeviceId));
+			logger.info(String.format("Running Onboarding test case against Device ID: %s", dutDeviceId));
 			dutAppId = UUID.fromString(IXITCO_AppId);
-			logger.debug(String.format("Running Onboarding test case against App ID: %s", dutAppId));
+			logger.info(String.format("Running Onboarding test case against App ID: %s", dutAppId));
 
-			logger.debug(String.format("Running Onboarding test case using KeyStorePath: %s", keyStorePath));
+			logger.info(String.format("Running Onboarding test case using KeyStorePath: %s", keyStorePath));
 
 			onboardingHelper = getOnboardingHelper();
 			
 			//short personalApSecurity = Short.parseShort(IXITON_PersonalAPAuthType);
-			logger.debug(String.format("Running Onboarding test case using PersonalApSecurity: %s", IXITON_PersonalAPAuthType));
+			logger.info(String.format("Running Onboarding test case using PersonalApSecurity: %s", IXITON_PersonalAPAuthType));
 			String personalApSsid = IXITON_PersonalAP;
-			logger.debug(String.format("Running Onboarding test case using PersonalApSsid: %s", personalApSsid));
+			logger.info(String.format("Running Onboarding test case using PersonalApSsid: %s", personalApSsid));
 			String personalApPassphrase = IXITON_PersonalAPpassphrase;
-			logger.debug(String.format("Running Onboarding test case using PersonalApPassphrase: %s", personalApPassphrase));
+			logger.info(String.format("Running Onboarding test case using PersonalApPassphrase: %s", personalApPassphrase));
 			String onboardeeSoftApSsid = IXITON_SoftAP;
-			logger.debug(String.format("Running Onboarding test case against onboardeeSoftApSsid: %s", onboardeeSoftApSsid));
+			logger.info(String.format("Running Onboarding test case against onboardeeSoftApSsid: %s", onboardeeSoftApSsid));
 			String onboardeeSoftApPassphrase = IXITON_SoftAPpassphrase;
-			logger.debug(String.format("Running Onboarding test case against OnboardeeSoftApPassphrase: %s", onboardeeSoftApPassphrase));
+			logger.info(String.format("Running Onboarding test case against OnboardeeSoftApPassphrase: %s", onboardeeSoftApPassphrase));
 			String onboardeeSoftApSecurityType = IXITON_SoftAPAuthType;
-			logger.debug(String.format("Running Onboarding test case against OnboardeeSoftApSecurityType: %s", onboardeeSoftApSecurityType));
+			logger.info(String.format("Running Onboarding test case against OnboardeeSoftApSecurityType: %s", onboardeeSoftApSecurityType));
 
 			//String authTypeString = onboardingHelper.mapAuthTypeToAuthTypeString(personalApSecurity);
 			personalAPConfig = new WifiNetworkConfig(personalApSsid, personalApPassphrase, IXITON_PersonalAPAuthType);
@@ -304,7 +462,7 @@ public class OnBoardingService {
 			onboardingHelper.setSoftAPConfig(softAPConfig);
 			
 			onboardingHelper.initialize(keyStorePath, dutDeviceId, dutAppId);
-			logger.debug("test setUp done");
+			logger.info("test setUp done");
 			System.out.println("====================================================");
 		}
 		catch (Exception e)
@@ -316,6 +474,11 @@ public class OnBoardingService {
 
 	}
 
+	/**
+	 * Test onboarding_v1_01_ offboard device.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testOnboarding_v1_01_OffboardDevice() throws Exception
 	{
 		softAPssid = null;
@@ -337,6 +500,11 @@ public class OnBoardingService {
 
 
 
+	/**
+	 * Test onboarding_v1_02_ onboard device.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testOnboarding_v1_02_OnboardDevice() throws Exception
 	{
 		makeSureDeviceIsInOffboardedState();
@@ -346,6 +514,11 @@ public class OnBoardingService {
 
 
 
+	/**
+	 * Test onboarding_v1_03_ connectivity over soft ap.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testOnboarding_v1_03_ConnectivityOverSoftAP() throws Exception
 	{
 		connectToDUTInOffboardedState();
@@ -354,11 +527,17 @@ public class OnBoardingService {
 	}
 
 
+	/**
+	 * Test onboarding_v1_04_ configure wi fi with out of range value.
+	 *
+	 * @throws Exception the exception
+	 */
 	public void testOnboarding_v1_04_ConfigureWiFiWithOutOfRangeValue() throws Exception
     {
         connectToDUTInOffboardedState();
         try
         {
+        	logger.info("Calling configureWifi on the onboarding client interface with an invalid auth");
             onboardingHelper.callConfigureWiFi(new WifiNetworkConfig(personalAPConfig.getSsid(), personalAPConfig.getPassphrase(), "10"));
 
             fail("Calling configureWifi on the onboarding client interface with an invalid auth type must throw an 'org.alljoyn.Error.OutOfRange' ErrorReplyBusException");
@@ -372,6 +551,11 @@ public class OnBoardingService {
         verifyOnboardingState(OBS_STATE_PERSONAL_AP_NOT_CONFIGURED);
     }
 	 
+	/**
+	 * Test onboarding_v1_05_ configure wi fi with wrong ssid.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testOnboarding_v1_05_ConfigureWiFiWithWrongSSID() throws Exception
 	{
 		connectToDUTInOffboardedState();
@@ -396,6 +580,11 @@ public class OnBoardingService {
 
 
 
+	/**
+	 * Test onboarding_v1_06_ configure wi fi with wrong password.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testOnboarding_v1_06_ConfigureWiFiWithWrongPassword() throws Exception
 	{
 		connectToDUTInOffboardedState();
@@ -422,6 +611,11 @@ public class OnBoardingService {
 
 
 
+	/**
+	 * Test onboarding_v1_07_ configure wi fi auth type of any.
+	 *
+	 * @throws Exception the exception
+	 */
 	public   void testOnboarding_v1_07_ConfigureWiFiAuthTypeOfAny() throws Exception
 	{
 		connectToDUTInOffboardedState();
@@ -452,6 +646,11 @@ public class OnBoardingService {
 
 
 
+	/**
+	 * Test onboarding_v1_08_ get scan info.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testOnboarding_v1_08_GetScanInfo() throws Exception
 	{
 		connectToDUTInOffboardedState();
@@ -492,7 +691,12 @@ public class OnBoardingService {
 
 
 
-	 public  void testOnboarding_v1_09_WrongPasscode() throws Exception
+	 /**
+ 	 * Test onboarding_v1_09_ wrong passcode.
+ 	 *
+ 	 * @throws Exception the exception
+ 	 */
+ 	public  void testOnboarding_v1_09_WrongPasscode() throws Exception
 	    {
 	        AboutAnnouncementDetails deviceAboutAnnouncement = null;
 	        makeSureDeviceIsInOffboardedState();
@@ -513,7 +717,7 @@ public class OnBoardingService {
 	        catch (BusException be)
 	        {
 	            assertTrue("Did not receive callback from AuthListener indicating authentication failure", onboardingHelper.isAuthenticationFailed(deviceAboutAnnouncement));
-	            logger.debug("Received BusException when providing an incorrect password "+ be.getMessage());
+	            logger.info("Received BusException when providing an incorrect password "+ be.getMessage());
 	            logBusExceptionInfo(be);
 	        }
 	        //TODO
@@ -524,7 +728,12 @@ public class OnBoardingService {
 
 
 	 
-	 public  void testOnboarding_v1_10_AuthenticateAfterChangingPasscode() throws Exception
+	 /**
+ 	 * Test onboarding_v1_10_ authenticate after changing passcode.
+ 	 *
+ 	 * @throws Exception the exception
+ 	 */
+ 	public  void testOnboarding_v1_10_AuthenticateAfterChangingPasscode() throws Exception
 	    {
 	        String daemonName = "";
 	        AboutAnnouncementDetails deviceAboutAnnouncement = connectToDUTInOffboardedState();
@@ -562,7 +771,12 @@ public class OnBoardingService {
 	 
 	 
 	 
-	 public   void testOnboarding_v1_11_FactoryResetClearsConfiguration() throws Exception
+	 /**
+ 	 * Test onboarding_v1_11_ factory reset clears configuration.
+ 	 *
+ 	 * @throws Exception the exception
+ 	 */
+ 	public   void testOnboarding_v1_11_FactoryResetClearsConfiguration() throws Exception
 	    {
 	        makeSureDeviceIsInOffboardedState();
 
@@ -575,7 +789,7 @@ public class OnBoardingService {
 	        }
 
 	        String defaultLanguage = aboutAnnouncementDetails.getDefaultLanguage();
-	        logger.debug(String.format("Default language is: %s", defaultLanguage));
+	        logger.info(String.format("Default language is: %s", defaultLanguage));
 
 	        aboutClient = onboardingHelper.connectAboutClient(aboutAnnouncementDetails);
 	        configClient = onboardingHelper.connectConfigClient(aboutAnnouncementDetails);
@@ -641,13 +855,13 @@ public class OnBoardingService {
 	        assertEquals("Device name in announcement was not the default as expected", defaultDeviceName, aboutAnnouncementDetails.getDeviceName());
 
 	        defaultLanguage = aboutAnnouncementDetails.getDefaultLanguage();
-	        logger.debug(String.format("Default language is: %s", defaultLanguage));
+	        logger.info(String.format("Default language is: %s", defaultLanguage));
 
 	        aboutClient = onboardingHelper.connectAboutClient(aboutAnnouncementDetails);
 	        configClient = onboardingHelper.connectConfigClient(aboutAnnouncementDetails);
 
 	        aboutMap = aboutClient.getAbout("");
-	        logger.debug(String.format("After factoryReset, the deviceName is: %s", aboutMap.get(AboutKeys.ABOUT_DEVICE_NAME).toString()));
+	        logger.info(String.format("After factoryReset, the deviceName is: %s", aboutMap.get(AboutKeys.ABOUT_DEVICE_NAME).toString()));
 
 	        assertEquals("DeviceName not reset to default value", defaultDeviceName, aboutMap.get(AboutKeys.ABOUT_DEVICE_NAME).toString());
 
@@ -658,7 +872,12 @@ public class OnBoardingService {
 	 
 	 
 	 
-	 public   void testOnboarding_v1_12_FactoryResetResetsPasscode() throws Exception
+	 /**
+ 	 * Test onboarding_v1_12_ factory reset resets passcode.
+ 	 *
+ 	 * @throws Exception the exception
+ 	 */
+ 	public   void testOnboarding_v1_12_FactoryResetResetsPasscode() throws Exception
 	    {
 	        String daemonName = "";
 	        AboutAnnouncementDetails deviceAboutAnnouncement = connectToDUTInOffboardedState();
@@ -721,11 +940,21 @@ public class OnBoardingService {
 
 
 
+	/**
+	 * Validate scan result.
+	 *
+	 * @param myScanResult the my scan result
+	 */
 	private  void validateScanResult(MyScanResult myScanResult)
 	{
 		validateAuthType(myScanResult.m_authType);
 	}
 
+	/**
+	 * Validate auth type.
+	 *
+	 * @param authType the auth type
+	 */
 	private  void validateAuthType(short authType)
 	{
 		assertTrue(String.format("AuthType must not be less than %d", getMinAuthTypeId()), authType >= getMinAuthTypeId());
@@ -733,17 +962,27 @@ public class OnBoardingService {
 	}
 
 
+	/**
+	 * Log bus exception info.
+	 *
+	 * @param be the be
+	 */
 	private  void logBusExceptionInfo(BusException be)
 	{
 		if (be instanceof ErrorReplyBusException)
 		{
 			ErrorReplyBusException ex = (ErrorReplyBusException) be;
-			logger.debug("ErrorStatus: " + ex.getErrorStatus());
-			logger.debug("ErrorName: " + ex.getErrorName());
-			logger.debug("ErrorMessage: " + ex.getErrorMessage());
+			logger.info("ErrorStatus: " + ex.getErrorStatus());
+			logger.info("ErrorName: " + ex.getErrorName());
+			logger.info("ErrorMessage: " + ex.getErrorMessage());
 		}
 	}
 
+	/**
+	 * Gets the min auth type id.
+	 *
+	 * @return the min auth type id
+	 */
 	private  short getMinAuthTypeId()
 	{
 		short retval = Short.MAX_VALUE;
@@ -757,6 +996,11 @@ public class OnBoardingService {
 		return retval;
 	}
 
+	/**
+	 * Gets the max auth type id.
+	 *
+	 * @return the max auth type id
+	 */
 	private  int getMaxAuthTypeId()
 	{
 		short retval = Short.MIN_VALUE;
@@ -772,6 +1016,12 @@ public class OnBoardingService {
 
 
 
+	/**
+	 * Connect to dut in offboarded state.
+	 *
+	 * @return the about announcement details
+	 * @throws Exception the exception
+	 */
 	private  AboutAnnouncementDetails connectToDUTInOffboardedState() throws Exception
 	{
 		makeSureDeviceIsInOffboardedState();
@@ -785,6 +1035,13 @@ public class OnBoardingService {
 
 
 
+	/**
+	 * Place dut in onboard state.
+	 *
+	 * @return the about announcement details
+	 * @throws Exception the exception
+	 * @throws BusException the bus exception
+	 */
 	public  AboutAnnouncementDetails placeDUTInOnboardState() throws Exception, BusException
 	{
 		onboardingHelper.connectToDUTOnSoftAP();
@@ -810,6 +1067,12 @@ public class OnBoardingService {
 		return aboutAnnouncementDetails;
 	}
 
+	/**
+	 * Verify onboarding error code.
+	 *
+	 * @param errorCode the error code
+	 * @throws BusException the bus exception
+	 */
 	private  void verifyOnboardingErrorCode(short errorCode) throws BusException
 	{
 		logger.info("Retrieving the ErrorCode property from the Onboarding interface");
@@ -819,6 +1082,11 @@ public class OnBoardingService {
 
 
 
+	/**
+	 * Verify configure wifi return value.
+	 *
+	 * @param configureWiFiRetval the configure wi fi retval
+	 */
 	private  void verifyConfigureWifiReturnValue(short configureWiFiRetval)
 	{
 		if (OBS_CONFIGURE_WIFI_RETURN_SUPPORTS_CHANNEL_SWITCHING == configureWiFiRetval)
@@ -832,6 +1100,11 @@ public class OnBoardingService {
 
 	}
 
+	/**
+	 * Make sure device is in offboarded state.
+	 *
+	 * @throws Exception the exception
+	 */
 	private  void makeSureDeviceIsInOffboardedState() throws Exception
 	{
 		assertNotNull("Soft AP SSID can not be null. You have to provide the soft AP SSID to run the Onboarding tests", softAPConfig.getSsid());
@@ -839,13 +1112,18 @@ public class OnBoardingService {
 
 		if (onboardingHelper.isDeviceInOnboardedState())
 		{
-			logger.debug("Device currently in Onboarded state, so offboarding it");
+			logger.info("Device currently in Onboarded state, so offboarding it");
 
 			placeDUTInOffboardState();
 		}
 	}
 
 
+	/**
+	 * Validate soft ap.
+	 *
+	 * @param softAPssid2 the soft a pssid2
+	 */
 	private  void validateSoftAP(String softAPssid2) {
 		// TODO Auto-generated method stub
 		 
@@ -855,6 +1133,12 @@ public class OnBoardingService {
 
 
 
+	/**
+	 * Verify onboarding state.
+	 *
+	 * @param state the state
+	 * @throws BusException the bus exception
+	 */
 	private  void verifyOnboardingState(short state) throws BusException
 	{
 		logger.info("Retrieving the State property from the Onboarding interface");
@@ -864,12 +1148,22 @@ public class OnBoardingService {
 	
 	}
 
+	/**
+	 * Check device is in onboarded state and wait for announcement.
+	 *
+	 * @throws Exception the exception
+	 */
 	private  void checkDeviceIsInOnboardedStateAndWaitForAnnouncement() throws Exception
 	{
 		assertTrue("DUT does not appear to be Onboarded!", onboardingHelper.isDeviceInOnboardedState());
 	}
 
 
+	/**
+	 * Place dut in offboard state.
+	 *
+	 * @throws Exception the exception
+	 */
 	private  void placeDUTInOffboardState() throws Exception
 	{
 		onboardingHelper.callOffboard();
@@ -888,21 +1182,39 @@ public class OnBoardingService {
 
 
 
+	/**
+	 * Gets the onboarding helper.
+	 *
+	 * @return the onboarding helper
+	 */
 	protected  OnboardingHelper getOnboardingHelper()
 	{
 		return new OnboardingHelper();
 	}
 
 
+	/**
+	 * Fail.
+	 *
+	 * @param msg the msg
+	 */
 	private  void fail(String msg) {
 
 
 		logger.error(msg);
+		logger.info("Partial Verdict: FAIL");
 		pass=false;
 
 	}
 
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param errorMsg the error msg
+	 * @param Version the version
+	 * @param version the version
+	 */
 	private  void assertEquals(String errorMsg,
 			String Version, short version) {
 		
@@ -918,6 +1230,13 @@ public class OnBoardingService {
 
 
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param errorMsg the error msg
+	 * @param i the i
+	 * @param j the j
+	 */
 	private  void assertEquals(String errorMsg, int i, int j) {
 		if(i!=j){
 			fail(errorMsg);
@@ -928,6 +1247,13 @@ public class OnBoardingService {
 
 	}
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param errorMsg the error msg
+	 * @param string1 the string1
+	 * @param string2 the string2
+	 */
 	private  void assertEquals(String errorMsg,
 			String string1, String string2) {
 		
@@ -941,6 +1267,13 @@ public class OnBoardingService {
 	}
 
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param errorMsg the error msg
+	 * @param byte1 the byte1
+	 * @param byte2 the byte2
+	 */
 	private  void assertEquals(String errorMsg, byte byte1,
 			byte byte2) {
 		if(!(byte1==byte2)){
@@ -953,6 +1286,13 @@ public class OnBoardingService {
 
 
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param errorMsg the error msg
+	 * @param bool the bool
+	 * @param booleanValue the boolean value
+	 */
 	private  void assertEquals(String errorMsg, boolean bool,
 			boolean booleanValue) {
 		if(bool!=booleanValue){
@@ -961,6 +1301,12 @@ public class OnBoardingService {
 
 	}
 
+	/**
+	 * Assert true.
+	 *
+	 * @param errorMsg the error msg
+	 * @param bool the bool
+	 */
 	private  void assertTrue(String errorMsg,
 			boolean bool) {
 	
@@ -972,6 +1318,12 @@ public class OnBoardingService {
 	}
 
 
+	/**
+	 * Assert false.
+	 *
+	 * @param errorMsg the error msg
+	 * @param bool the bool
+	 */
 	private  void assertFalse(String errorMsg,
 			boolean bool) {
 		
@@ -983,6 +1335,12 @@ public class OnBoardingService {
 	}
 
 
+	/**
+	 * Assert not null.
+	 *
+	 * @param msgError the msg error
+	 * @param notNull the not null
+	 */
 	private  void assertNotNull(String msgError, Object notNull) {
 
 		if(notNull==null){
@@ -992,6 +1350,12 @@ public class OnBoardingService {
 	}
 
 
+	/**
+	 * Assert null.
+	 *
+	 * @param msgError the msg error
+	 * @param Null the null
+	 */
 	private  void assertNull(String msgError,
 			Object Null) {
 		if(Null!=null){
@@ -1000,6 +1364,11 @@ public class OnBoardingService {
 
 	}
 
+	/**
+	 * Gets the verdict.
+	 *
+	 * @return the verdict
+	 */
 	public String getVerdict() {
 		String verdict=null;
 		if(inconc){

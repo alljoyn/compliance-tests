@@ -1,3 +1,18 @@
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *    Permission to use, copy, modify, and/or distribute this software for any
+ *    purpose with or without fee is hereby granted, provided that the above
+ *    copyright notice and this permission notice appear in all copies.
+ *
+ *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.at4wireless.alljoyn.testcases.conf.about;
 
 import java.awt.image.BufferedImage;
@@ -53,25 +68,58 @@ import com.at4wireless.alljoyn.core.introspection.bean.NodeDetail;
 
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AboutServ.
+ */
 public class AboutServ { 
 
+	/** The pass. */
 	private  Boolean pass=true;
+	
+	/** The inconcluse. */
 	private boolean inconcluse=false;
 
+	/** The introspectable interface name. */
 	private  final String INTROSPECTABLE_INTERFACE_NAME = "org.allseen.Introspectable";
+	
+	/** The tag. */
 	protected  final String TAG = "AboutTestSuite";
+	
+	/** The logger. */
 	private  final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	
+	/** The bus application name. */
 	private  final String BUS_APPLICATION_NAME = "AboutTestSuite";
+	
+	/** The error msg bus introspection. */
 	private  final String ERROR_MSG_BUS_INTROSPECTION = "Encountered exception while trying to introspect the bus";
+	
+	/** The dbus error service unknown. */
 	private  final String DBUS_ERROR_SERVICE_UNKNOWN = "org.freedesktop.DBus.Error.ServiceUnknown";
+	
+	/** The default language. */
 	private  String defaultLanguage;
 
+	/** The device about announcement. */
 	protected  AboutAnnouncementDetails deviceAboutAnnouncement;
+	
+	/** The service helper. */
 	private  ServiceHelper serviceHelper;
+	
+	/** The simple date format. */
 	private  SimpleDateFormat simpleDateFormat;
+	
+	/** The date format. */
 	private  final String DATE_FORMAT = "yyyy-MM-dd";
+	
+	/** The time out. */
 	private int timeOut=30;
+	
+	/** The about proxy. */
 	private  AboutProxy  aboutProxy;
+	
+	/** The about icon proxy. */
 	private  AboutIconProxy aboutIconProxy;
 	/**
 	 * This regular expression is used to replace description tags with the INTROSPECTION_XML_DESC_PLACEHOLDER
@@ -87,9 +135,39 @@ public class AboutServ {
 	 */
 	private  final String INTROSPECTION_XML_DESC_EXPECTED      = "<description></description>";
 
+	/** The ics. */
 	private Map<String, Boolean> ics;
+	
+	/** The ixit. */
 	private Map<String, String> ixit;
 
+	/**
+	 * Instantiates a new about serv.
+	 *
+	 * @param testCase the test case
+	 * @param iCSCO_DateOfManufacture the i csc o_ date of manufacture
+	 * @param iCSCO_HardwareVersion the i csc o_ hardware version
+	 * @param iCSCO_SupportUrl the i csc o_ support url
+	 * @param iCSCO_IconInterface the i csc o_ icon interface
+	 * @param iCSCO_DeviceName the i csc o_ device name
+	 * @param iXITCO_AboutVersion the i xitc o_ about version
+	 * @param iXITCO_AppId the i xitc o_ app id
+	 * @param iXITCO_DefaultLanguage the i xitc o_ default language
+	 * @param iXITCO_DeviceName the i xitc o_ device name
+	 * @param iXITCO_DeviceId the i xitc o_ device id
+	 * @param iXITCO_AppName the i xitc o_ app name
+	 * @param iXITCO_Manufacturer the i xitc o_ manufacturer
+	 * @param iXITCO_ModelNumber the i xitc o_ model number
+	 * @param iXITCO_SoftwareVersion the i xitc o_ software version
+	 * @param iXITCO_AJSoftwareVersion the i xitc o_ aj software version
+	 * @param iXITCO_HardwareVersion the i xitc o_ hardware version
+	 * @param iXITCO_IntrospectableVersion the i xitc o_ introspectable version
+	 * @param iXITCO_SupportedLanguages the i xitc o_ supported languages
+	 * @param iXITCO_Description the i xitc o_ description
+	 * @param iXITCO_DateOfManufacture the i xitc o_ date of manufacture
+	 * @param iXITCO_SupportUrl the i xitc o_ support url
+	 * @param gPCO_AnnouncementTimeout the g pc o_ announcement timeout
+	 */
 	public AboutServ(String testCase,
 			boolean iCSCO_DateOfManufacture, boolean iCSCO_HardwareVersion,
 			boolean iCSCO_SupportUrl, boolean iCSCO_IconInterface, boolean iCSCO_DeviceName,
@@ -147,6 +225,12 @@ public class AboutServ {
 		}
 	}
 	
+	/**
+	 * Run test case.
+	 *
+	 * @param test the test
+	 * @throws Exception the exception
+	 */
 	public  void runTestCase(String test) throws Exception{
 
 		setUp();
@@ -182,6 +266,11 @@ public class AboutServ {
 		
 	}
 
+	/**
+	 * Sets the up.
+	 *
+	 * @throws Exception the exception
+	 */
 	protected void setUp() throws Exception
 	{
 		System.out.println("====================================================");
@@ -211,7 +300,7 @@ public class AboutServ {
 		}
 		catch (Exception exception)
 		{
-			logger.error("Exception setting up resources: "+ exception.toString());
+			logger.error("Exception setting up resources: "+ exception.getMessage());
 
 			try 
 			{
@@ -219,7 +308,7 @@ public class AboutServ {
 			} 
 			catch (Exception newException) 
 			{
-				logger.error("Exception releasing resources: "+ newException.toString());
+				logger.error("Exception releasing resources: "+ newException.getMessage());
 			}
 
 			throw exception;
@@ -227,6 +316,11 @@ public class AboutServ {
 		System.out.println("====================================================");
 	}
 
+	/**
+	 * Tear down.
+	 *
+	 * @throws Exception the exception
+	 */
 	protected  void tearDown() throws Exception
 	{
 		System.out.println("====================================================");
@@ -237,6 +331,11 @@ public class AboutServ {
 		System.out.println("====================================================");
 	}
 
+	/**
+	 * Test about_v1_01_ about announcement.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAbout_v1_01_AboutAnnouncement() throws Exception
 	{	
 		logger.info("Testing if version matches IXITCO_AboutVersion");
@@ -262,6 +361,11 @@ public class AboutServ {
 	}
 
 
+	/**
+	 * Test about_v1_02_ about version.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAbout_v1_02_AboutVersion() throws Exception
 	{
 
@@ -279,6 +383,11 @@ public class AboutServ {
 		}
 	}
 
+	/**
+	 * Test about_v1_03_ get object description.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAbout_v1_03_GetObjectDescription() throws Exception
 	{
 
@@ -317,6 +426,11 @@ public class AboutServ {
 		}
 	}
 
+	/**
+	 * Test about_v1_04_ about announcement consistent with bus objects.
+	 *
+	 * @throws Exception the exception
+	 */
 	public final  void testAbout_v1_04_AboutAnnouncementConsistentWithBusObjects() throws Exception
 	{
 
@@ -354,6 +468,11 @@ public class AboutServ {
 		}
 	}
 
+	/**
+	 * Test about_v1_05_ standardized interfaces match definitions.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAbout_v1_05_StandardizedInterfacesMatchDefinitions() throws Exception
 	{
 		aboutProxy=serviceHelper.connectAboutProxy(deviceAboutAnnouncement);
@@ -375,6 +494,11 @@ public class AboutServ {
 		}
 	}
 
+	/**
+	 * Test about_v1_06_ get about for default language.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAbout_v1_06_GetAboutForDefaultLanguage() throws Exception
 	{
 		aboutProxy=serviceHelper.connectAboutProxy(deviceAboutAnnouncement);
@@ -406,6 +530,11 @@ public class AboutServ {
 	}
 
 
+	/**
+	 * Test about_v1_07_ get about for supported languages.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAbout_v1_07_GetAboutForSupportedLanguages() throws Exception
 	{
 		aboutProxy=serviceHelper.connectAboutProxy(deviceAboutAnnouncement);
@@ -445,6 +574,11 @@ public class AboutServ {
 
 	}
 
+	/**
+	 * Test about_v1_08_ get about for unspecified language.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAbout_v1_08_GetAboutForUnspecifiedLanguage() throws Exception
 	{
 		aboutProxy=serviceHelper.connectAboutProxy(deviceAboutAnnouncement);
@@ -470,6 +604,11 @@ public class AboutServ {
 		compareFieldsInAboutMap(aboutMapDefaultLanguage, aboutMapNoLanguage, "");
 	}
 
+	/**
+	 * Test about_v1_09_ get about for unsupported language.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAbout_v1_09_GetAboutForUnsupportedLanguage() throws Exception
 	{
 		aboutProxy=serviceHelper.connectAboutProxy(deviceAboutAnnouncement);
@@ -499,6 +638,11 @@ public class AboutServ {
 	}
 
 
+	/**
+	 * Test about_v1_10_ get about icon.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAbout_v1_10_GetAboutIcon() throws Exception
 	{
 		if (!ics.get("ICSCO_IconInterface"))
@@ -580,6 +724,11 @@ public class AboutServ {
 	}
 
 
+	/**
+	 * Test about_v1_11_ get about icon valid url.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testAbout_v1_11_GetAboutIconValidUrl() throws Exception
 	{
 		if (!ics.get("ICSCO_IconInterface"))
@@ -597,6 +746,11 @@ public class AboutServ {
 		}
 	}
 
+	/**
+	 * Test events actions_v1_01.
+	 *
+	 * @throws Exception the exception
+	 */
 	public  void testEventsActions_v1_01() throws Exception {
 
 		logger.info("Executing the test");
@@ -618,6 +772,13 @@ public class AboutServ {
 		}
 	}
 
+	/**
+	 * Test object validity.
+	 *
+	 * @param objectPath the object path
+	 * @return true, if successful
+	 * @throws Exception the exception
+	 */
 	private  boolean testObjectValidity(String objectPath) throws Exception {
 
 
@@ -833,6 +994,11 @@ public class AboutServ {
 
 
 
+	/**
+	 * Gets the all seen introspectabl object paths.
+	 *
+	 * @return the all seen introspectabl object paths
+	 */
 	protected  List<String> getAllSeenIntrospectablObjectPaths() {
 
 		List<String> retList  = new ArrayList<String>();
@@ -856,6 +1022,11 @@ public class AboutServ {
 	}
 
 
+	/**
+	 * Gets the introspectable interface name.
+	 *
+	 * @return the introspectable interface name
+	 */
 	private  String getIntrospectableInterfaceName() {
 
 		//Retrieve the AJ name of the introspection interface
@@ -875,6 +1046,11 @@ public class AboutServ {
 
 
 
+	/**
+	 * Validate icon url.
+	 *
+	 * @throws BusException the bus exception
+	 */
 	protected  void validateIconUrl() throws BusException
 	{
 		logger.info("Creating about client and testing the Icon url validity");
@@ -907,6 +1083,13 @@ public class AboutServ {
 	}
 
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param msg the msg
+	 * @param int1 the int1
+	 * @param int2 the int2
+	 */
 	private  void assertEquals(String msg, int int1, int int2) {
 		// TODO Auto-generated method stub
 
@@ -924,6 +1107,14 @@ public class AboutServ {
 	}
 
 
+	/**
+	 * Compare fields in about map.
+	 *
+	 * @param aboutMapDefaultLanguage the about map default language
+	 * @param aboutMapNoLanguage the about map no language
+	 * @param language the language
+	 * @throws Exception the exception
+	 */
 	private  void compareFieldsInAboutMap(Map<String, Variant> aboutMapDefaultLanguage, Map<String, Variant> aboutMapNoLanguage, String language) throws Exception
 	{
 		compareAboutNonRequired(aboutMapDefaultLanguage, aboutMapNoLanguage, language, AboutKeys.ABOUT_DEVICE_NAME);
@@ -956,6 +1147,12 @@ public class AboutServ {
 
 
 
+	/**
+	 * Assert true.
+	 *
+	 * @param msg the msg
+	 * @param bool the bool
+	 */
 	private  void assertTrue(String msg, boolean bool) {
 		// TODO Auto-generated method stub
 
@@ -972,6 +1169,12 @@ public class AboutServ {
 
 
 
+	/**
+	 * Assert false.
+	 *
+	 * @param msg the msg
+	 * @param bool the bool
+	 */
 	private  void assertFalse(String msg,
 			boolean bool) {
 		// TODO Auto-generated method stub
@@ -992,6 +1195,13 @@ public class AboutServ {
 
 
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param msg the msg
+	 * @param expectedValue the expected value
+	 * @param currentValue the current value
+	 */
 	private  void assertEquals(String msg,
 			String expectedValue, String currentValue) {
 		// TODO Auto-generated method stub
@@ -1020,6 +1230,12 @@ public class AboutServ {
 
 
 
+	/**
+	 * Checks if is default language present.
+	 *
+	 * @param supportedLanguages the supported languages
+	 * @return true, if is default language present
+	 */
 	private  boolean isDefaultLanguagePresent(String[] supportedLanguages)
 	{
 		boolean isPresent = false;
@@ -1037,6 +1253,11 @@ public class AboutServ {
 
 
 
+	/**
+	 * Validate supported languages contains default language.
+	 *
+	 * @param supportedLanguages the supported languages
+	 */
 	private  void validateSupportedLanguagesContainsDefaultLanguage(String[] supportedLanguages)
 	{
 		assertTrue("No supported language found in About announcement", supportedLanguages != null);
@@ -1050,6 +1271,14 @@ public class AboutServ {
 
 
 
+	/**
+	 * Validate supported languages about map.
+	 *
+	 * @param supportedLanguages the supported languages
+	 * @param aboutMapDefaultLanguage the about map default language
+	 * @throws BusException the bus exception
+	 * @throws Exception the exception
+	 */
 	private  void validateSupportedLanguagesAboutMap(String[] supportedLanguages, Map<String, Variant> aboutMapDefaultLanguage) throws BusException, Exception
 	{
 		for (String supportedLanguage : supportedLanguages)
@@ -1092,6 +1321,14 @@ public class AboutServ {
 
 
 
+	/**
+	 * Compare non localized fields in about map.
+	 *
+	 * @param aboutMapDefaultLanguage the about map default language
+	 * @param aboutMapSupportedLanguage the about map supported language
+	 * @param language the language
+	 * @throws Exception the exception
+	 */
 	private  void compareNonLocalizedFieldsInAboutMap(Map<String, Variant> aboutMapDefaultLanguage, Map<String, Variant> aboutMapSupportedLanguage, String language) throws Exception
 	{
 		compareRequiredFieldsInAboutMap(aboutMapDefaultLanguage, aboutMapSupportedLanguage, language);
@@ -1101,6 +1338,14 @@ public class AboutServ {
 
 
 
+	/**
+	 * Compare required fields in about map.
+	 *
+	 * @param aboutMapDefaultLanguage the about map default language
+	 * @param aboutMapSupportedLanguage the about map supported language
+	 * @param language the language
+	 * @throws Exception the exception
+	 */
 	private  void compareRequiredFieldsInAboutMap(Map<String, Variant> aboutMapDefaultLanguage, Map<String, Variant> aboutMapSupportedLanguage, String language) throws Exception
 	{
 		compareAbout(AboutKeys.ABOUT_APP_ID, aboutMapDefaultLanguage.get(AboutKeys.ABOUT_APP_ID).getClass(), aboutMapSupportedLanguage.get(AboutKeys.ABOUT_APP_ID).getClass(), language);
@@ -1117,6 +1362,14 @@ public class AboutServ {
 				.getClass(), language);
 	}
 
+	/**
+	 * Compare about.
+	 *
+	 * @param fieldName the field name
+	 * @param class1 the class1
+	 * @param class2 the class2
+	 * @param language the language
+	 */
 	private  void compareAbout(String fieldName, Class<? extends Variant> class1,
 			Class<? extends Variant> class2, String language) {
 
@@ -1133,6 +1386,13 @@ public class AboutServ {
 
 
 
+	/**
+	 * Assert equals.
+	 *
+	 * @param msg the msg
+	 * @param expectedValue the expected value
+	 * @param currentValue the current value
+	 */
 	private  void assertEquals(String msg,
 			Class<? extends Variant> expectedValue, Class<? extends Variant> currentValue) {
 		// TODO Auto-generated method stub
@@ -1153,6 +1413,14 @@ public class AboutServ {
 
 
 
+	/**
+	 * Compare non required fields in about map.
+	 *
+	 * @param aboutMapDefaultLanguage the about map default language
+	 * @param aboutMapSupportedLanguage the about map supported language
+	 * @param language the language
+	 * @throws Exception the exception
+	 */
 	private  void compareNonRequiredFieldsInAboutMap(Map<String, Variant> aboutMapDefaultLanguage, Map<String, Variant> aboutMapSupportedLanguage, String language) throws Exception
 	{
 		compareAboutNonRequired(aboutMapDefaultLanguage, aboutMapSupportedLanguage, language, AboutKeys.ABOUT_DATE_OF_MANUFACTURE);
@@ -1160,6 +1428,15 @@ public class AboutServ {
 		compareAboutNonRequired(aboutMapDefaultLanguage, aboutMapSupportedLanguage, language, AboutKeys.ABOUT_SUPPORT_URL);
 	}
 
+	/**
+	 * Compare about non required.
+	 *
+	 * @param aboutMapDefaultLanguage the about map default language
+	 * @param aboutMapSupportedLanguage the about map supported language
+	 * @param language the language
+	 * @param fieldName the field name
+	 * @throws Exception the exception
+	 */
 	private  void compareAboutNonRequired(Map<String, Variant> aboutMapDefaultLanguage, Map<String, Variant> aboutMapSupportedLanguage, String language, String fieldName) throws Exception
 	{
 		if (aboutMapDefaultLanguage.containsKey(fieldName))
@@ -1184,6 +1461,15 @@ public class AboutServ {
 
 
 
+	/**
+	 * Compare about.
+	 *
+	 * @param fieldName the field name
+	 * @param expectedAboutFieldValue the expected about field value
+	 * @param aboutFieldValue the about field value
+	 * @param language the language
+	 * @throws Exception the exception
+	 */
 	private  void compareAbout(String fieldName, String expectedAboutFieldValue, String aboutFieldValue, String language) throws Exception
 	{
 		String assertionFailureResponse = prepareAssertionFailureResponse(fieldName,expectedAboutFieldValue,aboutFieldValue, language);
@@ -1198,6 +1484,13 @@ public class AboutServ {
 		assertEquals(assertionFailureResponse, expectedAboutFieldValue, aboutFieldValue);
 	}
 
+	/**
+	 * Prepare assertion failure response.
+	 *
+	 * @param fieldName the field name
+	 * @param language the language
+	 * @return the string
+	 */
 	private String prepareAssertionFailureResponse(String fieldName, String language)
 	{
 		StringBuilder assertionFailureResponseBuilder = new StringBuilder();
@@ -1210,6 +1503,15 @@ public class AboutServ {
 	}
 
 
+	/**
+	 * Prepare assertion failure response.
+	 *
+	 * @param fieldName the field name
+	 * @param ixit the ixit
+	 * @param value the value
+	 * @param language the language
+	 * @return the string
+	 */
 	private  String prepareAssertionFailureResponse(String fieldName ,String ixit ,String value,String language)
 	{
 		StringBuilder assertionFailureResponseBuilder = new StringBuilder();
@@ -1233,6 +1535,12 @@ public class AboutServ {
 	}*/
 
 
+	/**
+	 * Populate map.
+	 *
+	 * @param aboutObjectDescriptions the about object descriptions
+	 * @param objectDescriptionMap the object description map
+	 */
 	private  void populateMap(AboutObjectDescription[] aboutObjectDescriptions, Map<String, String[]> objectDescriptionMap)
 	{
 		for (AboutObjectDescription busObjectDescription : aboutObjectDescriptions)
@@ -1245,6 +1553,9 @@ public class AboutServ {
 
 
 
+	/**
+	 * Release resources.
+	 */
 	private  void releaseResources()
 	{
 		if (serviceHelper != null) {
@@ -1253,6 +1564,12 @@ public class AboutServ {
 		}
 	}
 
+	/**
+	 * Verify about data.
+	 *
+	 * @param aboutData the about data
+	 * @throws Exception the exception
+	 */
 	private  void verifyAboutData(Map<String, Variant> aboutData) throws Exception
 	{
 		verifyFieldIsPresent(AboutKeys.ABOUT_APP_ID, aboutData);
@@ -1285,6 +1602,13 @@ public class AboutServ {
 	}
 
 
+	/**
+	 * Verify field is present.
+	 *
+	 * @param key the key
+	 * @param aboutData the about data
+	 * @throws BusException the bus exception
+	 */
 	private  void verifyFieldIsPresent(String key, Map<String, Variant> aboutData) throws BusException
 	{
 		if(aboutData.get(key)==null) {
@@ -1307,6 +1631,11 @@ public class AboutServ {
 
 
 
+	/**
+	 * Gets the about interface path from announcement.
+	 *
+	 * @return the about interface path from announcement
+	 */
 	private  String getAboutInterfacePathFromAnnouncement()
 	{
 		String aboutPath = null;
@@ -1326,6 +1655,11 @@ public class AboutServ {
 		return aboutPath;
 	}
 
+	/**
+	 * Gets the service helper.
+	 *
+	 * @return the service helper
+	 */
 	protected  ServiceHelper getServiceHelper()
 	{
 		return new ServiceHelper( logger);
@@ -1333,12 +1667,25 @@ public class AboutServ {
 
 
 
+	/**
+	 * Gets the introspector.
+	 *
+	 * @return the introspector
+	 */
 	protected  BusIntrospector getIntrospector()
 	{
 		return serviceHelper.getBusIntrospector(deviceAboutAnnouncement);
 	}
 
 
+	/**
+	 * Populate bus introspect path interface set.
+	 *
+	 * @param busIntrospector the bus introspector
+	 * @param busIntrospectPathInterfaceSet the bus introspect path interface set
+	 * @param path the path
+	 * @throws Exception the exception
+	 */
 	private  void populateBusIntrospectPathInterfaceSet(BusIntrospector busIntrospector, Set<String> busIntrospectPathInterfaceSet, String path) throws Exception
 	{
 		NodeDetail nodeDetail = null;
@@ -1371,6 +1718,13 @@ public class AboutServ {
 		}
 	}
 
+	/**
+	 * Handle introspection bus exception.
+	 *
+	 * @param path the path
+	 * @param e the e
+	 * @throws Exception the exception
+	 */
 	private  void handleIntrospectionBusException(String path, BusException e) throws Exception
 	{
 		String msg = ERROR_MSG_BUS_INTROSPECTION;
@@ -1384,6 +1738,13 @@ public class AboutServ {
 		throw new Exception(msg, e);
 	}
 
+	/**
+	 * Populate announcement path interface set.
+	 *
+	 * @param announcementPathInterfaceSet the announcement path interface set
+	 * @param aboutObjectDescription the about object description
+	 * @param path the path
+	 */
 	private  void populateAnnouncementPathInterfaceSet(Set<String> announcementPathInterfaceSet, AboutObjectDescription aboutObjectDescription, String path)
 	{
 		for (String ifacename : aboutObjectDescription.interfaces)
@@ -1396,6 +1757,14 @@ public class AboutServ {
 	}
 
 
+	/**
+	 * Gets the interface validator.
+	 *
+	 * @return the interface validator
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws SAXException the SAX exception
+	 */
 	protected  InterfaceValidator getInterfaceValidator() throws IOException, ParserConfigurationException, SAXException
 	{
 		return new InterfaceValidator();
@@ -1403,6 +1772,13 @@ public class AboutServ {
 
 
 
+	/**
+	 * Verify about map.
+	 *
+	 * @param aboutMap the about map
+	 * @param language the language
+	 * @throws Exception the exception
+	 */
 	private  void verifyAboutMap(Map<String, Variant> aboutMap, String language) throws Exception
 	{
 		checkForNull(aboutMap, language);
@@ -1418,6 +1794,12 @@ public class AboutServ {
 	}
 
 
+	/**
+	 * Check for null.
+	 *
+	 * @param aboutMap the about map
+	 * @param language the language
+	 */
 	private  void checkForNull(Map<String, Variant> aboutMap, String language)
 	{
 		checkForNull(aboutMap, AboutKeys.ABOUT_APP_ID, language);
@@ -1435,6 +1817,13 @@ public class AboutServ {
 		if(ics.get("ICSCO_SupportUrl")) checkForNull(aboutMap, AboutKeys.ABOUT_SUPPORT_URL, language);
 	}
 
+	/**
+	 * Check for null.
+	 *
+	 * @param aboutMap the about map
+	 * @param fieldName the field name
+	 * @param language the language
+	 */
 	private  void checkForNull(Map<String, Variant> aboutMap, String fieldName, String language)
 	{
 		if(aboutMap.get(fieldName)==null){
@@ -1461,6 +1850,13 @@ public class AboutServ {
 	}
 
 
+	/**
+	 * Validate signature.
+	 *
+	 * @param aboutMap the about map
+	 * @param language the language
+	 * @throws AnnotationBusException the annotation bus exception
+	 */
 	private  void validateSignature(Map<String, Variant> aboutMap, String language) throws AnnotationBusException
 	{
 		Map<String, Variant> aboutVariantMap = aboutMap;
@@ -1477,6 +1873,13 @@ public class AboutServ {
 		validateSignatureForNonRequiredFields(language, aboutVariantMap);
 	}
 
+	/**
+	 * Validate signature for non required fields.
+	 *
+	 * @param language the language
+	 * @param aboutVariantMap the about variant map
+	 * @throws AnnotationBusException the annotation bus exception
+	 */
 	private  void validateSignatureForNonRequiredFields(String language, Map<String, Variant> aboutVariantMap) throws AnnotationBusException
 	{
 		if (aboutVariantMap.containsKey(AboutKeys.ABOUT_DEVICE_NAME))
@@ -1500,6 +1903,15 @@ public class AboutServ {
 		}
 	}
 
+	/**
+	 * Validate signature.
+	 *
+	 * @param aboutVariantMap the about variant map
+	 * @param fieldName the field name
+	 * @param signature the signature
+	 * @param language the language
+	 * @throws AnnotationBusException the annotation bus exception
+	 */
 	private  void validateSignature(Map<String, Variant> aboutVariantMap, String fieldName, String signature, String language) throws AnnotationBusException
 	{
 		if(!signature.equals(aboutVariantMap.get(fieldName).getSignature())){
@@ -1515,6 +1927,13 @@ public class AboutServ {
 
 	}
 
+	/**
+	 * Validate date of manufacture.
+	 *
+	 * @param aboutMap the about map
+	 * @param language the language
+	 * @throws BusException the bus exception
+	 */
 	private  void validateDateOfManufacture(Map<String, Variant> aboutMap, String language) throws BusException
 	{
 
@@ -1535,13 +1954,20 @@ public class AboutServ {
 
 
 
+	/**
+	 * Validate support url.
+	 *
+	 * @param aboutMap the about map
+	 * @param language the language
+	 * @throws BusException the bus exception
+	 */
 	private  void validateSupportUrl(Map<String, Variant> aboutMap, String language) throws BusException
 	{
 		if (aboutMap.containsKey(AboutKeys.ABOUT_SUPPORT_URL))
 		{
 			logger.info("Validating Support Url: "+aboutMap.get(AboutKeys.ABOUT_SUPPORT_URL).getObject(String.class));
 			String supportUrl = aboutMap.get(AboutKeys.ABOUT_SUPPORT_URL).toString();
-			if( isValidUrl(supportUrl)){
+			if(!isValidUrl(supportUrl)){
 
 				fail(String.format("%s is not a valid URL", supportUrl));
 			}
@@ -1550,6 +1976,12 @@ public class AboutServ {
 	}
 
 
+	/**
+	 * Checks if is valid date.
+	 *
+	 * @param date the date
+	 * @return true, if is valid date
+	 */
 	boolean isValidDate(String date)
 	{
 		boolean isValid = true;
@@ -1566,34 +1998,52 @@ public class AboutServ {
 
 
 
+	/**
+	 * Checks if is valid url.
+	 *
+	 * @param supportUrl the support url
+	 * @return true, if is valid url
+	 */
 	boolean isValidUrl(String supportUrl)
 	{
 		boolean isValid = true;
-		try
-		{
-			new URL(supportUrl).toURI();
-		}
-		catch (MalformedURLException malformedURLException)
-		{
+		URL url;
+		try {
+			url = new URL(supportUrl);
+			url.toURI();
+		} catch (MalformedURLException|URISyntaxException e1) {
 			isValid = false;
-		}
-		catch (URISyntaxException e)
-		{
-			isValid = false;
+			e1.printStackTrace();
 		}
 		return isValid;
 	}
 
+	/**
+	 * Gets the pass.
+	 *
+	 * @return the pass
+	 */
 	public boolean getPass() {
 		return pass;
 	}
 
+	/**
+	 * Fail.
+	 *
+	 * @param msg the msg
+	 */
 	private  void fail(String msg) {
 		logger.error(msg);
 		logger.info("Partial Verdict: FAIL");
 		pass=false;
 	}
 
+	/**
+	 * Assert not null.
+	 *
+	 * @param errorMsg the error msg
+	 * @param notNull the not null
+	 */
 	private  void assertNotNull(String errorMsg, Object notNull) {
 
 		if(notNull==null){
@@ -1603,6 +2053,11 @@ public class AboutServ {
 		}
 	}
 
+	/**
+	 * Gets the verdict.
+	 *
+	 * @return the verdict
+	 */
 	public String getVerdict() {
 
 		String verdict=null;
