@@ -76,6 +76,7 @@ import org.robolectric.annotation.Config;
 @Config(manifest = Config.NONE)
 public class ServiceHelperTest
 {
+    private static final String AUTH_MECHANISMS = "ALLJOYN_SRP_KEYX ALLJOYN_ECDHE_PSK";
     private static final String KEY_STORE_FILE_NAME = "keyStoreFileName";
     private static final String DEVICE_ID = "deviceId";
     private static final UUID APP_ID = UUID.randomUUID();
@@ -218,7 +219,7 @@ public class ServiceHelperTest
         when(mockConfigClient.getSessionId()).thenReturn(SESSION_ID);
         when(mockOnboardingClient.getSessionId()).thenReturn(SESSION_ID);
 
-        when(mockBusAttachment.registerAuthListener("ALLJOYN_SRP_KEYX ALLJOYN_PIN_KEYX", mockSrpAnonymousKeyListener)).thenReturn(Status.OK);
+        when(mockBusAttachment.registerAuthListener("ALLJOYN_SRP_KEYX", mockSrpAnonymousKeyListener)).thenReturn(Status.OK);
     }
 
     @Test
@@ -748,20 +749,20 @@ public class ServiceHelperTest
     @Test
     public void testSetupAuthentication() throws Exception
     {
-        when(mockSrpAnonymousKeyListener.getAuthMechanismsAsString()).thenReturn("ALLJOYN_SRP_KEYX ALLJOYN_PIN_KEYX ALLJOYN_ECDHE_PSK");
-        when(mockBusAttachment.registerAuthListener("ALLJOYN_SRP_KEYX ALLJOYN_PIN_KEYX ALLJOYN_ECDHE_PSK", mockSrpAnonymousKeyListener, KEY_STORE_FILE_NAME)).thenReturn(Status.OK);
+        when(mockSrpAnonymousKeyListener.getAuthMechanismsAsString()).thenReturn(AUTH_MECHANISMS);
+        when(mockBusAttachment.registerAuthListener(AUTH_MECHANISMS, mockSrpAnonymousKeyListener, KEY_STORE_FILE_NAME)).thenReturn(Status.OK);
 
         serviceHelper.initialize(myApplicationName, DEVICE_ID, APP_ID);
         serviceHelper.enableAuthentication(KEY_STORE_FILE_NAME);
 
-        verify(mockBusAttachment).registerAuthListener("ALLJOYN_SRP_KEYX ALLJOYN_PIN_KEYX ALLJOYN_ECDHE_PSK", mockSrpAnonymousKeyListener, KEY_STORE_FILE_NAME);
+        verify(mockBusAttachment).registerAuthListener(AUTH_MECHANISMS, mockSrpAnonymousKeyListener, KEY_STORE_FILE_NAME);
     }
 
     @Test
     public void testSetupAuthenticationFails() throws Exception
     {
-        when(mockSrpAnonymousKeyListener.getAuthMechanismsAsString()).thenReturn("ALLJOYN_SRP_KEYX ALLJOYN_PIN_KEYX ALLJOYN_ECDHE_PSK");
-        when(mockBusAttachment.registerAuthListener("ALLJOYN_SRP_KEYX ALLJOYN_PIN_KEYX ALLJOYN_ECDHE_PSK", mockSrpAnonymousKeyListener, KEY_STORE_FILE_NAME)).thenReturn(
+        when(mockSrpAnonymousKeyListener.getAuthMechanismsAsString()).thenReturn(AUTH_MECHANISMS);
+        when(mockBusAttachment.registerAuthListener(AUTH_MECHANISMS, mockSrpAnonymousKeyListener, KEY_STORE_FILE_NAME)).thenReturn(
                 Status.FAIL);
 
         serviceHelper.initialize(myApplicationName, DEVICE_ID, APP_ID);
@@ -774,7 +775,7 @@ public class ServiceHelperTest
             assertEquals("Call to registerAuthListener returned failure: FAIL", e.getMessage());
         }
 
-        verify(mockBusAttachment).registerAuthListener("ALLJOYN_SRP_KEYX ALLJOYN_PIN_KEYX ALLJOYN_ECDHE_PSK", mockSrpAnonymousKeyListener, KEY_STORE_FILE_NAME);
+        verify(mockBusAttachment).registerAuthListener(AUTH_MECHANISMS, mockSrpAnonymousKeyListener, KEY_STORE_FILE_NAME);
     }
 
     @Test

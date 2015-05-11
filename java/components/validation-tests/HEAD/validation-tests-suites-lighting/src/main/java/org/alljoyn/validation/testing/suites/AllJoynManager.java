@@ -138,8 +138,6 @@ public class AllJoynManager
 		bus = new BusAttachment("LampServiceTest", BusAttachment.RemoteMessage.Receive);
 		// defaults to org.alljoyn.BusNode and not to BusNode.LSF
 		daemonName = "org.alljoyn.BusNode_" + bus.getGlobalGUIDString();
-
-		Status pasStatus = PasswordManager.setCredentials("ALLJOYN_PIN_KEYX", "000000");
 	}
 
 	private synchronized void doJoinSession(final String name)

@@ -58,7 +58,7 @@ public class DUTSimulator
     public static final short CONTACT_PORT = 20;
     private static String TAG = "DUTSimulator";
     private static final String[] AUTH_MECHANISMS = new String[]
-    { "ALLJOYN_SRP_KEYX", "ALLJOYN_PIN_KEYX", "ALLJOYN_ECDHE_PSK" };
+    { "ALLJOYN_SRP_KEYX", "ALLJOYN_ECDHE_PSK" };
 
     private BusAttachment busAttachment;
     private DeviceDetails deviceDetails;
