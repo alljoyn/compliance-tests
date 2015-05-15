@@ -27,7 +27,9 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -41,6 +43,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
+
+
 
 
 
@@ -109,9 +114,7 @@ import com.at4wireless.alljoyn.testcases.iop.controlpanel.ControlPanelIOP;
 import com.at4wireless.alljoyn.testcases.iop.lighting.LightingIOP;
 import com.at4wireless.alljoyn.testcases.iop.notification.NotificationIOP;
 import com.at4wireless.alljoyn.testcases.iop.onboarding.OnboardingIOP;
-
-
-
+ 
 /**
  * The Class Manager.
  */
@@ -119,35 +122,28 @@ public class Manager extends Thread {
 
 	static {
 		System.loadLibrary("alljoyn_java");
-	}
-
+	}	
 	/** The version. */
 	String versionKey="14.12.00a";
-	/** The tescase name . */
+	private Map<String, List<String>> goldenUnits = new HashMap<String,List<String>>();
+	/** The testcase name . */
 	String testKey = null;
-
-	/** The tescase verdict. */
+	/** The testcase verdict. */
 	String verdictKey =null;
-
-	/** The tescase description. */
+	/** The testcase description. */
 	String descriptionKey = null;
-
-	/** The date time. */
+	/** The testcase date time. */
 	String dateTimeKey =null;
-
 	/** The testcase ID. */
 	String iDKey = null;
-
-	/** The tescase log. */
+	/** The testcase log. */
 	String logKey = null;
-
-	/** The running. */
+	/** If true the testCase is running. */
 	boolean running=false;
-
-	/** The Constant TAG. */
+	/** The TAG. */
 	protected static final String TAG = "TestRunner";
 
-	/** The Constant logger. */
+	/** The logger used to print. */
 	private static final WindowsLoggerImpl logger =  LoggerFactory.getLogger(TAG);
 
 	/** The sql timestamp. */
@@ -166,7 +162,7 @@ public class Manager extends Thread {
 	private  String Verdict=null;
 
 	/** The Time stamp. */
-	private  String TimeStamp=null;
+	private String TimeStamp=null;
 
 	/** The test. */
 	String test=null;
@@ -259,19 +255,19 @@ public class Manager extends Thread {
 	/** The ICSCP dialog interface. */
 	static boolean ICSCP_DialogInterface=false;
 
-	/** The ICSCP d i_ action2. */
+	/** The ICSCP DI action2. */
 	static boolean ICSCP_DI_Action2=false;
 
-	/** The ICSCP d i_ action3. */
+	/** The ICSCP DI action3. */
 	static boolean ICSCP_DI_Action3=false;
 
 	/** The ICSCP secured dialog interface. */
 	static boolean ICSCP_SecuredDialogInterface=false;
 
-	/** The ICSCP sd i_ action2. */
+	/** The ICSCP SDI action2. */
 	static boolean ICSCP_SDI_Action2=false;
 
-	/** The ICSCP sd i_ action3. */
+	/** The ICSCP SDI action3. */
 	static boolean ICSCP_SDI_Action3=false;
 
 	/** The ICSCP list property interface. */
@@ -483,16 +479,16 @@ public class Manager extends Thread {
 	/** The IXITCO support url. */
 	static String IXITCO_SupportUrl=null;
 	////////////////////////////////////////////
-	/** The IXIT n_ notification version. */
+	/** The IXITN notification version. */
 	static String IXITN_NotificationVersion=null;
 
 	/** The ixitn ttl. */
 	static String IXITN_TTL=null;
 
-	/** The IXIT n_ notification producer version. */
+	/** The IXITN notification producer version. */
 	static String IXITN_NotificationProducerVersion=null;
 
-	/** The IXIT n_ notification dismisser version. */
+	/** The IXITN notification dismisser version. */
 	static String IXITN_NotificationDismisserVersion=null;
 
 	///////////////////////////////////
@@ -515,7 +511,7 @@ public class Manager extends Thread {
 	/** The IXITON personal ap auth type. */
 	static String IXITON_PersonalAPAuthType=null;
 
-	/** The IXITON personal a ppassphrase. */
+	/** The IXITON personal ap passphrase. */
 	static String IXITON_PersonalAPpassphrase=null;
 
 	////////////////////////////////
@@ -739,7 +735,6 @@ public class Manager extends Thread {
 
 
 				try {
-					//Manager manager = new Manager("About-v1-01","/cfg.xml",false);
 					Manager manager = new Manager(arg[0], arg[1]); 
 					manager.run();
 				} catch (Exception e) {
@@ -749,8 +744,6 @@ public class Manager extends Thread {
 		});
 	}
 
-
-
 	/**
 	 * Instantiates a new manager.
 	 *
@@ -759,15 +752,11 @@ public class Manager extends Thread {
 	 */
 	public Manager(String testName, String docName) {
 		this.testName = testName;
-
-		//String path = File.separator+"cfg.xml";
 		String path = docName;
-
 		byte[] encoded;
 		try {
 			encoded = Files.readAllBytes(Paths.get(path));
 			String xml = new String(encoded, StandardCharsets.UTF_8);
-
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = null;
 			dBuilder = dbFactory.newDocumentBuilder();
@@ -783,65 +772,33 @@ public class Manager extends Thread {
 			e.printStackTrace();
 		}
 	}
-
 	/* (non-Javadoc)
 	 * @see java.lang.Thread#run()
 	 */
-	public void run() {
-
-
+	public void run() {		
 		running=true;
 		try { 
-
 			NodeList testCases = doc.getElementsByTagName("TestCase");
-			System.out.println("==========================");
-
-
+			System.out.println("====================================================");
 			for (int i = 0; i < testCases.getLength(); i++) {
 				Node node = testCases.item(i);
-
 				Element element= (Element) node;
 				String testName=getValue("Name", element);
-
-
 				if(testName.equals(this.testName)){
-
 					if (node.getNodeType() == Node.ELEMENT_NODE) {
-
-
 						String id=getValue("Id", element);
-
-
 						iDKey=id;
 
 						System.out.println("Test Name: " + testName);
 						testKey=testName;
-
-
 						String description=getValue("Description", element);
-
-
 						System.out.println("Description: " + description);
 						descriptionKey=description;
-
-
-
 						test= getTest(testName);
-
-
-
 					}
 				}
 			}
-
-
-
-
 			NodeList ics = doc.getElementsByTagName("Ics");
-
-
-
-
 			for (int i = 0; i < ics.getLength(); i++) {
 				Node node = ics.item(i);
 
@@ -849,18 +806,10 @@ public class Manager extends Thread {
 					Element element = (Element) node;
 					String icsName=getValue("Name", element);
 					String icsValue=getValue("Value", element);
-
-
-
 					setIcs(icsName,icsValue);
 
 				}
 			}
-
-
-
-
-
 			NodeList ixit = doc.getElementsByTagName("Ixit");
 			//System.out.println("==========================");
 
@@ -1606,7 +1555,7 @@ public class Manager extends Thread {
 
 
 			System.out.println("====================================================");
-			showGU();
+			setGU();
 			System.out.println("ICSCO_DateOfManufacture: "+ICSCO_DateOfManufacture);
 			System.out.println("ICSCO_HardwareVersion: "+ICSCO_HardwareVersion);
 			System.out.println("ICSCO_SupportUrl: "+ICSCO_SupportUrl);
@@ -1618,7 +1567,7 @@ public class Manager extends Thread {
 			System.out.println("IXITCO_DefaultLanguage: "+IXITCO_DefaultLanguage);
 			System.out.println("IXITCO_DeviceName: "+IXITCO_DeviceName);
 			System.out.println("IXITCO_DeviceId: "+IXITCO_DeviceId);
-			System.out.println("IXITCO_AppName: "+IXITCO_AppName);
+			System.out.println("IXITCO_ApGpName: "+IXITCO_AppName);
 			System.out.println("IXITCO_Manufacturer: "+IXITCO_Manufacturer);
 			System.out.println("IXITCO_ModelNumber: "+IXITCO_ModelNumber);
 			System.out.println("IXITCO_SoftwareVersion: "+IXITCO_SoftwareVersion);
@@ -1632,7 +1581,7 @@ public class Manager extends Thread {
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 
 
-			AboutIOP aboutIOP=new AboutIOP(testName);
+			AboutIOP aboutIOP=new AboutIOP(testName,goldenUnits,ICSON_OnboardingServiceFramework);
 			existTest = true;
 
 			String verdict =aboutIOP.getVerdict();
@@ -1642,7 +1591,7 @@ public class Manager extends Thread {
 		}else if(test.equals("IOP_CONFIG")){
 
 			System.out.println("====================================================");
-			showGU();
+			setGU();
 			System.out.println("ICSCF_ConfigurationServiceFramework: "+ICSCF_ConfigurationServiceFramework);
 			System.out.println("ICSCF_ConfigurationInterface: "+ICSCF_ConfigurationInterface);
 			System.out.println("ICSCF_FactoryResetMethod: "+ICSCF_FactoryResetMethod);
@@ -1657,18 +1606,18 @@ public class Manager extends Thread {
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 			System.out.println("GPCF_SessionLost: "+GPCF_SessionLost);
 			System.out.println("GPCF_SessionClose: "+GPCF_SessionClose);
-			ConfigIOP configIOP=new ConfigIOP(testName);
+			ConfigIOP configIOP=new ConfigIOP(testName,goldenUnits,ICSON_OnboardingServiceFramework);
 			existTest = true;
 
 			String verdict =configIOP.getVerdict();
 			this.Verdict=verdict;
 			verdictKey=verdict;
 
-
+//TODO
 		}else if(test.equals("IOP_ONBOARDING")){
 
 			System.out.println("====================================================");
-			showGU();
+			setGU();
 			System.out.println("ICSON_OnboardingServiceFramework: "+ICSON_OnboardingServiceFramework);
 			System.out.println("ICSON_OnboardingInterface: "+ICSON_OnboardingInterface);
 			System.out.println("ICSON_ChannelSwitching: "+ICSON_ChannelSwitching);
@@ -1694,7 +1643,7 @@ public class Manager extends Thread {
 			System.out.println("GPON_Disconnect: "+GPON_Disconnect);
 			System.out.println("GPON_NextAnnouncement: "+GPON_NextAnnouncement);
 
-			OnboardingIOP onboardingIOP=new OnboardingIOP(testName);
+			OnboardingIOP onboardingIOP=new OnboardingIOP(testName, goldenUnits);
 			existTest = true;
 
 			String verdict =onboardingIOP.getVerdict();
@@ -1705,7 +1654,7 @@ public class Manager extends Thread {
 		}else if(test.equals("IOP_CONTROLPANEL")){
 
 			System.out.println("====================================================");
-			showGU();
+			setGU();
 			System.out.println("ICSCP_ControlPanelServiceFramework: "+ICSCP_ControlPanelServiceFramework);
 			System.out.println("ICSCP_ControlPanelInterface: "+ICSCP_ControlPanelInterface);
 			System.out.println("ICSCP_ContainerInterface: "+ICSCP_ContainerInterface);
@@ -1739,7 +1688,7 @@ public class Manager extends Thread {
 
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 
-			ControlPanelIOP controlPanelIOP=new ControlPanelIOP(testName);
+			ControlPanelIOP controlPanelIOP=new ControlPanelIOP(testName,goldenUnits,ICSON_OnboardingServiceFramework);
 			existTest = true;
 
 			String verdict =controlPanelIOP.getVerdict();
@@ -1750,7 +1699,7 @@ public class Manager extends Thread {
 
 
 			System.out.println("====================================================");
-			showGU();
+			setGU();
 			System.out.println("ICSN_NotificationServiceFramework: "+ICSN_NotificationServiceFramework);
 			System.out.println("ICSN_NotificationInterface: "+ICSN_NotificationInterface);
 			System.out.println("ICSN_RichIconUrl: "+ICSN_RichIconUrl);
@@ -1770,7 +1719,7 @@ public class Manager extends Thread {
 
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 
-			NotificationIOP notificationIOP=new NotificationIOP(testName);
+			NotificationIOP notificationIOP=new NotificationIOP(testName,goldenUnits,ICSON_OnboardingServiceFramework);
 			existTest = true;
 
 			String verdict =notificationIOP.getVerdict();
@@ -1779,7 +1728,7 @@ public class Manager extends Thread {
 		}else if(test.equals("IOP_AUDIO")){
 
 			System.out.println("====================================================");
-			showGU();
+			setGU();
 			System.out.println("ICSAU_AudioServiceFramework: "+ICSAU_AudioServiceFramework);
 			System.out.println("ICSAU_StreamInterface: "+ICSAU_StreamInterface);
 			System.out.println("ICSAU_StreamPortInterface: "+ICSAU_StreamPortInterface);
@@ -1818,7 +1767,7 @@ public class Manager extends Thread {
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 			System.out.println("GPAU_Signal: "+GPAU_Signal);
 			System.out.println("GPAU_Link: "+GPAU_Link);
-			AudioIOP audioIOP=new AudioIOP(testName);
+			AudioIOP audioIOP=new AudioIOP(testName,goldenUnits,ICSON_OnboardingServiceFramework);
 			existTest = true;
 
 			String verdict =audioIOP.getVerdict();
@@ -1827,7 +1776,7 @@ public class Manager extends Thread {
 		}else if(test.equals("IOP_LSF")){
 
 			System.out.println("====================================================");
-			showGU();
+			setGU();
 			System.out.println("ICSL_LightingServiceFramework: "+ICSL_LightingServiceFramework);
 			System.out.println("ICSL_LampServiceInterface: "+ICSL_LampServiceInterface);
 			System.out.println("ICSL_LampParametersInterface: "+ICSL_LampParametersInterface);
@@ -1848,7 +1797,7 @@ public class Manager extends Thread {
 
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 			System.out.println("GPL_SessionClose: "+GPL_SessionClose);
-			LightingIOP lightingIOP=new LightingIOP(testName);
+			LightingIOP lightingIOP=new LightingIOP(testName,goldenUnits,ICSON_OnboardingServiceFramework);
 			existTest = true;
 
 			String verdict =lightingIOP.getVerdict();
@@ -1870,30 +1819,37 @@ public class Manager extends Thread {
 
 
 
-	/**
-	 * Show gu.
-	 */
-	private void showGU() {
+	
+	
+	
+	
+	private void setGU(){
 		NodeList goldenUnit = doc.getElementsByTagName("GoldenUnit");
-
-
-
-
 		for (int i = 0; i < goldenUnit.getLength(); i++) {
 			Node node = goldenUnit.item(i);
-
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
 				Element element = (Element) node;
 				String goldenUnitName=getValue("Name", element);
+				String goldenUnitCategory=getValue("Type", element);
 				int num=i+1;
-				System.out.println("Golden Unit "+num+": "+goldenUnitName);
+				System.out.println("Golden Unit "+num+" name: "+goldenUnitName);
+				System.out.println("Golden Unit "+num+" Type: "+goldenUnitCategory);
+				List<String> gu = goldenUnits.get(goldenUnitCategory);
+				if(gu!=null){
+					gu.add(goldenUnitName);
+				}else{
+					gu= new ArrayList<String>();
+					gu.add(goldenUnitName);
+				}
+				goldenUnits.put(goldenUnitCategory, gu);
+
 
 
 			}
 		}
 
 	}
-
+	
 	/**
 	 * Gets the verdict.
 	 *
@@ -1941,15 +1897,15 @@ public class Manager extends Thread {
 
 
 	/**
-	 * Generate xml.
+	 * Generate Results.xml to store the values from the execution.
 	 *
-	 * @param iDKey the i d key
-	 * @param testKey the test key
-	 * @param descriptionKey the description key
-	 * @param dateTimeKey the date time key
-	 * @param verdictKey the verdict key
-	 * @param versionKey the version key
-	 * @param logKey the log key
+	 * @param iDKey the Testcase ID 
+	 * @param testKey the testcase name
+	 * @param descriptionKey the testcase description
+	 * @param dateTimeKey the testcase date time 
+	 * @param verdictKey the testcase verdict 
+	 * @param versionKey the testcase version 
+	 * @param logKey the testcase log
 	 */
 	private static void generateXML(String iDKey,String testKey,
 			String descriptionKey, String dateTimeKey,
@@ -2015,7 +1971,7 @@ public class Manager extends Thread {
 
 
 		//Main Node
-		Element root = document.getDocumentElement();
+		Element raiz = document.getDocumentElement();
 
 		//Item Node
 		Element itemNode = document.createElement("TestCase"); 
@@ -2087,7 +2043,7 @@ public class Manager extends Thread {
 
 
 		//append itemNode to raiz
-		root.appendChild(itemNode); 
+		raiz.appendChild(itemNode); //pegamos el elemento a la raiz "Documento"
 
 
 
@@ -2095,7 +2051,7 @@ public class Manager extends Thread {
 		//Generate XML
 		Source source = new DOMSource(document);
 
-		Result result = new StreamResult(new java.io.File(name+".xml"));
+		Result result = new StreamResult(new java.io.File(name+".xml")); //nombre del archivo
 		Transformer transformer = null;
 		try {
 			transformer = TransformerFactory.newInstance().newTransformer();
@@ -2119,54 +2075,40 @@ public class Manager extends Thread {
 
 
 	/**
-	 * Gets the test.
+	 * Gets the test Service.
 	 *
 	 * @param testName the test name
 	 * @return the test
 	 */
 	private static String getTest(String testName) {
-		// TODO Auto-generated method stub
+		
 		String test="";
-
-
 		if(testName.startsWith("About")||testName.startsWith("EventsActions")){
 			test="ABOUT";
-
-		}else if(testName.startsWith("Notification")){
+			}else if(testName.startsWith("Notification")){
 			test="NOTIFICATION";
-
-
 		}else if(testName.startsWith("ControlPanel")){
 			test="CONTROLPANEL";
 		}else if(testName.startsWith("Onboarding")){
 			test="ONBOARDING";
-
 		}else if(testName.startsWith("Config")){
 			test="CONFIGURATION";
-
 		}else if(testName.startsWith("Audio")){
 			test="AUDIO";
-
 		}else if(testName.startsWith("LSF_Lamp")){
 			test="LIGHTING";
 		}else if(testName.startsWith("LSF_Controller")){
 			test="LIGHTINGCONTROLLER";
-
 		}else if(testName.startsWith("TimeService")){
 			test="TIME";
-
 		}else if(testName.startsWith("GWAgent")){
 			test="GATEWAY";
-
 		}else if(testName.startsWith("SmartHome")){
 			test="SMARTHOME";
-
-
 		}else if(testName.startsWith("IOP_About")){
 			test="IOP_ABOUT";
 		}else if(testName.startsWith("IOP_Config")){
 			test="IOP_CONFIG";
-
 		}else if(testName.startsWith("IOP_ControlPanel")){
 			test="IOP_CONTROLPANEL";
 		}else if(testName.startsWith("IOP_Onboarding")){
@@ -2177,33 +2119,21 @@ public class Manager extends Thread {
 			test="IOP_AUDIO";
 		}else if(testName.startsWith("IOP_LSF")){
 			test="IOP_LSF";
-
 		}else{
 			System.out.println("ERROR: INVALID SERVICE");
 		}
-
-
 		return test;
 	}
 
 
-
-
-
-
 	/**
-	 * Sets the ics.
+	 * Gets the ICS and store it in each ICS variable.
 	 *
 	 * @param icsName the ics name
 	 * @param icsValue the ics value
 	 */
 	private static void setIcs(String icsName, String icsValue) {
-		// TODO Auto-generated method stub
-
-
-		/*System.out.println("Ics Name: " + icsName);
-		System.out.println("Value: " + icsValue);*/
-
+		
 		if(icsName.equals("ICSCO_DateOfManufacture")){
 			ICSCO_DateOfManufacture= Boolean.parseBoolean(icsValue);
 		}else if(icsName.equals("ICSCO_HardwareVersion")){
@@ -2269,6 +2199,14 @@ public class Manager extends Thread {
 		}else if(icsName.equals("ICSCP_HTTPControlInterface")){
 			ICSCP_HTTPControlInterface= Boolean.parseBoolean(icsValue);
 
+		}else if(icsName.equals("ICSON_OnboardingServiceFramework")){
+			ICSON_OnboardingServiceFramework= Boolean.parseBoolean(icsValue);
+		}else if(icsName.equals("ICSON_OnboardingInterface")){
+			ICSON_OnboardingInterface= Boolean.parseBoolean(icsValue);
+		}else if(icsName.equals("ICSON_ChannelSwitching")){
+			ICSON_ChannelSwitching= Boolean.parseBoolean(icsValue);
+		}else if(icsName.equals("ICSON_GetScanInfoMethod")){
+			ICSON_GetScanInfoMethod= Boolean.parseBoolean(icsValue);
 
 
 
@@ -2408,21 +2346,15 @@ public class Manager extends Thread {
 
 
 	/**
-	 * Sets the ixit.
+	 * Gets the IXIT and store it in each IXIT variable.
 	 *
 	 * @param ixitName the ixit name
 	 * @param ixitValue the ixit value
 	 */
 	private static void setIxit(String ixitName, String ixitValue) {
 
-
-
-		/*System.out.println("Ixit Name: " + ixitName);
-		System.out.println("Value: " + ixitValue);*/
-
 		if(ixitName.equals("IXITCO_AboutVersion")){
 			IXITCO_AboutVersion=ixitValue;
-
 		}else if(ixitName.equals("IXITCO_AppId")){
 			IXITCO_AppId=ixitValue;
 		}else if(ixitName.equals("IXITCO_DefaultLanguage")){
@@ -2461,8 +2393,6 @@ public class Manager extends Thread {
 			IXITN_NotificationProducerVersion=ixitValue;
 		}else if(ixitName.equals("IXITN_NotificationDismisserVersion")){
 			IXITN_NotificationDismisserVersion=ixitValue;
-
-
 		}else if(ixitName.equals("IXITCP_ControlPanelVersion")){
 			IXITCP_ControlPanelVersion=ixitValue;
 		}else if(ixitName.equals("IXITCP_ContainerVersion")){
@@ -2481,18 +2411,10 @@ public class Manager extends Thread {
 			IXITCP_ListPropertyVersion=ixitValue;
 		}else if(ixitName.equals("IXITCP_HTTPControlVersion")){
 			IXITCP_HTTPControlVersion=ixitValue;
-
-
-
-
 		}else if(ixitName.equals("IXITCF_ConfigVersion")){
 			IXITCF_ConfigVersion=ixitValue;
 		}else if(ixitName.equals("IXITCF_Passcode")){
 			IXITCF_Passcode=ixitValue;
-
-
-
-
 		}else if(ixitName.equals("IXITAU_StreamVersion")){
 			IXITAU_StreamVersion=ixitValue;
 		}else if(ixitName.equals("IXITAU_TestObjectPath")){
@@ -2523,8 +2445,6 @@ public class Manager extends Thread {
 			IXITAU_ClockVersion=ixitValue;
 		}else if(ixitName.equals("IXITAU_adjustNanos")){
 			IXITAU_adjustNanos=ixitValue;
-
-
 		}else if(ixitName.equals("IXITL_LampServiceVersion")){
 			IXITL_LampServiceVersion=ixitValue;
 		}else if(ixitName.equals("IXITL_LampParametersVersion")){
@@ -2533,9 +2453,6 @@ public class Manager extends Thread {
 			IXITL_LampDetailsVersion=ixitValue;
 		}else if(ixitName.equals("IXITL_LampStateVersion")){
 			IXITL_LampStateVersion=ixitValue;
-
-
-
 		}else if(ixitName.equals("IXITT_ClockVersion")){
 			IXITT_ClockVersion=ixitValue;
 		}else if(ixitName.equals("IXITT_TimeAuthorityVersion")){
@@ -2548,9 +2465,6 @@ public class Manager extends Thread {
 			IXITT_TimerFactoryVersion=ixitValue;
 		}else if(ixitName.equals("IXITT_TimerVersion")){
 			IXITT_TimerVersion=ixitValue;
-
-
-
 		}else if(ixitName.equals("IXITG_AppMgmtVersion")){
 			IXITG_AppMgmtVersion=ixitValue;
 		}else if(ixitName.equals("IXITG_CtrlAppVersion")){
@@ -2561,8 +2475,7 @@ public class Manager extends Thread {
 			IXITG_CtrlAclVersion=ixitValue;
 		}else if(ixitName.equals("IXITG_ConnAppVersion")){
 			IXITG_ConnAppVersion=ixitValue;
-
-		}else if(ixitName.equals("IXITSH_CentralizedManagementVersion")){
+			}else if(ixitName.equals("IXITSH_CentralizedManagementVersion")){
 			IXITSH_CentralizedManagementVersion=ixitValue;
 		}else if(ixitName.equals("IXITSH_WellKnownName")){
 			IXITSH_WellKnownName=ixitValue;
@@ -2572,7 +2485,6 @@ public class Manager extends Thread {
 			IXITSH_DeviceId=ixitValue;
 		}else if(ixitName.equals("IXITSH_HeartBeatInterval")){
 			IXITSH_HeartBeatInterval=ixitValue;
-
 		}else if(ixitName.equals("IXITLC_ControllerServiceVersion")){
 			IXITLC_ControllerServiceVersion=ixitValue;
 		}else if(ixitName.equals("IXITLC_ControllerServiceLampVersion")){
@@ -2587,30 +2499,20 @@ public class Manager extends Thread {
 			IXITLC_ControllerServiceMasterSceneVersion=ixitValue;
 		}else if(ixitName.equals("IXITLC_LeaderElectionAndStateSyncVersion")){
 			IXITLC_LeaderElectionAndStateSyncVersion=ixitValue;
-
-
 		}else if(ixitName.equals("IXITON_OnboardingVersion")){
 			IXITON_OnboardingVersion=ixitValue;
 		}else if(ixitName.equals("IXITON_SoftAP")){
 			IXITON_SoftAP=ixitValue;
-
 		}else if(ixitName.equals("IXITON_SoftAPAuthType")){
 			IXITON_SoftAPAuthType=ixitValue;
-
 		}else if(ixitName.equals("IXITON_SoftAPpassphrase")){
 			IXITON_SoftAPpassphrase=ixitValue;
-
 		}else if(ixitName.equals("IXITON_PersonalAP")){
 			IXITON_PersonalAP=ixitValue;
 		}else if(ixitName.equals("IXITON_PersonalAPAuthType")){
 			IXITON_PersonalAPAuthType=ixitValue;
 		}else if(ixitName.equals("IXITON_PersonalAPpassphrase")){
 			IXITON_PersonalAPpassphrase=ixitValue;
-
-
-
-
-
 		}else{
 			System.out.println("ERROR: INVALID IXIT Name "+ixitName);
 		}
@@ -2618,53 +2520,52 @@ public class Manager extends Thread {
 	}
 
 	/**
-	 * Sets the parameter.
+	 * Gets the Generals Parameters and store it into each variable.
 	 *
-	 * @param pName the name
+	 * @param GpName the General parameter
 	 * @param pValue the value
 	 */
-	private static void setParameter(String pName, String pValue) {
+	private static void setParameter(String GpName, String pValue) {
 
-		if(pName.equals("GPCO_AnnouncementTimeout")) {
+		if(GpName.equals("GPCO_AnnouncementTimeout")) {
 			GPCO_AnnouncementTimeout = pValue;
-		} else if (pName.equals("GPON_WaitSoftAP")) {
+		} else if (GpName.equals("GPON_WaitSoftAP")) {
 			GPON_WaitSoftAP = pValue;
-		} else if (pName.equals("GPON_ConnectSoftAP")) {
+		} else if (GpName.equals("GPON_ConnectSoftAP")) {
 			GPON_ConnectSoftAP = pValue;
-		} else if (pName.equals("GPON_WaitSoftAPAfterOffboard")) {
+		} else if (GpName.equals("GPON_WaitSoftAPAfterOffboard")) {
 			GPON_WaitSoftAPAfterOffboard = pValue;
-		} else if (pName.equals("GPON_ConnectPersonalAP")) {
+		} else if (GpName.equals("GPON_ConnectPersonalAP")) {
 			GPON_ConnectPersonalAP = pValue;
-		} else if (pName.equals("GPON_Disconnect")) {
+		} else if (GpName.equals("GPON_Disconnect")) {
 			GPON_Disconnect = pValue;
-		} else if (pName.equals("GPON_NextAnnouncement")) {
+		} else if (GpName.equals("GPON_NextAnnouncement")) {
 			GPON_NextAnnouncement = pValue;
-		} else if (pName.equals("GPCF_SessionLost")) {
+		} else if (GpName.equals("GPCF_SessionLost")) {
 			GPCF_SessionLost = pValue;
-		} else if (pName.equals("GPCF_SessionClose")) {
+		} else if (GpName.equals("GPCF_SessionClose")) {
 			GPCF_SessionClose = pValue;
-		} else if (pName.equals("GPL_SessionClose")) {
+		} else if (GpName.equals("GPL_SessionClose")) {
 			GPL_SessionClose = pValue;
-		} else if (pName.equals("GPAU_Signal")) {
+		} else if (GpName.equals("GPAU_Signal")) {
 			GPAU_Signal = pValue;
-		} else if (pName.equals("GPAU_Link")) {
+		} else if (GpName.equals("GPAU_Link")) {
 			GPAU_Link = pValue;
-		} else if (pName.equals("GPG_SessionClose")) {
+		} else if (GpName.equals("GPG_SessionClose")) {
 			GPG_SessionClose = pValue;
-		} else if (pName.equals("GPSH_Signal")) {
+		} else if (GpName.equals("GPSH_Signal")) {
 			GPSH_Signal = pValue;
-		} else if (pName.equals("GPLC_SessionClose")) {
+		} else if (GpName.equals("GPLC_SessionClose")) {
 			GPLC_SessionClose = pValue;
 		} else{
-			System.out.println("ERROR: INVALID Parameter Name "+pName);
+			System.out.println("ERROR: INVALID General Parameter Name "+GpName);
 		}
 
 	}
 
 
-
 	/**
-	 * Gets the value.
+	 * Gets the value from the selected tag. 
 	 *
 	 * @param tag the tag
 	 * @param element the element

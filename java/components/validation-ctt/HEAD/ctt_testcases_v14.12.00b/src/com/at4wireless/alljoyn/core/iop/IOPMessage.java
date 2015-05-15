@@ -74,8 +74,9 @@ public class IOPMessage {
 	 * @param msg the message
 	 */
 	public  void showMessage(String title,String msg) {
-		logger.debug(msg);
-
+		if(!title.equals("Verdict")){
+		logger.info(msg);
+		}
 
 
 		JTextPane textPane = new JTextPane();
@@ -137,7 +138,9 @@ public class IOPMessage {
 	 * @return the response: 0->Yes, 1->No, -1-> Not answer selected
 	 */
 	public  int showQuestion(String title, String msg) {
-		logger.debug(msg);
+		if(!title.equals("Verdict")){
+			logger.info(msg);
+			}
 
 		JTextPane textPane = new JTextPane();
 		textPane.setText(msg);

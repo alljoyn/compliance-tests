@@ -27,7 +27,9 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -41,6 +43,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
+
+
 
 
 
@@ -120,7 +125,7 @@ public class Manager extends Thread {
 	}	
 	/** The version. */
 	String versionKey="14.12.00b";
-	
+	private Map<String, List<String>> goldenUnits = new HashMap<String,List<String>>();
 	/** The testcase name . */
 	String testKey = null;
 	/** The testcase verdict. */
@@ -774,7 +779,7 @@ public class Manager extends Thread {
 		running=true;
 		try { 
 			NodeList testCases = doc.getElementsByTagName("TestCase");
-			System.out.println("==========================");
+			System.out.println("====================================================");
 			for (int i = 0; i < testCases.getLength(); i++) {
 				Node node = testCases.item(i);
 				Element element= (Element) node;
@@ -1550,7 +1555,7 @@ public class Manager extends Thread {
 
 
 			System.out.println("====================================================");
-			showGU();
+			setGU();
 			System.out.println("ICSCO_DateOfManufacture: "+ICSCO_DateOfManufacture);
 			System.out.println("ICSCO_HardwareVersion: "+ICSCO_HardwareVersion);
 			System.out.println("ICSCO_SupportUrl: "+ICSCO_SupportUrl);
@@ -1576,7 +1581,7 @@ public class Manager extends Thread {
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 
 
-			AboutIOP aboutIOP=new AboutIOP(testName);
+			AboutIOP aboutIOP=new AboutIOP(testName,goldenUnits,ICSON_OnboardingServiceFramework);
 			existTest = true;
 
 			String verdict =aboutIOP.getVerdict();
@@ -1586,7 +1591,7 @@ public class Manager extends Thread {
 		}else if(test.equals("IOP_CONFIG")){
 
 			System.out.println("====================================================");
-			showGU();
+			setGU();
 			System.out.println("ICSCF_ConfigurationServiceFramework: "+ICSCF_ConfigurationServiceFramework);
 			System.out.println("ICSCF_ConfigurationInterface: "+ICSCF_ConfigurationInterface);
 			System.out.println("ICSCF_FactoryResetMethod: "+ICSCF_FactoryResetMethod);
@@ -1601,18 +1606,18 @@ public class Manager extends Thread {
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 			System.out.println("GPCF_SessionLost: "+GPCF_SessionLost);
 			System.out.println("GPCF_SessionClose: "+GPCF_SessionClose);
-			ConfigIOP configIOP=new ConfigIOP(testName);
+			ConfigIOP configIOP=new ConfigIOP(testName,goldenUnits,ICSON_OnboardingServiceFramework);
 			existTest = true;
 
 			String verdict =configIOP.getVerdict();
 			this.Verdict=verdict;
 			verdictKey=verdict;
 
-
+//TODO
 		}else if(test.equals("IOP_ONBOARDING")){
 
 			System.out.println("====================================================");
-			showGU();
+			setGU();
 			System.out.println("ICSON_OnboardingServiceFramework: "+ICSON_OnboardingServiceFramework);
 			System.out.println("ICSON_OnboardingInterface: "+ICSON_OnboardingInterface);
 			System.out.println("ICSON_ChannelSwitching: "+ICSON_ChannelSwitching);
@@ -1638,7 +1643,7 @@ public class Manager extends Thread {
 			System.out.println("GPON_Disconnect: "+GPON_Disconnect);
 			System.out.println("GPON_NextAnnouncement: "+GPON_NextAnnouncement);
 
-			OnboardingIOP onboardingIOP=new OnboardingIOP(testName);
+			OnboardingIOP onboardingIOP=new OnboardingIOP(testName, goldenUnits);
 			existTest = true;
 
 			String verdict =onboardingIOP.getVerdict();
@@ -1649,7 +1654,7 @@ public class Manager extends Thread {
 		}else if(test.equals("IOP_CONTROLPANEL")){
 
 			System.out.println("====================================================");
-			showGU();
+			setGU();
 			System.out.println("ICSCP_ControlPanelServiceFramework: "+ICSCP_ControlPanelServiceFramework);
 			System.out.println("ICSCP_ControlPanelInterface: "+ICSCP_ControlPanelInterface);
 			System.out.println("ICSCP_ContainerInterface: "+ICSCP_ContainerInterface);
@@ -1683,7 +1688,7 @@ public class Manager extends Thread {
 
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 
-			ControlPanelIOP controlPanelIOP=new ControlPanelIOP(testName);
+			ControlPanelIOP controlPanelIOP=new ControlPanelIOP(testName,goldenUnits,ICSON_OnboardingServiceFramework);
 			existTest = true;
 
 			String verdict =controlPanelIOP.getVerdict();
@@ -1694,7 +1699,7 @@ public class Manager extends Thread {
 
 
 			System.out.println("====================================================");
-			showGU();
+			setGU();
 			System.out.println("ICSN_NotificationServiceFramework: "+ICSN_NotificationServiceFramework);
 			System.out.println("ICSN_NotificationInterface: "+ICSN_NotificationInterface);
 			System.out.println("ICSN_RichIconUrl: "+ICSN_RichIconUrl);
@@ -1714,7 +1719,7 @@ public class Manager extends Thread {
 
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 
-			NotificationIOP notificationIOP=new NotificationIOP(testName);
+			NotificationIOP notificationIOP=new NotificationIOP(testName,goldenUnits,ICSON_OnboardingServiceFramework);
 			existTest = true;
 
 			String verdict =notificationIOP.getVerdict();
@@ -1723,7 +1728,7 @@ public class Manager extends Thread {
 		}else if(test.equals("IOP_AUDIO")){
 
 			System.out.println("====================================================");
-			showGU();
+			setGU();
 			System.out.println("ICSAU_AudioServiceFramework: "+ICSAU_AudioServiceFramework);
 			System.out.println("ICSAU_StreamInterface: "+ICSAU_StreamInterface);
 			System.out.println("ICSAU_StreamPortInterface: "+ICSAU_StreamPortInterface);
@@ -1762,7 +1767,7 @@ public class Manager extends Thread {
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 			System.out.println("GPAU_Signal: "+GPAU_Signal);
 			System.out.println("GPAU_Link: "+GPAU_Link);
-			AudioIOP audioIOP=new AudioIOP(testName);
+			AudioIOP audioIOP=new AudioIOP(testName,goldenUnits,ICSON_OnboardingServiceFramework);
 			existTest = true;
 
 			String verdict =audioIOP.getVerdict();
@@ -1771,7 +1776,7 @@ public class Manager extends Thread {
 		}else if(test.equals("IOP_LSF")){
 
 			System.out.println("====================================================");
-			showGU();
+			setGU();
 			System.out.println("ICSL_LightingServiceFramework: "+ICSL_LightingServiceFramework);
 			System.out.println("ICSL_LampServiceInterface: "+ICSL_LampServiceInterface);
 			System.out.println("ICSL_LampParametersInterface: "+ICSL_LampParametersInterface);
@@ -1792,7 +1797,7 @@ public class Manager extends Thread {
 
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 			System.out.println("GPL_SessionClose: "+GPL_SessionClose);
-			LightingIOP lightingIOP=new LightingIOP(testName);
+			LightingIOP lightingIOP=new LightingIOP(testName,goldenUnits,ICSON_OnboardingServiceFramework);
 			existTest = true;
 
 			String verdict =lightingIOP.getVerdict();
@@ -1814,30 +1819,37 @@ public class Manager extends Thread {
 
 
 
-	/**
-	 * Show gu.
-	 */
-	private void showGU() {
+	
+	
+	
+	
+	private void setGU(){
 		NodeList goldenUnit = doc.getElementsByTagName("GoldenUnit");
-
-
-
-
 		for (int i = 0; i < goldenUnit.getLength(); i++) {
 			Node node = goldenUnit.item(i);
-
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
 				Element element = (Element) node;
 				String goldenUnitName=getValue("Name", element);
+				String goldenUnitCategory=getValue("Type", element);
 				int num=i+1;
-				System.out.println("Golden Unit "+num+": "+goldenUnitName);
+				System.out.println("Golden Unit "+num+" name: "+goldenUnitName);
+				System.out.println("Golden Unit "+num+" Type: "+goldenUnitCategory);
+				List<String> gu = goldenUnits.get(goldenUnitCategory);
+				if(gu!=null){
+					gu.add(goldenUnitName);
+				}else{
+					gu= new ArrayList<String>();
+					gu.add(goldenUnitName);
+				}
+				goldenUnits.put(goldenUnitCategory, gu);
+
 
 
 			}
 		}
 
 	}
-
+	
 	/**
 	 * Gets the verdict.
 	 *
@@ -2187,6 +2199,14 @@ public class Manager extends Thread {
 		}else if(icsName.equals("ICSCP_HTTPControlInterface")){
 			ICSCP_HTTPControlInterface= Boolean.parseBoolean(icsValue);
 
+		}else if(icsName.equals("ICSON_OnboardingServiceFramework")){
+			ICSON_OnboardingServiceFramework= Boolean.parseBoolean(icsValue);
+		}else if(icsName.equals("ICSON_OnboardingInterface")){
+			ICSON_OnboardingInterface= Boolean.parseBoolean(icsValue);
+		}else if(icsName.equals("ICSON_ChannelSwitching")){
+			ICSON_ChannelSwitching= Boolean.parseBoolean(icsValue);
+		}else if(icsName.equals("ICSON_GetScanInfoMethod")){
+			ICSON_GetScanInfoMethod= Boolean.parseBoolean(icsValue);
 
 
 

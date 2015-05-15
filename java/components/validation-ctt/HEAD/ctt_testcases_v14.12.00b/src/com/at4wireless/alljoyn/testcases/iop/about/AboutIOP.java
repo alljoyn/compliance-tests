@@ -15,6 +15,41 @@
  */
 package com.at4wireless.alljoyn.testcases.iop.about;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dialog;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.iop.IOPMessage;
 
@@ -27,6 +62,8 @@ public class AboutIOP {
 
 	/** The pass. */
 	Boolean pass=true;
+	
+	Boolean inconc=false;
 
 	/** The tag. */
 	protected  final String TAG = "AboutIOPTestSuite";
@@ -36,13 +73,25 @@ public class AboutIOP {
 
 	/** The message. */
 	IOPMessage message=new IOPMessage(logger);
+	
+	 Map<String, List<String>> goldenUnits;
+	 
+	
+	 
+	 Boolean ICSON_OnboardingServiceFramework=false;
+	 
+	 String name=null;
 
 	/**
 	 * Instantiates a new about iop.
 	 *
 	 * @param testCase the test case
+	 * @param iCSON_OnboardingServiceFramework 
+	 * @param goldenUnits 
 	 */
-	public AboutIOP(String testCase) {		
+	public AboutIOP(String testCase, Map<String, List<String>> goldenUnits, boolean iCSON_OnboardingServiceFramework) {		
+		this.goldenUnits=goldenUnits;
+		ICSON_OnboardingServiceFramework=iCSON_OnboardingServiceFramework;
 		try{
 			runTestCase(testCase);
 		}catch(Exception e){			
@@ -63,7 +112,8 @@ public class AboutIOP {
 		try{
 			runTestCase(testCase);
 		}catch(Exception e){		
-			fail("Exception: "+e.toString());			
+			fail("Exception: "+e.toString());	
+			inconc=true;
 		}
 	}
 
@@ -107,27 +157,62 @@ public class AboutIOP {
 
 		String testBed="TBAD1";
 
-		message.showMessage("Initial Conditions","DUT and TBADs are switched off.");
+		message.showMessage("Initial Conditions","DUT and Golden Units are switched off.");
 		message.showMessage("Test Procedure","Step 1) Switch on DUT.");
 		int step=2;
-		for(int i=1;i<=3;i++){
+		String category="Category 3 AllJoyn Device (Onboarding)";
+		String getGoldenUnitOnboarding = null;
+		if(ICSON_OnboardingServiceFramework){
+		 getGoldenUnitOnboarding=getGoldenUnitName(category);
+		 if(getGoldenUnitOnboarding==null){
 
-			testBed="TBAD"+i;
+				fail("No "+category+" Golden Unit but "
+						+ "ICSON_OnboardingServiceFramework is equals to true.");
+				inconc=true;
+				return;
+				
+			}
+		}
+		
+		for(int i=1;i<=3;i++){
+			if(i==1){
+				category="Category 2 AllJoyn Device (Configuration)";
+				testBed=getGoldenUnitName(category);
+			}else if(i==2){
+				category="Category 4.1 AllJoyn Device (Control Panel Controller)";
+				testBed=getGoldenUnitName(category);
+			}else if(i==3){
+				category="Category 5.2 AllJoyn Device (Notification Producer)";
+				testBed=getGoldenUnitName(category);
+			}
+			if(testBed==null){
+
+				fail("No "+category+" Golden Unit.");
+				inconc=true;
+				return;
+				
+			}
+			//testBed="TBAD"+i;
 			message.showMessage("Test Procedure","Step "+step+") Switch on "+testBed+".");
 			step++;
+			
+			if(ICSON_OnboardingServiceFramework){
+				message.showMessage("Test Procedure","Step "+step+") Connect the DUT and "+testBed+" to the AP network if"
+						+ " they are not connected yet, use "
+						+ getGoldenUnitOnboarding+" to onboard the DUT to the personal AP.");
+			}else{
 			message.showMessage("Test Procedure","Step "+step+") Connect the DUT and "+testBed+" to the AP network if"
-					+ " they are not connected yet. (If"
-					+ " ICSON_OnboardingInterface ICS value is true, use"
-					+ " TBAD_O to onboard the DUT to the personal AP.");
+					+ " they are not connected yet.");
+			}
 			step++;
 			message.showMessage("Test Procedure","Step "+step+") Verify that "+testBed+" is able to detect the DUT (It"
-					+ " appears in the list of TBAD1 Nearby devices).");
+					+ " appears in the list of "+testBed+" Nearby devices).");
 			step++;
 			int response=message.showQuestion("Pass/Fail Criteria","Is DUT response in the "
 					+ "list of "+testBed+" Nearby devices?");
 			if(response!=0){//1==NO  null==(X)
 
-				fail("DUT is not response in the list of "+testBed+" Nearby"
+				fail("DUT response is not in the list of "+testBed+" Nearby"
 						+ " devices.");
 				return;
 
@@ -140,23 +225,48 @@ public class AboutIOP {
 	}
 
 
-
-
 	/**
 	 * IOP about_v1_02.
 	 */
 	private  void IOP_About_v1_02() {
 
 		String testBed="TBAD1";
+		String category="Category 1 AllJoyn Device (About)";
+		testBed=getGoldenUnitName(category);
+		if(testBed==null){
 
-		message.showMessage("Initial Conditions","DUT and TBAD1 are switched off.");
+			fail("No "+category+" Golden Unit.");
+			inconc=true;
+			return;
+			
+		}
+		category="Category 3 AllJoyn Device (Onboarding)";
+		String getGoldenUnitOnboarding = null;
+		if(ICSON_OnboardingServiceFramework){
+		 getGoldenUnitOnboarding=getGoldenUnitName(category);
+		 if(getGoldenUnitOnboarding==null){
+
+				fail("No "+category+" Golden Unit but "
+						+ "ICSON_OnboardingServiceFramework is equals to true.");
+				inconc=true;
+				return;
+				
+			}
+		}
+
+		message.showMessage("Initial Conditions","DUT and "+testBed+" are switched off.");
 		message.showMessage("Test Procedure","Step 1) Switch on DUT.");
-		message.showMessage("Test Procedure","Step 2) Switch on TBAD1.");
+		message.showMessage("Test Procedure","Step 2) Switch on "+testBed+".");
+		
 
+		if(ICSON_OnboardingServiceFramework){
+			message.showMessage("Test Procedure","Step 3) Connect the DUT and "+testBed+" to the AP network if"
+					+ " they are not connected yet, use "
+					+ getGoldenUnitOnboarding+" to onboard the DUT to the personal AP.");
+		}else{
 		message.showMessage("Test Procedure","Step 3) Connect the DUT and "+testBed+" to the AP network if"
-				+ " they are not connected yet. (If"
-				+ " ICSON_OnboardingInterface ICS value is true, use"
-				+ " TBAD_O to onboard the DUT to the personal AP.");
+				+ " they are not connected yet.");
+		}
 		message.showMessage("Test Procedure","Step 4) Use "+testBed+" to display the contents of DUT About Announcement.");
 
 		int response=message.showQuestion("Pass/Fail Criteria","Do the About Announcement objects"
@@ -205,15 +315,40 @@ public class AboutIOP {
 	private  void IOP_About_v1_03() {
 
 		String testBed="TBAD1";
+		String category="Category 1 AllJoyn Device (About)";
+		testBed=getGoldenUnitName(category);
+		if(testBed==null){
 
-		message.showMessage("Initial Conditions","DUT and TBAD1 are switched off.");
+			fail("No "+category+" Golden Unit.");
+			inconc=true;
+			return;
+			
+		}
+		category="Category 3 AllJoyn Device (Onboarding)";
+		String getGoldenUnitOnboarding = null;
+		if(ICSON_OnboardingServiceFramework){
+		 getGoldenUnitOnboarding=getGoldenUnitName(category);
+		 if(getGoldenUnitOnboarding==null){
+
+				fail("No "+category+" Golden Unit but "
+						+ "ICSON_OnboardingServiceFramework is equals to true.");
+				inconc=true;
+				return;
+				
+			}
+		}
+		message.showMessage("Initial Conditions","DUT and "+testBed+" are switched off.");
 		message.showMessage("Test Procedure","Step 1) Switch on DUT.");
-		message.showMessage("Test Procedure","Step 2) Switch on TBAD1.");
+		message.showMessage("Test Procedure","Step 2) Switch on "+testBed+".");
 
+		if(ICSON_OnboardingServiceFramework){
+			message.showMessage("Test Procedure","Step 3) Connect the DUT and "+testBed+" to the AP network if"
+					+ " they are not connected yet, use "
+					+ getGoldenUnitOnboarding+" to onboard the DUT to the personal AP.");
+		}else{
 		message.showMessage("Test Procedure","Step 3) Connect the DUT and "+testBed+" to the AP network if"
-				+ " they are not connected yet. (If"
-				+ " ICSON_OnboardingInterface ICS value is true, use"
-				+ " TBAD_O to onboard the DUT to the personal AP.");
+				+ " they are not connected yet.");
+		}
 
 		message.showMessage("Test Procedure","Step 4) Operate "+testBed+" to join a session with"
 				+ " the DUT application after receiving an About Announcement. Note"
@@ -280,21 +415,46 @@ public class AboutIOP {
 	private  void IOP_About_v1_04() {
 
 		String testBed="TBAD1";
+		String category="Category 1 AllJoyn Device (About)";
+		testBed=getGoldenUnitName(category);
+		if(testBed==null){
 
-		message.showMessage("Initial Conditions","DUT and TBAD1 are switched off.");
+			fail("No "+category+" Golden Unit.");
+			inconc=true;
+			return;
+			
+		}
+		category="Category 3 AllJoyn Device (Onboarding)";
+		String getGoldenUnitOnboarding = null;
+		if(ICSON_OnboardingServiceFramework){
+		 getGoldenUnitOnboarding=getGoldenUnitName(category);
+		 if(getGoldenUnitOnboarding==null){
+
+				fail("No "+category+" Golden Unit but "
+						+ "ICSON_OnboardingServiceFramework is equals to true.");
+				inconc=true;
+				return;
+				
+			}
+		}
+		message.showMessage("Initial Conditions","DUT and "+testBed+" are switched off.");
 		message.showMessage("Test Procedure","Step 1) Switch on DUT.");
-		message.showMessage("Test Procedure","Step 2) Switch on TBAD1.");
+		message.showMessage("Test Procedure","Step 2) Switch on "+testBed+".");
 
+		if(ICSON_OnboardingServiceFramework){
+			message.showMessage("Test Procedure","Step 3) Connect the DUT and "+testBed+" to the AP network if"
+					+ " they are not connected yet, use "
+					+ getGoldenUnitOnboarding+" to onboard the DUT to the personal AP.");
+		}else{
 		message.showMessage("Test Procedure","Step 3) Connect the DUT and "+testBed+" to the AP network if"
-				+ " they are not connected yet. (If"
-				+ " ICSON_OnboardingInterface ICS value is true, use"
-				+ " TBAD_O to onboard the DUT to the personal AP.");
+				+ " they are not connected yet.");
+		}
 		message.showMessage("Test Procedure","Step 4) Operate "+testBed+" to join a session with"
 				+ " the DUT application after receiving an About Announcement.");
 
 		message.showMessage("Test Procedure","Step 5) Verify that DeviceIcon object was "
 				+ "received in the About Announcement.");
-		message.showMessage("Test Procedure","Step 6) Command TBAD1 to get DUT DeviceIcon.");
+		message.showMessage("Test Procedure","Step 6) Command "+testBed+" to get DUT DeviceIcon.");
 
 		int response=message.showQuestion("Pass/Fail Criteria","Is DeviceIcon "
 				+ "Object received?");
@@ -305,6 +465,102 @@ public class AboutIOP {
 			return;}
 	}
 
+	
+	
+	private String getGoldenUnitName(final String Category) {
+		name=null;
+
+		final List<String> gu = goldenUnits.get(Category);
+		if(gu!=null){
+			if(gu!=null&&gu.size()>1){
+				Object col[] = {"Golden Unit Name","Category"};
+
+				TableModel model = new DefaultTableModel(col,gu.size());
+
+				final JTable tableSample = new JTable(model){
+
+					private static final long serialVersionUID = -5114222498322422255L;
+
+					public boolean isCellEditable(int row, int column)
+					{					
+							return false;
+								}
+				};
+
+
+				tableSample.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+				tableSample.getTableHeader().setBackground(new Color(25, 78, 97));
+				tableSample.getTableHeader().setForeground(new Color(255, 255, 255));
+				tableSample.getTableHeader().setFont(new Font("Arial", Font.PLAIN, 13));
+
+				for (int i = 0; i < gu.size(); i++) {
+
+					tableSample.setValueAt(gu.get(i),i,0);
+					tableSample.setValueAt(Category,i,1);
+
+				}
+
+
+
+
+				JScrollPane scroll = new JScrollPane(tableSample);
+
+
+
+
+
+				final JDialog dialog = new JDialog();
+				Rectangle bounds = null ;
+				Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+				int width=500;
+				int height=200;
+				bounds = new Rectangle((int) (dim.width/2)-width/2, 
+						(int) (dim.height/2)-height/2,
+						width, 
+						height);
+				dialog.setBounds(bounds);
+				dialog.setTitle("Select a Golden Unit");
+				dialog.add(scroll,BorderLayout.CENTER);
+				dialog.setResizable(false);
+				JButton buttonNext=new JButton("Next");
+				buttonNext.setForeground(new Color(255, 255, 255));
+				buttonNext.setBackground(new Color(68, 140, 178));
+				buttonNext.addActionListener(new ActionListener(){
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						int selectedGU = tableSample.getSelectedRow();
+						if(selectedGU!=-1){
+							dialog.dispose();
+							name="GU: "+gu.remove(selectedGU);
+							//goldenUnits.put(Category, gu);
+						}		
+					}});
+
+				JPanel buttonPanel=new JPanel();
+				GridBagLayout gridBagLayout = new GridBagLayout();
+				gridBagLayout.columnWeights = new double[]{1.0};
+				gridBagLayout.rowWeights = new double[]{1.0};
+				buttonPanel.setLayout(gridBagLayout);
+				GridBagConstraints gbc_next = new GridBagConstraints();
+				gbc_next.gridx = 0;
+				gbc_next.gridy = 0;
+				gbc_next.anchor=GridBagConstraints.CENTER;
+				buttonPanel.add(buttonNext,gbc_next);	
+				dialog.add(buttonPanel,BorderLayout.SOUTH);
+				dialog.setAlwaysOnTop(true); //<-- this line
+				dialog.setModal(true);
+				dialog.setResizable(false);
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.setVisible(true);
+
+			}else if(gu.size()==1){
+				name="GU: "+gu.remove(0);
+
+			}
+		}
+
+		return name;
+	}
 
 	/**
 	 * Show preconditions.
@@ -335,7 +591,7 @@ public class AboutIOP {
 	 */
 	private  void fail(String msg) {
 
-
+		message.showMessage("Verdict",msg);
 		logger.error(msg);
 		pass=false;
 
@@ -352,7 +608,9 @@ public class AboutIOP {
 	public String getVerdict() {
 
 		String verdict=null;
-		if(pass){
+		if(inconc){
+			verdict="INCONC";
+		}else if(pass){
 			verdict="PASS";
 		}else if(!pass){
 			verdict="FAIL";
