@@ -1,0 +1,66 @@
+==========================
+Test Name: IOP_Config-v1-06
+Description: Perform DUT Restart
+====================================================
+05-13 12:16:36.387:I/TestRunner(2348):started:IOP_Config-v1-06
+====================================================
+Golden Unit 1 name: Control Panel Cat 4.1
+Golden Unit 1 Type: Category 4.1 AllJoyn Device (Control Panel Controller)
+Golden Unit 2 name: Notification Producer Cat 5.2
+Golden Unit 2 Type: Category 5.2 AllJoyn Device (Notification Producer)
+Golden Unit 3 name: CONFIG
+Golden Unit 3 Type: Category 2 AllJoyn Device (Configuration)
+Golden Unit 4 name: About 2 cat 2
+Golden Unit 4 Type: Category 1 AllJoyn Device (About)
+Golden Unit 5 name: config CAT 2
+Golden Unit 5 Type: Category 2 AllJoyn Device (Configuration)
+ICSCF_ConfigurationServiceFramework: true
+ICSCF_ConfigurationInterface: true
+ICSCF_FactoryResetMethod: true
+IXITCO_AppId: 1a1d0019-20b3-f604-8ad0-ba5d07f83bf5
+IXITCO_DeviceId: 1a1d0019-20b3-f604-8ad0-ba5d07f83bf5
+IXITCO_DefaultLanguage: 
+IXITCF_ConfigVersion: 1
+IXITCF_Passcode: 
+GPCO_AnnouncementTimeout: 30
+GPCF_SessionLost: 30
+GPCF_SessionClose: 5
+05-13 12:16:36.434:I/ConfigIOPTestSuite(2348):Step 1) The passcode for the DUT is set to the default passcode "000000".
+Step 2) The AllJoyn devices of the Test Bed used will register an AuthListener with the AllJoyn framework that provides the default passcode (ﾓ000000ﾔ)
+ when authentication is requested (unless anything else is defined in a test case).
+Step 3) The SSID of the soft access point (Soft AP) advertised by the DUT follows the proper format such that it ends with the first seven digits of the deviceId.
+Step 4) All devices are configured with their AllJoyn functionality enabled.
+05-13 12:16:37.635:I/ConfigIOPTestSuite(2348):DUT and Golden Units are switched off.
+05-13 12:16:44.450:I/ConfigIOPTestSuite(2348):Step 1) Switch on DUT.
+05-13 12:16:45.465:I/ConfigIOPTestSuite(2348):Step 2) Switch on all Golden Units of the Test Bed.
+05-13 12:16:46.229:I/ConfigIOPTestSuite(2348):Step 3) Connect the Golden Units and/or DUT to the AP network if they are not connected yet
+05-13 12:16:48.307:I/ConfigIOPTestSuite(2348):Step 4) Establish an AllJoyn connection between the DUT and all the Golden Units if is not established automatically.
+05-13 12:16:52.239:I/ConfigIOPTestSuite(2348):Step 5) Command GU: CONFIG to modify the DUT DeviceName parameter with ﾑMyTestDeviceNameﾒ value using the Config interface.
+05-13 12:16:56.704:I/ConfigIOPTestSuite(2348):Step 6) Command GU: CONFIG to call Restart method in the DUT.
+05-13 12:17:00.636:I/ConfigIOPTestSuite(2348):Is DUT restarted?
+05-13 12:17:02.416:I/ConfigIOPTestSuite(2348):response:Yes
+05-13 12:17:02.431:I/ConfigIOPTestSuite(2348):Step 7) GU: CONFIG will lose the connection. Perform the required steps to re-establish AllJoyn connection between the DUT and GU: CONFIG.
+05-13 12:17:06.379:I/ConfigIOPTestSuite(2348):Step 8) Command GU: CONFIG to obtain the DUT configuration data (ﾑDeviceNameﾒ and ﾑDefaultConfigurationﾒ parameters) using the Config interface.
+05-13 12:17:10.304:I/ConfigIOPTestSuite(2348):Has Value of ﾑDeviceNameﾒ parameter changed to ﾑMyTestDeviceNameﾒ?
+05-13 12:17:17.623:I/ConfigIOPTestSuite(2348):response:Yes
+05-13 12:17:17.639:I/ConfigIOPTestSuite(2348):Step 9) Command GU: CONFIG to modify the DUT ﾑDeviceNameﾒ parameter with the original ﾑDeviceNameﾒ value using the Config interface.
+05-13 12:17:22.244:I/ConfigIOPTestSuite(2348):Step 10) Command GU: CONFIG to get DUT ﾑDeviceNameﾒ using the Config interface.
+05-13 12:17:26.115:I/ConfigIOPTestSuite(2348):Has Value of ﾑDeviceNameﾒ parameter changed to its original value?
+05-13 12:17:27.427:I/ConfigIOPTestSuite(2348):response:Yes
+05-13 12:17:27.427:I/ConfigIOPTestSuite(2348):Step 3) Connect the Golden Units and/or DUT to the AP network if they are not connected yet
+05-13 12:17:32.235:I/ConfigIOPTestSuite(2348):Step 12) Establish an AllJoyn connection between the DUT and all the Golden Units if is not established automatically.
+05-13 12:17:33.842:I/ConfigIOPTestSuite(2348):Step 13) Command GU: config CAT 2 to modify the DUT DeviceName parameter with ﾑMyTestDeviceNameﾒ value using the Config interface.
+05-13 12:17:37.899:I/ConfigIOPTestSuite(2348):Step 14) Command GU: config CAT 2 to call Restart method in the DUT.
+05-13 12:17:39.119:I/ConfigIOPTestSuite(2348):Is DUT restarted?
+05-13 12:17:40.308:I/ConfigIOPTestSuite(2348):response:Yes
+05-13 12:17:40.323:I/ConfigIOPTestSuite(2348):Step 15) GU: config CAT 2 will lose the connection. Perform the required steps to re-establish AllJoyn connection between the DUT and GU: config CAT 2.
+05-13 12:17:41.338:I/ConfigIOPTestSuite(2348):Step 16) Command GU: config CAT 2 to obtain the DUT configuration data (ﾑDeviceNameﾒ and ﾑDefaultConfigurationﾒ parameters) using the Config interface.
+05-13 12:17:42.026:I/ConfigIOPTestSuite(2348):Has Value of ﾑDeviceNameﾒ parameter changed to ﾑMyTestDeviceNameﾒ?
+05-13 12:17:42.868:I/ConfigIOPTestSuite(2348):response:Yes
+05-13 12:17:42.884:I/ConfigIOPTestSuite(2348):Step 17) Command GU: config CAT 2 to modify the DUT ﾑDeviceNameﾒ parameter with the original ﾑDeviceNameﾒ value using the Config interface.
+05-13 12:17:43.935:I/ConfigIOPTestSuite(2348):Step 18) Command GU: config CAT 2 to get DUT ﾑDeviceNameﾒ using the Config interface.
+05-13 12:17:44.827:I/ConfigIOPTestSuite(2348):Has Value of ﾑDeviceNameﾒ parameter changed to its original value?
+05-13 12:17:45.780:I/ConfigIOPTestSuite(2348):response:Yes
+05-13 12:17:45.780:I/TestRunner(2348):finished:IOP_Config-v1-06
+05-13 12:17:45.780:I/TestRunner(2348):Final Verdict: PASS
+

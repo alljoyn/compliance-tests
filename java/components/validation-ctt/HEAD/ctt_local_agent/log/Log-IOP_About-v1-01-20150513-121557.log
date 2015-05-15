@@ -1,0 +1,63 @@
+==========================
+Test Name: IOP_About-v1-01
+Description: Device detected
+====================================================
+05-13 12:15:57.560:I/TestRunner(1260):started:IOP_About-v1-01
+====================================================
+Golden Unit 1 name: Control Panel Cat 4.1
+Golden Unit 1 Type: Category 4.1 AllJoyn Device (Control Panel Controller)
+Golden Unit 2 name: Notification Producer Cat 5.2
+Golden Unit 2 Type: Category 5.2 AllJoyn Device (Notification Producer)
+Golden Unit 3 name: CONFIG
+Golden Unit 3 Type: Category 2 AllJoyn Device (Configuration)
+Golden Unit 4 name: About 2 cat 2
+Golden Unit 4 Type: Category 1 AllJoyn Device (About)
+Golden Unit 5 name: config CAT 2
+Golden Unit 5 Type: Category 2 AllJoyn Device (Configuration)
+ICSCO_DateOfManufacture: true
+ICSCO_HardwareVersion: true
+ICSCO_SupportUrl: true
+ICSCO_IconInterface: true
+ICSCO_DeviceName: true
+IXITCO_AboutVersion: 1
+IXITCO_AppId: 1a1d0019-20b3-f604-8ad0-ba5d07f83bf5
+IXITCO_DefaultLanguage: 
+IXITCO_DeviceName: DUT_IOP
+IXITCO_DeviceId: 1a1d0019-20b3-f604-8ad0-ba5d07f83bf5
+IXITCO_ApGpName: 
+IXITCO_Manufacturer: AT4wireless
+IXITCO_ModelNumber: 1
+IXITCO_SoftwareVersion: 356
+IXITCO_AJSoftwareVersion: 
+IXITCO_HardwareVersion: 123456789
+IXITCO_IntrospectableVersion: 1
+IXITCO_SupportedLanguages: en
+IXITCO_Description: 
+IXITCO_DateOfManufacture: 
+IXITCO_SupportUrl: 
+GPCO_AnnouncementTimeout: 30
+05-13 12:15:57.593:I/AboutIOPTestSuite(1260):Step 1) The passcode for the DUT is set to the default passcode "000000".
+Step 2) The AllJoyn devices of the Test Bed used will register an AuthListener with the AllJoyn framework that provides the default passcode (ﾓ000000ﾔ)
+ when authentication is requested (unless anything else is defined in a test case).
+Step 3) The SSID of the soft access point (Soft AP) advertised by the DUT follows the proper format such that it ends with the first seven digits of the deviceId.
+Step 4) All devices are configured with their AllJoyn functionality enabled.
+05-13 12:15:59.184:I/AboutIOPTestSuite(1260):DUT and Golden Units are switched off.
+05-13 12:15:59.731:I/AboutIOPTestSuite(1260):Step 1) Switch on DUT.
+05-13 12:16:04.364:I/AboutIOPTestSuite(1260):Step 2) Switch on GU: config CAT 2.
+05-13 12:16:13.660:I/AboutIOPTestSuite(1260):Step 3) Connect the DUT and GU: config CAT 2 to the AP network if they are not connected yet.
+05-13 12:16:14.365:I/AboutIOPTestSuite(1260):Step 4) Verify that GU: config CAT 2 is able to detect the DUT (It appears in the list of GU: config CAT 2 Nearby devices).
+05-13 12:16:15.177:I/AboutIOPTestSuite(1260):Is DUT response in the list of GU: config CAT 2 Nearby devices?
+05-13 12:16:16.206:I/AboutIOPTestSuite(1260):response:Yes
+05-13 12:16:16.222:I/AboutIOPTestSuite(1260):Step 5) Switch on GU: Control Panel Cat 4.1.
+05-13 12:16:17.009:I/AboutIOPTestSuite(1260):Step 6) Connect the DUT and GU: Control Panel Cat 4.1 to the AP network if they are not connected yet.
+05-13 12:16:17.712:I/AboutIOPTestSuite(1260):Step 7) Verify that GU: Control Panel Cat 4.1 is able to detect the DUT (It appears in the list of GU: Control Panel Cat 4.1 Nearby devices).
+05-13 12:16:18.351:I/AboutIOPTestSuite(1260):Is DUT response in the list of GU: Control Panel Cat 4.1 Nearby devices?
+05-13 12:16:18.857:I/AboutIOPTestSuite(1260):response:Yes
+05-13 12:16:18.857:I/AboutIOPTestSuite(1260):Step 8) Switch on GU: Notification Producer Cat 5.2.
+05-13 12:16:19.583:I/AboutIOPTestSuite(1260):Step 9) Connect the DUT and GU: Notification Producer Cat 5.2 to the AP network if they are not connected yet.
+05-13 12:16:20.138:I/AboutIOPTestSuite(1260):Step 10) Verify that GU: Notification Producer Cat 5.2 is able to detect the DUT (It appears in the list of GU: Notification Producer Cat 5.2 Nearby devices).
+05-13 12:16:20.782:I/AboutIOPTestSuite(1260):Is DUT response in the list of GU: Notification Producer Cat 5.2 Nearby devices?
+05-13 12:16:21.418:I/AboutIOPTestSuite(1260):response:Yes
+05-13 12:16:21.418:I/TestRunner(1260):finished:IOP_About-v1-01
+05-13 12:16:21.418:I/TestRunner(1260):Final Verdict: PASS
+

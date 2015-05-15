@@ -1,0 +1,55 @@
+==========================
+Test Name: LSF_Controller-v1-13
+Description: Lamp faults
+====================================================
+05-11 13:11:25.193:I/TestRunner(2460):started:LSF_Controller-v1-13
+====================================================
+ICSLC_LightingControllerServiceFramework: true
+ICSLC_ControllerServiceInterface: true
+ICSLC_ControllerServiceLampInterface: true
+ICSLC_ControllerServiceLampGroupInterface: true
+ICSLC_ControllerServicePresetInterface: true
+ICSLC_ControllerServiceSceneInterface: true
+ICSLC_ControllerServiceMasterSceneInterface: true
+ICSLC_LeaderElectionAndStateSyncInterface: true
+IXITCO_AppId: 1b951235-1d22-8121-879b-8f2f9428752f
+IXITCO_DeviceId: 8bed3691bd04c4e2ae38e7c176b5b8ea
+IXITCO_DefaultLanguage: 
+IXITLC_ControllerServiceVersion: 1
+IXITLC_ControllerServiceLampVersion: 1
+IXITLC_ControllerServiceLampGroupVersion: 1
+IXITLC_ControllerServicePresetVersion: 1
+IXITLC_ControllerServiceSceneVersion: 1
+IXITLC_ControllerServiceMasterSceneVersion: 1
+IXITLC_LeaderElectionAndStateSyncVersion: 1
+GPCO_AnnouncementTimeout: 30
+GPLC_SessionClose: 4
+====================================================
+05-11 13:11:25.210:I/LSF_ControllerTestSuite(2460):setUp started
+05-11 13:11:25.210:I/LSF_ControllerTestSuite(2460):Running LSF_Controller test case against Device ID: 8bed3691bd04c4e2ae38e7c176b5b8ea
+05-11 13:11:25.210:I/LSF_ControllerTestSuite(2460):Running LSF_Controller test case against App ID: 1b951235-1d22-8121-879b-8f2f9428752f
+05-11 13:11:25.226:I/BusAttachmentMgr(2460):Creating BusAttachment
+05-11 13:11:25.288:I/BusAttachmentMgr(2460):Connecting BusAttachment
+05-11 13:11:26.458:I/ServiceHelper(2460):Starting AboutClient
+05-11 13:11:26.553:I/ServiceHelper(2460):Adding AboutListener for About announcements
+05-11 13:11:26.662:I/ServiceHelper(2460):Registering BusObject: com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceBusObject@accc4e9 at: /org/allseen/LSF/ControllerService
+05-11 13:11:26.662:I/ServiceHelper(2460):Registering BusObject: com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceLampBusObject@6596f6ef at: /org/allseen/LSF/ControllerService/Lamp
+05-11 13:11:26.677:I/ServiceHelper(2460):Registering BusObject: com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceLampGroupBusObject@16e58730 at: /org/allseen/LSF/ControllerService/LampGroup
+05-11 13:11:26.709:I/ServiceHelper(2460):Registering BusObject: com.at4wireless.alljoyn.core.lightingcontroller.ControllerServicePresetBusObject@735dcd1d at: /org/allseen/LSF/ControllerService/Preset
+05-11 13:11:26.724:I/ServiceHelper(2460):Registering BusObject: com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceSceneBusObject@50431425 at: /org/allseen/LSF/ControllerService/Scene
+05-11 13:11:26.740:I/ServiceHelper(2460):Registering BusObject: com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceMasterSceneBusObject@511479d6 at: /org/allseen/LSF/ControllerService/MasterScene
+05-11 13:11:26.740:I/ServiceHelper(2460):Registering BusObject: com.at4wireless.alljoyn.core.lightingcontroller.LeaderElectionBusObject@5ceeb4a3 at: /org/allseen/LeaderElectionAndStateSync/LeaderElection
+05-11 13:11:26.755:I/LSF_ControllerTestSuite(2460):Waiting for About annoucement
+05-11 13:11:26.755:I/DeviceAnnounceHandler(2460):Waiting for About announcement signal from device: 8bed3691bd04c4e2ae38e7c176b5b8ea; appId: 1b951235-1d22-8121-879b-8f2f9428752f
+05-11 13:11:39.142:I/DeviceAnnounceHandler(2460):Ignoring About announcement signal from DUT with deviceId: 5811e6aae656283f4785f6f23e610388, appId; 65dccdfd-a3f5-8b07-d836-06a9a355b432 
+05-11 13:11:41.810:I/DeviceAnnounceHandler(2460):Ignoring About announcement signal from DUT with deviceId: 5811e6aae656283f4785f6f23e610388, appId; 65dccdfd-a3f5-8b07-d836-06a9a355b432 
+05-11 13:11:56.762:E/LSF_ControllerTestSuite(2460):setUp thrown an exception: Timed out waiting for About announcement
+05-11 13:11:56.762:I/ServiceHelper(2460):Stopping aboutClient
+05-11 13:11:56.762:I/ServiceHelper(2460):Stopping configClient
+05-11 13:11:56.777:I/BusAttachmentMgr(2460):Disconnecting BusAttachment
+05-11 13:11:56.818:I/LSF_ControllerTestSuite(2460):Waiting for session to close
+05-11 13:11:56.818:I/DeviceAnnounceHandler(2460):Waiting for session to close for device: 8bed3691bd04c4e2ae38e7c176b5b8ea
+05-11 13:12:00.835:E/LSF_ControllerTestSuite(2460):Timed out waiting for About announcement
+05-11 13:12:00.835:I/TestRunner(2460):finished:LSF_Controller-v1-13
+05-11 13:12:00.835:I/TestRunner(2460):Final Verdict: INCONC
+

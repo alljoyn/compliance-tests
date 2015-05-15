@@ -1,0 +1,62 @@
+==========================
+Test Name: Audio-v1-02
+Description: Opening a Stream bus object
+ERROR: INVALID ICS Name ICSAU_VolumeControlEnabled
+====================================================
+05-08 12:37:32.967:I/TestRunner(2968):started:Audio-v1-02
+====================================================
+ICSAU_AudioServiceFramework: true
+ICSAU_StreamInterface: true
+ICSAU_StreamPortInterface: true
+ICSAU_PortAudioSinkInterface: true
+ICSAU_PortAudioSourceInterface: false
+ICSAU_PortImageSinkInterface: true
+ICSAU_PortImageSourceInterface: false
+ICSAU_PortApplicationMetadataSinkInterface: false
+ICSAU_PortApplicationMetadataSourceInterface: false
+ICSAU_ControlVolumeInterface: false
+ICSAU_StreamClockInterface: false
+ICSAU_AudioXalac: false
+ICSAU_ImageJpeg: false
+ICSAU_ApplicationXmetadata: false
+ICSAU_VolumeControl: false
+IXITCO_AppId: 9c0d9017-0680-530c-d000-000000000000
+IXITCO_DeviceId: 9c0d90170680530cd000000000000000
+IXITCO_DefaultLanguage: 
+IXITAU_StreamVersion: 1
+IXITAU_TestObjectPath: 1
+IXITAU_PortVersion: 1
+IXITAU_AudioSinkVersion: 1
+IXITAU_timeNanos: 
+IXITAU_AudioSourceVersion: 1
+IXITAU_ImageSinkVersion: 1
+IXITAU_ImageSourceVersion: 1
+IXITAU_MetadataSinkVersion: 1
+IXITAU_MetadataSourceVersion: 1
+IXITAU_ControlVolumeVersion: 1
+IXITAU_delta: 
+IXITAU_change: 
+IXITAU_ClockVersion: 1
+IXITAU_adjustNanos: 
+GPCO_AnnouncementTimeout: 30
+GPAU_Signal: 30
+GPAU_Link: 120
+====================================================
+05-08 12:37:32.998:I/AudioTestSuite(2968):test setUp started
+05-08 12:37:32.998:I/AudioTestSuite(2968):Running test case against Device ID: 9c0d90170680530cd000000000000000
+05-08 12:37:32.998:I/AudioTestSuite(2968):Running test case against App ID: 9c0d9017-0680-530c-d000-000000000000
+05-08 12:37:32.998:I/AudioTestSuite(2968):Executing Audio test against Stream object found at 1
+05-08 12:37:33.029:I/BusAttachmentMgr(2968):Creating BusAttachment
+05-08 12:37:33.076:I/BusAttachmentMgr(2968):Connecting BusAttachment
+05-08 12:37:34.308:I/ServiceHelper(2968):Starting AboutClient
+05-08 12:37:34.450:I/ServiceHelper(2968):Adding AboutListener for About announcements
+05-08 12:37:34.606:I/DeviceAnnounceHandler(2968):Waiting for About announcement signal from device: 9c0d90170680530cd000000000000000; appId: 9c0d9017-0680-530c-d000-000000000000
+05-08 12:38:04.622:I/AudioTestSuite(2968):Exception while setting up: java.lang.Exception: Timed out waiting for About announcement
+05-08 12:38:04.622:I/ServiceHelper(2968):Stopping aboutClient
+05-08 12:38:04.622:I/ServiceHelper(2968):Stopping configClient
+05-08 12:38:04.673:I/BusAttachmentMgr(2968):Disconnecting BusAttachment
+05-08 12:38:04.719:E/AudioTestSuite(2968):Timed out waiting for About announcement
+05-08 12:38:04.719:I/AudioTestSuite(2968):Partial Verdict: FAIL
+05-08 12:38:04.735:I/TestRunner(2968):finished:Audio-v1-02
+05-08 12:38:04.735:I/TestRunner(2968):Final Verdict: INCONC
+

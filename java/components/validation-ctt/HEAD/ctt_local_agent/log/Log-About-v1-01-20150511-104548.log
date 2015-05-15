@@ -1,0 +1,48 @@
+==========================
+Test Name: About-v1-01
+Description: About announcement received
+====================================================
+05-11 10:45:48.227:I/TestRunner(192):started:About-v1-01
+====================================================
+ICSCO_DateOfManufacture: true
+ICSCO_HardwareVersion: true
+ICSCO_SupportUrl: true
+ICSCO_IconInterface: true
+ICSCO_DeviceName: true
+IXITCO_AboutVersion: 1
+IXITCO_AppId: 9c0d9017-0680-530c-d000-000000000000
+IXITCO_DefaultLanguage: en
+IXITCO_DeviceName: Luminaire-853cd
+IXITCO_DeviceId: 9c0d90170680530cd000000000000000
+IXITCO_AppName: Luminaire
+IXITCO_Manufacturer: Qualcomm Connected Experiences
+IXITCO_ModelNumber: 001
+IXITCO_SoftwareVersion: 1.0
+IXITCO_AJSoftwareVersion: 14.06.00a Tag "v14.06.00a"
+IXITCO_HardwareVersion: 1.0
+IXITCO_IntrospectableVersion: 1
+IXITCO_SupportedLanguages: en
+IXITCO_Description: Virtual Lamp
+IXITCO_DateOfManufacture: 2014-02-01
+IXITCO_SupportUrl: http://www.qualcomm.com
+GPCO_AnnouncementTimeout: 30
+====================================================
+05-11 10:45:48.242:I/AboutTestSuite(192):test setUp started
+05-11 10:45:48.242:I/AboutTestSuite(192):Running About test case against Device ID: 9c0d90170680530cd000000000000000
+05-11 10:45:48.242:I/AboutTestSuite(192):Running About test case against App ID: 9c0d9017-0680-530c-d000-000000000000
+05-11 10:45:48.274:I/BusAttachmentMgr(192):Creating BusAttachment
+05-11 10:45:48.336:I/BusAttachmentMgr(192):Connecting BusAttachment
+05-11 10:45:49.553:I/ServiceHelper(192):Starting AboutClient
+05-11 10:45:49.632:I/ServiceHelper(192):Adding AboutListener for About announcements
+05-11 10:45:49.850:I/DeviceAnnounceHandler(192):Waiting for About announcement signal from device: 9c0d90170680530cd000000000000000; appId: 9c0d9017-0680-530c-d000-000000000000
+05-11 10:45:54.204:I/DeviceAnnounceHandler(192):Ignoring About announcement signal from DUT with deviceId: 01020304-0506-0708-090a-0b0c0d0e0f10, appId; 01020304-0506-0708-090a-0b0c0d0e0f10 
+05-11 10:46:19.867:E/AboutTestSuite(192):Exception setting up resources: Timed out waiting for About announcement
+05-11 10:46:19.868:I/ServiceHelper(192):Stopping aboutClient
+05-11 10:46:19.879:I/ServiceHelper(192):Stopping configClient
+05-11 10:46:19.887:I/BusAttachmentMgr(192):Disconnecting BusAttachment
+05-11 10:46:19.920:E/AboutTestSuite(192):Timed out waiting for About announcement
+05-11 10:46:19.921:E/AboutTestSuite(192):Timed out waiting for About announcement
+05-11 10:46:19.921:I/AboutTestSuite(192):Partial Verdict: FAIL
+05-11 10:46:19.922:I/TestRunner(192):finished:About-v1-01
+05-11 10:46:19.933:I/TestRunner(192):Final Verdict: INCONC
+

@@ -1,0 +1,51 @@
+<!--  Copyright (c) 2013 - 2014, AllSeen Alliance. All rights reserved.
+
+    Permission to use, copy, modify, and/or distribute this software for any
+    purpose with or without fee is hereby granted, provided that the above
+    copyright notice and this permission notice appear in all copies.
+
+    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE. -->
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://allseenalliance.org/schemas/introspect.xsd">
+    <interface name="org.alljoyn.gwagent.ctrl.Acl">
+        <method name="ActivateAcl">
+            <arg name="aclResponseCode" type="q" direction="out"/>
+        </method>
+        <method name="DeactivateAcl">
+            <arg name="aclResponseCode" type="q" direction="out"/>
+        </method>
+        <method name="GetAcl">
+            <arg name="aclName" type="s" direction="out"/>
+            <arg name="exposedServices" type="a(obas)" direction="out"/>
+            <arg name="remotedApps" type="a(saya(obas))" direction="out"/>
+            <arg name="metadata" type="a{ss}" direction="out"/>
+            <arg name="customMetadata" type="a{ss}" direction="out"/>
+        </method>
+        <method name="GetAclStatus">
+            <arg name="aclStatus" type="q" direction="out"/>
+        </method>
+        <method name="UpdateAcl">
+            <arg name="aclName" type="s" direction="in"/>
+            <arg name="exposedServices" type="a(obas)" direction="in"/>
+            <arg name="remotedApps" type="a(saya(obas))" direction="in"/>
+            <arg name="metadata" type="a{ss}" direction="in"/>
+            <arg name="customMetadata" type="a{ss}" direction="in"/>
+            <arg name="aclResponseCode" type="q" direction="out"/>
+        </method>
+        <method name="UpdateAclMetadata">
+            <arg name="metadata" type="a{ss}" direction="in"/>
+            <arg name="aclResponseCode" type="q" direction="out"/>
+        </method>
+        <method name="UpdateAclCustomMetadata">
+            <arg name="metadata" type="a{ss}" direction="in"/>
+            <arg name="aclResponseCode" type="q" direction="out"/>
+        </method>
+        <property name="Version" type="q" access="read"/>
+        <annotation name="org.alljoyn.Bus.Secure" value="true"/>
+    </interface>
+</node>

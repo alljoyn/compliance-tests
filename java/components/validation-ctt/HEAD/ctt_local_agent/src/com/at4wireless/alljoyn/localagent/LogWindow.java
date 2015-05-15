@@ -1,13 +1,25 @@
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *    Permission to use, copy, modify, and/or distribute this software for any
+ *    purpose with or without fee is hereby granted, provided that the above
+ *    copyright notice and this permission notice appear in all copies.
+ *
+ *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.at4wireless.alljoyn.localagent;
 
-import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
@@ -44,11 +56,29 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+
+// TODO: Auto-generated Javadoc
+/**
+ * The Class LogWindow.
+ */
 public class LogWindow extends JDialog{
+	
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -480896840677856306L;
 	
 	
+	/** The result window. */
 	ResultWindow resultWindow;
+	
+	/**
+	 * Instantiates a new log window.
+	 *
+	 * @param resultWindow the result window
+	 * @param projectId the project id
+	 * @param user the user
+	 * @param token the token
+	 * @param logname the logname
+	 */
 	public LogWindow(final ResultWindow  resultWindow,final int projectId, String user, String token,String logname) {
 		this.resultWindow=resultWindow;
 		int width=900;
@@ -113,18 +143,22 @@ public class LogWindow extends JDialog{
 		gbc_scrollPane.gridx = 0;
 		gbc_scrollPane.gridy = 1;
 		
-		//gbc_scrollPane.gridheight=200;
+		
 		gbc_scrollPane.fill=GridBagConstraints.BOTH;
 
 		getContentPane().add(scrollPane,gbc_scrollPane);//, BorderLayout.CENTER);
 
 		ImagePanel buttonPane=new ImagePanel("res\\drawable\\short_footer.jpg");
+		GridBagLayout gridBagLayoutFooter = new GridBagLayout();
 
-		buttonPane.setLayout(new FlowLayout(FlowLayout.CENTER));
+		gridBagLayoutFooter.columnWeights = new double[]{1.0};
+		gridBagLayoutFooter.rowWeights = new double[]{1.0};
+		setLayout(gridBagLayout);
+		
+		buttonPane.setLayout(gridBagLayoutFooter);
 		JButton back=new JButton("");
 		
-		back.setBorderPainted(false); 
-		back.setContentAreaFilled(false); 
+		
 		 Image img2 = null;
 		try {
 			
@@ -135,7 +169,8 @@ public class LogWindow extends JDialog{
 		}
 		back.setIcon(new ImageIcon(img2));
 		
-
+		Dimension preferredSize=new Dimension(83,23);
+		back.setPreferredSize(preferredSize);
 		back.addActionListener(new ActionListener(){
 
 			@Override
@@ -148,11 +183,7 @@ public class LogWindow extends JDialog{
 			}
 
 		});
-
-		
 		buttonPane.add(back);
-
-		
 		GridBagConstraints gbc_buttonPane = new GridBagConstraints();
 		gbc_buttonPane.anchor = GridBagConstraints.SOUTHWEST;
 		gbc_buttonPane.insets = new Insets(0, 0, 0, 0);
@@ -161,19 +192,21 @@ public class LogWindow extends JDialog{
 		gbc_buttonPane.fill=GridBagConstraints.BOTH;
 		gbc_buttonPane.anchor=GridBagConstraints.PAGE_END;
 		getContentPane().add(buttonPane,gbc_buttonPane);//, BorderLayout.SOUTH);
-
-
-
-
-
-
-
 		setVisible(true);
 	}
 
 
 
 
+	/**
+	 * Gets the log from the web server.
+	 *
+	 * @param user the user
+	 * @param token The authentication token obtained when the application logs in. 
+	 * @param projectId The project id
+	 * @param logName the log name
+	 * @return the log
+	 */
 	private String getLog(String user, String token, int projectId, String logName ) {
 
 
@@ -240,6 +273,12 @@ public class LogWindow extends JDialog{
 
 
 
+	/**
+	 * Gets the configuration value from config.xml.
+	 *
+	 * @param key the key to obtain
+	 * @return the configuration value
+	 */
 	private static String getConfigValue(String key) {
 		String value="";
 		File test = new File("config.xml");
@@ -267,6 +306,14 @@ public class LogWindow extends JDialog{
 	}
 
 
+
+	/**
+	 * Gets the value from the selected tag. 
+	 *
+	 * @param tag the tag
+	 * @param element the element
+	 * @return the value
+	 */
 	private static String getValue(String tag, Element element) {
 		NodeList nodes = element.getElementsByTagName(tag).item(0).getChildNodes();
 		Node node = (Node) nodes.item(0);

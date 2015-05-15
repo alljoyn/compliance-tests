@@ -1,0 +1,36 @@
+==========================
+Test Name: IOP_Config-v1-03
+Description: Update DUT DeviceName
+====================================================
+05-13 10:50:24.287:I/TestRunner(3748):started:IOP_Config-v1-03
+====================================================
+Golden Unit 1 name: b
+Golden Unit 1 Type: Category 1 AllJoyn Device (About)
+Golden Unit 2 name: Cat 2
+Golden Unit 2 Type: Category 2 AllJoyn Device (Configuration)
+Golden Unit 3 name: CONFIG
+Golden Unit 3 Type: Category 2 AllJoyn Device (Configuration)
+ICSCF_ConfigurationServiceFramework: true
+ICSCF_ConfigurationInterface: true
+ICSCF_FactoryResetMethod: true
+IXITCO_AppId: 1a1d0019-20b3-f604-8ad0-ba5d07f83bf5
+IXITCO_DeviceId: 1a1d0019-20b3-f604-8ad0-ba5d07f83bf5
+IXITCO_DefaultLanguage: 
+IXITCF_ConfigVersion: 1
+IXITCF_Passcode: 
+GPCO_AnnouncementTimeout: 30
+GPCF_SessionLost: 30
+GPCF_SessionClose: 5
+05-13 10:50:24.319:I/ConfigIOPTestSuite(3748):Step 1) The passcode for the DUT is set to the default passcode "000000".
+Step 2) The AllJoyn devices of the Test Bed used will register an AuthListener with the AllJoyn framework that provides the default passcode (ﾓ000000ﾔ)
+ when authentication is requested (unless anything else is defined in a test case).
+Step 3) The SSID of the soft access point (Soft AP) advertised by the DUT follows the proper format such that it ends with the first seven digits of the deviceId.
+Step 4) All devices are configured with their AllJoyn functionality enabled.
+05-13 10:50:39.050:I/ConfigIOPTestSuite(3748):DUT and Golden Units are switched off.
+05-13 10:50:41.048:I/ConfigIOPTestSuite(3748):Step 1) Switch on all Golden Units of the Test Bed.
+05-13 10:50:42.469:I/ConfigIOPTestSuite(3748):Step 2) Switch on DUT.
+05-13 10:50:47.696:I/ConfigIOPTestSuite(3748):Step 3) Connect the Golden Units and/or DUT to the AP network if they are not connected yet
+05-13 10:51:04.878:E/ConfigIOPTestSuite(3748):No Category 2 AllJoyn Device (Configuration) Golden Unit.
+05-13 10:51:04.878:I/TestRunner(3748):finished:IOP_Config-v1-03
+05-13 10:51:04.878:I/TestRunner(3748):Final Verdict: INCONC
+
