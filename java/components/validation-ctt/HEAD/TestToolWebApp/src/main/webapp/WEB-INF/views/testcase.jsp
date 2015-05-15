@@ -35,6 +35,7 @@
         	<jsp:include page="/WEB-INF/views/header.jsp"/>
 		    
 		    <div class="row" align="right">
+		    	<h4 id="selectedProject" class="pull-left"></h4>
 		    	<c:if test="${pageContext.request.userPrincipal.name != null}">
 					<h4>
 						Welcome : ${pageContext.request.userPrincipal.name} | <a
@@ -70,8 +71,12 @@
 			
 			<!-- Action buttons -->
 			<div class="row" align="left">
-	        	<button id="selectAll" type="button" class="btn btn-default btn-lg">Select All</button>
+	        	<button id="selectAll" type="button" class="btn btn-default btn-lg">Select All (*)</button>
 	        	<button id="deselectAll" type="button" class="btn btn-default btn-lg">Deselect All</button>
+	        </div>
+	        
+	        <div class="row" align="left">
+	        	<p>(*) Mandatory for Certification purpose</p>
 	        </div>
 	        
 	        <!-- Navigation buttons -->
@@ -112,7 +117,7 @@
         <script src="resources/jquery/js/jquery-1.11.2.min.js"></script>
 		<script src="resources/bootstrap/js/bootstrap.min.js"></script>
 		
-		<!-- Testcase selection depends on project type -->
+		<!-- Test Case selection depends on project type -->
 		<script>
 			$(document).ready(function() {
 				
@@ -125,11 +130,24 @@
 					});
 				}
 				
+				$('#selectedProject').append("Project: "+sessionStorage.getItem("projectName"));
+				$('#selectedProject').append(" / DUT: "+sessionStorage.getItem("dutName"));
+				if(sessionStorage.getItem("type")!="Conformance") {
+					$('#selectedProject').append(" / GUs: "+sessionStorage.getItem("guNames"));
+				}
+				
+				var data = {};
+				for (var j = 0; j < sessionStorage.length; j++) {
+					var key = sessionStorage.key(j);
+					data[key] = sessionStorage.getItem(key);
+				}
+				
 				$.ajax({
+				   cache: false,
 				   url: "testcase/load",
 				   type: 'GET',
 				   data: {
-						data : sessionStorage	
+						data : data	
 					},
 				   success: function (data) {
 					   	$('#tcBody').empty();
@@ -153,9 +171,7 @@
 								var MyRows = $('#tcBody').find('tr');
 								$.each(data, function(i, disabled) {
 									for (var j = 0; j < MyRows.length; j++) {
-										//if(j==0) alert($(MyRows[j]).find('td:eq(0)').html());
 										if($(MyRows[j]).find('td:eq(0)').html()==disabled) {
-											//alert("entra");
 											$(MyRows[j]).find('.is_checkbox').prop('checked',false);
 											$(MyRows[j]).find('.is_checkbox').prop('disabled',true);
 											$(MyRows[j]).addClass('text-muted');
@@ -182,7 +198,7 @@
 		<!-- Logout form script -->
 		<script>
 			function formSubmit() {
-				document.getElementById("logoutForm").submit();
+				$('#logoutForm').submit();
 			}
 		</script>
 		
@@ -191,15 +207,16 @@
 	  		$('#nextButton').on('click', function(){
 
 				var MyRows = $('.table').find('tbody').find('tr');
-				//for (var i = 0; i < MyRows.length; i++) {
 				for (var i = 0; i < MyRows.length; i++) {
 					var id = $(MyRows[i]).find('td:eq(1)').html();
 					var value = $(MyRows[i]).find('.is_checkbox').is(':checked');
 					if (value==true) {
-						//alert(id);
 						sessionStorage.setItem(id, value);
 					}
 				}
+				
+				applyTC = ($('.is_checkbox').length) - ($('.text-muted').length);
+				sessionStorage.setItem("applyTC",applyTC);
 				
 			});
 
@@ -217,8 +234,7 @@
 	  		$('#prevButton').on('click', function(e){
 				e.preventDefault();
 				
-				document.getElementById('idProject').value = sessionStorage.getItem("idProject");
-				//document.getElementById('isConfigured').value = sessionStorage.getItem("isConfigured");
+				$('#idProject').val(sessionStorage.getItem('idProject'));
 				$('#prevForm').submit();
 			});  
 		</script>

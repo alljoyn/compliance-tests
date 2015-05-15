@@ -14,10 +14,22 @@ body > .container {
 	padding-bottom: 40px;
 }
 
+.error {
+	color: #D43D1A;
+}
+
 .table-hover {
 	table-layout: fixed;
 	word-break: break-word;
 	-ms-word-break: break-all;
+}
+
+@-moz-document url-prefix() {
+	.table-hover {
+		table-layout: fixed;
+		word-break: break-all;
+		word-wrap: break-word;
+	}
 }
 
 .scroll-thead {

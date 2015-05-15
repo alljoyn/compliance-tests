@@ -35,6 +35,7 @@
         	<jsp:include page="/WEB-INF/views/header.jsp"/>
 		    
 		    <div class="row" align="right">
+		    	<h4 id="selectedProject" class="pull-left"></h4>
 		    	<c:if test="${pageContext.request.userPrincipal.name != null}">
 					<h4>
 						Welcome : ${pageContext.request.userPrincipal.name} | <a
@@ -113,6 +114,7 @@
 	        <!-- Navigation and SCR buttons -->
 	        <div class="row" align="right">
 	       		<a id="prevButton" type="button" class="btn btn-custom btn-lg pull-left">« Back</a>
+	       		<button id="changeButton" type="button" class="btn btn-default btn-lg">Change All Service ICS</button>
 	        	<button id="scrButton" type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#pleaseWaitDialog">SCR</button>
 	        	<button id="nextButton" disabled class="btn btn-custom btn-lg disabled">Next »</button>
 	        </div>
@@ -172,6 +174,13 @@
 				if(sessionStorage.getItem("idDut")===null) {
 					document.getElementById("prevButton").click();
 				}
+				
+				$('#selectedProject').append("Project: "+sessionStorage.getItem("projectName"));
+				$('#selectedProject').append(" / DUT: "+sessionStorage.getItem("dutName"));
+				if(sessionStorage.getItem("type")!="Conformance") {
+					$('#selectedProject').append(" / GUs: "+sessionStorage.getItem("guNames"));
+				}
+				
 				$('#1').addClass('in active');
 				
 				var w = $('.scroll-tbody').find('.scroll-tr').first().width();
@@ -191,7 +200,7 @@
 		<!-- Logout form script -->
 		<script>
 			function formSubmit() {
-				document.getElementById("logoutForm").submit();
+				$('#logoutForm').submit();
 			}
 		</script>
 		
@@ -220,15 +229,14 @@
         <script>
 	        $('#prevButton').on('click', function(){
 				
-				document.getElementById('prevIdProject').value = sessionStorage.getItem("idProject");
+				$('#prevIdProject').val(sessionStorage.getItem('idProject'));
 				$('#prevForm').submit();
 				
 			});
 	  		$('#nextButton').on('click', function(){
 					
-				document.getElementById('idProject').value = sessionStorage.getItem("idProject");
-				//document.getElementById('isConfigured').value = sessionStorage.getItem("isConfigured");
-				document.getElementById('idDut').value = sessionStorage.getItem("idDut");
+				$('#idProject').val(sessionStorage.getItem('idProject'));
+				$('#idDut').val(sessionStorage.getItem('idDut'));
 				$('#nextForm').submit();
 				
 			});
@@ -244,12 +252,19 @@
 
 					sessionStorage.setItem(id, value);
 				}
+				
+				var data = {};
+				for (var j = 0; j < sessionStorage.length; j++) {
+					var key = sessionStorage.key(j);
+					data[key] = sessionStorage.getItem(key);
+				}
   			
-	  			$.ajax({	
+	  			$.ajax({
+	  				   cache: false,
 					   url: "ics/scr",
 					   type: 'GET',
 					   data: {
-							data : sessionStorage	
+							data : data
 						},
 						dataType : 'json',
 					   success: function (data) {
@@ -290,6 +305,13 @@
 							}
 					   }
 				});
+	  		});
+	  		
+	  		$('#changeButton').on('click', function() {
+	  			$(".tab-pane.active").find('table tbody tr').dblclick();
+	  			
+	  			//This one changes all
+	  			//$('.scroll-tbody').find('tr').dblclick();
 	  		});
 		</script>
     </body>

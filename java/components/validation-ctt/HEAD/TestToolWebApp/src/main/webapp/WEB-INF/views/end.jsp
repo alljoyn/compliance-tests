@@ -37,6 +37,7 @@
     		<jsp:include page="/WEB-INF/views/header.jsp"/>
 		    
 		    <div class="row" align="right">
+		    	<h4 id="selectedProject" class="pull-left"></h4>
 		    	<c:if test="${pageContext.request.userPrincipal.name != null}">
 					<h4>
 						Welcome : ${pageContext.request.userPrincipal.name} | <a
@@ -67,15 +68,27 @@
     	<script>
 			$(document).ready(function() {
 				
-				$('#title').text("STEP 7: END");
+				$('#title').text("STEP 8: END CONFIGURATION");
 				if(sessionStorage.getItem("type")=="Conformance") {
 					$('#title').text(function(i, oldText) {
-						return oldText === 'STEP 7: END' ? 'STEP 6: END' : oldText;
+						return oldText === 'STEP 8: END CONFIGURATION' ? 'STEP 7: END CONFIGURATION' : oldText;
 					});
+				}
+				
+				$('#selectedProject').append("Project: "+sessionStorage.getItem("projectName"));
+				$('#selectedProject').append(" / DUT: "+sessionStorage.getItem("dutName"));
+				if(sessionStorage.getItem("type")!="Conformance") {
+					$('#selectedProject').append(" / GUs: "+sessionStorage.getItem("guNames"));
 				}
 				
 				var token = $("meta[name='_csrf']").attr("content");
 				var header = $("meta[name='_csrf_header']").attr("content");
+				
+				var data = {};
+				for (var j = 0; j < sessionStorage.length; j++) {
+					var key = sessionStorage.key(j);
+					data[key] = sessionStorage.getItem(key);
+				}
 				
 				$.ajax({
 					   url: 'end/save',
@@ -84,18 +97,16 @@
 				            xhr.setRequestHeader(header, token);
 				        },
 					   data: {
-						   	data : sessionStorage	
+						   	data : data	
 						   }
-					});
-				//sessionStorage.clear();		
-						
+					});				
 			});
 		</script>
 		
 		<!-- Logout form script -->
 		<script>
 			function formSubmit() {
-				document.getElementById("logoutForm").submit();
+				$('#logoutForm').submit();
 			}
 		</script>
     </body>

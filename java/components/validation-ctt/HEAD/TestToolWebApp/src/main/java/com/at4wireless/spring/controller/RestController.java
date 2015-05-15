@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *      Permission to use, copy, modify, and/or distribute this software for any
+ *      purpose with or without fee is hereby granted, provided that the above
+ *      copyright notice and this permission notice appear in all copies.
+ *      
+ *      THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *      WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *      MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *      ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *      WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *      ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *      OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *******************************************************************************/
+
 package com.at4wireless.spring.controller;
 
 import java.io.BufferedOutputStream;
@@ -14,6 +30,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -61,7 +78,12 @@ import com.at4wireless.spring.model.RestProject;
 import com.at4wireless.spring.service.CertificationReleaseService;
 import com.at4wireless.spring.service.DutService;
 import com.at4wireless.spring.service.ProjectService;
+import com.at4wireless.spring.service.TestCaseService;
 
+/**
+ * This class manages all actions related with REST 
+ * 
+ */
 @Controller
 @RequestMapping(value="/rest")
 public class RestController {
@@ -78,21 +100,78 @@ public class RestController {
 	@Autowired
 	private GoldenUnitDAO guDao;
 	
+	@Autowired
+	private TestCaseService tcService;
+	
+	
+	/**
+	 * Sends the list of projects of a certain user
+	 * 
+	 * @param 	user	user whose projects are going to be sent
+	 * @return			project list
+	 */
 	@RequestMapping(value="/getList/{user}", method = RequestMethod.GET)
 	public @ResponseBody List<RestProject> getList(@PathVariable String user) {
 		return projectService.getRestData(user);
 	}
 	
+	/**
+	 * Checks if a technology package is updated
+	 * @param 	technology	certification release version
+	 * @return				true if updated, false and release number otherwise
+	 */
+	@RequestMapping(value="/isLastTechnologyVersion/{technology}", method = RequestMethod.GET)
+	public @ResponseBody String isLastTechnologyVersion(@PathVariable String technology) {
+		
+		System.out.println(technology);
+		if (technology.matches("v[\\d]+_[\\d]+_[\\d]+[a-z]?_R[\\d]+")) {
+			String[] str = technology.split("_");
+			
+			String url = File.separator+"Allseen"
+					+File.separator+"Technology";
+			
+			File folder = new File(url);
+			File[] listOfFiles = folder.listFiles();
+			String release = str[0]+"."+str[1]+"."+str[2];
+			String higher="TestCases_Package_"+release+"_"+str[3]+".jar";
+			
+			for (File f : listOfFiles) {
+				if (f.getName().toLowerCase().contains(release.toLowerCase())) {
+					String cmp = compare(higher.split("_")[3],f.getName().split("_")[3]);
+					
+					if (cmp.equals("higher")) {
+						higher=f.getName();
+					}
+				}
+			}
+			
+			if(higher.equals("TestCases_Package_"+release+"_"+str[3]+".jar")) {
+				return "true";
+			} else {
+				return "false, "+higher.replaceAll("\\.", "_").split("_")[5];
+			}
+		}
+		
+		return "bad request";
+	}
+	
+	
+	/**
+	 * Sends a technology package
+	 * 
+	 * @param 	technology	requested package
+	 * @param 	response	servlet response with the requested file
+	 */
 	@RequestMapping(value="/getTechnology/{technology}", method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	@ResponseBody
 	public void getTechnology(@PathVariable String technology, HttpServletResponse response) {
 		
-		String n = technology.replaceAll("_", "\\.");
+		String[] str = technology.split("_");
+		String n = str[0]+"."+str[1]+"."+str[2]+"_"+str[3];
 		String fullPath = File.separator + "Allseen" + File.separator + "Technology" + File.separator +
 				"TestCases_Package_" +n+".jar";
-		//return new FileSystemResource(new File(fullPath));
-		
+	
 		try {
 			File f = new File(fullPath);
 		    InputStream is = new FileInputStream(f);
@@ -101,23 +180,30 @@ public class RestController {
 		    response.flushBuffer();
 		    is.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
-        //File downloadFile = new File(fullPath);
-        /*return Response.ok(downloadFile, MediaType.APPLICATION_OCTET_STREAM)
-        	      .header("Content-Disposition", "attachment; filename=\"" + downloadFile.getName() + "\"" ) //optional
-        	      .build();*/
 	}
 	
+	
+	/**
+	 * Sends all information related to a project
+	 * 
+	 * @param 	user	user
+	 * @param 	id		project 	id
+	 * @return						project configuration file
+	 * @throws 			IOException if file does not exist
+	 */
 	@RequestMapping(value="/getProject/{user}/{id}", method = RequestMethod.GET)
 	public @ResponseBody String getProject(@PathVariable String user, @PathVariable int id) throws IOException {
-		//List<Project> projectList = projectDao.list(user);
-		
+	
 		String config = null;
 		JSONObject xmlJSONObj = null;
 		
 		for (Project p : projectService.list(user)) {
 			if(p.getIdProject()==id) {
+				if(p.isHasResults()) {
+					appendLastExecution(p.getConfiguration(), p.getResults());
+				}
 				config = readFile(p.getConfiguration(), StandardCharsets.UTF_8);
 				try {
 					xmlJSONObj = XML.toJSONObject(config);
@@ -127,10 +213,86 @@ public class RestController {
 				}
 			}
 		}
-		//return readFile("/config_"+id+".xml", StandardCharsets.UTF_8);
 		return xmlJSONObj.toString();
 	}
 	
+	
+	/**
+	 * Writes last execution of testcases when configuration file is requested
+	 * 
+	 * @param 	configuration	configuration file path
+	 * @param 	results			results file path
+	 */
+	private void appendLastExecution(String configuration, String results) {
+		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder docBuilder;
+		try {
+			docBuilder = docFactory.newDocumentBuilder();
+			Document doc = docBuilder.parse(new FileInputStream(configuration));
+			
+			XPath xPath = XPathFactory.newInstance().newXPath();
+			
+			String expression = "/Project/TestCase/Name";
+			String expression2 = "/Project/TestCase/LastExec";
+			String expression3 = "/Project/TestCase/LastVerdict";
+			NodeList nodeList = (NodeList) xPath.compile(expression).evaluate(doc, XPathConstants.NODESET);
+			NodeList nodeList2 = (NodeList) xPath.compile(expression2).evaluate(doc, XPathConstants.NODESET);
+			NodeList nodeList3 = (NodeList) xPath.compile(expression3).evaluate(doc, XPathConstants.NODESET);
+			
+			for (int i = 0; i < nodeList.getLength(); i++) {
+
+			    String str = tcService.lastExecution(nodeList.item(i).getFirstChild().getNodeValue(), results);
+			    String str2[] = str.split(", ");
+			    if(str2.length==2) {
+			    	nodeList2.item(i).getFirstChild().setNodeValue(str2[0]);
+			    	nodeList3.item(i).getFirstChild().setNodeValue(str2[1]);
+			    }
+			}
+			
+			Transformer transformer;
+			try {
+				transformer = TransformerFactory.newInstance().newTransformer();
+				Source input = new DOMSource(doc);
+
+				try {
+					transformer.transform(input, new StreamResult(new File(configuration)));
+				} catch (TransformerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} catch (TransformerConfigurationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (TransformerFactoryConfigurationError e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	/**
+	 * Sends results of a certain project
+	 * 
+	 * @param 	user		user
+	 * @param 	id			project id
+	 * @return				results xml
+	 * @throws 	IOException	if file does not exist
+	 */
 	@RequestMapping(value="/getResults/{user}/{id}", method = RequestMethod.GET)
 	public @ResponseBody String getResults(@PathVariable String user, @PathVariable int id) throws IOException {
 		
@@ -144,16 +306,19 @@ public class RestController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		/*for (Project p : projectDao.list(user)) {
-			if(p.getIdProject()==id) {
-				config = readFile(p.getConfiguration(), StandardCharsets.UTF_8);
-				xmlJSONObj = XML.toJSONObject(config);
-			}
-		}*/
-		//return readFile("/config_"+id+".xml", StandardCharsets.UTF_8);
 		return xmlJSONObj.toString();
 	}
 	
+	
+	/**
+	 * Sends full log of a certain execution
+	 * 
+	 * @param 	user		user
+	 * @param 	id			project id
+	 * @param 	log			log file requested
+	 * @return				log file content
+	 * @throws IOException	if file does not exist
+	 */
 	@RequestMapping(value="/getFullLog/{user}/{id}/{log}", method = RequestMethod.GET)
 	public @ResponseBody String getFullLog(@PathVariable String user, @PathVariable int id,
 			@PathVariable String log) throws IOException {
@@ -163,6 +328,14 @@ public class RestController {
 		return readFile(path, StandardCharsets.UTF_8);
 	}
 	
+	
+	/**
+	 * Receives the result of the execution of a testcase
+	 * @param 	user		user
+	 * @param 	id			project id
+	 * @param 	requestBody	body of the servlet request
+	 * @return				OK if processed, UNAUTHORIZED otherwise
+	 */
 	@RequestMapping(value="/sendResult/{user}/{id}", method = RequestMethod.POST,
 			consumes = "application/xml")
 	public ResponseEntity<String> sendResult(@PathVariable String user, @PathVariable int id,
@@ -275,9 +448,20 @@ public class RestController {
 				
 	}
 	
+	
+	/**
+	 * Receives a log file
+	 * 
+	 * @param 	user	user
+	 * @param	id		project id
+	 * @param 	name	log file name
+	 * @param 	file	file content
+	 * @return			success or fail response
+	 */
 	@RequestMapping(value="/upload/{user}/{id}", method = RequestMethod.POST)
 	public @ResponseBody String handleFileUpload(@PathVariable String user, @PathVariable int id,
-			@RequestParam("name") String name, @RequestParam("file") MultipartFile file) {
+			@RequestParam("name") String name, @RequestParam("file") MultipartFile file,
+			@RequestParam("hash") String hash) {
 
 		for (Project p : projectService.list(user)) {
 			if (p.getIdProject()==id) {
@@ -285,6 +469,8 @@ public class RestController {
 				DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 				DocumentBuilder builder = null;
 				boolean existsOnXML = false;
+				Document xmlDocument = null;
+				Node found = null;
 				
 				try {
 					builder = builderFactory.newDocumentBuilder();
@@ -293,7 +479,7 @@ public class RestController {
 				}
 				
 				try {
-					Document xmlDocument = builder.parse(new FileInputStream(File.separator+"Allseen"
+					xmlDocument = builder.parse(new FileInputStream(File.separator+"Allseen"
 							+File.separator+"Users"+File.separator+user+File.separator+id
 							+File.separator+"result.xml"));
 					
@@ -301,9 +487,11 @@ public class RestController {
 					
 					String expression = "/Results/TestCase/LogFile";
 					NodeList nodeList = (NodeList) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODESET);
+
 					for (int i = 0; i < nodeList.getLength(); i++) {
 					    if(nodeList.item(i).getFirstChild().getNodeValue().equalsIgnoreCase(name)) {
 					    	existsOnXML=true;
+					    	found = nodeList.item(i);
 					    }
 					}
 				} catch (SAXException e) {
@@ -317,13 +505,52 @@ public class RestController {
 				if ((!file.isEmpty())&(existsOnXML)) {
 		            try {
 		                byte[] bytes = file.getBytes();
-		                BufferedOutputStream stream =
-		                        new BufferedOutputStream(new FileOutputStream(new File(File.separator+"Allseen"
-		    							+File.separator+"Users"+File.separator+user+File.separator+id
-		    							+File.separator+name)));
-		                stream.write(bytes);
-		                stream.close();
-		                return "You successfully uploaded " + name + "!";
+		                
+		                byte[] messageDigest = MessageDigest.getInstance("MD5").digest(bytes);
+		                
+		                StringBuffer hexString = new StringBuffer();
+		                for (int i=0; i<messageDigest.length; i++) {
+		                	String hex = Integer.toHexString(0xFF & messageDigest[i]);
+		                	if(hex.length() == 1) {
+		                		hexString.append('0');
+		                	}
+		                	hexString.append(hex);
+		                }
+		                
+		                if(hash.equalsIgnoreCase(hexString.toString())) {
+			                BufferedOutputStream stream =
+			                        new BufferedOutputStream(new FileOutputStream(new File(File.separator+"Allseen"
+			    							+File.separator+"Users"+File.separator+user+File.separator+id
+			    							+File.separator+name)));
+			                stream.write(bytes);
+			                stream.close();
+			                return "You successfully uploaded " + name + "!";
+		                } else {
+		                	xmlDocument.getFirstChild().removeChild(found.getParentNode());
+		                	Transformer transformer;
+							try {
+								transformer = TransformerFactory.newInstance().newTransformer();
+								
+								Result output = new StreamResult(new File(File.separator+"Allseen"
+										+File.separator+"Users"+File.separator+user+File.separator+id
+										+File.separator+"result.xml"));
+								Source input = new DOMSource(xmlDocument);
+	
+								try {
+									transformer.transform(input, output);
+								} catch (TransformerException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							} catch (TransformerConfigurationException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (TransformerFactoryConfigurationError e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+		                	return "You failed to upload "+name+". Wrong MD5.";
+		                }
 		            } catch (Exception e) {
 		                return "You failed to upload " + name + " => " + e.getMessage();
 		            }
@@ -337,12 +564,27 @@ public class RestController {
 
     }
 	
+	
+	/**
+	 * Reads characters of an input file
+	 * 
+	 * @param 	path		location of the file
+	 * @param 	encoding	encoding of the file
+	 * @return				string with the content of the file
+	 * @throws 	IOException	if file does not exist
+	 */
 	protected static String readFile(String path, Charset encoding) throws IOException 
 	{
 		byte[] encoded = Files.readAllBytes(Paths.get(path));
 		return new String(encoded, encoding);
 	}
 	
+	
+	/**
+	 * Sends last version of Local Agent
+	 * 
+	 * @param response	servlet response with the required file
+	 */
 	@RequestMapping(value="/getLastVersion", method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	 public @ResponseBody void getLastVersion(HttpServletResponse response) {
@@ -363,13 +605,17 @@ public class RestController {
 			}
 	}
 
-	
+	/**
+	 * Checks if the Local Agent in use is updated
+	 * 
+	 * @param 	v	local agent version
+	 * @return		string with the result of the checking
+	 */
 	@RequestMapping(value="/isLastVersion/{v}", method=RequestMethod.GET)
 	public @ResponseBody String isLastVersion(@PathVariable String v) {
 		
 		System.out.println(v);
 		if (v.matches("\\d+_\\d+_\\d+")) {
-			//System.out.println(lastUpload());
 			String highest = lastUpload();
 			String result = compare(highest,"_"+v);
 			
@@ -384,6 +630,10 @@ public class RestController {
 		return "bad request";
 	}
 	
+	/**
+	 * Returns the highest version stored of the Local Agent
+	 * @return	string with the name of the file
+	 */
 	private String lastUpload() {
 		String url = File.separator+"Allseen"
 				+File.separator+"localAgent";
@@ -405,17 +655,19 @@ public class RestController {
 		return higher;
 	}
 	
+	/**
+	 * Compares two versions of Local Agent
+	 * @param 	s1	version one of comparison
+	 * @param 	s2	version two of comparison
+	 * @return		higher/lower/equal
+	 */
 	private String compare(String s1, String s2) {
 		String aux1 = s1.replaceAll("\\D+", "_");
 		String aux2 = s2.replaceAll("\\D+", "_");
 		String[] aux3 = aux1.split("_");
 		String[] aux4 = aux2.split("_");
-		
-		/*for(int i=0; i<aux3.length; i++) {
-			System.out.println(aux3[i]+":"+aux4[i]);
-		}*/
-		
-		if (Integer.parseInt(aux3[1])>Integer.parseInt(aux4[1])) {
+				
+		/*if (Integer.parseInt(aux3[1])>Integer.parseInt(aux4[1])) {
 			return "lower";
 		} else if (Integer.parseInt(aux3[1])==Integer.parseInt(aux4[1])) {
 			if (Integer.parseInt(aux3[2])>Integer.parseInt(aux4[2])) {
@@ -427,7 +679,15 @@ public class RestController {
 					return "equal";
 				}
 			}
+		}*/
+		
+		for (int i=1; i<aux3.length; i++) {
+			if (Integer.parseInt(aux3[i])>Integer.parseInt(aux4[i])) {
+				return "lower";
+			} else if (Integer.parseInt(aux3[i])<Integer.parseInt(aux4[i])) {
+				return "higher";
+			}
 		}
-		return "higher";
+		return "equal";
 	}
 }

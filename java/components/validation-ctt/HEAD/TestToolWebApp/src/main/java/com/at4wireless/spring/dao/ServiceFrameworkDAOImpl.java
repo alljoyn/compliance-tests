@@ -15,46 +15,47 @@
  *******************************************************************************/
 package com.at4wireless.spring.dao;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.at4wireless.spring.model.Category;
-import com.at4wireless.spring.model.Project;
+import com.at4wireless.spring.model.ServiceFramework;
 
 @Repository
-public class CategoryDAOImpl implements CategoryDAO {
+public class ServiceFrameworkDAOImpl implements ServiceFrameworkDAO {
+
 	@Autowired
 	private SessionFactory sessionFactory;
 
 	@Override
-	public List<Category> list() {
+	public List<ServiceFramework> list() {
 		@SuppressWarnings("unchecked")
-		List<Category> listCategory = (List<Category>) sessionFactory.getCurrentSession()
-				.createCriteria(Category.class)
+		List<ServiceFramework> listService = (List<ServiceFramework>) sessionFactory.getCurrentSession()
+				.createCriteria(ServiceFramework.class)
 				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
 
-		return listCategory;
+		return listService;
+	}
+	
+	@Override
+	public List<BigInteger> getServices(int idProject) {
+		@SuppressWarnings("unchecked")
+		List<BigInteger> intList = (List<BigInteger>) sessionFactory.getCurrentSession()
+				.createSQLQuery("select (id_service) from project_services where id_project="+idProject+";").list();
+		
+		return intList;
 	}
 
 	@Override
-	@Transactional
-	public Category getCategoryById(int idCategory) {
+	public List<String> getServicesByName(int idProject) {
 		@SuppressWarnings("unchecked")
-		List<Category> listCategory = (List<Category>) sessionFactory.getCurrentSession()
-				.createCriteria(Category.class)
-					.add(Restrictions.like("idCategory", idCategory))
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-		
-		if(listCategory.isEmpty()) {
-			return null;
-		} else {
-			return listCategory.get(0);
-		}
+		List<String> stringList = (List<String>) sessionFactory.getCurrentSession()
+				.createSQLQuery("select (name) from services where id_service in"
+						+"(select id_service from project_services where id_project="+idProject+");").list();
+		return stringList;
 	}
 }

@@ -35,6 +35,7 @@
         	<jsp:include page="/WEB-INF/views/header.jsp"/>
 		    
 		    <div class="row" align="right">
+		    	<h4 id="selectedProject" class="pull-left"></h4>
 		    	<c:if test="${pageContext.request.userPrincipal.name != null}">
 					<h4>
 						Welcome : ${pageContext.request.userPrincipal.name} | <a
@@ -64,7 +65,7 @@
 					        		<td width="30%">${parameter.name}</td>
 									<td width="57%">${parameter.description}</td>
 									<td width="10%">
-									<input type="text" class="form-control" value="${parameter.value}"/>
+									<input type="number" min="1" class="form-control" value="${parameter.value}"/>
 									</td>								
 					        	</tr>
 						</c:forEach>
@@ -103,12 +104,20 @@
 					});
 				}
 				
+				$('#selectedProject').append("Project: "+sessionStorage.getItem("projectName"));
+				$('#selectedProject').append(" / DUT: "+sessionStorage.getItem("dutName"));
+				if(sessionStorage.getItem("type")!="Conformance") {
+					$('#selectedProject').append(" / GUs: "+sessionStorage.getItem("guNames"));
+				}
+				
 				var w = $('.scroll-tbody').find('.scroll-tr').first().width();
 				$('.scroll-thead').find('.scroll-tr').width(w);
 				
 				var MyRows = $('.table').find('tbody').find('tr');
 				for (var i = 0; i < MyRows.length; i++) {
 					var id = $(MyRows[i]).find('td:eq(1)').html();
+					
+					$(MyRows[i]).find('.form-control').keypress(isNumberKey);
 					
 					if (sessionStorage.hasOwnProperty(id)) {
 						$(MyRows[i]).find('.form-control').val(sessionStorage.getItem(id));
@@ -120,8 +129,17 @@
 		<!-- Logout form script -->
 		<script>
 			function formSubmit() {
-				document.getElementById("logoutForm").submit();
+				$('#logoutForm').submit();
 			}
+		</script>
+		
+		<script>
+			function isNumberKey(evt){
+			    var charCode = (evt.which) ? evt.which : event.keyCode
+			    if (charCode > 31 && (charCode < 48 || charCode > 57))
+			        return false;
+			    return true;
+			}    
 		</script>
 		
 		<!-- Button scripts -->
@@ -131,17 +149,16 @@
 				var MyRows = $('.table').find('tbody').find('tr');
 				for (var i = 0; i < MyRows.length; i++) {
 					var id = $(MyRows[i]).find('td:eq(1)').html();
-					//var value = $(MyRows[i]).find('.is_editable').html();
 					var value = $(MyRows[i]).find('.form-control').val();
 					
 					sessionStorage.setItem(id, value);
-				}		
+				}
 			});
 	  		
 	  		$('#prevButton').on('click', function(e){
 				e.preventDefault();
 				
-				document.getElementById('idProject').value = sessionStorage.getItem("idProject");
+				$('#idProject').val(sessionStorage.getItem('idProject'));
 				$('#prevForm').submit();
 			});  
 		</script>

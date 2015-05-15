@@ -35,6 +35,7 @@
         	<jsp:include page="/WEB-INF/views/header.jsp"/>
 		    
 		    <div class="row" align="right">
+		    	<h4 id="selectedProject" class="pull-left"></h4>
 		    	<c:if test="${pageContext.request.userPrincipal.name != null}">
 					<h4>
 						Welcome : ${pageContext.request.userPrincipal.name} | <a
@@ -67,9 +68,9 @@
 				       		<thead class="scroll-thead">
 				       			<tr class="scroll-tr">
 						        	<th width="3%">Id</th>
-						        	<th width="30%">Name</th>
-						        	<th width="57%">Description</th>
-						        	<th width="10%">Value</th>
+						        	<th width="25%">Name</th>
+						        	<th width="55%">Description</th>
+						        	<th width="17%">Value</th>
 						        </tr>
 						    </thead>
 				        	<tbody class="scroll-tbody">
@@ -77,11 +78,11 @@
 									<c:if test="${ixit.serviceGroup==service.idService}">
 							        	<tr class="scroll-tr">
 							        		<td width="3%">${ixit.idIxit}</td>
-							        		<td width="30%">${ixit.name}</td>
-											<td width="57%">${ixit.description}</td>
-											<td width="10%">
+							        		<td width="25%">${ixit.name}</td>
+											<td width="55%">${ixit.description}</td>
+											<td width="17%">
 											<!-- <a href=# class="is_editable">${ixit.value}</a>  -->
-											<input type="text" class="form-control" value="${ixit.value}"/>
+											<input type="text" class="form-control" maxlength="255" value="${ixit.value}"/>
 											</td>								
 							        	</tr>
 						        	</c:if>
@@ -131,6 +132,12 @@
 					});
 				}
 				
+				$('#selectedProject').append("Project: "+sessionStorage.getItem("projectName"));
+				$('#selectedProject').append(" / DUT: "+sessionStorage.getItem("dutName"));
+				if(sessionStorage.getItem("type")!="Conformance") {
+					$('#selectedProject').append(" / GUs: "+sessionStorage.getItem("guNames"));
+				}
+				
 				$('#1').addClass('in active');
 				
 				var w = $('.scroll-tbody').find('.scroll-tr').first().width();
@@ -139,6 +146,28 @@
 				var MyRows = $('.table').find('tbody').find('tr');
 				for (var i = 0; i < MyRows.length; i++) {
 					var id = $(MyRows[i]).find('td:eq(0)').html();
+					
+					if((id=="1")||(id=="12")||(id=="13")||(id=="14")||(id=="15")||(id=="16")
+							||(id=="17")||(id=="24")||(id=="25")||(id=="26")||(id=="27")
+							||(id=="28")||(id=="29")||(id=="30")||(id=="31")||(id=="32")
+							||(id=="33")||(id=="35")||(id=="36")||(id=="37")||(id=="38")
+							||(id=="39")||(id=="41")||(id=="42")||(id=="43")||(id=="44")
+							||(id=="45")||(id=="46")||(id=="47")||(id=="48")||(id=="49")
+							||(id=="50")||(id=="52")||(id=="53")||(id=="54")||(id=="55")
+							||(id=="56")||(id=="57")||(id=="58")||(id=="59")||(id=="63")
+							||(id=="64")||(id=="65")||(id=="66")||(id=="67")||(id=="68")
+							||(id=="69")||(id=="71")||(id=="72")||(id=="73")||(id=="74")
+							||(id=="75")||(id=="76")||(id=="77")) {
+						$(MyRows[i]).find('.form-control').prop('type','number');
+						$(MyRows[i]).find('.form-control').prop('min','1');
+						$(MyRows[i]).find('.form-control').keypress(isNumberKey);
+					}else if(id=="79") {
+						$(MyRows[i]).find('.form-control').prop('type','date');
+					}else if(id=="80") {
+						$(MyRows[i]).find('.form-control').prop('type','url');
+					}
+					
+					
 					if((id=="2")||(id=="4")||(id=="5")||(id=="7")||(id=="8")||(id=="9")||(id=="11")) {
 						$(MyRows[i]).find('.form-control').addClass('disabled');
 						$(MyRows[i]).find('.form-control').prop('disabled',true);
@@ -154,10 +183,19 @@
 			});
 		</script>
 		
+		<script>
+			function isNumberKey(evt){
+			    var charCode = (evt.which) ? evt.which : event.keyCode
+			    if (charCode > 31 && (charCode < 48 || charCode > 57))
+			        return false;
+			    return true;
+			}    
+		</script>
+		
 		<!-- Logout form script -->
 		<script>
 			function formSubmit() {
-				document.getElementById("logoutForm").submit();
+				$('#logoutForm').submit();
 			}
 		</script>
 		
@@ -175,14 +213,14 @@
 					sessionStorage.setItem(id, value);
 				}
 				
-				document.getElementById('idProjectNext').value = sessionStorage.getItem("idProject");
+				$('#idProjectNext').val(sessionStorage.getItem('idProject'));
 				$('#nextForm').submit();		
 			});
 	  		
 	  		$('#prevButton').on('click', function(e){
 				e.preventDefault();
 				
-				document.getElementById('idProjectPrev').value = sessionStorage.getItem("idProject");
+				$('#idProjectPrev').val(sessionStorage.getItem('idProject'));
 				$('#prevForm').submit();
 			});  
 		</script>

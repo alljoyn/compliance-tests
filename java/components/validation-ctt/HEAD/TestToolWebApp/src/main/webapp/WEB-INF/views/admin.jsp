@@ -220,7 +220,7 @@
 		<!-- Logout form script -->
 		<script>
 			function formSubmit() {
-				document.getElementById("logoutForm").submit();
+				$('#logoutForm').submit();
 			}
 		</script>
 		<script>
@@ -235,6 +235,7 @@
 			$('#createContinue').on('click', function(){
 										
 				$.ajax({
+					cache: false,
 					type : 'GET',
 					url : 'admin/testcases',
 					data : {
@@ -264,9 +265,6 @@
 							var state = ((selected=="A")||(selected=="B"));
 							$(this).closest('tr').find('[type=checkbox]').prop('checked', state);
 						});
-						
-						/*var w = $('#tcTable').find('.scroll-tbody').find('.scroll-tr').first().width();
-						$('#tcTable').find('.scroll-thead').find('.scroll-tr').width(w);*/
 				   }
 				});
 			});
@@ -387,6 +385,7 @@
 			$('#editButton').on('click', function(){
 				
 				$.ajax({
+					cache: false,
 					type : 'GET',
 					url : 'admin/tccl/edit',
 					data : {
@@ -475,6 +474,7 @@
 			$('#viewButton').on('click', function(){
 				
 				$.ajax({
+					cache: false,
 					type : 'GET',
 					url : 'admin/tccl/edit',
 					data : {

@@ -12,11 +12,7 @@
 	http://www.springframework.org/schema/security/spring-security-3.2.xsd
 	http://www.springframework.org/schema/security/oauth2
 	http://www.springframework.org/schema/security/spring-security-oauth2-2.0.xsd">
- 
- 	<!-- RESTFUL -->
-	<!-- <security:http pattern="/rest/**" security="none">
-	</security:http> -->
-	
+ 	
 	<!-- This is default url to get a token from OAuth -->
 	<security:http pattern="/oauth/token" create-session="stateless" authentication-manager-ref="clientAuthenticationManager">
 		<security:intercept-url pattern="/rest/oauth/token" access="IS_AUTHENTICATED_FULLY"/>
@@ -105,42 +101,9 @@
 	</security:global-method-security>
 	
 	<oauth:expression-handler id="oauthExpressionHandler"/>
-	<oauth:web-expression-handler id="oauthWebExpressionHandler"/> 
-		
-	<!-- HTTP -->
- 	<!-- Security configuration for other resources. Use login form. -->
-	<security:http use-expressions="true"> 
-		<security:intercept-url pattern="/login*" access="permitAll"/>
-		<security:intercept-url pattern="/login/**" access="permitAll"/>
-		<security:intercept-url pattern="/" access="permitAll"/>
-		<security:intercept-url pattern="/resources/**" access="permitAll"/>
-		<security:intercept-url pattern="/admin*" access="hasRole('ROLE_ADMIN')"/>
-		<security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
-		<security:intercept-url pattern="/**" access="hasRole('ROLE_USER')"/>
-		
-		<!-- access denied page -->
-		<!-- <security:access-denied-handler error-page="/403"/>  -->
-		
-		<security:form-login 
-		    login-page="/login" 
-		    default-target-url="/project" 
-			authentication-failure-url="/login?error" 
-			username-parameter="username"
-			password-parameter="password"
-			authentication-success-handler-ref="myAuthenticationSuccessHandler" />
-		<security:logout logout-success-url="/login?logout" />
-		<!-- enable csrf protection -->
-		<security:csrf/>
-		<security:access-denied-handler ref="myAccessDeniedHandler"/>
-	</security:http>
+	<oauth:web-expression-handler id="oauthWebExpressionHandler"/>
 	
-	<bean id="myAccessDeniedHandler"
-			class="com.at4wireless.security.CustomAccessDeniedHandler"/>
-	
-	<bean id="myAuthenticationSuccessHandler" 
-			class="com.at4wireless.security.MySimpleUrlAuthenticationSuccessHandler" />
- 
- 	<!-- SECURITY PROVIDER -->
+	<!-- SECURITY PROVIDER -->
 	<security:authentication-manager alias="authenticationManager">
 		<security:authentication-provider>
 		  <security:jdbc-user-service data-source-ref="dataSource"
@@ -150,11 +113,4 @@
 		  			"select username, role from user_roles where username=?"/>
 		</security:authentication-provider>
 	</security:authentication-manager>
-	
-	<!-- JTF: Esto hay que aclarar para qué sirve y si está bien colocado aquí -->
-	<!-- <security:global-method-security
-		secured-annotations="enabled" jsr250-annotations="enabled"
-		pre-post-annotations="enabled">
-	</security:global-method-security> -->
- 
 </beans>
