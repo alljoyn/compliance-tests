@@ -147,6 +147,7 @@ import org.xml.sax.SAXException;
 
 
 
+
 import static com.at4wireless.alljoyn.core.audio.AudioSinkParameterSignature.Channels;
 import static com.at4wireless.alljoyn.core.audio.AudioSinkParameterSignature.Format;
 import  static com.at4wireless.alljoyn.core.audio.AudioSinkParameterSignature.Rate;
@@ -160,6 +161,7 @@ import static com.at4wireless.alljoyn.core.audio.MediaType.AudioXRaw;
 import static com.at4wireless.alljoyn.core.audio.MediaType.AudioXUnknown;
 import static com.at4wireless.alljoyn.core.audio.MediaType.ImagePrefix;
 import static com.at4wireless.alljoyn.core.audio.MediaType.ImageJpeg;
+
 
 
 
@@ -268,9 +270,6 @@ import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionSubNode;
 import com.at4wireless.alljoyn.core.introspection.bean.NodeDetail;
 
 
-
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class AudioService.
  */
@@ -292,8 +291,8 @@ public class AudioService {
 	/** The time out. */
 	private  int  timeOut=30;
 
-/** The port. */
-private  short port=91;
+	/** The port. */
+	private  short port=91;
 
 	/** The data size. */
 	private  final int DATA_SIZE = 16 * 1024;
@@ -397,8 +396,7 @@ private  short port=91;
 	/** The stream. */
 	private  Stream stream;
 
-	/*private  UUID dutAppId;
-	private  String dutDeviceId;*/
+	
 
 	 /** The ICSA u_ audio service framework. */
 	boolean ICSAU_AudioServiceFramework=false;
@@ -444,29 +442,7 @@ private  short port=91;
 	 
  	/** The ICSA u_ volume control. */
  	boolean ICSAU_VolumeControl=false;
-	//
-	 /*String IXITCO_AppId=null;
-	 String IXITCO_DefaultLanguage=null;
-	 String IXITCO_DeviceId=null;
-	//
-
-	 String IXITAU_StreamVersion=null;
-	 String IXITAU_TestObjectPath=null;
-	 String IXITAU_PortVersion=null;
-	 String IXITAU_AudioSinkVersion=null;
-	 String IXITAU_timeNanos=null;
-	 String IXITAU_AudioSourceVersion=null;
-	 String IXITAU_ImageSinkVersion=null;
-	 String IXITAU_ImageSourceVersion=null;
-	 String IXITAU_MetadataSinkVersion=null;
-
-	 String IXITAU_MetadataSourceVersion=null;
-
-	 String IXITAU_ControlVolumeVersion=null;
-	 String IXITAU_delta=null;
-	 String IXITAU_change=null;
-	 String IXITAU_ClockVersion=null;
-	 String IXITAU_adjustNanos=null;*/
+	
 	 
 	 /** The ixit. */
 	Map<String,String> ixit;
@@ -603,7 +579,7 @@ private  short port=91;
 			if(e.getMessage().equals("Timed out waiting for About announcement")){
 				fail("Timed out waiting for About announcement");
 			}else{
-				fail("Exception: "+e.toString());
+				fail("Exception: "+e.getMessage());
 			}
 		}
 	}
@@ -2915,10 +2891,6 @@ private  short port=91;
 			logger.info("test setUp started");
 
 
-			/*dutDeviceId = IXITCO_DeviceId;
-			logger.info(String.format("Running Audio test case against Device ID: %s", dutDeviceId));
-			dutAppId = UUID.fromString(IXITCO_AppId);
-			logger.info(String.format("Running Audio test case against App ID: %s", dutAppId));*/
 			logger.info(String.format("Running test case against Device ID: %s", ixit.get("IXITCO_DeviceId")));
 			logger.info(String.format("Running test case against App ID: %s", UUID.fromString(ixit.get("IXITCO_AppId"))));
 
@@ -2932,12 +2904,12 @@ private  short port=91;
 			logger.info(String.format("Executing Audio test against Stream object found at %s", streamObjectPath));
 
 			serviceHelper = getServiceHelper();
-			//serviceHelper.initialize(BUS_APPLICATION_NAME, dutDeviceId, dutAppId);
 			serviceHelper.initialize(BUS_APPLICATION_NAME, ixit.get("IXITCO_DeviceId"), UUID.fromString(ixit.get("IXITCO_AppId")));
 
 			deviceAboutAnnouncement = serviceHelper.waitForNextDeviceAnnouncement(determineAboutAnnouncementTimeout(), TimeUnit.SECONDS);
-			assertNotNull("Timed out waiting for About announcement", deviceAboutAnnouncement);
-			
+			if(deviceAboutAnnouncement==null){
+				throw new Exception("Timed out waiting for About announcement");
+			}				
 			serviceHelper.joinSession(BUS_APPLICATION_NAME, port);
 			aboutClient = serviceHelper.connectAboutClient(deviceAboutAnnouncement);
 
@@ -2946,7 +2918,7 @@ private  short port=91;
 		}
 		catch (Exception exception)
 		{
-			logger.info("Exception while setting up: "+ exception.toString());
+			logger.info("Exception while setting up: "+ exception.getMessage());
 
 			try
 			{
@@ -2954,7 +2926,7 @@ private  short port=91;
 			}
 			catch (Exception newException)
 			{
-				logger.info("Exception releasing resources: "+ newException.toString());
+				logger.info("Exception releasing resources: "+ newException.getMessage());
 			}
 
 			throw exception;

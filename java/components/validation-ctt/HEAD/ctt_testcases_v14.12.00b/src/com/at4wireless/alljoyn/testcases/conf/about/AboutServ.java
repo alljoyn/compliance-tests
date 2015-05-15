@@ -1959,7 +1959,7 @@ public class AboutServ {
 		if (aboutMap.containsKey(AboutKeys.ABOUT_SUPPORT_URL))
 		{
 			logger.info("Validating Support Url: "+aboutMap.get(AboutKeys.ABOUT_SUPPORT_URL).getObject(String.class));
-			String supportUrl = aboutMap.get(AboutKeys.ABOUT_SUPPORT_URL).toString();
+			String supportUrl = aboutMap.get(AboutKeys.ABOUT_SUPPORT_URL).getObject(String.class);
 			if(!isValidUrl(supportUrl)){
 
 				fail(String.format("%s is not a valid URL", supportUrl));

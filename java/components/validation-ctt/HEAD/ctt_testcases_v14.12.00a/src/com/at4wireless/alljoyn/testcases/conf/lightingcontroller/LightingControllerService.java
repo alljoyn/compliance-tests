@@ -2152,8 +2152,7 @@ public class LightingControllerService {
 		String verdict=null;
 		if(inconc){
 			verdict="INCONC";
-		}
-		if(pass){
+		}else if(pass){
 			verdict="PASS";
 		}else if(!pass){
 			verdict="FAIL";
