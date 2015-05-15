@@ -147,6 +147,7 @@ import org.xml.sax.SAXException;
 
 
 
+
 import static com.at4wireless.alljoyn.core.audio.AudioSinkParameterSignature.Channels;
 import static com.at4wireless.alljoyn.core.audio.AudioSinkParameterSignature.Format;
 import  static com.at4wireless.alljoyn.core.audio.AudioSinkParameterSignature.Rate;
@@ -160,6 +161,7 @@ import static com.at4wireless.alljoyn.core.audio.MediaType.AudioXRaw;
 import static com.at4wireless.alljoyn.core.audio.MediaType.AudioXUnknown;
 import static com.at4wireless.alljoyn.core.audio.MediaType.ImagePrefix;
 import static com.at4wireless.alljoyn.core.audio.MediaType.ImageJpeg;
+
 
 
 
@@ -601,7 +603,7 @@ private  short port=91;
 			if(e.getMessage().equals("Timed out waiting for About announcement")){
 				fail("Timed out waiting for About announcement");
 			}else{
-				fail("Exception: "+e.toString());
+				fail("Exception: "+e.getMessage());
 			}
 		}
 	}
@@ -2927,8 +2929,9 @@ private  short port=91;
 			serviceHelper.initialize(BUS_APPLICATION_NAME, ixit.get("IXITCO_DeviceId"), UUID.fromString(ixit.get("IXITCO_AppId")));
 
 			deviceAboutAnnouncement = serviceHelper.waitForNextDeviceAnnouncement(determineAboutAnnouncementTimeout(), TimeUnit.SECONDS);
-			assertNotNull("Timed out waiting for About announcement", deviceAboutAnnouncement);
-			
+			if(deviceAboutAnnouncement==null){
+				throw new Exception("Timed out waiting for About announcement");
+			}			
 			
 			aboutClient = serviceHelper.connectAboutClient(deviceAboutAnnouncement);
 
@@ -2945,7 +2948,7 @@ private  short port=91;
 			}
 			catch (Exception newException)
 			{
-				logger.info("Exception releasing resources: "+ newException.toString());
+				logger.info("Exception releasing resources: "+ newException.getMessage());
 			}
 
 			throw exception;
