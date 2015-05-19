@@ -1,7 +1,21 @@
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *    Permission to use, copy, modify, and/or distribute this software for any
+ *    purpose with or without fee is hereby granted, provided that the above
+ *    copyright notice and this permission notice appear in all copies.
+ *
+ *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.at4wireless.alljoyn.localagent;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -27,7 +41,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
-import javax.swing.border.EmptyBorder;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -43,14 +56,27 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+
+/**
+ * The Class InstallLastVersionWindow.
+ */
 public class InstallLastVersionWindow extends JDialog {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 7573195888353975145L;
+	
+	/** The content panel. */
 	private final JPanel contentPanel = new JPanel();
+	
+	/** The version. */
 	String version=null;
+	
+	/** The token obtained when authenticated. */
 	String token="";
+	
+	/** The main window. */
 	MainWindow mainWindow;
 	/**
 	 * Create the dialog.
@@ -112,8 +138,7 @@ public class InstallLastVersionWindow extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.CENTER));
 			
 			JButton backButton=new JButton("");
-			backButton.setBorderPainted(false); 
-			backButton.setContentAreaFilled(false); 
+		
 			 Image img = null;
 			try {
 				
@@ -124,6 +149,9 @@ public class InstallLastVersionWindow extends JDialog {
 			}
 			backButton.setIcon(new ImageIcon(img));
 			
+			
+			Dimension preferredSize=new Dimension(83,23);
+			backButton.setPreferredSize(preferredSize);
 			
 			backButton.addActionListener(new ActionListener(){
 				@Override
@@ -138,8 +166,7 @@ public class InstallLastVersionWindow extends JDialog {
 				}});
 			JButton installButton=new JButton("");
 			
-			installButton.setBorderPainted(false); 
-			installButton.setContentAreaFilled(false); 
+			
 			 Image img2 = null;
 			try {
 				
@@ -150,7 +177,8 @@ public class InstallLastVersionWindow extends JDialog {
 			}
 			installButton.setIcon(new ImageIcon(img2));
 			
-			
+			installButton.setPreferredSize(preferredSize);
+
 			
 			installButton.addActionListener(new ActionListener(){
 				@Override
@@ -175,12 +203,17 @@ public class InstallLastVersionWindow extends JDialog {
 
 		}
 	}
+	
+	/**
+	 * Install last version to the default download folder.
+	 */
 	protected void installLastVersion() {
 		
 		
-
-		JOptionPane.showMessageDialog(null, "The installation package is going to be downloaded in the following folder: ../"
-				+ getConfigValue("DownloadPath"));
+		String path = (new File("")).getAbsolutePath();
+		JOptionPane.showMessageDialog(null, "The installation package is going to be downloaded in the following folder: \n"+path+"\\"
+				+ getConfigValue("DownloadPath").replace("/", "\\")
+				+ "\n Remember to right-click on the installation package icon and press \"Run as Administrator\"");
 
 		String urlVersion=version.replaceAll("\\.", "_");
 		String url=getConfigValue("TestToolWebAppUrl")+
@@ -243,6 +276,12 @@ public class InstallLastVersionWindow extends JDialog {
 		
 	}
 	
+	/**
+	 * Gets the configuration value from config.xml.
+	 *
+	 * @param key the key to obtain
+	 * @return the configuration value
+	 */
 	private static String getConfigValue(String key) {
 		String value="";
 		File test = new File("config.xml");
@@ -270,6 +309,13 @@ public class InstallLastVersionWindow extends JDialog {
 	}
 
 
+	/**
+	 * Gets the value from the selected tag. 
+	 *
+	 * @param tag the tag
+	 * @param element the element
+	 * @return the value
+	 */
 	private static String getValue(String tag, Element element) {
 
 		NodeList nodes = element.getElementsByTagName(tag).item(0).getChildNodes();

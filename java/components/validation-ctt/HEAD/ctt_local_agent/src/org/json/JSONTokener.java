@@ -1,3 +1,18 @@
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *    Permission to use, copy, modify, and/or distribute this software for any
+ *    purpose with or without fee is hereby granted, provided that the above
+ *    copyright notice and this permission notice appear in all copies.
+ *
+ *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package org.json;
 
 import java.io.BufferedReader;
@@ -7,6 +22,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 
+// TODO: Auto-generated Javadoc
 /*
 Copyright (c) 2002 JSON.org
 
@@ -40,12 +56,25 @@ SOFTWARE.
  */
 public class JSONTokener {
 
+    /** The character. */
     private long    character;
+    
+    /** The eof. */
     private boolean eof;
+    
+    /** The index. */
     private long    index;
+    
+    /** The line. */
     private long    line;
+    
+    /** The previous. */
     private char    previous;
+    
+    /** The reader. */
     private Reader  reader;
+    
+    /** The use previous. */
     private boolean usePrevious;
 
 
@@ -121,6 +150,11 @@ public class JSONTokener {
         return -1;
     }
 
+    /**
+     * End.
+     *
+     * @return true, if successful
+     */
     public boolean end() {
         return this.eof && !this.usePrevious;
     }

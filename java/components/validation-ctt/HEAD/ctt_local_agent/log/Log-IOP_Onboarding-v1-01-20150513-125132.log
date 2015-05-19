@@ -1,0 +1,51 @@
+==========================
+Test Name: IOP_Onboarding-v1-01
+Description: Onboarding Service announcement
+====================================================
+05-13 12:51:32.326:I/TestRunner(1220):started:IOP_Onboarding-v1-01
+====================================================
+Golden Unit 1 name: About 2 cat 1
+Golden Unit 1 Type: Category 1 AllJoyn Device (About)
+Golden Unit 2 name: Onboarding 1
+Golden Unit 2 Type: Category 3 AllJoyn Device (Onboarding)
+Golden Unit 3 name: Onboarding 2
+Golden Unit 3 Type: Category 3 AllJoyn Device (Onboarding)
+Golden Unit 4 name: Onboarding 3
+Golden Unit 4 Type: Category 3 AllJoyn Device (Onboarding)
+ICSON_OnboardingServiceFramework: true
+ICSON_OnboardingInterface: true
+ICSON_ChannelSwitching: true
+ICSON_GetScanInfoMethod: true
+IXITCO_AppId: 1a1d0019-20b3-f604-8ad0-ba5d07f83bf5
+IXITCO_DeviceId: 1a1d0019-20b3-f604-8ad0-ba5d07f83bf5
+IXITCO_DefaultLanguage: 
+IXITON_OnboardingVersion: 1
+IXITON_SoftAP: 
+IXITON_SoftAPAuthType: 
+IXITON_SoftAPpassphrase: 
+IXITON_PersonalAP: 
+IXITON_PersonalAPAuthType: 
+IXITON_PersonalAPpassphrase: 
+GPCO_AnnouncementTimeout: 30
+GPON_WaitSoftAP: 12000
+GPON_ConnectSoftAP: 60000
+GPON_WaitSoftAPAfterOffboard: 15000
+GPON_ConnectPersonalAP: 60000
+GPON_Disconnect: 30000
+GPON_NextAnnouncement: 180000
+05-13 12:51:32.373:I/OnboardingIOPTestSuite(1220):Step 1) The passcode for the DUT is set to the default passcode "000000"
+Step 2) The AllJoyn devices of the Test Bed used will register an AuthListener with the AllJoyn framework that provides the default passcode (ﾓ000000ﾔ)
+ when authentication is requested (unless anything else is defined in a test case).
+Step 3) The SSID of the soft access point (Soft AP) advertised by the DUT follows the proper format such that it ends with the first seven digits of the deviceId.
+Step 4) All devices are configured with their AllJoyn functionality enabled.
+05-13 12:51:37.974:I/OnboardingIOPTestSuite(1220):DUT and GU: Onboarding 1 are switched off.
+05-13 12:51:41.819:I/OnboardingIOPTestSuite(1220):Step 1) Switch on DUT.
+05-13 12:51:42.914:I/OnboardingIOPTestSuite(1220):Step 2) Switch on GU: About 2 cat 1 and GU: Onboarding 1.
+05-13 12:51:49.284:I/OnboardingIOPTestSuite(1220):Step 3) Connect the GU: About 2 cat 1 to the AP network if it is not connected yet.
+05-13 12:51:53.154:I/OnboardingIOPTestSuite(1220):Step 4) Verify if the DUT is found in the personal AP. If it is not connected, command GU: Onboarding 1 to scan for Wi-Fi networks looking for the Soft AP of the DUT and command GU: Onboarding 1 to connect to the soft AP.
+05-13 12:52:06.062:I/OnboardingIOPTestSuite(1220):Step 5) Command GU: About 2 cat 1 to display the DUT About Announcement list of object paths and service framework interfaces supported.
+05-13 12:52:10.432:I/OnboardingIOPTestSuite(1220):Verify that Onboarding Object path (ﾒOnboardingﾒ) is present in DUT about announcement?
+05-13 12:52:14.810:I/OnboardingIOPTestSuite(1220):response:Yes
+05-13 12:52:14.810:I/TestRunner(1220):finished:IOP_Onboarding-v1-01
+05-13 12:52:14.810:I/TestRunner(1220):Final Verdict: INCONC
+

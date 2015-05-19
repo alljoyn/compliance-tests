@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Configuration>
+<TestCasesPackagePath>TestCases/</TestCasesPackagePath>
 
-<CertificationReleasePath>TestCases/</CertificationReleasePath>
 <ResultPath>results/</ResultPath>
 <LogPath>log/</LogPath>
-<TestToolWebAppUrl>https://www.at4wireless.com/TestToolWebApp/</TestToolWebAppUrl>
+<TestToolWebAppUrl>http://192.168.110.50:8080/TestToolWebApp/</TestToolWebAppUrl>
 <GetListOfProjectsUrl>rest/getList/</GetListOfProjectsUrl>
 <GetTestCases>rest/getProject/</GetTestCases>
 <GetResults>rest/getResults/</GetResults>
+<isLastTechnologyVersionUrl>rest/isLastTechnologyVersion</isLastTechnologyVersionUrl>
 <GetTechnology>rest/getTechnology/</GetTechnology>
 <GetLog>rest/getFullLog/</GetLog>
 <SendResultsUrl>rest/sendResult/</SendResultsUrl>

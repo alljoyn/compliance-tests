@@ -1,0 +1,82 @@
+==========================
+Test Name: About-v1-05
+Description: Standardized interfaces match definitions
+====================================================
+05-11 10:21:39.776:I/TestRunner(3524):started:About-v1-05
+====================================================
+ICSCO_DateOfManufacture: true
+ICSCO_HardwareVersion: true
+ICSCO_SupportUrl: true
+ICSCO_IconInterface: true
+ICSCO_DeviceName: true
+IXITCO_AboutVersion: 1
+IXITCO_AppId: 9c0d9017-0680-530c-d000-000000000000
+IXITCO_DefaultLanguage: en
+IXITCO_DeviceName: Luminaire-853cd
+IXITCO_DeviceId: 9c0d90170680530cd000000000000000
+IXITCO_AppName: Luminaire
+IXITCO_Manufacturer: Qualcomm Connected Experiences
+IXITCO_ModelNumber: 001
+IXITCO_SoftwareVersion: 1.0
+IXITCO_AJSoftwareVersion: 14.06.00a Tag "v14.06.00a"
+IXITCO_HardwareVersion: 1.0
+IXITCO_IntrospectableVersion: 1
+IXITCO_SupportedLanguages: en
+IXITCO_Description: Virtual Lamp
+IXITCO_DateOfManufacture: 2014-02-01
+IXITCO_SupportUrl: http://www.qualcomm.com
+GPCO_AnnouncementTimeout: 30
+====================================================
+05-11 10:21:39.792:I/AboutTestSuite(3524):test setUp started
+05-11 10:21:39.792:I/AboutTestSuite(3524):Running About test case against Device ID: 9c0d90170680530cd000000000000000
+05-11 10:21:39.792:I/AboutTestSuite(3524):Running About test case against App ID: 9c0d9017-0680-530c-d000-000000000000
+05-11 10:21:39.808:I/BusAttachmentMgr(3524):Creating BusAttachment
+05-11 10:21:39.855:I/BusAttachmentMgr(3524):Connecting BusAttachment
+05-11 10:21:40.979:I/ServiceHelper(3524):Starting AboutClient
+05-11 10:21:41.074:I/ServiceHelper(3524):Adding AboutListener for About announcements
+05-11 10:21:41.136:I/DeviceAnnounceHandler(3524):Waiting for About announcement signal from device: 9c0d90170680530cd000000000000000; appId: 9c0d9017-0680-530c-d000-000000000000
+05-11 10:21:43.893:I/DeviceAnnounceHandler(3524):Ignoring About announcement signal from DUT with deviceId: 4564545455454, appId; d113914a-a5d0-483a-a9c7-b4d007746982 
+05-11 10:21:48.165:I/DeviceAnnounceHandler(3524):Ignoring About announcement signal from DUT with deviceId: 8bed3691bd04c4e2ae38e7c176b5b8ea, appId; 1b951235-1d22-8121-879b-8f2f9428752f 
+05-11 10:21:48.181:I/DeviceAnnounceHandler(3524):Received About announcement signal from DUT with deviceId: 9c0d90170680530cd000000000000000, appId; 9c0d9017-0680-530c-d000-000000000000 
+05-11 10:21:48.181:I/AboutTestSuite(3524):Partial Verdict: PASS
+05-11 10:21:48.181:I/AboutTestSuite(3524):test setUp done
+====================================================
+05-11 10:21:48.181:I/AboutTestSuite(3524):Running testcase: About-v1-05
+05-11 10:21:48.181:I/ServiceHelper(3524):Creating AboutProxy for serviceName: :BSWamew8.30; port: 42; deviceName: Luminaire-853cd
+05-11 10:21:48.379:I/ServiceHelper(3524):Session joined
+05-11 10:21:48.385:I/ServiceHelper(3524):AboutProxy connected
+05-11 10:21:48.386:I/ServiceHelper(3524):Partial Verdict: PASS
+05-11 10:21:49.652:I/AboutTestSuite(3524):Found object at /org/alljoyn/Bus implementing org.alljoyn.Bus
+05-11 10:21:49.653:I/AboutTestSuite(3524):Found object at /org/alljoyn/Bus/Peer implementing org.alljoyn.Bus.Peer.Session
+05-11 10:21:49.653:I/AboutTestSuite(3524):Found object at /org/alljoyn/Bus/Peer implementing org.alljoyn.Bus.Peer.Authentication
+05-11 10:21:49.653:I/AboutTestSuite(3524):Found object at /About implementing org.alljoyn.About
+05-11 10:21:49.653:I/AboutTestSuite(3524):Found object at /About/DeviceIcon implementing org.alljoyn.Icon
+05-11 10:21:49.654:I/AboutTestSuite(3524):Found object at /Config implementing org.alljoyn.Config
+05-11 10:21:49.654:I/AboutTestSuite(3524):Found object at /notificationDismisser implementing org.alljoyn.Notification.Dismisser
+05-11 10:21:49.656:I/AboutTestSuite(3524):Found object at /emergency implementing org.alljoyn.Notification
+05-11 10:21:49.657:I/AboutTestSuite(3524):Found object at /warning implementing org.alljoyn.Notification
+05-11 10:21:49.657:I/AboutTestSuite(3524):Found object at /info implementing org.alljoyn.Notification
+05-11 10:21:49.657:I/AboutTestSuite(3524):Found object at /notificationProducer implementing org.alljoyn.Notification.Producer
+05-11 10:21:49.657:I/AboutTestSuite(3524):Found object at /notificationProducer implementing org.alljoyn.Notification.Dismisser
+05-11 10:21:49.808:I/InterfaceValidator(3524):Object found at /org/alljoyn/Bus is correct
+05-11 10:21:49.816:W/InterfaceValidator(3524):Ignoring interface annotation match comparison:  - Missing Annotation [name=org.alljoyn.Bus.Secure, value=off]
+05-11 10:21:49.821:I/InterfaceValidator(3524):Object found at /org/alljoyn/Bus/Peer is correct
+05-11 10:21:49.821:I/InterfaceValidator(3524):Object found at /About is correct
+05-11 10:21:49.821:I/InterfaceValidator(3524):Object found at /About/DeviceIcon is correct
+05-11 10:21:49.822:I/InterfaceValidator(3524):Object found at /Config is correct
+05-11 10:21:49.822:I/InterfaceValidator(3524):Object found at /notificationDismisser is correct
+05-11 10:21:49.822:I/InterfaceValidator(3524):Object found at /emergency is correct
+05-11 10:21:49.822:I/InterfaceValidator(3524):Object found at /warning is correct
+05-11 10:21:49.823:I/InterfaceValidator(3524):Object found at /info is correct
+05-11 10:21:49.823:I/InterfaceValidator(3524):Object found at /notificationProducer is correct
+05-11 10:21:49.823:I/AboutTestSuite(3524):Partial Verdict: PASS
+====================================================
+05-11 10:21:49.823:I/AboutTestSuite(3524):test tearDown started
+05-11 10:21:49.824:I/ServiceHelper(3524):Stopping aboutClient
+05-11 10:21:49.832:I/ServiceHelper(3524):Stopping configClient
+05-11 10:21:49.875:I/BusAttachmentMgr(3524):Disconnecting BusAttachment
+05-11 10:21:49.965:I/AboutTestSuite(3524):test tearDown done
+====================================================
+05-11 10:21:49.966:I/TestRunner(3524):finished:About-v1-05
+05-11 10:21:49.966:I/TestRunner(3524):Final Verdict: PASS
+

@@ -1,3 +1,18 @@
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *    Permission to use, copy, modify, and/or distribute this software for any
+ *    purpose with or without fee is hereby granted, provided that the above
+ *    copyright notice and this permission notice appear in all copies.
+ *
+ *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.at4wireless.alljoyn.localagent;
 
 import java.awt.BorderLayout;
@@ -11,20 +26,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.net.JarURLConnection;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.CharBuffer;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -34,7 +45,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
-import javax.swing.border.EmptyBorder;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -50,14 +60,27 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+
+/**
+ * The Class InstallTestToolWindow.
+ */
 public class InstallTestToolWindow extends JDialog {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 7573195888353975145L;
+	
+	/** The content panel. */
 	private final JPanel contentPanel = new JPanel();
+	
+	/** The version to install. */
 	String version=null;
+	
+	/** The authentication token obtained when the application logs in. */
 	String token="";
+	
+	/** The main window. */
 	MainWindow mainWindow;
 	/**
 	 * Create the dialog.
@@ -96,19 +119,9 @@ public class InstallTestToolWindow extends JDialog {
 		textPane.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		textPane.setEditable(false);
 
-		String installed[]=getInstalledVersions();
-		String text="";
 		
-		/*if(installed[0].equals("")){
-			text="You need to install the following Test Cases Package:  \n";
-			
-		}else{
-		 text="You have the following Technology Package installed: \n";
-		for(int i=0;i<installed.length;i++){
-			System.out.println("-"+installed[i]);
-			text=text+"-"+installed[i]+"\n";
-		}
-		}*/
+		String text="";
+	
 		text=text+"\n You need to install the following Test Cases Package: \n";
 		text=text+"-TestCases_Package_"+version;
 		textPane.setText(text);
@@ -118,8 +131,7 @@ public class InstallTestToolWindow extends JDialog {
 
 			buttonPane.setLayout(new FlowLayout(FlowLayout.CENTER));
 			JButton backButton=new JButton("");
-			backButton.setBorderPainted(false); 
-			backButton.setContentAreaFilled(false); 
+			
 			 Image img = null;
 			try {
 				
@@ -132,7 +144,8 @@ public class InstallTestToolWindow extends JDialog {
 			
 			
 			
-			
+			Dimension preferredSize=new Dimension(83,23);
+			backButton.setPreferredSize(preferredSize);
 			
 			
 			backButton.addActionListener(new ActionListener(){
@@ -145,9 +158,7 @@ public class InstallTestToolWindow extends JDialog {
 
 				}});
 			JButton installButton=new JButton("");
-			
-			installButton.setBorderPainted(false); 
-			installButton.setContentAreaFilled(false); 
+		
 			 Image img2 = null;
 			try {
 				
@@ -157,6 +168,7 @@ public class InstallTestToolWindow extends JDialog {
 				e2.printStackTrace();
 			}
 			installButton.setIcon(new ImageIcon(img2));
+			installButton.setPreferredSize(preferredSize);
 			installButton.addActionListener(new ActionListener(){
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -181,83 +193,139 @@ public class InstallTestToolWindow extends JDialog {
 
 		}
 	}
+	
+	/**
+	 * Install test tool package from the web server.
+	 */
 	protected void installTestToolPackage() {
-		
-		System.out.println("installing.....");
+
+		int releaseVersion=mainWindow.getLastReleaseVersion(version);
 
 		
-		String urlVersion=version.replaceAll("\\.", "_");
 		String url=getConfigValue("TestToolWebAppUrl")+
 				getConfigValue("GetTechnology")
-				+urlVersion;
+				+version.replace(".", "_")
+				+"_R"+releaseVersion;
 		System.out.println(url);
-		
-		
-		
+
+
+
 		try{
 			URI URI = new URI(url);
 			FileOutputStream fos = null;
 			HttpClient httpClient = HttpClientBuilder.create().build();
-
-
-
-
 			HttpGet postRequest = new HttpGet(URI);
-			
+
 			postRequest.addHeader("Authorization", "bearer "+token);
-			
-			
+
+
 			HttpResponse response = httpClient.execute(postRequest);
-			
+
 			HttpEntity entity = response.getEntity();
-			  System.out.println("Entity:"+entity);
+			System.out.println("Entity:"+entity);
 
-			  BufferedHttpEntity buf = new BufferedHttpEntity(entity);
+			BufferedHttpEntity buf = new BufferedHttpEntity(entity);
 
-				String output;
-					try{
+			String output;
+			try{
+
 				
-				
-				fos = new FileOutputStream(getConfigValue("CertificationReleasePath")+"TestCases_Package_"+version+".jar");
-				
+				fos = new FileOutputStream(getConfigValue("TestCasesPackagePath")+"TestCases_Package_"+version+"_R"+releaseVersion+".jar");
+
 			} catch (FileNotFoundException e) {
-				
-				File dir=new File(getConfigValue("CertificationReleasePath"));
-					if(dir.mkdirs()){
-						
-						fos = new FileOutputStream(getConfigValue("CertificationReleasePath")+"TestCases_Package_"+version+".jar");
 
-						
-					}
-				
+				File dir=new File(getConfigValue("TestCasesPackagePath"));
+				if(dir.mkdirs()){
+
+					fos = new FileOutputStream(getConfigValue("TestCasesPackagePath")+"TestCases_Package_"+version+"_R"+releaseVersion+".jar");
+
+
 				}
-			
+
+			}
+
 			buf.writeTo(fos);
-			}catch(IOException e1){
+		}catch(IOException e1){
+
+			JOptionPane.showMessageDialog(null, "Fail in the communication with the Test Tool Web Server"
+					);
+		} catch (URISyntaxException e) {
+
+			e.printStackTrace();
+		}
+
+
+
+
+
+		InputStream inputStream = null;
+		String path = (new File("")).getAbsolutePath();
+		String inputFile = "jar:file:/"+path+"/"+getConfigValue("TestCasesPackagePath")+"TestCases_Package_"+version+"_R"+releaseVersion+".jar!/alljoyn_java.dll";
+		System.out.println(inputFile);
+		
+		String libPath=path+File.separator+"lib"+File.separator+version+File.separator;
+		System.out.println(libPath);
+		File dir=new File(libPath);
+		dir.mkdirs();
+		
+		
+			URL inputURL = null;
+			try {
+				inputURL = new URL(inputFile);
+				JarURLConnection conn = (JarURLConnection)inputURL.openConnection();
+				inputStream = conn.getInputStream();
+			} catch (MalformedURLException e1) {
+				e1.printStackTrace();
+				System.err.println("Malformed input URL: "+inputURL);
+				return;
+			} catch (IOException e1) {
+				e1.printStackTrace();
+				System.err.println("IO error open connection");
+				return;
+			}
+		 
+
+		
+		
+		// write the inputStream to a FileOutputStream
+				FileOutputStream outputStream = null;
+				try {
 					
-				JOptionPane.showMessageDialog(null, "Fail in the communication with the Test Tool Web Server"
-						);
-				} catch (URISyntaxException e) {
+					outputStream = new FileOutputStream(new File(path+File.separator+"lib"+File.separator+version+File.separator+"alljoyn_java.dll"));
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 					
+				}
+		 
+				int read = 0;
+				byte[] bytes = new byte[1024];
+		 try{
+				while ((read = inputStream.read(bytes)) != -1) {
+					outputStream.write(bytes, 0, read);
+				}
+
+				
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-		
-		
-		String installed=getConfigValue("InstalledTestToolPackages");
-		installed.concat(":TestCases_Package_"+version);
-		//TODO add to config file
-		
-		
+				try {
+					outputStream.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 	}
-	private String[] getInstalledVersions() {
-		String versions[];
-		
-		String installed=getConfigValue("InstalledTestToolPackages");
-		
-		versions=installed.split(":");
-		return versions;
-	}
-	private static String getConfigValue(String key) {
+	
+	/**
+	 * Gets the configuration value from config.xml.
+	 *
+	 * @param key the key to obtain
+	 * @return the configuration value
+	 */
+		private static String getConfigValue(String key) {
 		String value="";
 		File test = new File("config.xml");
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -284,6 +352,13 @@ public class InstallTestToolWindow extends JDialog {
 	}
 
 
+		/**
+		 * Gets the value from the selected tag. 
+		 *
+		 * @param tag the tag
+		 * @param element the element
+		 * @return the value
+		 */
 	private static String getValue(String tag, Element element) {
 
 		NodeList nodes = element.getElementsByTagName(tag).item(0).getChildNodes();

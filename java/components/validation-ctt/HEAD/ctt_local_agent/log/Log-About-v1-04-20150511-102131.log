@@ -1,0 +1,118 @@
+==========================
+Test Name: About-v1-04
+Description: Bus objects consistent with the About announcement
+====================================================
+05-11 10:21:31.973:I/TestRunner(3344):started:About-v1-04
+====================================================
+ICSCO_DateOfManufacture: true
+ICSCO_HardwareVersion: true
+ICSCO_SupportUrl: true
+ICSCO_IconInterface: true
+ICSCO_DeviceName: true
+IXITCO_AboutVersion: 1
+IXITCO_AppId: 9c0d9017-0680-530c-d000-000000000000
+IXITCO_DefaultLanguage: en
+IXITCO_DeviceName: Luminaire-853cd
+IXITCO_DeviceId: 9c0d90170680530cd000000000000000
+IXITCO_AppName: Luminaire
+IXITCO_Manufacturer: Qualcomm Connected Experiences
+IXITCO_ModelNumber: 001
+IXITCO_SoftwareVersion: 1.0
+IXITCO_AJSoftwareVersion: 14.06.00a Tag "v14.06.00a"
+IXITCO_HardwareVersion: 1.0
+IXITCO_IntrospectableVersion: 1
+IXITCO_SupportedLanguages: en
+IXITCO_Description: Virtual Lamp
+IXITCO_DateOfManufacture: 2014-02-01
+IXITCO_SupportUrl: http://www.qualcomm.com
+GPCO_AnnouncementTimeout: 30
+====================================================
+05-11 10:21:31.989:I/AboutTestSuite(3344):test setUp started
+05-11 10:21:32.005:I/AboutTestSuite(3344):Running About test case against Device ID: 9c0d90170680530cd000000000000000
+05-11 10:21:32.005:I/AboutTestSuite(3344):Running About test case against App ID: 9c0d9017-0680-530c-d000-000000000000
+05-11 10:21:32.020:I/BusAttachmentMgr(3344):Creating BusAttachment
+05-11 10:21:32.052:I/BusAttachmentMgr(3344):Connecting BusAttachment
+05-11 10:21:33.251:I/ServiceHelper(3344):Starting AboutClient
+05-11 10:21:33.377:I/ServiceHelper(3344):Adding AboutListener for About announcements
+05-11 10:21:33.439:I/DeviceAnnounceHandler(3344):Waiting for About announcement signal from device: 9c0d90170680530cd000000000000000; appId: 9c0d9017-0680-530c-d000-000000000000
+05-11 10:21:35.104:I/DeviceAnnounceHandler(3344):Ignoring About announcement signal from DUT with deviceId: 4564545455454, appId; d113914a-a5d0-483a-a9c7-b4d007746982 
+05-11 10:21:36.751:I/DeviceAnnounceHandler(3344):Received About announcement signal from DUT with deviceId: 9c0d90170680530cd000000000000000, appId; 9c0d9017-0680-530c-d000-000000000000 
+05-11 10:21:36.759:I/AboutTestSuite(3344):Partial Verdict: PASS
+05-11 10:21:36.764:I/AboutTestSuite(3344):test setUp done
+====================================================
+05-11 10:21:36.774:I/AboutTestSuite(3344):Running testcase: About-v1-04
+05-11 10:21:36.780:I/ServiceHelper(3344):Creating AboutProxy for serviceName: :BSWamew8.30; port: 42; deviceName: Luminaire-853cd
+05-11 10:21:37.013:I/ServiceHelper(3344):Session joined
+05-11 10:21:37.017:I/ServiceHelper(3344):AboutProxy connected
+05-11 10:21:37.018:I/ServiceHelper(3344):Partial Verdict: PASS
+05-11 10:21:37.021:I/AboutTestSuite(3344):AboutAnnouncement contains interface org.alljoyn.About at path /About
+05-11 10:21:37.482:I/AboutTestSuite(3344):Bus Introspection contains interface org.freedesktop.DBus.Properties at path /About
+05-11 10:21:37.482:I/AboutTestSuite(3344):Bus Introspection contains interface org.alljoyn.About at path /About
+05-11 10:21:37.482:I/AboutTestSuite(3344):AboutAnnouncement contains interface org.alljoyn.Icon at path /About/DeviceIcon
+05-11 10:21:37.570:I/AboutTestSuite(3344):Bus Introspection contains interface org.freedesktop.DBus.Properties at path /About/DeviceIcon
+05-11 10:21:37.570:I/AboutTestSuite(3344):Bus Introspection contains interface org.alljoyn.Icon at path /About/DeviceIcon
+05-11 10:21:37.570:I/AboutTestSuite(3344):AboutAnnouncement contains interface org.allseen.LSF.LampService at path /org/allseen/LSF/Lamp
+05-11 10:21:37.570:I/AboutTestSuite(3344):AboutAnnouncement contains interface org.allseen.LSF.LampParameters at path /org/allseen/LSF/Lamp
+05-11 10:21:37.570:I/AboutTestSuite(3344):AboutAnnouncement contains interface org.allseen.LSF.LampDetails at path /org/allseen/LSF/Lamp
+05-11 10:21:37.570:I/AboutTestSuite(3344):AboutAnnouncement contains interface org.allseen.LSF.LampState at path /org/allseen/LSF/Lamp
+05-11 10:21:37.624:I/AboutTestSuite(3344):Bus Introspection contains interface org.freedesktop.DBus.Properties at path /org/allseen/LSF/Lamp
+05-11 10:21:37.624:I/AboutTestSuite(3344):Bus Introspection contains interface org.allseen.LSF.LampService at path /org/allseen/LSF/Lamp
+05-11 10:21:37.624:I/AboutTestSuite(3344):Bus Introspection contains interface org.allseen.LSF.LampParameters at path /org/allseen/LSF/Lamp
+05-11 10:21:37.624:I/AboutTestSuite(3344):Bus Introspection contains interface org.allseen.LSF.LampDetails at path /org/allseen/LSF/Lamp
+05-11 10:21:37.624:I/AboutTestSuite(3344):Bus Introspection contains interface org.allseen.LSF.LampState at path /org/allseen/LSF/Lamp
+05-11 10:21:37.624:I/AboutTestSuite(3344):AboutAnnouncement contains interface org.alljoyn.Config at path /Config
+05-11 10:21:37.686:I/AboutTestSuite(3344):Bus Introspection contains interface org.freedesktop.DBus.Properties at path /Config
+05-11 10:21:37.686:I/AboutTestSuite(3344):Bus Introspection contains interface org.alljoyn.Config at path /Config
+05-11 10:21:37.686:I/AboutTestSuite(3344):AboutAnnouncement contains interface org.alljoyn.Notification.Dismisser at path /notificationDismisser
+05-11 10:21:37.702:I/AboutTestSuite(3344):Bus Introspection contains interface org.freedesktop.DBus.Properties at path /notificationDismisser
+05-11 10:21:37.702:I/AboutTestSuite(3344):Bus Introspection contains interface org.alljoyn.Notification.Dismisser at path /notificationDismisser
+05-11 10:21:37.702:I/AboutTestSuite(3344):AboutAnnouncement contains interface org.alljoyn.Notification at path /emergency
+05-11 10:21:37.739:I/AboutTestSuite(3344):Bus Introspection contains interface org.freedesktop.DBus.Properties at path /emergency
+05-11 10:21:37.739:I/AboutTestSuite(3344):Bus Introspection contains interface org.alljoyn.Notification at path /emergency
+05-11 10:21:37.739:I/AboutTestSuite(3344):AboutAnnouncement contains interface org.alljoyn.Notification at path /warning
+05-11 10:21:37.782:I/AboutTestSuite(3344):Bus Introspection contains interface org.freedesktop.DBus.Properties at path /warning
+05-11 10:21:37.782:I/AboutTestSuite(3344):Bus Introspection contains interface org.alljoyn.Notification at path /warning
+05-11 10:21:37.783:I/AboutTestSuite(3344):AboutAnnouncement contains interface org.alljoyn.Notification at path /info
+05-11 10:21:37.806:I/AboutTestSuite(3344):Bus Introspection contains interface org.freedesktop.DBus.Properties at path /info
+05-11 10:21:37.806:I/AboutTestSuite(3344):Bus Introspection contains interface org.alljoyn.Notification at path /info
+05-11 10:21:37.806:I/AboutTestSuite(3344):AboutAnnouncement contains interface org.alljoyn.Notification.Producer at path /notificationProducer
+05-11 10:21:37.806:I/AboutTestSuite(3344):AboutAnnouncement contains interface org.alljoyn.Notification.Dismisser at path /notificationProducer
+05-11 10:21:37.822:I/AboutTestSuite(3344):Bus Introspection contains interface org.freedesktop.DBus.Properties at path /notificationProducer
+05-11 10:21:37.838:I/AboutTestSuite(3344):Bus Introspection contains interface org.alljoyn.Notification.Producer at path /notificationProducer
+05-11 10:21:37.838:I/AboutTestSuite(3344):Bus Introspection contains interface org.alljoyn.Notification.Dismisser at path /notificationProducer
+05-11 10:21:37.838:I/AboutTestSuite(3344):Interface org.alljoyn.Notification found at path /warning
+05-11 10:21:37.838:I/AboutTestSuite(3344):Partial Verdict: PASS
+05-11 10:21:37.838:I/AboutTestSuite(3344):Interface org.allseen.LSF.LampService found at path /org/allseen/LSF/Lamp
+05-11 10:21:37.838:I/AboutTestSuite(3344):Partial Verdict: PASS
+05-11 10:21:37.838:I/AboutTestSuite(3344):Interface org.alljoyn.Notification.Producer found at path /notificationProducer
+05-11 10:21:37.838:I/AboutTestSuite(3344):Partial Verdict: PASS
+05-11 10:21:37.838:I/AboutTestSuite(3344):Interface org.alljoyn.Config found at path /Config
+05-11 10:21:37.838:I/AboutTestSuite(3344):Partial Verdict: PASS
+05-11 10:21:37.838:I/AboutTestSuite(3344):Interface org.alljoyn.Notification found at path /emergency
+05-11 10:21:37.838:I/AboutTestSuite(3344):Partial Verdict: PASS
+05-11 10:21:37.838:I/AboutTestSuite(3344):Interface org.alljoyn.Notification.Dismisser found at path /notificationProducer
+05-11 10:21:37.838:I/AboutTestSuite(3344):Partial Verdict: PASS
+05-11 10:21:37.838:I/AboutTestSuite(3344):Interface org.alljoyn.About found at path /About
+05-11 10:21:37.838:I/AboutTestSuite(3344):Partial Verdict: PASS
+05-11 10:21:37.838:I/AboutTestSuite(3344):Interface org.alljoyn.Notification found at path /info
+05-11 10:21:37.838:I/AboutTestSuite(3344):Partial Verdict: PASS
+05-11 10:21:37.838:I/AboutTestSuite(3344):Interface org.alljoyn.Notification.Dismisser found at path /notificationDismisser
+05-11 10:21:37.838:I/AboutTestSuite(3344):Partial Verdict: PASS
+05-11 10:21:37.838:I/AboutTestSuite(3344):Interface org.allseen.LSF.LampState found at path /org/allseen/LSF/Lamp
+05-11 10:21:37.838:I/AboutTestSuite(3344):Partial Verdict: PASS
+05-11 10:21:37.838:I/AboutTestSuite(3344):Interface org.allseen.LSF.LampParameters found at path /org/allseen/LSF/Lamp
+05-11 10:21:37.838:I/AboutTestSuite(3344):Partial Verdict: PASS
+05-11 10:21:37.838:I/AboutTestSuite(3344):Interface org.allseen.LSF.LampDetails found at path /org/allseen/LSF/Lamp
+05-11 10:21:37.838:I/AboutTestSuite(3344):Partial Verdict: PASS
+05-11 10:21:37.838:I/AboutTestSuite(3344):Interface org.alljoyn.Icon found at path /About/DeviceIcon
+05-11 10:21:37.838:I/AboutTestSuite(3344):Partial Verdict: PASS
+====================================================
+05-11 10:21:37.838:I/AboutTestSuite(3344):test tearDown started
+05-11 10:21:37.854:I/ServiceHelper(3344):Stopping aboutClient
+05-11 10:21:37.854:I/ServiceHelper(3344):Stopping configClient
+05-11 10:21:37.979:I/BusAttachmentMgr(3344):Disconnecting BusAttachment
+05-11 10:21:38.039:I/AboutTestSuite(3344):test tearDown done
+====================================================
+05-11 10:21:38.039:I/TestRunner(3344):finished:About-v1-04
+05-11 10:21:38.039:I/TestRunner(3344):Final Verdict: PASS
+

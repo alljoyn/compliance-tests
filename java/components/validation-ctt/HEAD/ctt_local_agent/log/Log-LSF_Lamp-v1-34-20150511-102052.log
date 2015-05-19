@@ -1,0 +1,65 @@
+==========================
+Test Name: LSF_Lamp-v1-34
+Description: GetColorRenderingIndex
+====================================================
+05-11 10:20:51.985:I/TestRunner(1644):started:LSF_Lamp-v1-34
+====================================================
+ICSL_LightingServiceFramework: true
+ICSL_LampServiceInterface: true
+ICSL_LampParametersInterface: true
+ICSL_LampDetailsInterface: true
+ICSL_Dimmable: true
+ICSL_Color: true
+ICSL_ColorTemperature: true
+ICSL_Effects: true
+ICSL_LampStateInterface: true
+IXITCO_AppId: 9c0d9017-0680-530c-d000-000000000000
+IXITCO_DeviceId: 9c0d90170680530cd000000000000000
+IXITCO_DefaultLanguage: en
+IXITL_LampServiceVersion: 1
+IXITL_LampParametersVersion: 1
+IXITL_LampDetailsVersion: 1
+IXITL_LampStateVersion: 1
+GPCO_AnnouncementTimeout: 30
+GPL_SessionClose: 5
+====================================================
+05-11 10:20:52.002:I/LSF_LampTestSuite(1644):test setUp started
+05-11 10:20:52.018:I/LSF_LampTestSuite(1644):Running LSF_Lamp test case against Device ID: 9c0d90170680530cd000000000000000
+05-11 10:20:52.018:I/LSF_LampTestSuite(1644):Running LSF_Lamp test case against App ID: 9c0d9017-0680-530c-d000-000000000000
+05-11 10:20:52.018:I/LSF_LampTestSuite(1644):Executing lamp test against Stream object found at /org/allseen/LSF/Lamp
+05-11 10:20:52.033:I/BusAttachmentMgr(1644):Creating BusAttachment
+05-11 10:20:52.080:I/BusAttachmentMgr(1644):Connecting BusAttachment
+05-11 10:20:53.266:I/ServiceHelper(1644):Starting AboutClient
+05-11 10:20:53.376:I/ServiceHelper(1644):Adding AboutListener for About announcements
+05-11 10:20:53.454:I/ServiceHelper(1644):Registering BusObject: com.at4wireless.alljoyn.core.lighting.LampStateBusObject@1fa55132 at: /org/allseen/LSF/Lamp/LampStateBusObject
+05-11 10:20:53.469:I/ServiceHelper(1644):Registering BusObject: com.at4wireless.alljoyn.core.lighting.LampServiceBusObject@10e73e0 at: /org/allseen/LSF/Lamp/LampServiceBusObject
+05-11 10:20:53.469:I/ServiceHelper(1644):Registering BusObject: com.at4wireless.alljoyn.core.lighting.LampParametersBusObject@714ddb1c at: /org/allseen/LSF/Lamp/LampParametersBusObject
+05-11 10:20:53.469:I/ServiceHelper(1644):Registering BusObject: com.at4wireless.alljoyn.core.lighting.LampDetailsBusObject@17aee8b0 at: /org/allseen/LSF/Lamp/LampDetailsBusObject
+05-11 10:20:53.516:I/LSF_LampTestSuite(1644):Waiting for About announcement
+05-11 10:20:53.516:I/DeviceAnnounceHandler(1644):Waiting for About announcement signal from device: 9c0d90170680530cd000000000000000; appId: 9c0d9017-0680-530c-d000-000000000000
+05-11 10:20:55.092:I/DeviceAnnounceHandler(1644):Ignoring About announcement signal from DUT with deviceId: 4564545455454, appId; d113914a-a5d0-483a-a9c7-b4d007746982 
+05-11 10:21:02.505:I/DeviceAnnounceHandler(1644):Received About announcement signal from DUT with deviceId: 9c0d90170680530cd000000000000000, appId; 9c0d9017-0680-530c-d000-000000000000 
+05-11 10:21:02.505:I/LSF_LampTestSuite(1644):Partial Verdict: PASS
+05-11 10:21:02.505:I/ServiceHelper(1644):Creating AboutClient for serviceName: :BSWamew8.30; port: 42; deviceName: Luminaire-853cd
+05-11 10:21:02.520:I/ServiceHelper(1644):Connecting AboutClient for serviceName: :BSWamew8.30
+05-11 10:21:02.693:I/ServiceHelper(1644):Session established to peer: :BSWamew8.30
+05-11 10:21:02.693:I/ServiceHelper(1644):Session established
+05-11 10:21:02.693:I/LSF_LampTestSuite(1644):Partial Verdict: PASS
+05-11 10:21:02.693:I/LSF_LampTestSuite(1644):test setUp done
+====================================================
+05-11 10:21:02.693:I/LSF_LampTestSuite(1644):Running testcase: LSF_Lamp-v1-34
+05-11 10:21:02.693:I/ServiceHelper(1644):Creating ProxyBusObject for peerName: :BSWamew8.30; sessionid: -1470775928; path: /org/allseen/LSF/Lamp
+05-11 10:21:02.755:I/LSF_LampTestSuite(1644):Get lamp details colorRenderingIndex returned 90
+05-11 10:21:02.755:I/LSF_LampTestSuite(1644):Partial Verdict: PASS
+====================================================
+05-11 10:21:02.755:I/LSF_LampTestSuite(1644):test tearDown started
+05-11 10:21:02.787:I/ServiceHelper(1644):Stopping aboutClient
+05-11 10:21:02.787:I/ServiceHelper(1644):Stopping configClient
+05-11 10:21:02.787:I/BusAttachmentMgr(1644):Disconnecting BusAttachment
+05-11 10:21:02.833:I/LSF_LampTestSuite(1644):Waiting for session to close
+05-11 10:21:02.833:I/DeviceAnnounceHandler(1644):Waiting for session to close for device: 9c0d90170680530cd000000000000000
+05-11 10:21:07.843:I/LSF_LampTestSuite(1644):test tearDown done
+====================================================
+05-11 10:21:07.843:I/TestRunner(1644):finished:LSF_Lamp-v1-34
+05-11 10:21:07.843:I/TestRunner(1644):Final Verdict: PASS
+

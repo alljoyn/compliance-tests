@@ -1,0 +1,130 @@
+==========================
+Test Name: About-v1-06
+Description: GetAboutData() with default language
+====================================================
+05-11 10:21:51.862:I/TestRunner(2520):started:About-v1-06
+====================================================
+ICSCO_DateOfManufacture: true
+ICSCO_HardwareVersion: true
+ICSCO_SupportUrl: true
+ICSCO_IconInterface: true
+ICSCO_DeviceName: true
+IXITCO_AboutVersion: 1
+IXITCO_AppId: 9c0d9017-0680-530c-d000-000000000000
+IXITCO_DefaultLanguage: en
+IXITCO_DeviceName: Luminaire-853cd
+IXITCO_DeviceId: 9c0d90170680530cd000000000000000
+IXITCO_AppName: Luminaire
+IXITCO_Manufacturer: Qualcomm Connected Experiences
+IXITCO_ModelNumber: 001
+IXITCO_SoftwareVersion: 1.0
+IXITCO_AJSoftwareVersion: 14.06.00a Tag "v14.06.00a"
+IXITCO_HardwareVersion: 1.0
+IXITCO_IntrospectableVersion: 1
+IXITCO_SupportedLanguages: en
+IXITCO_Description: Virtual Lamp
+IXITCO_DateOfManufacture: 2014-02-01
+IXITCO_SupportUrl: http://www.qualcomm.com
+GPCO_AnnouncementTimeout: 30
+====================================================
+05-11 10:21:51.885:I/AboutTestSuite(2520):test setUp started
+05-11 10:21:51.885:I/AboutTestSuite(2520):Running About test case against Device ID: 9c0d90170680530cd000000000000000
+05-11 10:21:51.887:I/AboutTestSuite(2520):Running About test case against App ID: 9c0d9017-0680-530c-d000-000000000000
+05-11 10:21:51.903:I/BusAttachmentMgr(2520):Creating BusAttachment
+05-11 10:21:51.964:I/BusAttachmentMgr(2520):Connecting BusAttachment
+05-11 10:21:53.029:I/ServiceHelper(2520):Starting AboutClient
+05-11 10:21:53.111:I/ServiceHelper(2520):Adding AboutListener for About announcements
+05-11 10:21:53.182:I/DeviceAnnounceHandler(2520):Waiting for About announcement signal from device: 9c0d90170680530cd000000000000000; appId: 9c0d9017-0680-530c-d000-000000000000
+05-11 10:21:58.038:I/DeviceAnnounceHandler(2520):Ignoring About announcement signal from DUT with deviceId: 4564545455454, appId; d113914a-a5d0-483a-a9c7-b4d007746982 
+05-11 10:22:01.000:I/DeviceAnnounceHandler(2520):Received About announcement signal from DUT with deviceId: 9c0d90170680530cd000000000000000, appId; 9c0d9017-0680-530c-d000-000000000000 
+05-11 10:22:01.001:I/AboutTestSuite(2520):Partial Verdict: PASS
+05-11 10:22:01.001:I/AboutTestSuite(2520):test setUp done
+====================================================
+05-11 10:22:01.001:I/AboutTestSuite(2520):Running testcase: About-v1-06
+05-11 10:22:01.002:I/ServiceHelper(2520):Creating AboutProxy for serviceName: :BSWamew8.30; port: 42; deviceName: Luminaire-853cd
+05-11 10:22:01.133:I/ServiceHelper(2520):Session joined
+05-11 10:22:01.139:I/ServiceHelper(2520):AboutProxy connected
+05-11 10:22:01.139:I/ServiceHelper(2520):Partial Verdict: PASS
+05-11 10:22:01.140:I/AboutTestSuite(2520):Calling getAbout on About interface with language: en
+05-11 10:22:01.141:I/ServiceHelper(2520):Creating AboutProxy for serviceName: :BSWamew8.30; port: 42; deviceName: Luminaire-853cd
+05-11 10:22:01.169:I/ServiceHelper(2520):AboutProxy connected
+05-11 10:22:01.169:I/ServiceHelper(2520):Partial Verdict: PASS
+05-11 10:22:01.169:I/AboutTestSuite(2520):Calling getAboutData
+05-11 10:22:01.220:I/AboutTestSuite(2520):Partial Verdict: PASS
+05-11 10:22:01.221:I/AboutTestSuite(2520):Checking that all required fields are present
+05-11 10:22:01.221:I/AboutTestSuite(2520):AppId is present
+05-11 10:22:01.222:E/AboutTestSuite(2520):[B cannot be cast to java.lang.String
+05-11 10:22:01.222:I/AboutTestSuite(2520):DefaultLanguage is present
+05-11 10:22:01.223:I/AboutTestSuite(2520):DefaultLanguage received: en is equal to IXITCO_DefaultLanguage: en
+05-11 10:22:01.224:I/AboutTestSuite(2520):Partial Verdict: PASS
+05-11 10:22:01.224:I/AboutTestSuite(2520):DeviceId is present
+05-11 10:22:01.225:I/AboutTestSuite(2520):DeviceId received: 9c0d90170680530cd000000000000000 is equal to IXITCO_DeviceId: 9c0d90170680530cd000000000000000
+05-11 10:22:01.225:I/AboutTestSuite(2520):Partial Verdict: PASS
+05-11 10:22:01.226:I/AboutTestSuite(2520):AppName is present
+05-11 10:22:01.226:I/AboutTestSuite(2520):AppName received: Luminaire is equal to IXITCO_AppName: Luminaire
+05-11 10:22:01.227:I/AboutTestSuite(2520):Partial Verdict: PASS
+05-11 10:22:01.227:I/AboutTestSuite(2520):Manufacturer is present
+05-11 10:22:01.228:I/AboutTestSuite(2520):Manufacturer received: Qualcomm Connected Experiences is equal to IXITCO_Manufacturer: Qualcomm Connected Experiences
+05-11 10:22:01.229:I/AboutTestSuite(2520):Partial Verdict: PASS
+05-11 10:22:01.229:I/AboutTestSuite(2520):ModelNumber is present
+05-11 10:22:01.230:I/AboutTestSuite(2520):ModelNumber received: 001 is equal to IXITCO_ModelNumber: 001
+05-11 10:22:01.230:I/AboutTestSuite(2520):Partial Verdict: PASS
+05-11 10:22:01.231:I/AboutTestSuite(2520):SupportedLanguages is present
+05-11 10:22:01.231:I/AboutTestSuite(2520):Description is present
+05-11 10:22:01.232:I/AboutTestSuite(2520):Description received: Virtual Lamp is equal to IXITCO_Description: Virtual Lamp
+05-11 10:22:01.233:I/AboutTestSuite(2520):Partial Verdict: PASS
+05-11 10:22:01.233:I/AboutTestSuite(2520):SoftwareVersion is present
+05-11 10:22:01.234:I/AboutTestSuite(2520):SoftwareVersion received: 1.0 is equal to IXITCO_SoftwareVersion: 1.0
+05-11 10:22:01.234:I/AboutTestSuite(2520):Partial Verdict: PASS
+05-11 10:22:01.235:I/AboutTestSuite(2520):AJSoftwareVersion is present
+05-11 10:22:01.235:I/AboutTestSuite(2520):AJSoftwareVersion received: 14.06.00a Tag "v14.06.00a" is equal to IXITCO_AJSoftwareVersion: 14.06.00a Tag "v14.06.00a"
+05-11 10:22:01.236:I/AboutTestSuite(2520):Partial Verdict: PASS
+05-11 10:22:01.237:I/AboutTestSuite(2520):DateOfManufacture is present
+05-11 10:22:01.237:I/AboutTestSuite(2520):DateOfManufacture received: 2014-02-01 is equal to IXITCO_DateOfManufacture: 2014-02-01
+05-11 10:22:01.238:I/AboutTestSuite(2520):Partial Verdict: PASS
+05-11 10:22:01.238:I/AboutTestSuite(2520):HardwareVersion is present
+05-11 10:22:01.239:I/AboutTestSuite(2520):HardwareVersion received: 1.0 is equal to IXITCO_HardwareVersion: 1.0
+05-11 10:22:01.239:I/AboutTestSuite(2520):Partial Verdict: PASS
+05-11 10:22:01.240:I/AboutTestSuite(2520):SupportUrl is present
+05-11 10:22:01.241:I/AboutTestSuite(2520):SupportUrl received: http://www.qualcomm.com is equal to IXITCO_SupportUrl: http://www.qualcomm.com
+05-11 10:22:01.241:I/AboutTestSuite(2520):Partial Verdict: PASS
+05-11 10:22:01.242:I/AboutTestSuite(2520):Signature matches for required field AppId for language en
+05-11 10:22:01.242:I/AboutTestSuite(2520):Partial Verdict: PASS
+05-11 10:22:01.243:I/AboutTestSuite(2520):Signature matches for required field DefaultLanguage for language en
+05-11 10:22:01.243:I/AboutTestSuite(2520):Partial Verdict: PASS
+05-11 10:22:01.243:I/AboutTestSuite(2520):Signature matches for required field DeviceId for language en
+05-11 10:22:01.244:I/AboutTestSuite(2520):Partial Verdict: PASS
+05-11 10:22:01.244:I/AboutTestSuite(2520):Signature matches for required field AppName for language en
+05-11 10:22:01.245:I/AboutTestSuite(2520):Partial Verdict: PASS
+05-11 10:22:01.245:I/AboutTestSuite(2520):Signature matches for required field Manufacturer for language en
+05-11 10:22:01.245:I/AboutTestSuite(2520):Partial Verdict: PASS
+05-11 10:22:01.246:I/AboutTestSuite(2520):Signature matches for required field ModelNumber for language en
+05-11 10:22:01.246:I/AboutTestSuite(2520):Partial Verdict: PASS
+05-11 10:22:01.246:I/AboutTestSuite(2520):Signature matches for required field SupportedLanguages for language en
+05-11 10:22:01.246:I/AboutTestSuite(2520):Partial Verdict: PASS
+05-11 10:22:01.247:I/AboutTestSuite(2520):Signature matches for required field Description for language en
+05-11 10:22:01.247:I/AboutTestSuite(2520):Partial Verdict: PASS
+05-11 10:22:01.247:I/AboutTestSuite(2520):Signature matches for required field SoftwareVersion for language en
+05-11 10:22:01.247:I/AboutTestSuite(2520):Partial Verdict: PASS
+05-11 10:22:01.247:I/AboutTestSuite(2520):Signature matches for required field AJSoftwareVersion for language en
+05-11 10:22:01.248:I/AboutTestSuite(2520):Partial Verdict: PASS
+05-11 10:22:01.248:I/AboutTestSuite(2520):Signature matches for required field DeviceName for language en
+05-11 10:22:01.248:I/AboutTestSuite(2520):Partial Verdict: PASS
+05-11 10:22:01.248:I/AboutTestSuite(2520):Signature matches for required field DateOfManufacture for language en
+05-11 10:22:01.248:I/AboutTestSuite(2520):Partial Verdict: PASS
+05-11 10:22:01.248:I/AboutTestSuite(2520):Signature matches for required field HardwareVersion for language en
+05-11 10:22:01.249:I/AboutTestSuite(2520):Partial Verdict: PASS
+05-11 10:22:01.249:I/AboutTestSuite(2520):Signature matches for required field SupportUrl for language en
+05-11 10:22:01.249:I/AboutTestSuite(2520):Partial Verdict: PASS
+05-11 10:22:01.249:I/AboutTestSuite(2520):Validating Date Of Manufacture: 2014-02-01
+05-11 10:22:01.250:I/AboutTestSuite(2520):Validating Support Url: http://www.qualcomm.com
+====================================================
+05-11 10:22:01.251:I/AboutTestSuite(2520):test tearDown started
+05-11 10:22:01.251:I/ServiceHelper(2520):Stopping aboutClient
+05-11 10:22:01.257:I/ServiceHelper(2520):Stopping configClient
+05-11 10:22:01.259:I/BusAttachmentMgr(2520):Disconnecting BusAttachment
+05-11 10:22:01.294:I/AboutTestSuite(2520):test tearDown done
+====================================================
+05-11 10:22:01.295:I/TestRunner(2520):finished:About-v1-06
+05-11 10:22:01.295:I/TestRunner(2520):Final Verdict: PASS
+

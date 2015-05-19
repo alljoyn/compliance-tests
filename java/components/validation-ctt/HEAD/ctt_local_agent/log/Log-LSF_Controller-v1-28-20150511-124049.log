@@ -1,0 +1,84 @@
+==========================
+Test Name: LSF_Controller-v1-28
+Description: Update and delete master scene
+====================================================
+05-11 12:40:49.533:I/TestRunner(3452):started:LSF_Controller-v1-28
+====================================================
+ICSLC_LightingControllerServiceFramework: true
+ICSLC_ControllerServiceInterface: true
+ICSLC_ControllerServiceLampInterface: true
+ICSLC_ControllerServiceLampGroupInterface: true
+ICSLC_ControllerServicePresetInterface: true
+ICSLC_ControllerServiceSceneInterface: true
+ICSLC_ControllerServiceMasterSceneInterface: true
+ICSLC_LeaderElectionAndStateSyncInterface: true
+IXITCO_AppId: 1b951235-1d22-8121-879b-8f2f9428752f
+IXITCO_DeviceId: 8bed3691bd04c4e2ae38e7c176b5b8ea
+IXITCO_DefaultLanguage: 
+IXITLC_ControllerServiceVersion: 1
+IXITLC_ControllerServiceLampVersion: 1
+IXITLC_ControllerServiceLampGroupVersion: 1
+IXITLC_ControllerServicePresetVersion: 1
+IXITLC_ControllerServiceSceneVersion: 1
+IXITLC_ControllerServiceMasterSceneVersion: 1
+IXITLC_LeaderElectionAndStateSyncVersion: 1
+GPCO_AnnouncementTimeout: 30
+GPLC_SessionClose: 4
+====================================================
+05-11 12:40:49.549:I/LSF_ControllerTestSuite(3452):setUp started
+05-11 12:40:49.549:I/LSF_ControllerTestSuite(3452):Running LSF_Controller test case against Device ID: 8bed3691bd04c4e2ae38e7c176b5b8ea
+05-11 12:40:49.549:I/LSF_ControllerTestSuite(3452):Running LSF_Controller test case against App ID: 1b951235-1d22-8121-879b-8f2f9428752f
+05-11 12:40:49.580:I/BusAttachmentMgr(3452):Creating BusAttachment
+05-11 12:40:49.627:I/BusAttachmentMgr(3452):Connecting BusAttachment
+05-11 12:40:50.813:I/ServiceHelper(3452):Starting AboutClient
+05-11 12:40:50.907:I/ServiceHelper(3452):Adding AboutListener for About announcements
+05-11 12:40:51.001:I/ServiceHelper(3452):Registering BusObject: com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceBusObject@1621a02b at: /org/allseen/LSF/ControllerService
+05-11 12:40:51.016:I/ServiceHelper(3452):Registering BusObject: com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceLampBusObject@8fc095 at: /org/allseen/LSF/ControllerService/Lamp
+05-11 12:40:51.048:I/ServiceHelper(3452):Registering BusObject: com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceLampGroupBusObject@413220fc at: /org/allseen/LSF/ControllerService/LampGroup
+05-11 12:40:51.063:I/ServiceHelper(3452):Registering BusObject: com.at4wireless.alljoyn.core.lightingcontroller.ControllerServicePresetBusObject@7f830771 at: /org/allseen/LSF/ControllerService/Preset
+05-11 12:40:51.079:I/ServiceHelper(3452):Registering BusObject: com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceSceneBusObject@52d5c42f at: /org/allseen/LSF/ControllerService/Scene
+05-11 12:40:51.094:I/ServiceHelper(3452):Registering BusObject: com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceMasterSceneBusObject@73437288 at: /org/allseen/LSF/ControllerService/MasterScene
+05-11 12:40:51.110:I/ServiceHelper(3452):Registering BusObject: com.at4wireless.alljoyn.core.lightingcontroller.LeaderElectionBusObject@49336bd at: /org/allseen/LeaderElectionAndStateSync/LeaderElection
+05-11 12:40:51.110:I/LSF_ControllerTestSuite(3452):Waiting for About annoucement
+05-11 12:40:51.110:I/DeviceAnnounceHandler(3452):Waiting for About announcement signal from device: 8bed3691bd04c4e2ae38e7c176b5b8ea; appId: 1b951235-1d22-8121-879b-8f2f9428752f
+05-11 12:40:55.187:I/DeviceAnnounceHandler(3452):Ignoring About announcement signal from DUT with deviceId: 9c0d90170680530cd000000000000000, appId; 9c0d9017-0680-530c-d000-000000000000 
+05-11 12:40:55.187:I/DeviceAnnounceHandler(3452):Received About announcement signal from DUT with deviceId: 8bed3691bd04c4e2ae38e7c176b5b8ea, appId; 1b951235-1d22-8121-879b-8f2f9428752f 
+05-11 12:40:55.187:I/ControllerServiceHelper(3452):Joining session for serviceName: :etZOV_du.84 port: 43 deviceName: LuminaireC-853cd
+05-11 12:40:56.654:I/ControllerServiceHelper(3452):Session established
+05-11 12:40:56.654:I/ControllerServiceHelper(3452):Partial Verdict: PASS
+05-11 12:40:56.686:I/LSF_ControllerTestSuite(3452):setUp finished
+====================================================
+05-11 12:40:56.686:I/LSF_ControllerTestSuite(3452):Running testcase: LSF_Controller-v1-28
+05-11 12:40:56.749:I/LSF_ControllerTestSuite(3452):Partial Verdict: PASS
+05-11 12:40:56.795:I/SignalListener(3452):BlobChanged signal received
+05-11 12:40:57.154:I/SignalListener(3452):ScenesCreated signal received
+05-11 12:40:57.451:I/SignalListener(3452):MasterScenesCreated signal received
+05-11 12:40:57.451:I/SignalListener(3452):BlobChanged signal received
+05-11 12:40:57.513:I/LSF_ControllerTestSuite(3452):Partial Verdict: PASS
+05-11 12:40:57.544:I/SignalListener(3452):BlobChanged signal received
+05-11 12:40:58.511:I/SignalListener(3452):ScenesCreated signal received
+05-11 12:40:59.012:I/SignalListener(3452):MasterScenesUpdated signal received
+05-11 12:40:59.012:I/SignalListener(3452):BlobChanged signal received
+05-11 12:40:59.058:I/LSF_ControllerTestSuite(3452):Partial Verdict: PASS
+05-11 12:40:59.558:I/SignalListener(3452):MasterScenesDeleted signal received
+05-11 12:40:59.558:I/SignalListener(3452):BlobChanged signal received
+05-11 12:40:59.777:I/LSF_ControllerTestSuite(3452):Partial Verdict: PASS
+05-11 12:41:00.307:I/LSF_ControllerTestSuite(3452):Partial Verdict: PASS
+====================================================
+05-11 12:41:00.307:I/LSF_ControllerTestSuite(3452):test tearDown started
+05-11 12:41:00.526:I/SignalListener(3452):BlobChanged signal received
+05-11 12:41:01.384:I/SignalListener(3452):BlobChanged signal received
+05-11 12:41:01.384:I/SignalListener(3452):BlobChanged signal received
+05-11 12:41:01.384:I/SignalListener(3452):ScenesDeleted signal received
+05-11 12:41:01.384:I/SignalListener(3452):BlobChanged signal received
+05-11 12:41:01.384:I/SignalListener(3452):LightingReset signal received
+05-11 12:41:01.384:I/ServiceHelper(3452):Stopping aboutClient
+05-11 12:41:01.384:I/ServiceHelper(3452):Stopping configClient
+05-11 12:41:01.399:I/BusAttachmentMgr(3452):Disconnecting BusAttachment
+05-11 12:41:01.494:I/LSF_ControllerTestSuite(3452):Waiting for session to close
+05-11 12:41:01.494:I/DeviceAnnounceHandler(3452):Waiting for session to close for device: 8bed3691bd04c4e2ae38e7c176b5b8ea
+05-11 12:41:05.503:I/LSF_ControllerTestSuite(3452):test tearDown done
+====================================================
+05-11 12:41:05.503:I/TestRunner(3452):finished:LSF_Controller-v1-28
+05-11 12:41:05.503:I/TestRunner(3452):Final Verdict: PASS
+

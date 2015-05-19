@@ -1,0 +1,74 @@
+==========================
+Test Name: LSF_Lamp-v1-09
+Description: TransitionLampState and verify state and signal
+====================================================
+05-11 10:28:23.216:I/TestRunner(2088):started:LSF_Lamp-v1-09
+====================================================
+ICSL_LightingServiceFramework: true
+ICSL_LampServiceInterface: true
+ICSL_LampParametersInterface: true
+ICSL_LampDetailsInterface: true
+ICSL_Dimmable: true
+ICSL_Color: true
+ICSL_ColorTemperature: true
+ICSL_Effects: true
+ICSL_LampStateInterface: true
+IXITCO_AppId: 9c0d9017-0680-530c-d000-000000000000
+IXITCO_DeviceId: 9c0d90170680530cd000000000000000
+IXITCO_DefaultLanguage: en
+IXITL_LampServiceVersion: 1
+IXITL_LampParametersVersion: 1
+IXITL_LampDetailsVersion: 1
+IXITL_LampStateVersion: 1
+GPCO_AnnouncementTimeout: 30
+GPL_SessionClose: 5
+====================================================
+05-11 10:28:23.248:I/LSF_LampTestSuite(2088):test setUp started
+05-11 10:28:23.248:I/LSF_LampTestSuite(2088):Running LSF_Lamp test case against Device ID: 9c0d90170680530cd000000000000000
+05-11 10:28:23.248:I/LSF_LampTestSuite(2088):Running LSF_Lamp test case against App ID: 9c0d9017-0680-530c-d000-000000000000
+05-11 10:28:23.248:I/LSF_LampTestSuite(2088):Executing lamp test against Stream object found at /org/allseen/LSF/Lamp
+05-11 10:28:23.264:I/BusAttachmentMgr(2088):Creating BusAttachment
+05-11 10:28:23.311:I/BusAttachmentMgr(2088):Connecting BusAttachment
+05-11 10:28:24.528:I/ServiceHelper(2088):Starting AboutClient
+05-11 10:28:24.607:I/ServiceHelper(2088):Adding AboutListener for About announcements
+05-11 10:28:24.809:I/ServiceHelper(2088):Registering BusObject: com.at4wireless.alljoyn.core.lighting.LampStateBusObject@1e75b9d9 at: /org/allseen/LSF/Lamp/LampStateBusObject
+05-11 10:28:24.809:I/ServiceHelper(2088):Registering BusObject: com.at4wireless.alljoyn.core.lighting.LampServiceBusObject@5bd977aa at: /org/allseen/LSF/Lamp/LampServiceBusObject
+05-11 10:28:24.825:I/ServiceHelper(2088):Registering BusObject: com.at4wireless.alljoyn.core.lighting.LampParametersBusObject@2e6c4561 at: /org/allseen/LSF/Lamp/LampParametersBusObject
+05-11 10:28:24.825:I/ServiceHelper(2088):Registering BusObject: com.at4wireless.alljoyn.core.lighting.LampDetailsBusObject@5c2e86f5 at: /org/allseen/LSF/Lamp/LampDetailsBusObject
+05-11 10:28:24.856:I/LSF_LampTestSuite(2088):Waiting for About announcement
+05-11 10:28:24.856:I/DeviceAnnounceHandler(2088):Waiting for About announcement signal from device: 9c0d90170680530cd000000000000000; appId: 9c0d9017-0680-530c-d000-000000000000
+05-11 10:28:25.979:I/DeviceAnnounceHandler(2088):Ignoring About announcement signal from DUT with deviceId: 4564545455454, appId; d113914a-a5d0-483a-a9c7-b4d007746982 
+05-11 10:28:39.008:I/DeviceAnnounceHandler(2088):Received About announcement signal from DUT with deviceId: 9c0d90170680530cd000000000000000, appId; 9c0d9017-0680-530c-d000-000000000000 
+05-11 10:28:39.008:I/LSF_LampTestSuite(2088):Partial Verdict: PASS
+05-11 10:28:39.008:I/ServiceHelper(2088):Creating AboutClient for serviceName: :BSWamew8.30; port: 42; deviceName: Luminaire-853cd
+05-11 10:28:39.024:I/ServiceHelper(2088):Connecting AboutClient for serviceName: :BSWamew8.30
+05-11 10:28:39.410:I/ServiceHelper(2088):Session established to peer: :BSWamew8.30
+05-11 10:28:39.410:I/ServiceHelper(2088):Session established
+05-11 10:28:39.410:I/LSF_LampTestSuite(2088):Partial Verdict: PASS
+05-11 10:28:39.410:I/LSF_LampTestSuite(2088):test setUp done
+====================================================
+05-11 10:28:39.410:I/LSF_LampTestSuite(2088):Running testcase: LSF_Lamp-v1-09
+05-11 10:28:39.410:I/ServiceHelper(2088):Creating ProxyBusObject for peerName: :BSWamew8.30; sessionid: 1600563669; path: /org/allseen/LSF/Lamp
+05-11 10:28:39.457:I/LSF_LampTestSuite(2088):Partial Verdict: PASS
+05-11 10:28:39.473:I/LSF_LampTestSuite(2088):LSF_Lamp getHue returned 20
+05-11 10:28:39.473:I/LSF_LampTestSuite(2088):Partial Verdict: PASS
+05-11 10:28:39.488:I/LSF_LampTestSuite(2088):LSF_Lamp service  getSaturation returned 30
+05-11 10:28:39.488:I/LSF_LampTestSuite(2088):Partial Verdict: PASS
+05-11 10:28:39.504:I/LSF_LampTestSuite(2088):LSF_Lamp service getColorTemp returned 40
+05-11 10:28:39.504:I/LSF_LampTestSuite(2088):Partial Verdict: PASS
+05-11 10:28:39.535:I/LSF_LampTestSuite(2088):LSF_Lamp service getBrightness returned 10
+05-11 10:28:39.535:I/LSF_LampTestSuite(2088):Partial Verdict: PASS
+05-11 10:28:39.551:I/LSF_LampTestSuite(2088):LSF_Lamp service getOnOff returned true
+05-11 10:28:44.560:E/LSF_LampTestSuite(2088):LSF_Lamp TransitionLampState await signal returns failure. 
+====================================================
+05-11 10:28:44.560:I/LSF_LampTestSuite(2088):test tearDown started
+05-11 10:28:44.592:I/ServiceHelper(2088):Stopping aboutClient
+05-11 10:28:44.608:I/ServiceHelper(2088):Stopping configClient
+05-11 10:28:44.608:I/BusAttachmentMgr(2088):Disconnecting BusAttachment
+05-11 10:28:44.639:I/LSF_LampTestSuite(2088):Waiting for session to close
+05-11 10:28:44.639:I/DeviceAnnounceHandler(2088):Waiting for session to close for device: 9c0d90170680530cd000000000000000
+05-11 10:28:49.665:I/LSF_LampTestSuite(2088):test tearDown done
+====================================================
+05-11 10:28:49.665:I/TestRunner(2088):finished:LSF_Lamp-v1-09
+05-11 10:28:49.665:I/TestRunner(2088):Final Verdict: FAIL
+

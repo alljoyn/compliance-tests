@@ -1,3 +1,18 @@
+/*
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *    Permission to use, copy, modify, and/or distribute this software for any
+ *    purpose with or without fee is hereby granted, provided that the above
+ *    copyright notice and this permission notice appear in all copies.
+ *
+ *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package org.json;
 
 /*
@@ -40,6 +55,7 @@ import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+// TODO: Auto-generated Javadoc
 /**
  * A JSONObject is an unordered collection of name/value pairs. Its external
  * form is a string wrapped in curly braces with colons between the names and
@@ -980,6 +996,11 @@ public class JSONObject {
         return NULL.equals(object) ? defaultValue : object.toString();
     }
 
+    /**
+     * Populate map.
+     *
+     * @param bean the bean
+     */
     private void populateMap(Object bean) {
         Class klass = bean.getClass();
 
@@ -1213,6 +1234,14 @@ public class JSONObject {
         }
     }
 
+    /**
+     * Quote.
+     *
+     * @param string the string
+     * @param w the w
+     * @return the writer
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static Writer quote(String string, Writer w) throws IOException {
         if (string == null || string.length() == 0) {
             w.write("\"\"");
@@ -1586,6 +1615,17 @@ public class JSONObject {
         return this.write(writer, 0, 0);
     }
 
+    /**
+     * Write value.
+     *
+     * @param writer the writer
+     * @param value the value
+     * @param indentFactor the indent factor
+     * @param indent the indent
+     * @return the writer
+     * @throws JSONException the JSON exception
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     static final Writer writeValue(Writer writer, Object value,
             int indentFactor, int indent) throws JSONException, IOException {
         if (value == null || value.equals(null)) {
@@ -1619,6 +1659,13 @@ public class JSONObject {
         return writer;
     }
 
+    /**
+     * Indent.
+     *
+     * @param writer the writer
+     * @param indent the indent
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     static final void indent(Writer writer, int indent) throws IOException {
         for (int i = 0; i < indent; i += 1) {
             writer.write(' ');
