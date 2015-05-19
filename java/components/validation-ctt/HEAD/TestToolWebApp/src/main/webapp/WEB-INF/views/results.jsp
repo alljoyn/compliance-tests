@@ -84,7 +84,7 @@
 		     </div>
 		     
 		    <div class="row">
-		    	<p id="notRanAll">You need to execute all testcases to be able to create the Test Report</p>
+		    	<p id="notRanAll">You need to execute all applicable Test Cases to be able to create the Test Report</p>
 		    </div>
 		
 			<!-- Action buttons -->
@@ -179,6 +179,7 @@
 			
 			$('.scroll-tbody').find('.scroll-tr').on('click', function() {
 				$.ajax({
+					cache: false,
 					type : 'GET',
 					url : 'results/fullLog',
 					data : {
@@ -197,7 +198,7 @@
 		<!-- Logout form script -->
 		<script>
 			function formSubmit() {
-				document.getElementById("logoutForm").submit();
+				$('#logoutForm').submit();
 			}
 		</script>
     </body>

@@ -1,5 +1,23 @@
+/*******************************************************************************
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *      Permission to use, copy, modify, and/or distribute this software for any
+ *      purpose with or without fee is hereby granted, provided that the above
+ *      copyright notice and this permission notice appear in all copies.
+ *      
+ *      THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *      WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *      MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *      ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *      WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *      ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *      OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *******************************************************************************/
+
 package com.at4wireless.spring.dao;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -50,7 +68,7 @@ public class GoldenUnitDAOImpl implements GoldenUnitDAO {
 	public void delGu(int idGolden) {
 		
 		sessionFactory.getCurrentSession().createSQLQuery("delete from project_golden where id_golden="+idGolden).executeUpdate();
-		sessionFactory.getCurrentSession().createQuery("delete from GoldenUnit g where g.idGolden ='"+idGolden+"'").executeUpdate();
+		sessionFactory.getCurrentSession().createSQLQuery("delete from golden where id_golden ="+idGolden).executeUpdate();
 	}
 	
 	@Override
@@ -80,11 +98,22 @@ public class GoldenUnitDAOImpl implements GoldenUnitDAO {
 	}
 
 	@Override
-	public List<String> getGuList(int idProject) {
+	public List<GoldenUnit> getGuList(int idProject) {
+		
 		@SuppressWarnings("unchecked")
-		List<String> stringList = (List<String>) sessionFactory.getCurrentSession()
-				.createSQLQuery("select (name) from golden where id_golden in"
-						+"(select id_golden from project_golden where id_project="+idProject+");").list();
-		return stringList;
+		List<BigInteger> listIds = (List<BigInteger>) sessionFactory.getCurrentSession()
+				.createSQLQuery("select id_golden from project_golden where id_project="+idProject).list();
+		
+		List<Integer> cast = new ArrayList<Integer>();
+		for (BigInteger bi : listIds) {
+			cast.add(bi.intValue());
+		}
+		
+		@SuppressWarnings("unchecked")
+		List<GoldenUnit> guList = (List<GoldenUnit>) sessionFactory.getCurrentSession()
+				.createCriteria(GoldenUnit.class)
+					.add(Restrictions.in("idGolden", cast))
+				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
+		return guList;
 	}
 }

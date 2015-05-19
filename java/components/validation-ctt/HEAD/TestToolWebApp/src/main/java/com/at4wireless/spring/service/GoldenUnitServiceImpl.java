@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *      Permission to use, copy, modify, and/or distribute this software for any
+ *      purpose with or without fee is hereby granted, provided that the above
+ *      copyright notice and this permission notice appear in all copies.
+ *      
+ *      THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *      WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *      MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *      ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *      WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *      ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *      OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *******************************************************************************/
+
 package com.at4wireless.spring.service;
 
 import java.util.List;
@@ -10,7 +26,6 @@ import com.at4wireless.spring.dao.CategoryDAO;
 import com.at4wireless.spring.dao.GoldenUnitDAO;
 import com.at4wireless.spring.model.Category;
 import com.at4wireless.spring.model.GoldenUnit;
-import com.at4wireless.spring.model.Sample;
 
 @Service
 public class GoldenUnitServiceImpl implements GoldenUnitService {
@@ -26,11 +41,9 @@ public class GoldenUnitServiceImpl implements GoldenUnitService {
 	public boolean create(GoldenUnit gu) {
 		java.sql.Timestamp date = new java.sql.Timestamp(new java.util.Date().getTime());
 		
-		//When created, both dates get the same value
 		gu.setCreatedDate(date);
 		gu.setModifiedDate(date);
 
-		// if dut's assigned user and context's user are equal
 		if(guDao.getGuByName(gu.getUser(), gu.getName())!=null) {
 			return false;
 		} else {
@@ -83,7 +96,20 @@ public class GoldenUnitServiceImpl implements GoldenUnitService {
 
 	@Override
 	@Transactional
-	public List<String> getGuList(int idProject) {
+	public List<GoldenUnit> getGuList(int idProject) {
 		return guDao.getGuList(idProject);
+	}
+	
+	@Override
+	@Transactional
+	public boolean exists(String username, String name, int id) {
+		
+		GoldenUnit gu = guDao.getGuByName(username, name);
+		if(gu==null) {
+			return false;
+		} else if (gu.getIdGolden()==id) {
+			return false;
+		}
+		return true;
 	}
 }

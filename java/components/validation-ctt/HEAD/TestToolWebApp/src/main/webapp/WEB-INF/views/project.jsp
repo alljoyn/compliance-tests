@@ -42,6 +42,7 @@
     		<jsp:include page="/WEB-INF/views/header.jsp"/>
 		    
 		    <div class="row" align="right">
+		    	<button id="apiKey" type="button" class="btn btn-default pull-left">Generate CTT Local Agent Key</button>	
 		    	<c:if test="${pageContext.request.userPrincipal.name != null}">
 					<h4>
 						Welcome : ${pageContext.request.userPrincipal.name} | <a
@@ -173,8 +174,8 @@
 	        			<div class="modal-body">
 	        				<form:form method="POST" id="newProjectForm" action="project/add" modelAttribute="newProject">
 	        					<div class="form-group">
-	        						<label path="name" for="project-name" class="control-label">Name</label>
-	        						<form:input path="name" type="text" class="form-control" id="project-name"/>
+	        						<label for="projectname" class="control-label">Name (*)</label>
+	        						<form:input path="name" type="text" class="form-control" id="projectname" name="projectname"/>
 	        					</div>
 	        					<div class="form-group">
 	        						<label path="type" for="message-text" class="control-label">Type</label>
@@ -209,7 +210,7 @@
 	        						</form:select>
 	        					</div>
 	        					<div class="form-group">
-	        						<label path="carId" for="project-car-id" class="control-label">Certification Application Request ID</label>
+	        						<label path="carId" for="project-car-id" class="control-label">Certification Application Request ID (*)</label>
 	        						<form:input path="carId" type="text" class="form-control" id="project-car-id"/>
 	        					</div>
 	        					<form:input type="hidden" id="supportedServices" name="supportedServices" path="supportedServices" value=""/>
@@ -230,6 +231,7 @@
 	        					</div>
 	        					<form:input type="hidden" name="user" path="user" value="${pageContext.request.userPrincipal.name}"/>			
 	        				</form:form>
+	        				<p>(*) This is a mandatory field</p>
 	        			</div>
 	        			<div class="modal-footer">
 	        				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -245,10 +247,10 @@
 	        		<div class="modal-content">
 	        			<div class="modal-body">
 	        				<form:form method="POST" id="editProjectForm" action="project/save" modelAttribute="newProject">
-	        					<form:input type="hidden" id="edit-id" path="idProject"/>
+	        					<form:input type="hidden" id="edit_id" path="idProject"/>
 	        					<div class="form-group">
-	        						<label path="name" for="edit-name" class="control-label">Name</label>
-	        						<form:input path="name" type="text" class="form-control" id="edit-name"/>
+	        						<label path="name" for="edit_name" class="control-label">Name (*)</label>
+	        						<form:input path="name" type="text" class="form-control" id="edit_name"/>
 	        					</div>
 	        					<div class="form-group">
 	        						<label path="type" for="edit-type" class="control-label">Type</label>
@@ -273,7 +275,7 @@
 	        						</form:select>
 	        					</div>
 	        					<div class="form-group">
-	        						<label path="carId" for="edit-car-id" class="control-label">Certification Application Request ID</label>
+	        						<label path="carId" for="edit-car-id" class="control-label">Certification Application Request ID (*)</label>
 	        						<form:input path="carId" type="text" class="form-control" id="edit-car-id"/>
 	        					</div>
 	        					<form:input type="hidden" id="edit-services" name="supportedServices" path="supportedServices" value=""/>
@@ -294,6 +296,7 @@
 	        					</div>
 	        					<form:input type="hidden" name="user" path="user" value="${pageContext.request.userPrincipal.name}"/>			
 	        				</form:form>
+	        				<p>(*) This is a mandatory field</p>
 	        			</div>
 	        			<div class="modal-footer">
 	        				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -317,6 +320,22 @@
 	        		</div>
 	        	</div>
 	        </div>
+	        
+	        <!-- Generated password modal -->
+	        <div id="generatedKey" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	        	<div class="modal-dialog">
+	        		<div class="modal-content">
+	        			<div class="modal-body">
+	        				<h4>Your CTT Local Agent Key is:</h4>
+	        				<h4 id="key"></h4>
+	        				<h4>Please copy it because it cannot be retrieved</h4>
+	        			</div>
+	        			<div class="modal-footer">
+	        				<button id="closeApiKey" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        			</div>
+	        		</div>
+	        	</div>
+	        </div>
         </div>
         
         <jsp:include page="/WEB-INF/views/footer.jsp"/>
@@ -325,11 +344,14 @@
 		<script src="resources/bootstrap/js/bootstrap.min.js"></script>
 		
 		<script src="resources/bootstrap-select/js/bootstrap-select.min.js"></script>
+		
+		<script src="resources/jquery-validation/1.13.1/js/jquery.validate.min.js"></script>
+		<script src="resources/jquery-validation/1.13.1/js/additional-methods.min.js"></script>
 	
 		<!-- Logout form script -->
 		<script>
 			function formSubmit() {
-				document.getElementById("logoutForm").submit();
+				$('#logoutForm').submit();
 			}
 		</script>
 		
@@ -340,7 +362,84 @@
 				sessionStorage.clear();
 				
 				var w = $('.scroll-tbody').find('.scroll-tr').first().width();
-				$('.scroll-thead').find('.scroll-tr').width(w);
+				$('.scroll-thead').find('.scroll-tr').width(w);		
+			});
+		</script>
+		
+		<!-- Validation scripts -->
+		<script>
+			$('#newProjectForm').validate({
+				rules: {
+					name: {
+						required: true,
+						minlength: 2,
+						maxlength: 255,
+						remote: {
+							url: "project/validateName",
+							type: "get",
+							data: {
+								id: 0,
+								name: function() {
+									return $('#projectname').val();
+								}
+							}
+						}
+					},
+					carId: {
+						required: true,
+						minlength: 2,
+						maxlength: 60,
+					}
+				},
+				messages: {
+					name: {
+						required: "Please enter project name!",
+						maxlength: "Project name must have a max of 255 characters!",
+						remote: "Project already exists!"
+					},
+					carId: {
+						required: "Please enter CRI!",
+						maxlength: "CRI must have a max of 60 characters!"
+					}
+				}
+			});
+			
+			$('#editProjectForm').validate({
+				rules: {
+					name: {
+						required: true,
+						minlength: 2,
+						maxlength: 255,
+						remote: {
+							url: "project/validateName",
+							type: "get",
+							data: {
+								id: function() {
+									return $('#edit_id').val();
+								},
+								name: function() {
+									return $('#edit_name').val();
+								}
+							}
+						}
+					},
+					carId: {
+						required: true,
+						minlength: 2,
+						maxlength: 60,
+					}
+				},
+				messages: {
+					name: {
+						required: "Please enter project name!",
+						maxlength: "Project name must have a max of 255 characters!",
+						remote: "Project already exists!"
+					},
+					carId: {
+						required: "Please enter CRI!",
+						maxlength: "CRI must have a max of 60 characters!"
+					}
+				}
 			});
 		</script>
 		
@@ -350,6 +449,7 @@
 				var selected = $(this).find("option:selected").val();
 				
 				$.ajax({
+					cache: false,
 					type: 'GET',
 					url: 'project/loadTccl',
 					data : {
@@ -368,6 +468,7 @@
 				var selected = $(this).find("option:selected").val();
 				
 				$.ajax({
+					cache: false,
 					type: 'GET',
 					url: 'project/loadTccl',
 					data : {
@@ -385,6 +486,29 @@
 		
 		<!-- Button scripts -->
 		<script>
+			$('#apiKey').on('click', function() {
+				
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");
+				
+				$.ajax({
+					type : 'POST',
+					url : 'project/generateKey',
+					beforeSend: function(xhr) {
+			            xhr.setRequestHeader(header, token);
+			        },
+					success : function (data) {
+						$('#key').empty();
+						$('#key').append(data);
+						$('#generatedKey').modal('show');
+					}
+				});	
+			});
+			
+			$('#closeApiKey').on('click', function() {
+				$('#key').empty();
+			});
+			
 		  	$('#createConfirm').on('click', function(){
 		  		
 				var text="";
@@ -393,7 +517,7 @@
 		    		text+=$(this).val()+".";
 		    	});
 		    	
-		    	document.getElementById('supportedServices').value = text;
+		    	$('#supportedServices').val(text);
 		    	$('#newProjectForm').submit();
 		  	});
 
@@ -409,13 +533,12 @@
 				            xhr.setRequestHeader(header, token);
 				        },
 						data : {
-							data : sessionStorage.getItem("idProject")
+							idProject : sessionStorage.getItem("idProject")
 						},
 						success: function () {
 							var MyRows = $('.table').find('tbody').find('tr');
 							for (var i = 0; i < MyRows.length; i++) {
 								if(($(MyRows[i]).find('td:eq(0)').html())==sessionStorage.getItem("idProject")) {
-									//alert($(MyRows[i]).find('td:eq(1)').html());
 									$(MyRows[i]).fadeOut(400, function() {
 										$(MyRows[i]).remove();
 									});
@@ -443,12 +566,13 @@
 		    		text+=$(this).val()+".";
 		    	});
 		    	
-		    	document.getElementById('edit-services').value = text;
+		    	$('#edit-services').val(text);
 				$('#editProjectForm').submit();
 			});
 			
 			$('#createButton').on('click', function(){
 					$.ajax({
+						cache: false,
 						type: 'GET',
 						url: 'project/loadTccl',
 						data : {
@@ -462,25 +586,25 @@
 						}
 					});
 					
-					var services = data.supportedServices.split(".");		
-					$('#scroll-services').selectpicker('val',services);
+					/*var services = data.supportedServices.split(".");		
+					$('#scroll-services').selectpicker('val',services);*/
 
 			});
 			
 			$('#editButton').on('click', function(){
 				$.ajax({
+					cache: false,
 					type : 'GET',
 					url : 'project/edit',
 					data : {
-						data : sessionStorage.getItem("idProject")
+						idProject : sessionStorage.getItem("idProject")
 					},
 					success: function (data) {
 						
-						$('#edit-id').val(data.idProject);
-						$('#edit-name').val(data.name);
+						$('#edit_id').val(data.idProject);
+						$('#edit_name').val(data.name);
 						$('#edit-type').val(data.type);
 						$('#edit-release').val(data.idCertrel);
-						//$('#edit-tccl').val(data.idTccl);
 						$('#edit-car-id').val(data.carId);
 						
 						$.ajax({
@@ -506,7 +630,7 @@
 			$('.result-link').on('click', function(e){		
 				e.preventDefault();
 				var id2 = $(this).parent().parent().find('td:first').html();
-				document.getElementById('idProject').value = id2;
+				$('#idProject').val(id2);
 				
 				localStorage.setItem("idProject",id2);
 				
@@ -543,9 +667,10 @@
 				   	var type=$(this).find('td:eq(4)').html();
 				   	
 				   	sessionStorage.setItem("idProject",id);
-				   	
-				   	//sessionStorage.setItem("isConfigured",configured);
 				   	sessionStorage.setItem("type",type);
+				   	
+				   	var name=$(this).find('td:eq(1)').html();
+				   	sessionStorage.setItem("projectName",name);
 
 				   	$('#nextButton').removeClass('disabled');
 				   	$('#nextButton').removeAttr("disabled");

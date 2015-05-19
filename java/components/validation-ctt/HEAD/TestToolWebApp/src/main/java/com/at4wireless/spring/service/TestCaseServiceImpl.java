@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *      Permission to use, copy, modify, and/or distribute this software for any
+ *      purpose with or without fee is hereby granted, provided that the above
+ *      copyright notice and this permission notice appear in all copies.
+ *      
+ *      THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *      WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *      MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *      ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *      WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *      ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *      OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *******************************************************************************/
+
 package com.at4wireless.spring.service;
 
 import java.io.FileInputStream;
@@ -34,7 +50,7 @@ import com.at4wireless.spring.model.TestCase;
 
 @Service
 public class TestCaseServiceImpl implements TestCaseService {
-	
+		
 	@Autowired
 	private IcsDAO icsDao;
 	
@@ -54,7 +70,7 @@ public class TestCaseServiceImpl implements TestCaseService {
 
 		List<Ics> listIcs = new ArrayList<Ics>();
 		List<TestCase> listTC = new ArrayList<TestCase>();
-		//Get Project services to filter ICS			
+		
 		for (BigInteger bi : services) {
 			listIcs.addAll(icsDao.getService(bi.intValue()));
 			if(bi.intValue()==3) {
@@ -62,19 +78,15 @@ public class TestCaseServiceImpl implements TestCaseService {
 			}
 			List<Integer> intList = crDao.getIds(idCertRel);
 			if(type.equals("Pre-certification")||type.equals("Conformance and Interoperability")) {
-				/*listTC.addAll(tcDao.getService("Conformance", bi.intValue()));
-				listTC.addAll(tcDao.getService("Interoperability", bi.intValue()));*/
 				listTC.addAll(tcDao.getServiceWithRestriction("Conformance", bi.intValue(), intList));
 				listTC.addAll(tcDao.getServiceWithRestriction("Interoperability", bi.intValue(), intList));
 			} else {
-				//listTC.addAll(tcDao.getService(type, bi.intValue()));
 				listTC.addAll(tcDao.getServiceWithRestriction(type, bi.intValue(), intList));
 			}
 		}
 		return checkApplicability(listTC, listIcs, map);
 	}
 	
-	//Check applicability method
 	private List<TestCase> checkApplicability(List<TestCase> listTC, List<Ics> listIcs, 
 			Map<String, String[]> map) {
 		
@@ -83,7 +95,6 @@ public class TestCaseServiceImpl implements TestCaseService {
 		boolean b = false;
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("JavaScript");
 		
-		//Load boolean values on engine
 		for (Ics i : listIcs) {
 
 			if(map.containsKey("data["+i.getName()+"]")) {
@@ -103,7 +114,6 @@ public class TestCaseServiceImpl implements TestCaseService {
 			}
 		}
 		
-		//When values are loaded, engine can evaluate Applicability expressions
 		for (TestCase tc : listTC) {
 			
 			condition = tc.getApplicability();
@@ -120,7 +130,6 @@ public class TestCaseServiceImpl implements TestCaseService {
 				applyTC.add(tc);
 			}
 		}
-		
 		return applyTC;
 	}
 
@@ -162,18 +171,18 @@ public class TestCaseServiceImpl implements TestCaseService {
 		List<String> listString = new ArrayList<String>();
 		
 		try {
-			//Load XML
 			builder = builderFactory.newDocumentBuilder();
 			Document source = builder.parse(new FileInputStream(configuration));
 			
-			//Get Value nodes
 			XPath xPath = XPathFactory.newInstance().newXPath();	
 			String expression = "/Project/TestCase/Name";
 			NodeList nodeList = (NodeList) xPath.compile(expression).evaluate(source, XPathConstants.NODESET);
 			
-			listString.add("====================");
-			listString.add("SELECTED TESTCASES AND RESULTS");
-			listString.add("====================");
+			String expression2 = "/Project/ApplyTC";
+			NodeList nodeList2 = (NodeList) xPath.compile(expression2).evaluate(source, XPathConstants.NODESET);
+			
+			listString.add("5. Test Cases and Results");
+			listString.add("Executed "+nodeList.getLength()+" of "+nodeList2.item(0).getFirstChild().getNodeValue()+ " applicable testcases");
 			for (int i = 0; i < nodeList.getLength(); i++) {
 				String str = lastExecution(nodeList.item(i).getFirstChild().getNodeValue(), results);
 			    listString.add(nodeList.item(i).getFirstChild().getNodeValue()+separator
@@ -192,17 +201,15 @@ public class TestCaseServiceImpl implements TestCaseService {
 		return listString;
 	}
 	
-	private String lastExecution(String tcName, String results) {
+	public String lastExecution(String tcName, String results) {
 		DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = null;
 		String r = "";
 		
 		try {
-			//Load XML
 			builder = builderFactory.newDocumentBuilder();
 			Document source = builder.parse(new FileInputStream(results));
 			
-			//Get Value nodes
 			XPath xPath = XPathFactory.newInstance().newXPath();	
 			String expression = "/Results/TestCase/Name";
 			String expression2 = "/Results/TestCase/DateTime";
@@ -235,15 +242,12 @@ public class TestCaseServiceImpl implements TestCaseService {
 	public List<String> zipData(String configuration, String results) {
 		DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = null;
-		String separator = ": ";
 		List<String> listString = new ArrayList<String>();
 		
 		try {
-			//Load XML
 			builder = builderFactory.newDocumentBuilder();
 			Document source = builder.parse(new FileInputStream(configuration));
 			
-			//Get Value nodes
 			XPath xPath = XPathFactory.newInstance().newXPath();	
 			String expression = "/Project/TestCase/Name";
 			NodeList nodeList = (NodeList) xPath.compile(expression).evaluate(source, XPathConstants.NODESET);
@@ -273,11 +277,9 @@ public class TestCaseServiceImpl implements TestCaseService {
 		String r = "";
 		
 		try {
-			//Load XML
 			builder = builderFactory.newDocumentBuilder();
 			Document source = builder.parse(new FileInputStream(results));
 			
-			//Get Value nodes
 			XPath xPath = XPathFactory.newInstance().newXPath();	
 			String expression = "/Results/TestCase/Name";
 			String expression2 = "/Results/TestCase/LogFile";
@@ -309,11 +311,9 @@ public class TestCaseServiceImpl implements TestCaseService {
 		DocumentBuilder builder = null;
 		
 		try {
-			//Load XML
 			builder = builderFactory.newDocumentBuilder();
 			Document source = builder.parse(new FileInputStream(configuration));
 			
-			//Get Value nodes
 			XPath xPath = XPathFactory.newInstance().newXPath();	
 			String expression = "/Project/TestCase/Name";
 			NodeList nodeList = (NodeList) xPath.compile(expression).evaluate(source, XPathConstants.NODESET);

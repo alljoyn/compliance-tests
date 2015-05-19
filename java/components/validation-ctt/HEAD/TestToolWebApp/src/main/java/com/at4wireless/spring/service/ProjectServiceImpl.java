@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *      Permission to use, copy, modify, and/or distribute this software for any
+ *      purpose with or without fee is hereby granted, provided that the above
+ *      copyright notice and this permission notice appear in all copies.
+ *      
+ *      THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *      WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *      MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *      ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *      WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *      ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *      OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *******************************************************************************/
 package com.at4wireless.spring.service;
 
 import java.io.File;
@@ -13,6 +28,7 @@ import com.at4wireless.spring.dao.CertificationReleaseDAO;
 import com.at4wireless.spring.dao.DutDAO;
 import com.at4wireless.spring.dao.GoldenUnitDAO;
 import com.at4wireless.spring.dao.ProjectDAO;
+import com.at4wireless.spring.dao.ServiceFrameworkDAO;
 import com.at4wireless.spring.dao.TcclDAO;
 import com.at4wireless.spring.model.CertificationRelease;
 import com.at4wireless.spring.model.Project;
@@ -34,98 +50,82 @@ public class ProjectServiceImpl implements ProjectService {
 	
 	@Autowired
 	private TcclDAO tcclDao;
-
+	
+	@Autowired
+	private ServiceFrameworkDAO serviceDao;
+	
 	@Override
 	@Transactional
-	public void configProject(String idProject, String url) {
-		projectDao.configProject(idProject, url);
+	public boolean create(Project p) {
 		
-	}
+		java.sql.Timestamp date = new java.sql.Timestamp(
+				new java.util.Date().getTime());
 
-	@Override
-	@Transactional
-	public void resultProject(int idProject, String url) {
-		projectDao.resultProject(idProject, url);
-		
-	}
+		p.setCreatedDate(date);
+		p.setModifiedDate(date);
 
-	@Override
-	@Transactional
-	public String setDut(String username, Project project) {
-		Project p = projectDao.getProject(username, project.getIdProject());
-		
-		//Set selected DUT here
-		if(project.getIdDut()!=0) {
-			if((p.getIdDut()!=0)&&(p.isIsConfigured())&&(project.getIdDut()!=p.getIdDut())) {
-				try {
-					String cfg = p.getConfiguration();
-					if(cfg!=null) {
-						File fileTemp = new File(cfg);
-						if(fileTemp.exists()) {
-							fileTemp.delete();
-						}
-					}
-				}catch (Exception e) {
-					e.printStackTrace();
-				}
-				projectDao.configProject(Integer.toString(project.getIdProject()), null);
-			}
-			projectDao.setDut(project);
+		if(projectDao.getProjectByName(p.getUser(), p.getName())!=null) {
+			return false;
+		} else {
+			projectDao.addProject(p);
+			return true;
 		}
-		
-		return p.getType();
-		
-	}
-
-	@Override
-	@Transactional
-	public void setGu(String username, Project project) {
-		//Project p = projectDao.getProject(username, project.getIdProject());
-		
-		//Set selected GU here
-		//if(project.getIdGolden()!=0) {
-		if(!project.getgUnits().isEmpty()) {
-			/*if((p.getIdDut()!=0)&&(p.isIsConfigured())&&(project.getIdDut()!=p.getIdDut())) {
-				try {
-					String cfg = p.getConfiguration();
-					if(cfg!=null) {
-						File fileTemp = new File(cfg);
-						if(fileTemp.exists()) {
-							fileTemp.delete();
-						}
-					}
-				}catch (Exception e) {
-					e.printStackTrace();
-				}
-				projectDao.configProject(Integer.toString(project.getIdProject()), null);
-			}*/
-			projectDao.setGu(project);
-		}
-		
 	}
 	
 	@Override
 	@Transactional
-	public boolean delete(String username, int idProject) {
-
-		Project p = projectDao.getProject(username, idProject);
-		if(p!=null) {
-			try {
-				String cfg = p.getConfiguration();
-				if (cfg != null) {
-					File fileTemp = new File(cfg);
-					if (fileTemp.exists()) {
-						fileTemp.delete();
+	public List<Project> getTableData(String username) {
+		List<Project> projectList = projectDao.list(username);
+		
+		for (Project p : projectList) {
+			List<String> sList = serviceDao.getServicesByName(p.getIdProject());
+			StringBuilder str= new StringBuilder();
+			for (int i=0; i<sList.size(); i++) {
+				str.append(sList.get(i));
+				if(i!=(sList.size()-1)) {
+					str.append(", ");
+				}
+			}
+			p.setSupportedServices(str.toString());
+		}
+		
+		for (Project p : projectList) {
+			List<String> sList = projectDao.getGoldenByName(p.getIdProject());
+			if(!sList.isEmpty()) {
+				StringBuilder str= new StringBuilder();
+				
+				for (int i=0; i<sList.size(); i++) {
+					str.append(sList.get(i));
+					if(i!=(sList.size()-1)) {
+						str.append(", ");
 					}
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
+				p.setgUnits(str.toString());
+			} else {
+				if (p.getType().equals("Conformance")) {
+					p.setgUnits("N/A");
+				} else {
+					p.setgUnits("Not selected");
+				}
 			}
-			projectDao.delProject(idProject);
-			return true;
-		} else {
-			return false;
 		}
+		
+		return projectList;
+	}
+	
+	@Override
+	@Transactional
+	public Project getFormData(String username, int idProject) {
+
+		Project p = projectDao.getProject(username,idProject);
+		List<BigInteger> biList = serviceDao.getServices(p.getIdProject());
+		
+		StringBuilder str = new StringBuilder();
+		for (BigInteger bi : biList)
+			str.append(bi.toString() + ".");
+		p.setSupportedServices(str.toString());
+
+		return p;
 	}
 	
 	@Override
@@ -136,7 +136,7 @@ public class ProjectServiceImpl implements ProjectService {
 			java.sql.Timestamp date = new java.sql.Timestamp(new java.util.Date().getTime());
 			p.setModifiedDate(date);
 			String[] var = p.getSupportedServices().split("[\\.]+");
-			List<BigInteger> listServices = projectDao.getServices(saved.getIdProject());
+			List<BigInteger> listServices = serviceDao.getServices(saved.getIdProject());
 			boolean equals=(var.length==listServices.size());
 			int i=0;
 			while ((equals)&&(i<var.length)) {
@@ -171,71 +171,84 @@ public class ProjectServiceImpl implements ProjectService {
 	
 	@Override
 	@Transactional
-	public Project getFormData(String username, int idProject) {
+	public boolean delete(String username, int idProject) {
 
-		Project p = projectDao.getProject(username,idProject);
-		List<BigInteger> biList = projectDao.getServices(p.getIdProject());
-		
-		StringBuilder str = new StringBuilder();
-		for (BigInteger bi : biList)
-			str.append(bi.toString() + ".");
-		p.setSupportedServices(str.toString());
-
-		return p;
-	}
-	
-	@Override
-	@Transactional
-	public boolean create(Project p) {
-		
-		java.sql.Timestamp date = new java.sql.Timestamp(
-				new java.util.Date().getTime());
-
-		// When created, both dates get the same value
-		p.setCreatedDate(date);
-		p.setModifiedDate(date);
-
-		// if project's assigned user and context's user are equal
-		if(projectDao.getProjectByName(p.getUser(), p.getName())!=null) {
-			return false;
-		} else {
-			projectDao.addProject(p);
+		Project p = projectDao.getProject(username, idProject);
+		if(p!=null) {
+			try {
+				String cfg = p.getConfiguration();
+				if (cfg != null) {
+					File filePath = new File(cfg.substring(0,cfg.lastIndexOf(File.separator)));
+					
+					if (filePath.isDirectory()) {
+						File files[] = filePath.listFiles();
+						for (int i=0; i<files.length; i++) {
+							if (files[i].exists()) {
+								files[i].delete();
+							}
+						}
+						filePath.delete();
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			projectDao.delProject(idProject);
 			return true;
+		} else {
+			return false;
 		}
 	}
-	
+
 	@Override
 	@Transactional
-	public List<Project> getTableData(String username) {
-		List<Project> projectList = projectDao.list(username);
+	public void configProject(String idProject, String url) {
+		projectDao.configProject(idProject, url);
 		
-		for (Project p : projectList) {
-			List<String> sList = projectDao.getServicesByName(p.getIdProject());
-			StringBuilder str= new StringBuilder();
-			for (String s : sList) {
-				str.append(s+", ");
+	}
+
+	@Override
+	@Transactional
+	public void resultProject(int idProject, String url) {
+		projectDao.resultProject(idProject, url);
+		
+	}
+
+	@Override
+	@Transactional
+	public String setDut(String username, Project project) {
+		Project p = projectDao.getProject(username, project.getIdProject());
+		
+		if(project.getIdDut()!=0) {
+			if((p.getIdDut()!=0)&&(p.isIsConfigured())&&(project.getIdDut()!=p.getIdDut())) {
+				try {
+					String cfg = p.getConfiguration();
+					if(cfg!=null) {
+						File fileTemp = new File(cfg);
+						if(fileTemp.exists()) {
+							fileTemp.delete();
+						}
+					}
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+				projectDao.configProject(Integer.toString(project.getIdProject()), null);
 			}
-			p.setSupportedServices(str.toString());
+			projectDao.setDut(project);
 		}
 		
-		for (Project p : projectList) {
-			List<String> sList = projectDao.getGoldenByName(p.getIdProject());
-			if(!sList.isEmpty()) {
-				StringBuilder str= new StringBuilder();
-				for (String s : sList) {
-					str.append(s+", ");
-				}
-				p.setgUnits(str.toString());
-			} else {
-				if (p.getType().equals("Conformance")) {
-					p.setgUnits("N/A");
-				} else {
-					p.setgUnits("Not selected");
-				}
-			}
+		return p.getType();
+		
+	}
+
+	@Override
+	@Transactional
+	public void setGu(String username, Project project) {
+
+		if(!project.getgUnits().isEmpty()) {
+			projectDao.setGu(project);
 		}
 		
-		return projectList;
 	}
 	
 	@Override
@@ -263,9 +276,6 @@ public class ProjectServiceImpl implements ProjectService {
 			if(p.getIdDut()!=0) {
 				rp.setDut(dutDao.getDut(username, p.getIdDut()).getName());
 			}
-			/*if(p.getIdGolden()!=0) {
-				rp.setGolden(guDao.getGu(username, p.getIdGolden()).getName());
-			}*/
 			rp.setGolden(p.getgUnits());
 			
 			
@@ -309,23 +319,10 @@ public class ProjectServiceImpl implements ProjectService {
 		return false;
 	}
 
-	/*@Override
-	@Transactional
-	public boolean clearConfigByGu(String username, int idGu) {
-		List<Project> lp = projectDao.getProjectByGu(username,idGu);
-		if(lp!=null) {
-			for (Project p : projectDao.getProjectByGu(username, idGu)) {
-				projectDao.setGu(p);
-			}
-			return true;
-		}
-		return false;
-	}*/
-
 	@Override
 	@Transactional
 	public List<BigInteger> getServicesData(int idProject) {
-		return projectDao.getServices(idProject);
+		return serviceDao.getServices(idProject);
 	}
 	
 	@Override
@@ -333,7 +330,7 @@ public class ProjectServiceImpl implements ProjectService {
 	public List<String> pdfData(String username, int idProject) {
 		
 		Project p = projectDao.getProject(username,idProject);
-		List<String> sList = projectDao.getServicesByName(p.getIdProject());
+		List<String> sList = serviceDao.getServicesByName(p.getIdProject());
 		
 		StringBuilder str = new StringBuilder();
 		for (int i=0; i<sList.size(); i++) {
@@ -346,9 +343,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 		String separator = ": ";
 		List<String> listString = new ArrayList<String>();
-		listString.add("====================");
-		listString.add("PROJECT DETAILS");
-		listString.add("====================");
+		listString.add("1. Project Details");
 		listString.add("Project Name"+separator+p.getName());
 		listString.add("User Name"+separator+p.getUser());
 		java.util.Date date = new java.util.Date();
@@ -367,5 +362,18 @@ public class ProjectServiceImpl implements ProjectService {
 	@Transactional
 	public void testReport(int idProject, String path) {
 		projectDao.setTestReport(idProject, path);
+	}
+
+	@Override
+	@Transactional
+	public boolean exists(String username, String name, int id) {
+		
+		Project p = projectDao.getProjectByName(username, name);
+		if(p==null) {
+			return false;
+		} else if (p.getIdProject()==id) {
+			return false;
+		}
+		return true;
 	}
 }

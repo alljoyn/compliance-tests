@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *      Permission to use, copy, modify, and/or distribute this software for any
+ *      purpose with or without fee is hereby granted, provided that the above
+ *      copyright notice and this permission notice appear in all copies.
+ *      
+ *      THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *      WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *      MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *      ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *      WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *      ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *      OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *******************************************************************************/
+
 package com.at4wireless.spring.controller;
 
 import java.math.BigInteger;
@@ -22,6 +38,9 @@ import com.at4wireless.spring.service.IxitService;
 import com.at4wireless.spring.service.ProjectService;
 import com.at4wireless.spring.service.ServiceFrameworkService;
 
+/**
+ * This class manages all actions related to IXIT view
+ */
 @Controller
 @RequestMapping(value="/ixit")
 public class IxitController {
@@ -38,7 +57,14 @@ public class IxitController {
 	@Autowired
 	private ServiceFrameworkService sfService;
 	
-	//View pre-charging method
+	/**
+	 * Loads data to be displayed if logged, redirects to login
+	 * otherwise.
+	 * 
+     * @param 	model 		model to add objects needed by the view
+     * @param 	newProject 	ID of the project whose services have to be loaded
+     * @return 				target view
+     */
 	@RequestMapping(method = RequestMethod.GET)
 	public String ixit(Model model, @ModelAttribute("newProject") Project newProject) {		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();

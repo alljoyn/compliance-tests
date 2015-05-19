@@ -1,6 +1,20 @@
+/*******************************************************************************
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *      Permission to use, copy, modify, and/or distribute this software for any
+ *      purpose with or without fee is hereby granted, provided that the above
+ *      copyright notice and this permission notice appear in all copies.
+ *      
+ *      THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *      WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *      MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *      ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *      WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *      ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *      OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *******************************************************************************/
 package com.at4wireless.spring.dao;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -58,24 +72,6 @@ public class ProjectDAOImpl implements ProjectDAO {
 		} else {
 			return listProject.get(0);
 		}
-	}
-	
-	@Override
-	public List<BigInteger> getServices(int idProject) {
-		@SuppressWarnings("unchecked")
-		List<BigInteger> intList = (List<BigInteger>) sessionFactory.getCurrentSession()
-				.createSQLQuery("select (id_service) from project_services where id_project="+idProject+";").list();
-		
-		return intList;
-	}
-	
-	@Override
-	public List<String> getServicesByName(int idProject) {
-		@SuppressWarnings("unchecked")
-		List<String> stringList = (List<String>) sessionFactory.getCurrentSession()
-				.createSQLQuery("select (name) from services where id_service in"
-						+"(select id_service from project_services where id_project="+idProject+");").list();
-		return stringList;
 	}
 
 	@Override
@@ -161,8 +157,6 @@ public class ProjectDAOImpl implements ProjectDAO {
 
 	@Override
 	public void setGu(Project project) {
-		/*sessionFactory.getCurrentSession().createQuery("update Project set idGolden = '"
-				+project.getIdGolden()+"' where idProject = '"+project.getIdProject()+"'").executeUpdate();*/
 		sessionFactory.getCurrentSession().createSQLQuery("delete from project_golden where id_project="
 				+project.getIdProject()+";").executeUpdate();
 		
@@ -192,22 +186,6 @@ public class ProjectDAOImpl implements ProjectDAO {
 			return listProject;
 		}
 	}
-
-	/*@Override
-	public List<Project> getProjectByGu(String user, int idGu) {
-		@SuppressWarnings("unchecked")
-		List<Project> listProject = (List<Project>) sessionFactory.getCurrentSession()
-				.createCriteria(Project.class)
-					.add(Restrictions.like("user", user))
-					.add(Restrictions.like("idGolden", idGu))
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-		
-		if (listProject.isEmpty()) {
-			return null;
-		} else {
-			return listProject;
-		}
-	}*/
 
 	@Override
 	public void setTestReport(int idProject, String path) {

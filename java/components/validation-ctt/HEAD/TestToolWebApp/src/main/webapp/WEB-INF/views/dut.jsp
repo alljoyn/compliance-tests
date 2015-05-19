@@ -38,6 +38,7 @@
     		<jsp:include page="/WEB-INF/views/header.jsp"/>
 		    
 		    <div class="row" align="right">
+				<h4 id="selectedProject" class="pull-left"></h4>
 		    	<c:if test="${pageContext.request.userPrincipal.name != null}">
 					<h4>
 						Welcome : ${pageContext.request.userPrincipal.name} | <a
@@ -128,15 +129,15 @@
 	        			<div class="modal-body">
 	        				<form:form method="POST" id="newDutForm" action="dut/add" modelAttribute="newDut">
 	        					<div class="form-group">
-	        						<label path="name" for="dut-name" class="control-label">Name</label>
+	        						<label path="name" for="dut-name" class="control-label">Name (*)</label>
 	        						<form:input path="name" type="text" class="form-control" id="dut-name"/>
 	        					</div>
 	        					<div class="form-group">
-	        						<label path="manufacturer" for="dut-manufacturer" class="control-label">OEM</label>
+	        						<label path="manufacturer" for="dut-manufacturer" class="control-label">OEM (*)</label>
 	        						<form:input path="manufacturer" type="text" class="form-control" id="dut-manufacturer"/>
 	        					</div>
 	        					<div class="form-group">
-	        						<label path="model" for="dut-model" class="control-label">Model</label>
+	        						<label path="model" for="dut-model" class="control-label">Model (*)</label>
 	        						<form:input path="model" type="text" class="form-control" id="dut-model"/>
 	        					</div>
 	        					<div class="form-group">
@@ -145,24 +146,25 @@
 	        					</div>
 	        					<h4 align="center">Insert a first sample</h4>
 	        					<div class="form-group">
-	        						<label path="deviceId" for="dut-device-id" class="control-label">Device ID</label>
+	        						<label path="deviceId" for="dut-device-id" class="control-label">Device ID (*)</label>
 	        						<form:input path="deviceId" type="text" class="form-control" id="dut-device-id"/>
 	        					</div>
 	        					<div class="form-group">
-	        						<label path="appId" for="dut-app-id" class="control-label">App ID</label>
+	        						<label path="appId" for="dut-app-id" class="control-label">App ID (*)</label>
 	        						<form:input path="appId" type="text" class="form-control" id="dut-app-id"/>
 	        					</div>
 	        					<div class="form-group">
-	        						<label path="swVer" for="dut-sw-ver" class="control-label">Software Version</label>
+	        						<label path="swVer" for="dut-sw-ver" class="control-label">Software Version (*)</label>
 	        						<form:input path="swVer" type="text" class="form-control" id="dut-sw-ver"/>
 	        					</div>
 	        					<div class="form-group">
-	        						<label path="hwVer" for="dut-hw-ver" class="control-label">Hardware Version</label>
+	        						<label path="hwVer" for="dut-hw-ver" class="control-label">Hardware Version (*)</label>
 	        						<form:input path="hwVer" type="text" class="form-control" id="dut-hw-ver"/>
 	        					</div>
 	        					
 	        					<form:input type="hidden" name="user" path="user" value="${pageContext.request.userPrincipal.name}"/>			
 	        				</form:form>
+	        				<p>(*) This is a mandatory field</p>
 	        			</div>
 	        			<div class="modal-footer">
 	        				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -180,15 +182,15 @@
 	        				<form:form method="POST" id="editDutForm" action="dut/edit" modelAttribute="newDut">
 	        					<form:input type="hidden" id="edit-id" path="idDut"/>
 	        					<div class="form-group">
-	        						<label path="name" for="edit-name" class="control-label">Name</label>
+	        						<label path="name" for="edit-name" class="control-label">Name(*)</label>
 	        						<form:input path="name" type="text" class="form-control" id="edit-name"/>
 	        					</div>
 	        					<div class="form-group">
-	        						<label path="manufacturer" for="edit-manufacturer" class="control-label">OEM</label>
+	        						<label path="manufacturer" for="edit-manufacturer" class="control-label">OEM(*)</label>
 	        						<form:input path="manufacturer" type="text" class="form-control" id="edit-manufacturer"/>
 	        					</div>
 	        					<div class="form-group">
-	        						<label path="model" for="edit-model" class="control-label">Model</label>
+	        						<label path="model" for="edit-model" class="control-label">Model(*)</label>
 	        						<form:input path="model" type="text" class="form-control" id="edit-model"/>
 	        					</div>
 	        					<div class="form-group">
@@ -197,6 +199,7 @@
 	        					</div>
 	        					<form:input type="hidden" name="user" path="user" value="${pageContext.request.userPrincipal.name}"/>			
 	        				</form:form>
+	        				<p>(*) This is a mandatory field</p>
 	        			</div>
 	        			<div class="modal-footer">
 	        				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -271,23 +274,24 @@
 	        			<div class="modal-body">
 	        				<form:form method="POST" id="newSampleForm" action="dut/samples/add" modelAttribute="newSample">
 	        					<div class="form-group">
-	        						<label path="deviceId" for="sample-device-id" class="control-label">Device ID</label>
+	        						<label path="deviceId" for="sample-device-id" class="control-label">Device ID (*)</label>
 	        						<form:input path="deviceId" type="text" class="form-control" id="sample-device-id"/>
 	        					</div>
 	        					<div class="form-group">
-	        						<label path="appId" for="sample-app-id" class="control-label">App ID</label>
+	        						<label path="appId" for="sample-app-id" class="control-label">App ID (*)</label>
 	        						<form:input path="appId" type="text" class="form-control" id="sample-app-id"/>
 	        					</div>
 	        					<div class="form-group">
-	        						<label path="swVer" for="sample-sw-ver" class="control-label">Software Version</label>
+	        						<label path="swVer" for="sample-sw-ver" class="control-label">Software Version (*)</label>
 	        						<form:input path="swVer" type="text" class="form-control" id="sample-sw-ver"/>
 	        					</div>
 	        					<div class="form-group">
-	        						<label path="hwVer" for="sample-hw-ver" class="control-label">Hardware Version</label>
+	        						<label path="hwVer" for="sample-hw-ver" class="control-label">Hardware Version (*)</label>
 	        						<form:input path="hwVer" type="text" class="form-control" id="sample-hw-ver"/>
 	        					</div>
 	        					<form:input id="sample-dut" type="hidden" name="associatedDut" path="associatedDut" value=""/>			
 	        				</form:form>
+	        				<p>(*) This is a mandatory field</p>
 	        			</div>
 	        			<div class="modal-footer">
 	        				<button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" data-target="#samplesDut">Cancel</button>
@@ -304,23 +308,24 @@
 	        			<div class="modal-body">
 	        				<form:form method="POST" id="editSampleForm" action="dut/samples/edit" modelAttribute="newSample">
 	        					<div class="form-group">
-	        						<label path="deviceId" for="edit-device-id" class="control-label">Device ID</label>
+	        						<label path="deviceId" for="edit-device-id" class="control-label">Device ID (*)</label>
 	        						<form:input path="deviceId" type="text" class="form-control" id="edit-device-id"/>
 	        					</div>
 	        					<div class="form-group">
-	        						<label path="appId" for="edit-app-id" class="control-label">App ID</label>
+	        						<label path="appId" for="edit-app-id" class="control-label">App ID (*)</label>
 	        						<form:input path="appId" type="text" class="form-control" id="edit-app-id"/>
 	        					</div>
 	        					<div class="form-group">
-	        						<label path="swVer" for="edit-sw-ver" class="control-label">Software Version</label>
+	        						<label path="swVer" for="edit-sw-ver" class="control-label">Software Version (*)</label>
 	        						<form:input path="swVer" type="text" class="form-control" id="edit-sw-ver"/>
 	        					</div>
 	        					<div class="form-group">
-	        						<label path="hwVer" for="edit-hw-ver" class="control-label">Hardware Version</label>
+	        						<label path="hwVer" for="edit-hw-ver" class="control-label">Hardware Version (*)</label>
 	        						<form:input path="hwVer" type="text" class="form-control" id="edit-hw-ver"/>
 	        					</div>
 	        					<form:input id="edit-sample-id" type="hidden" name="idSample" path="idSample" value=""/>			
 	        				</form:form>
+	        				<p>(*) This is a mandatory field</p>
 	        			</div>
 	        			<div class="modal-footer">
 	        				<button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" data-target="#samplesDut">Cancel</button>
@@ -336,13 +341,16 @@
         <script src="resources/jquery/js/jquery-1.11.2.min.js"></script>
 		<script src="resources/bootstrap/js/bootstrap.min.js"></script>
 		
+		<script src="resources/jquery-validation/1.13.1/js/jquery.validate.min.js"></script>
+		<script src="resources/jquery-validation/1.13.1/js/additional-methods.min.js"></script>
+		
 		<script>
 			$(document).ready(function() {
 				$('#title').text("STEP 2: SELECT/EDIT/CREATE A DEVICE UNDER TEST (DUT)");
 				if(sessionStorage.getItem("idProject")===null) {
-					//document.getElementById("prevButton").click();
 					document.getElementById("errorButton").click();
 				}
+				$('#selectedProject').append("Project: "+sessionStorage.getItem("projectName"));
 				
 				var w = $('.scroll-tbody').find('.scroll-tr').first().width();
 				$('.scroll-thead').find('.scroll-tr').width(w);
@@ -367,9 +375,286 @@
 			});
 		</script>
 		
+		<!-- Validation scripts -->
+		<script>
+			$('#newDutForm').validate({
+				rules: {
+					name: {
+						required: true,
+						minlength: 2,
+						maxlength: 255,
+						remote: {
+							url: "dut/validateName",
+							type: "get",
+							data: {
+								id: 0,
+								name: function() {
+									return $('#dut-name').val();
+								}
+							}
+						}
+					},
+					manufacturer: {
+						required: true,
+						minlength: 2,
+						maxlength: 60,
+					},
+					model: {
+						required: true,
+						minlength: 2,
+						maxlength: 60,
+					},
+					description: {
+						//required: true,
+						//minlength: 2,
+						maxlength: 255,
+					},
+					deviceId: {
+						required: true,
+						minlength: 2,
+						maxlength: 60,
+					},
+					appId: {
+						required: true,
+						//minlength: 2,
+						maxlength: 36,
+						//pattern: /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+						pattern: /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
+					},
+					swVer: {
+						required: true,
+						minlength: 2,
+						maxlength: 60,
+					},
+					hwVer: {
+						required: true,
+						minlength: 2,
+						maxlength: 60,
+					}
+				},
+				messages: {
+					name: {
+						required: "Please enter DUT name!",
+						maxlength: "DUT name must have a max of 255 characters!",
+						remote: "DUT already exists!"
+					},
+					manufacturer: {
+						required: "Please enter manufacturer!",
+						maxlength: "Manufacturer must have a max of 60 characters!"
+					},
+					model: {
+						required: "Please enter model!",
+						maxlength: "Model must have a max of 60 characters!"
+					},
+					description: {
+						//required: "Please enter description!",
+						maxlength: "Description must have a max of 60 characters!"
+					},
+					deviceId: {
+						required: "Please enter device ID of the sample!",
+						maxlength: "Device ID must have a max of 60 characters!"
+					},
+					appId: {
+						required: "Please enter app ID of the sample!",
+						maxlength: "App ID must have a max of 60 characters!",
+						pattern: "Please enter a valid UUID! (Example: 12345678-9abc-1def-8012-000000000000)"
+					},
+					swVer: {
+						required: "Please enter software version of the sample!",
+						maxlength: "Software version must have a max of 60 characters!"
+					},
+					hwVer: {
+						required: "Please enter hardware version of the sample!",
+						maxlength: "Hardware version must have a max of 60 characters!"
+					}
+				}
+			});
+			
+			$('#editDutForm').validate({
+				rules: {
+					name: {
+						required: true,
+						minlength: 2,
+						maxlength: 255,
+						remote: {
+							url: "dut/validateName",
+							type: "get",
+							data: {
+								id: function() {
+									return $('#edit-id').val();
+								},
+								name: function() {
+									return $('#edit-name').val();
+								}
+							}
+						}
+					},
+					manufacturer: {
+						required: true,
+						minlength: 2,
+						maxlength: 60,
+					},
+					model: {
+						required: true,
+						minlength: 2,
+						maxlength: 60,
+					},
+					description: {
+						//required: true,
+						minlength: 2,
+						maxlength: 255,
+					}
+				},
+				messages: {
+					name: {
+						required: "Please enter DUT name!",
+						maxlength: "DUT name must have a max of 255 characters!",
+						remote: "DUT already exists!"
+					},
+					manufacturer: {
+						required: "Please enter manufacturer!",
+						maxlength: "Manufacturer must have a max of 60 characters!"
+					},
+					model: {
+						required: "Please enter model!",
+						maxlength: "Model must have a max of 60 characters!"
+					},
+					description: {
+						//required: "Please enter description!",
+						maxlength: "Description must have a max of 60 characters!"
+					}
+				}
+			});
+			
+			$('#newSampleForm').validate({
+				rules: {
+					deviceId: {
+						required: true,
+						minlength: 2,
+						maxlength: 60,
+					},
+					appId: {
+						required: true,
+						//minlength: 2,
+						maxlength: 36,
+						pattern: /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
+						//pattern: /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+					},
+					swVer: {
+						required: true,
+						//minlength: 2,
+						maxlength: 60,
+					},
+					hwVer: {
+						required: true,
+						//minlength: 2,
+						maxlength: 60,
+					}
+				},
+				messages: {
+					deviceId: {
+						required: "Please enter device ID of the sample!",
+						maxlength: "Device ID must have a max of 60 characters!"
+					},
+					appId: {
+						required: "Please enter app ID of the sample!",
+						maxlength: "App ID must have a max of 60 characters!",
+						pattern: "Please enter a valid UUID! (Example: 12345678-9abc-1def-8012-000000000000)"
+					},
+					swVer: {
+						required: "Please enter software version of the sample!",
+						maxlength: "Software version must have a max of 60 characters!"
+					},
+					hwVer: {
+						required: "Please enter hardware version of the sample!",
+						maxlength: "Hardware version must have a max of 60 characters!"
+					}
+				}
+			});
+			
+			$('#editSampleForm').validate({
+				rules: {
+					deviceId: {
+						required: true,
+						minlength: 2,
+						maxlength: 60,
+					},
+					appId: {
+						required: true,
+						//minlength: 2,
+						maxlength: 36,
+						pattern: /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
+						//pattern: /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+					},
+					swVer: {
+						required: true,
+						//minlength: 2,
+						maxlength: 60,
+					},
+					hwVer: {
+						required: true,
+						//minlength: 2,
+						maxlength: 60,
+					}
+				},
+				messages: {
+					deviceId: {
+						required: "Please enter device ID of the sample!",
+						maxlength: "Device ID must have a max of 60 characters!"
+					},
+					appId: {
+						required: "Please enter app ID of the sample!",
+						maxlength: "App ID must have a max of 60 characters!",
+						pattern: "Please enter a valid UUID! (Example: 12345678-9abc-1def-8012-000000000000)"
+					},
+					swVer: {
+						required: "Please enter software version of the sample!",
+						maxlength: "Software version must have a max of 60 characters!"
+					},
+					hwVer: {
+						required: "Please enter hardware version of the sample!",
+						maxlength: "Hardware version must have a max of 60 characters!"
+					}
+				}
+			});
+		</script>
+		
+		<!-- Function scripts -->
 		<script>
 			function formSubmit() {
-				document.getElementById("logoutForm").submit();
+				$("#logoutForm").submit();
+			}
+			
+			function enableDutButtons(enableNext) {	
+				$('#deleteButton').removeClass('disabled');
+				$('#deleteButton').prop("disabled", false);
+				$('#editButton').removeClass('disabled');
+				$('#editButton').prop("disabled", false);
+				$('#nextButton').removeClass('disabled');
+			   	$('#nextButton').prop("disabled", false);
+			}
+			
+			function disableDutButtons() {
+				$('#nextButton').addClass('disabled');
+			   	$('#nextButton').prop("disabled", true);
+				$('#deleteButton').addClass('disabled');
+				$('#deleteButton').prop("disabled", true);
+				$('#editButton').addClass('disabled');
+				$('#editButton').prop("disabled", true);
+			}
+			
+			function enableSampleButtons() {
+				$('#deleteSample').removeClass('disabled');
+				$('#deleteSample').prop("disabled", false);
+				$('#editSample').removeClass('disabled');
+				$('#editSample').prop("disabled", false);
+			}
+			
+			function disableSampleButtons() {
+				$('#deleteSample').addClass('disabled');
+				$('#deleteSample').prop("disabled", true);
+				$('#editSample').addClass('disabled');
+				$('#editSample').prop("disabled", true);
 			}
 		</script>
 		
@@ -383,15 +668,16 @@
 				$('#sample-dut').val($(this).parent().parent().find('td:first').html());
 				
 				$.ajax({
+					cache: false,
 					type : 'GET',
 					url : 'dut/samples',
 					data : {
 						idDut : $(this).parent().parent().find('td:first').html()
 					},
-					success: function (data) {
+					success: function (samples) {
 
 						$('#sampleBody').empty();
-						$.each(data, function(i, sample) {
+						$.each(samples, function(i, sample) {
 							$('#sampleBody').append("<tr><td class=\"hide\">"+sample.idSample+"</td><td>"
 									+sample.deviceId+"</td><td>"+sample.appId+"</td><td>"
 									+sample.swVer+"</td><td>"+sample.hwVer+"</td></tr>");
@@ -406,10 +692,7 @@
 						   	var id=$(this).find('td:first').html();
 						   	sessionStorage.setItem("idSample",id);
 
-							$('#deleteSample').removeClass('disabled');
-							$('#deleteSample').prop("disabled", false);
-							$('#editSample').removeClass('disabled');
-							$('#editSample').prop("disabled", false);
+							enableSampleButtons();
 						});
 				   }
 				});
@@ -419,9 +702,8 @@
 			
 				if(sessionStorage.getItem("associatedDut")!="N/A") {
 					if(sessionStorage.getItem("aIdDut")==sessionStorage.getItem("idDut")) {
-						document.getElementById('idProject').value = sessionStorage.getItem("idProject");
-						//document.getElementById('isConfigured').value = sessionStorage.getItem("isConfigured");
-						document.getElementById('idDut').value = sessionStorage.getItem("idDut");
+						$('#idProject').val(sessionStorage.getItem("idProject"));
+						$('#idDut').val(sessionStorage.getItem("idDut"));
 						sessionStorage.setItem("associatedDut",sessionStorage.getItem("dutName"));			
 						$('#nextForm').submit();
 					} else {
@@ -430,8 +712,8 @@
 						});
 					}
 				} else {
-					document.getElementById('idProject').value = sessionStorage.getItem("idProject");
-					document.getElementById('idDut').value = sessionStorage.getItem("idDut");
+					$('#idProject').val(sessionStorage.getItem("idProject"));
+					$('#idDut').val(sessionStorage.getItem("idDut"));
 					sessionStorage.setItem("associatedDut",sessionStorage.getItem("dutName"));	
 					
 					$('#nextForm').submit();
@@ -439,18 +721,15 @@
 			});
 			
 			$('#continueButton').on('click', function() {
-				document.getElementById('idProject').value = sessionStorage.getItem("idProject");
-				document.getElementById('idDut').value = sessionStorage.getItem("idDut");
-				//sessionStorage.setItem("associatedDut",sessionStorage.getItem("idDut"));
+				$('#idProject').val(sessionStorage.getItem("idProject"));
+				$('#idDut').val(sessionStorage.getItem("idDut"));
 				sessionStorage.setItem("associatedDut",sessionStorage.getItem("dutName"));	
 				$('#nextForm').submit();
 			});
 		
 		  	$('#createDut').on('click', function(e){
-		    	// We don't want this to act as a link so cancel the link action
 		    	e.preventDefault();
 		    	
-		    	// Find form and submit it
 		    	$('#newDutForm').submit();
 		  	});
 
@@ -466,7 +745,7 @@
 				            xhr.setRequestHeader(header, token);
 				        },
 						data : {
-							data : sessionStorage.getItem("idDut")
+							idDut : sessionStorage.getItem("idDut")
 						},
 						success: function() {
 						    var MyRows = $('#dutTable').find('tbody').find('tr');
@@ -480,12 +759,7 @@
 							
 							sessionStorage.removeItem("idDut");
 							
-							$('#nextButton').addClass('disabled');
-							$('#nextButton').prop("disabled", true);
-							$('#deleteButton').addClass('disabled');
-							$('#deleteButton').prop("disabled", true);
-							$('#editButton').addClass('disabled');
-							$('#editButton').prop("disabled", true);
+							disableDutButtons();
 						}
 				});
 			});
@@ -498,10 +772,11 @@
 			
 			$('#editButton').on('click', function(){
 				$.ajax({
+					cache: false,
 					type : 'GET',
 					url : 'dut/edit',
 					data : {
-						data : sessionStorage.getItem("idDut")
+						idDut : sessionStorage.getItem("idDut")
 					},
 					success: function (data) {
 						
@@ -515,19 +790,11 @@
 			});
 		  	
 		  	$('#createSample').on('click', function(e){
-		    	// We don't want this to act as a link so cancel the link action
 		    	e.preventDefault();
-		    	
-		    	// Find form and submit it
 		    	$('#newSampleForm').submit();
 		  	});
 		  	
-		  	$('#sampleBack').on('click', function() {
-		  		$('#deleteSample').addClass('disabled');
-				$('#deleteSample').prop("disabled", true);
-				$('#editSample').addClass('disabled');
-				$('#editSample').prop("disabled", true);
-		  	});
+		  	$('#sampleBack').on('click', disableSampleButtons);
 		  	
 			$('#deleteSample').on('click', function(){
 				
@@ -535,13 +802,13 @@
 				var header = $("meta[name='_csrf_header']").attr("content");
 			    
 			    $.ajax({
-						type : 'POST',
+			    		type : 'POST',
 						url : 'dut/samples/delete',
 						beforeSend: function(xhr) {
 				            xhr.setRequestHeader(header, token);
 				        },
 						data : {
-							data : sessionStorage.getItem("idSample")
+							idSample : sessionStorage.getItem("idSample")
 						},
 						success: function() {
 						    var MyRows = $('#sampleTable').find('tbody').find('tr');
@@ -555,10 +822,7 @@
 							
 							sessionStorage.removeItem("idSample");
 							
-							$('#deleteSample').addClass('disabled');
-							$('#deleteSample').prop("disabled", true);
-							$('#editSample').addClass('disabled');
-							$('#editSample').prop("disabled", true);
+							disableSampleButtons();
 						}
 				});
 			});
@@ -571,10 +835,11 @@
 			
 			$('#editSample').on('click', function(){
 				$.ajax({
+					cache: false,
 					type : 'GET',
 					url : 'dut/samples/edit',
 					data : {
-						data : sessionStorage.getItem("idSample")
+						idSample : sessionStorage.getItem("idSample")
 					},
 					success: function (data) {
 						
@@ -595,12 +860,8 @@
 				if($(this).hasClass('selected')) {
 					$(this).removeClass('selected');
 					sessionStorage.removeItem("idDut");
-					$('#nextButton').addClass('disabled');
-				   	$('#nextButton').prop("disabled", true);
-					$('#deleteButton').addClass('disabled');
-					$('#deleteButton').prop("disabled", true);
-					$('#editButton').addClass('disabled');
-					$('#editButton').prop("disabled", true);
+
+					disableDutButtons();
 				} else {
 					$(this).addClass('selected').siblings().removeClass('selected');    
 				   	var id=$(this).find('td:first').html();
@@ -608,12 +869,7 @@
 				   	sessionStorage.setItem("idDut",id);
 				   	sessionStorage.setItem("dutName", name);
 
-				   	$('#nextButton').removeClass('disabled');
-				   	$('#nextButton').prop("disabled", false);
-					$('#deleteButton').removeClass('disabled');
-					$('#deleteButton').prop("disabled", false);
-					$('#editButton').removeClass('disabled');
-					$('#editButton').prop("disabled", false);
+					enableDutButtons();
 				}
 			});
 		</script>

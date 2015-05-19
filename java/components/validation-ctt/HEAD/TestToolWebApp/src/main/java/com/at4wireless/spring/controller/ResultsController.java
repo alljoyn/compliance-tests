@@ -1,10 +1,25 @@
+/*******************************************************************************
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *      Permission to use, copy, modify, and/or distribute this software for any
+ *      purpose with or without fee is hereby granted, provided that the above
+ *      copyright notice and this permission notice appear in all copies.
+ *      
+ *      THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *      WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *      MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *      ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *      WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *      ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *      OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *******************************************************************************/
+
 package com.at4wireless.spring.controller;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -14,132 +29,64 @@ import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
-import org.apache.pdfbox.exceptions.COSVisitorException;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.edit.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import com.at4wireless.spring.model.Project;
 import com.at4wireless.spring.model.TestCaseResult;
-import com.at4wireless.spring.service.IcsService;
-import com.at4wireless.spring.service.IxitService;
-import com.at4wireless.spring.service.ParameterService;
 import com.at4wireless.spring.service.ProjectService;
+import com.at4wireless.spring.service.ResultService;
 import com.at4wireless.spring.service.TestCaseService;
 
+/**
+ * This class manages all actions related with results view
+ * 
+ */
 @Controller
 @RequestMapping(value="/results")
 public class ResultsController {
-
+	
 	@Autowired
 	private ProjectService projectService;
 	
 	@Autowired
-	private IcsService icsService;
-	
-	@Autowired
-	private IxitService ixitService;
-	
-	@Autowired
-	private ParameterService parameterService;
-	
-	@Autowired
 	private TestCaseService tcService;
+	
+	@Autowired
+	private ResultService resultService;
 	
 	private static final int BUFFER_SIZE = 4096;
 	
+	/**
+	 * Loads data to be displayed if logged, redirects to login
+	 * otherwise.
+	 * 
+     * @param 	model 		model to add objects needed by the view
+     * @param 	newProject 	project whose results are going to be shown
+     * @return 				target view
+     */
 	@RequestMapping(method = RequestMethod.GET)
 	public String results(Model model, @ModelAttribute("newProject") Project newProject) {
 		
-		String username = "";
 		String projectName = "";
 		List<TestCaseResult> listTCResult = new ArrayList<TestCaseResult>();
 		
-			
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (!(auth instanceof AnonymousAuthenticationToken)) {
-			username = auth.getName();
-			
-			/*for (Project p : projectService.list(username)) {
-				if (p.getIdProject()==newProject.getIdProject()){
-					projectName = p.getName();
-				}
-			}*/
+			String username = auth.getName();
 			Project p = projectService.getFormData(username, newProject.getIdProject());
 			
 			projectName = p.getName();
-		
-			DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder builder = null;
-			
-			try {
-				builder = builderFactory.newDocumentBuilder();
-			} catch (ParserConfigurationException e) {
-				e.printStackTrace();
-			}
-			
-			try {
-				/*Document xmlDocument = builder.parse(new FileInputStream(File.separator+"Allseen"
-						+File.separator+"Users"+File.separator+username+File.separator+newProject.getIdProject()
-						+File.separator+"result.xml"));*/
-				Document xmlDocument = builder.parse(new FileInputStream(p.getResults()));
-				
-				XPath xPath = XPathFactory.newInstance().newXPath();
-				
-				String root = "/Results/TestCase/";
-	
-				NodeList nameList = (NodeList) xPath.compile(root+"Name").evaluate(xmlDocument, XPathConstants.NODESET);
-				NodeList descList = (NodeList) xPath.compile(root+"Description").evaluate(xmlDocument, XPathConstants.NODESET);
-				NodeList dateList = (NodeList) xPath.compile(root+"DateTime").evaluate(xmlDocument, XPathConstants.NODESET);
-				NodeList verdictList = (NodeList) xPath.compile(root+"Verdict").evaluate(xmlDocument, XPathConstants.NODESET);
-				NodeList versionList = (NodeList) xPath.compile(root+"Version").evaluate(xmlDocument, XPathConstants.NODESET);
-				NodeList logList = (NodeList) xPath.compile(root+"LogFile").evaluate(xmlDocument, XPathConstants.NODESET);
-				
-				for (int i = 0; i < nameList.getLength(); i++) {
-				    TestCaseResult tcResult = new TestCaseResult();
-				    tcResult.setName(nameList.item(i).getFirstChild().getNodeValue());
-				    tcResult.setDescription(descList.item(i).getFirstChild().getNodeValue());
-				    tcResult.setExecTimestamp(dateList.item(i).getFirstChild().getNodeValue());
-				    tcResult.setVerdict(verdictList.item(i).getFirstChild().getNodeValue());
-				    tcResult.setVersion(versionList.item(i).getFirstChild().getNodeValue());
-				    tcResult.setLog(logList.item(i).getFirstChild().getNodeValue());
-				    
-				    listTCResult.add(tcResult);
-				}
-			} catch (SAXException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (XPathExpressionException e) {
-				e.printStackTrace();
-			}
-		
+			listTCResult = resultService.getResults(p);
 		}
 		
 		model.addAttribute("projectName", projectName);
@@ -147,6 +94,12 @@ public class ResultsController {
 		return "results";
 	}
 	
+	/**
+	 * Shows full log of selected row in other tab
+	 * 
+	 * @param	request		servlet request with the name of the log to be shown
+	 * @return				full log
+	 */
 	@RequestMapping(value="/fullLog", method=RequestMethod.GET, produces="text/plain")
 	public @ResponseBody String showLog(HttpServletRequest request) {
 		
@@ -169,6 +122,12 @@ public class ResultsController {
 		return log;
 	}
 	
+	/**
+	 * Creates Test Report
+	 * 
+	 * @param 	request		servlet request that contains the project whose test report is going to be created
+	 * @return				true if test report creation succeeded, false otherwise. 
+	 */
 	@RequestMapping(value="/tr/create", method=RequestMethod.POST)
 	public @ResponseBody boolean createTestReport(HttpServletRequest request) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -184,88 +143,19 @@ public class ResultsController {
 			System.out.println(outputFileName);
 			
 			if(tcService.ranAll(p.getConfiguration(), p.getResults())) {
-			
-				float fontSize = 12;
-				float leading = 1.5f * fontSize;
-				
-				//Create a document and add a page to it
-				PDDocument document = new PDDocument();
-				PDPage page1 = new PDPage(PDPage.PAGE_SIZE_A4);
-				//PDPage.PAGE_SIZE_LETTER is also possible
-				PDRectangle rect = page1.getMediaBox();
-				float margin = 72;
-				float width = rect.getWidth() -2*margin;
-				float height = rect.getHeight() -2*margin;
-				float startX = rect.getLowerLeftX()+margin;
-				float startY = rect.getUpperRightY()-margin;
-				//rect can be used to get the page width and height
-				document.addPage(page1);
-				
-				//Create a new font object selecting one of the PDF base fonts
-				PDFont fontPlain = PDType1Font.HELVETICA;
-				PDFont fontBold = PDType1Font.HELVETICA_BOLD;
-				PDFont fontItalic = PDType1Font.HELVETICA_OBLIQUE;
-				PDFont fontMono = PDType1Font.COURIER;
-				
-				List<String> printableText = new ArrayList<String>();
-				
-				try {
-					//Start a new content stream which will "hold" the to be created content
-					PDPageContentStream cos = new PDPageContentStream(document, page1);
-					printableText.addAll(projectService.pdfData(username, p.getIdProject()));
-					printableText.addAll(icsService.pdfData(p.getConfiguration()));
-					printableText.addAll(ixitService.pdfData(p.getConfiguration()));
-					printableText.addAll(parameterService.pdfData(p.getConfiguration()));
-					printableText.addAll(tcService.pdfData(p.getConfiguration(), p.getResults()));
-					//Define a text content stream using the selected font, move the cursor and draw some text
-					cos.beginText();
-					cos.setFont(fontPlain, fontSize);
-					cos.moveTextPositionByAmount(startX,startY);
-					float filled = 0;
-					for (String s : printableText) {
-						cos.drawString(s);
-						filled+=leading;
-						if (filled>height) {
-							cos.endText();
-							cos.close();
-							PDPage page = new PDPage(PDPage.PAGE_SIZE_A4);
-							document.addPage(page);
-							cos = new PDPageContentStream(document,page);
-							cos.beginText();
-							cos.setFont(fontPlain, fontSize);
-							cos.moveTextPositionByAmount(startX,startY);
-							filled=0;
-						} else {
-							cos.moveTextPositionByAmount(0,-leading);
-						}
-					}
-					//cos.drawString("Italic");
-					cos.endText();
-					
-					cos.close();
-					document.save(outputFileName);
-					document.close();
-					outputFileName = File.separator+File.separator+"Allseen"
-							+File.separator+File.separator+"Users"+File.separator
-							+File.separator+username+File.separator+File.separator
-							+p.getIdProject()+File.separator
-							+File.separator+"TestReport.pdf";
-					projectService.testReport(p.getIdProject(),outputFileName);
-					return true;
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					return false;
-				} catch (COSVisitorException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					return false;
-				}
+				return resultService.createTestReport(username, p);
 			}
 		}
 		return false;
 	}
 	
+	/**
+	 * Allows to download the test report
+	 * 
+	 * @param 	request			servlet request with the ID of the project whose test report is going to be sent
+	 * @param 	response		servlet response with the test report
+	 * @throws 	IOException		if file does not exist
+	 */
 	@RequestMapping(value="/tr/view", method = RequestMethod.GET)
 	public void getTestReport(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
@@ -305,17 +195,13 @@ public class ResultsController {
 		}
 	}
 	
-	/*@RequestMapping(value="tr/hasTr", method = RequestMethod.GET)
-	public @ResponseBody boolean hasTr(HttpServletRequest request) {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
-			return projectService.getFormData(auth.getName(), 
-					Integer.parseInt(request.getParameter("idProject"))).isHasTestReport();
-		} else {
-			return false;
-		}
-	}*/
-	
+	/**
+	 * Allows to download a package with the test report and all related logs
+	 * 
+	 * @param 	request		servlet request with the ID of the project whose zip is going to be sent
+	 * @param 	response	servlet response with the zip
+	 * @throws 	Exception	in something wrong occurred during zip creation
+	 */
 	@RequestMapping(value="tr/send", method = RequestMethod.GET)
 	public void send(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -323,12 +209,6 @@ public class ResultsController {
 			Project p = projectService.getFormData(auth.getName(), Integer.parseInt(request.getParameter("idProject")));
 			FileInputStream in = new FileInputStream(p.getTestReport());
 			
-			/*File f = new File(File.separator+"Allseen"+File.separator
-					+"Users"+File.separator+p.getUser()+File.separator+
-					p.getIdProject()+File.separator+"TestReport.zip");
-			if(!f.exists()) {
-			    f.createNewFile();
-			}*/ 
 			ZipOutputStream out = new ZipOutputStream(new FileOutputStream(File.separator+"Allseen"+File.separator
 					+"Users"+File.separator+p.getUser()+File.separator+
 					p.getIdProject()+File.separator+"TestReport.zip"));
@@ -387,12 +267,22 @@ public class ResultsController {
 		}
 	}
 	
+	/**
+	 * Checks if all applicable testcases have been executed
+	 * 
+	 * @param 	request		servlet request with the ID of the project to be checked
+	 * @return				true if executed all, false otherwise
+	 */
 	@RequestMapping(value="tr/ranAll", method=RequestMethod.GET)
 	public @ResponseBody boolean ranAll(HttpServletRequest request) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (!(auth instanceof AnonymousAuthenticationToken)) {
 			Project p = projectService.getFormData(auth.getName(), Integer.parseInt(request.getParameter("idProject")));
-			return tcService.ranAll(p.getConfiguration(), p.getResults());
+			if (p.isIsConfigured()) {
+				return tcService.ranAll(p.getConfiguration(), p.getResults());
+			} else {
+				return false;
+			}
 		} else {
 			return false;
 		}

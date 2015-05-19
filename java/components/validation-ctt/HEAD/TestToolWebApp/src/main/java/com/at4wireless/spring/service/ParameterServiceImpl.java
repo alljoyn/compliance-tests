@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright AllSeen Alliance. All rights reserved.
+ *
+ *      Permission to use, copy, modify, and/or distribute this software for any
+ *      purpose with or without fee is hereby granted, provided that the above
+ *      copyright notice and this permission notice appear in all copies.
+ *      
+ *      THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *      WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *      MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *      ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *      WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *      ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *      OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *******************************************************************************/
+
 package com.at4wireless.spring.service;
 
 import java.io.FileInputStream;
@@ -39,22 +55,18 @@ public class ParameterServiceImpl implements ParameterService {
 	public List<Parameter> load(boolean isConfigured, String configuration) {
 		List<Parameter> listParameter = parameterDao.list();
 		
-		//If project is configured, load saved values
 		if(isConfigured) {			
 			DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = null;
 			
 			try {
-				//Load XML
 				builder = builderFactory.newDocumentBuilder();
 				Document source = builder.parse(new FileInputStream(configuration));
 				
-				//Get Value nodes
 				XPath xPath = XPathFactory.newInstance().newXPath();	
 				String expression = "/Project/Parameter/Value";
 				NodeList nodeList = (NodeList) xPath.compile(expression).evaluate(source, XPathConstants.NODESET);
 				
-				//If true, set ICS (default load is false)
 				for (int i = 0; i < nodeList.getLength(); i++) {
 					if(nodeList.item(i).getFirstChild()!=null) {
 						listParameter.get(i).setValue(nodeList.item(i).getFirstChild().getNodeValue());
@@ -82,11 +94,9 @@ public class ParameterServiceImpl implements ParameterService {
 		List<String> listString = new ArrayList<String>();
 		
 		try {
-			//Load XML
 			builder = builderFactory.newDocumentBuilder();
 			Document source = builder.parse(new FileInputStream(configuration));
 			
-			//Get Value nodes
 			XPath xPath = XPathFactory.newInstance().newXPath();	
 			String expression = "/Project/Parameter/Value";
 			NodeList nodeList = (NodeList) xPath.compile(expression).evaluate(source, XPathConstants.NODESET);
@@ -94,9 +104,7 @@ public class ParameterServiceImpl implements ParameterService {
 			String expression2 = "/Project/Parameter/Name";
 			NodeList nodeList2 = (NodeList) xPath.compile(expression2).evaluate(source, XPathConstants.NODESET);
 			
-			listString.add("====================");
-			listString.add("CONFIGURED GENERAL PARAMETERS");
-			listString.add("====================");
+			listString.add("4. Configured General Parameters");
 			for (int i = 0; i < nodeList.getLength(); i++) {
 				if(nodeList.item(i).getFirstChild()!=null) {
 				    listString.add(nodeList2.item(i).getFirstChild().getNodeValue()+separator
