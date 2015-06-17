@@ -13,7 +13,7 @@
 				<attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
 				<attribute name="Rsrc-Main-Class" value="com.at4wireless.alljoyn.Manager"/>
 				<attribute name="Class-Path" value="."/>
-				<attribute name="Rsrc-Class-Path" value="./ alljoyn_onboarding.jar httpclient-4.4.jar httpclient-win-4.4.jar httpcore-4.4.jar jersey-client-1.18.jar jersey-core-1.18.jar NotificationService.jar NSCommons.jar ControlPanelAdapter.jar ControlPanelService.jar alljoyn_about.jar alljoyn.jar alljoyn_config.jar GatewayController.jar"/>
+				<attribute name="Rsrc-Class-Path" value="./ alljoyn_onboarding.jar httpclient-4.4.jar httpclient-win-4.4.jar httpcore-4.4.jar jersey-client-1.18.jar jersey-core-1.18.jar NotificationService.jar NSCommons.jar ControlPanelAdapter.jar ControlPanelService.jar alljoyn_about.jar alljoyn.jar alljoyn_config.jar GatewayController.jar TimeService.jar"/>
 			</manifest>
             <fileset dir="../bin"/>
 			<zipfileset src="jar-in-jar-loader.zip"/>
