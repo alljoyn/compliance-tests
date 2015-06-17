@@ -1,0 +1,59 @@
+/*******************************************************************************
+ *  Copyright AllSeen Alliance. All rights reserved.
+ *
+ *     Permission to use, copy, modify, and/or distribute this software for any
+ *     purpose with or without fee is hereby granted, provided that the above
+ *     copyright notice and this permission notice appear in all copies.
+ *
+ *     THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *     WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *     MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *     ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *     WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *     ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *******************************************************************************/
+package com.at4wireless.alljoyn.core.lighting;
+
+import org.alljoyn.bus.BusException;
+import org.alljoyn.bus.BusObject;
+import org.alljoyn.bus.annotation.BusProperty;
+
+// TODO: Auto-generated Javadoc
+/**
+ * The Class LampParametersBusObject.
+ */
+public class LampParametersBusObject implements BusObject, LampParametersBusInterface
+{
+
+	/* (non-Javadoc)
+	 * @see com.at4wireless.alljoyn.core.lighting.LampParametersBusInterface#getVersion()
+	 */
+	@Override
+	@BusProperty(signature = "u")
+	public int getVersion() throws BusException
+	{
+		return 0;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.at4wireless.alljoyn.core.lighting.LampParametersBusInterface#getEnergy_Usage_Milliwatts()
+	 */
+	@Override
+	@BusProperty(signature = "u")
+	public int getEnergy_Usage_Milliwatts() throws BusException
+	{
+		return 0;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.at4wireless.alljoyn.core.lighting.LampParametersBusInterface#getBrightness_Lumens()
+	 */
+	@Override
+	@BusProperty(signature = "u")
+	public int getBrightness_Lumens() throws BusException
+	{
+		return 0;
+	}
+
+}
