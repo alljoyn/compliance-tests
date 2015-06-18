@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/security
+	http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+ 
+ 	<security:http disable-url-rewriting="true" use-expressions="true" auto-config="false" path-type="ant" entry-point-ref="casEntryPoint">
+ 		<security:custom-filter before="CAS_FILTER" ref="casSingleSignOutFilter"/>
+ 		<security:custom-filter before="LOGOUT_FILTER" ref="requestSingleLogoutFilter" />
+ 		<security:custom-filter after="CAS_FILTER" ref="casFilter"/>
+		<security:intercept-url pattern="/login*" access="permitAll"/>
+		<security:intercept-url pattern="/login/**" access="permitAll"/>
+		<security:intercept-url pattern="/" access="permitAll"/>
+		<security:intercept-url pattern="/resources/**" access="permitAll"/>
+		<security:intercept-url pattern="/admin*" access="hasRole('ROLE_ADMIN')"/>
+		<security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
+		<security:intercept-url pattern="/**" access="hasRole('ROLE_USER')"/>
+
+		<security:csrf/>
+		<security:access-denied-handler ref="myAccessDeniedHandler"/>
+		
+		<security:logout logout-success-url="/login?logout"/>
+	</security:http>
+	
+	<!-- Custom Access Denied Handler -->
+	<bean id="myAccessDeniedHandler"
+			class="com.at4wireless.security.CustomAccessDeniedHandler"/>
+	
+ 	<!-- Which application am I authenticating -->
+	<bean id="serviceProperties"
+		class="org.springframework.security.cas.ServiceProperties">
+		<property name="service"
+			value="https://www.at4wireless.com/TestToolWebApp/j_spring_cas_security_check"/>
+		<property name="sendRenew" value="false"/>
+	</bean>
+	
+	<!-- Where do I go when I need authentication -->
+	<bean id="casEntryPoint"
+		class="org.springframework.security.cas.web.CasAuthenticationEntryPoint">
+		<property name="loginUrl" value="https://identity.linuxfoundation.org/cas/login"/>
+		<property name="serviceProperties" ref="serviceProperties"/>	
+	</bean>
+	
+	<bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.ShaPasswordEncoder"/>
+	<bean id="casSingleSignOutFilter" class="org.jasig.cas.client.session.SingleSignOutFilter"/>
+	<bean id="casFilter"
+		class="org.springframework.security.cas.web.CasAuthenticationFilter">
+		<property name="authenticationManager" ref="casAuthenticationManager"/>	
+	</bean>
+	
+	<security:authentication-manager id="casAuthenticationManager">
+		<security:authentication-provider ref="casAuthenticationProvider"/>
+	</security:authentication-manager>
+	
+	<bean id="casAuthenticationProvider"
+		class="org.springframework.security.cas.authentication.CasAuthenticationProvider">
+		<property name="authenticationUserDetailsService">
+			<bean class="org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper">
+				<constructor-arg ref="userService"/>
+			</bean>
+		</property>
+		<!-- <property name="authenticationUserDetailsService" ref="userService" />	 -->
+		<property name="serviceProperties" ref="serviceProperties"/>
+		<property name="ticketValidator">
+			<bean class="com.at4wireless.security.CustomCas20ServiceTicketValidator">
+			<!-- <bean class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">  -->
+				<constructor-arg index="0" value="https://identity.linuxfoundation.org/cas/serviceValidate"/>
+			</bean>
+		</property>
+		<property name="key" value="my_password_for_this_auth_provider_only"/>
+	</bean>
+	
+	<!-- This filter redirects to the CAS Server to signal Single Logout should be performed -->
+	<bean id="requestSingleLogoutFilter" class="org.springframework.security.web.authentication.logout.LogoutFilter">
+	    <property name="filterProcessesUrl" value="/j_spring_cas_security_logout"/>
+	    <constructor-arg value="https://identity.linuxfoundation.org/cas/logout"/>
+	    <constructor-arg>
+	        <bean class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler"/>
+	    </constructor-arg>
+	</bean>
+	
+	<!-- Security provider -->
+	<security:jdbc-user-service id="userService" data-source-ref="dataSource"
+		  		users-by-username-query=
+		  			"select username, password, enabled from users where username=?"
+		  		authorities-by-username-query=
+		  			"select username, role from user_roles where username=?"/>
+</beans>

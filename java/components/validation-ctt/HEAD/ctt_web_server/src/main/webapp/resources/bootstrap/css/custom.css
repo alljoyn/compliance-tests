@@ -1,0 +1,148 @@
+@CHARSET "UTF-8";
+
+/*.page-header
+{
+	color: #008882;
+}*/
+
+html,
+body{
+	height: 100%;
+}
+
+body > .container {
+	padding-bottom: 40px;
+}
+
+.error {
+	color: #D43D1A;
+}
+
+.table-hover {
+	table-layout: fixed;
+	word-break: break-word;
+	-ms-word-break: break-all;
+}
+
+@-moz-document url-prefix() {
+	.table-hover {
+		table-layout: fixed;
+		word-break: break-all;
+		word-wrap: break-word;
+	}
+}
+
+.scroll-thead {
+	display: block;
+}
+
+.scroll-tr {
+	width: 100%;
+	display: inline-table;
+}
+
+.scroll-tbody {
+	display: block;
+	max-height: 500px;
+	overflow-y: auto;
+}
+
+a[disabled] {
+    pointer-events: none;
+}
+
+.fill { 
+    min-height: 100%;
+}
+
+.progress-bar {
+	background-image: none;
+	background-color: #008882;
+}
+
+.col-sm-6 > h1
+{
+	color: #008882;
+}
+
+.img-responsive 
+{
+	margin-top: 10px;
+}
+
+.table-hover thead
+{
+	background-color: #008882;
+	color: #FFFFFF;
+	font-weight: normal; 
+}
+
+.nav-tabs>li.active>a, 
+.nav-tabs>li.active>a:focus, 
+.nav-tabs>li.active>a:hover {
+	background-color: #008882;
+	color: #FFFFFF;
+	font-weight: bold;
+}
+
+
+.nav-tabs > li > a {
+	color: #000000;
+}
+
+.table-hover tbody tr:hover td
+{
+	background-color: #60BDC4;
+	color: #FFFFFF;
+	cursor: pointer;
+
+}
+
+.selected 
+{
+	background-color: #60BDC4;
+	color: #FFFFFF
+}
+
+.btn {
+	margin-bottom: 2px;
+}
+
+.btn-link {
+	color: #008882;
+}
+
+.btn-link:hover,
+.btn-link:focus,
+.btn-link:active,
+.btn-link.active {
+  	color: #005973;
+}
+
+.btn-custom {
+  	background-color: #008882;
+  	color: #FFFFFF;
+}
+
+.btn-custom:hover,
+.btn-custom:focus,
+.btn-custom:active,
+.btn-custom.active {
+  	background-color: #005973;
+  	color: #FFFFFF;
+}
+.btn-custom.disabled:hover,
+.btn-custom.disabled:focus,
+.btn-custom.disabled:active,
+.btn-custom.disabled.active,
+.btn-custom[disabled]:hover,
+.btn-custom[disabled]:focus,
+.btn-custom[disabled]:active,
+.btn-custom[disabled].active,
+fieldset[disabled] .btn-custom:hover,
+fieldset[disabled] .btn-custom:focus,
+fieldset[disabled] .btn-custom:active,
+fieldset[disabled] .btn-custom.active {
+  	background-color: #008882;
+  	color: #FFFFFF;
+}
