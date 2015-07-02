@@ -22,6 +22,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
@@ -66,7 +67,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -79,6 +79,7 @@ import com.at4wireless.spring.service.CertificationReleaseService;
 import com.at4wireless.spring.service.DutService;
 import com.at4wireless.spring.service.ProjectService;
 import com.at4wireless.spring.service.TestCaseService;
+import com.at4wireless.spring.service.UserService;
 
 /**
  * This class manages all actions related with REST 
@@ -103,6 +104,15 @@ public class RestController {
 	@Autowired
 	private TestCaseService tcService;
 	
+	@Autowired
+	private UserService userService;
+	
+	
+	@RequestMapping(value="/keyExchange/{user}", method = RequestMethod.POST,
+			produces = "application/json; charset=utf-8")
+	public @ResponseBody String keyExchange(@PathVariable String user, @RequestParam("publicKey") String publicKey) {
+		return userService.keyExchange(user,publicKey);
+	}
 	
 	/**
 	 * Sends the list of projects of a certain user
@@ -123,8 +133,7 @@ public class RestController {
 	@RequestMapping(value="/isLastTechnologyVersion/{technology}", method = RequestMethod.GET)
 	public @ResponseBody String isLastTechnologyVersion(@PathVariable String technology) {
 		
-		System.out.println(technology);
-		if (technology.matches("v[\\d]+_[\\d]+_[\\d]+[a-z]?_R[\\d]+")) {
+		if (technology.matches("v[\\d]+_[\\d]+_[\\d]+[a-z]?_[RD][\\d]+")) {
 			String[] str = technology.split("_");
 			
 			String url = File.separator+"Allseen"
@@ -137,13 +146,19 @@ public class RestController {
 			
 			for (File f : listOfFiles) {
 				if (f.getName().toLowerCase().contains(release.toLowerCase())) {
-					String cmp = compare(higher.split("_")[3],f.getName().split("_")[3]);
-					
-					if (cmp.equals("higher")) {
+					if((f.getName().split("_")[3].charAt(0)=='R') && (higher.split("_")[3].charAt(0)=='D')) {
 						higher=f.getName();
+					} else if (((f.getName().split("_")[3].charAt(0)=='R') && (higher.split("_")[3].charAt(0)=='R')) 
+							||((f.getName().split("_")[3].charAt(0)=='D') && (higher.split("_")[3].charAt(0)=='D'))) {
+						String cmp = compare(higher.split("_")[3],f.getName().split("_")[3]);
+						if (cmp.equals("higher")) {
+							higher=f.getName();
+						}
 					}
 				}
 			}
+			
+			System.out.println(higher);
 			
 			if(higher.equals("TestCases_Package_"+release+"_"+str[3]+".jar")) {
 				return "true";
@@ -151,7 +166,6 @@ public class RestController {
 				return "false, "+higher.replaceAll("\\.", "_").split("_")[5];
 			}
 		}
-		
 		return "bad request";
 	}
 	
@@ -189,8 +203,8 @@ public class RestController {
 	 * Sends all information related to a project
 	 * 
 	 * @param 	user	user
-	 * @param 	id		project 	id
-	 * @return						project configuration file
+	 * @param 	id		project id
+	 * @return			project configuration file
 	 * @throws 			IOException if file does not exist
 	 */
 	@RequestMapping(value="/getProject/{user}/{id}", method = RequestMethod.GET)
@@ -216,9 +230,8 @@ public class RestController {
 		return xmlJSONObj.toString();
 	}
 	
-	
 	/**
-	 * Writes last execution of testcases when configuration file is requested
+	 * Writes last execution of Test Cases when configuration file is requested
 	 * 
 	 * @param 	configuration	configuration file path
 	 * @param 	results			results file path
@@ -284,7 +297,6 @@ public class RestController {
 		
 	}
 	
-	
 	/**
 	 * Sends results of a certain project
 	 * 
@@ -325,9 +337,9 @@ public class RestController {
 		
 		String path = File.separator+"Allseen"+File.separator+"Users"+File.separator+
 				user+File.separator+id+File.separator+log+".log";
+
 		return readFile(path, StandardCharsets.UTF_8);
 	}
-	
 	
 	/**
 	 * Receives the result of the execution of a testcase
@@ -460,7 +472,7 @@ public class RestController {
 	 */
 	@RequestMapping(value="/upload/{user}/{id}", method = RequestMethod.POST)
 	public @ResponseBody String handleFileUpload(@PathVariable String user, @PathVariable int id,
-			@RequestParam("name") String name, @RequestParam("file") MultipartFile file,
+			@RequestParam("name") String name, @RequestParam("file") String file,
 			@RequestParam("hash") String hash) {
 
 		for (Project p : projectService.list(user)) {
@@ -504,9 +516,7 @@ public class RestController {
 				
 				if ((!file.isEmpty())&(existsOnXML)) {
 		            try {
-		                byte[] bytes = file.getBytes();
-		                
-		                byte[] messageDigest = MessageDigest.getInstance("MD5").digest(bytes);
+		            	byte[] messageDigest = MessageDigest.getInstance("MD5").digest(file.getBytes());
 		                
 		                StringBuffer hexString = new StringBuffer();
 		                for (int i=0; i<messageDigest.length; i++) {
@@ -522,7 +532,7 @@ public class RestController {
 			                        new BufferedOutputStream(new FileOutputStream(new File(File.separator+"Allseen"
 			    							+File.separator+"Users"+File.separator+user+File.separator+id
 			    							+File.separator+name)));
-			                stream.write(bytes);
+			                stream.write(file.getBytes());
 			                stream.close();
 			                return "You successfully uploaded " + name + "!";
 		                } else {
@@ -559,9 +569,7 @@ public class RestController {
 		        }
 			}
 		}
-		
 		return "Bad user or projectId";
-
     }
 	
 	
@@ -577,6 +585,32 @@ public class RestController {
 	{
 		byte[] encoded = Files.readAllBytes(Paths.get(path));
 		return new String(encoded, encoding);
+	}
+	
+	@RequestMapping(value="/existsRelease/{version}", method = RequestMethod.GET)
+	public @ResponseBody String existsRelease(HttpServletResponse response,
+			@PathVariable String version) {
+		final String v = version.replaceAll("_", "\\.");
+		File folder = new File(File.separator+"Allseen"+File.separator+"Technology");
+		
+		File[] files = folder.listFiles(new FilenameFilter()
+		{
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.contains(v);
+			}
+		});
+
+		if (files.length == 0) 
+			return version+" is not an existing certification release";
+		else {
+			for (File f : files) {
+				if (f.getName().contains("_R")) {
+					return "true";
+				}
+			}
+			return "false";
+		}
 	}
 	
 	
@@ -620,7 +654,7 @@ public class RestController {
 			String result = compare(highest,"_"+v);
 			
 			if(result.equals("lower")) {
-				return "new version available";
+				return "new version available: "+highest.split("_")[3];
 			} else if (result.equals("equal")) {
 				return "version up to date";
 			} else {
@@ -667,20 +701,6 @@ public class RestController {
 		String[] aux3 = aux1.split("_");
 		String[] aux4 = aux2.split("_");
 				
-		/*if (Integer.parseInt(aux3[1])>Integer.parseInt(aux4[1])) {
-			return "lower";
-		} else if (Integer.parseInt(aux3[1])==Integer.parseInt(aux4[1])) {
-			if (Integer.parseInt(aux3[2])>Integer.parseInt(aux4[2])) {
-				return "lower";
-			} else if (Integer.parseInt(aux3[2])==Integer.parseInt(aux4[2])) {
-				if (Integer.parseInt(aux3[3])>Integer.parseInt(aux4[3])) {
-					return "lower";
-				} else if (Integer.parseInt(aux3[3])==Integer.parseInt(aux4[3])) {
-					return "equal";
-				}
-			}
-		}*/
-		
 		for (int i=1; i<aux3.length; i++) {
 			if (Integer.parseInt(aux3[i])>Integer.parseInt(aux4[i])) {
 				return "lower";

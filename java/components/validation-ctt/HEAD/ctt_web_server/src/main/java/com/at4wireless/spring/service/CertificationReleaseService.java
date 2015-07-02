@@ -32,4 +32,8 @@ public interface CertificationReleaseService {
 	 * @return	list of Certification Releases
 	 */
 	public List<CertificationRelease> list();
+	
+	public List<CertificationRelease> listReleaseVersions();
+	
+	public String getCertificationReleaseDescription(String certificationRelease);
 }

@@ -75,4 +75,18 @@ public class TcDAOImpl implements TcDAO {
 		
 		return tcList;
 	}
+
+	@Override
+	public void assignTestCasesToCertificationRelease(int certificationReleaseId) {
+		StringBuilder values = new StringBuilder();
+		List<TestCase> listTC = list();
+		
+		for(int i=0; i<listTC.size(); i++) {
+			String s = "("+listTC.get(i).getIdTC()+","+certificationReleaseId+")";
+			values.append(s);
+			if(i != (listTC.size() -1)) values.append(",");
+		}
+		sessionFactory.getCurrentSession().createSQLQuery("insert into testcases_certrel(id_test,id_certrel)"
+				+" values "+values+";").executeUpdate();
+	}
 }

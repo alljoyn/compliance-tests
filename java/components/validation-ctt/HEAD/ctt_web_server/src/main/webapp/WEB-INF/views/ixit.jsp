@@ -5,19 +5,7 @@
 
 <html lang="en">
     <head>
-    	<title>AllSeen</title>
-    	<meta charset="utf-8">
-    	
-    	<!-- Add the next line to ensure proper rendering and touch zooming -->
-    	<meta name="viewport" content="width=device-width, initial-scale=1">
-        
-        <!-- Web icon -->
-        <link rel="shortcut icon" href="resources/img/favicon.ico" type="image/vnd.microsoft.icon" />
-        
-        <!-- Bootstrap -->
-		<link rel="stylesheet" type="text/css" href="resources/bootstrap/css/bootstrap.min.css"/>
-    	<link rel="stylesheet" type="text/css" href="resources/bootstrap/css/custom.css">
-		
+		<jsp:include page="/WEB-INF/views/page_head.jsp"/>
     </head>
     <body>
     
@@ -65,24 +53,28 @@
 			        <c:forEach var="service" items="${serviceList}" varStatus="status">
 			        	<div class="tab-pane" id="${service.idService}">
 					       	<table class="table table-hover">
-				       		<thead class="scroll-thead">
-				       			<tr class="scroll-tr">
+				       		<!-- <thead class="scroll-thead">
+				       			<tr class="scroll-tr">  -->
+				       		<thead>
+				       			<tr>
 						        	<th width="3%">Id</th>
 						        	<th width="25%">Name</th>
 						        	<th width="55%">Description</th>
 						        	<th width="17%">Value</th>
 						        </tr>
 						    </thead>
-				        	<tbody class="scroll-tbody">
+				        	<!-- <tbody class="scroll-tbody">  -->
+				        	<tbody>
 								<c:forEach var="ixit" items="${ixitList}" varStatus="status">
 									<c:if test="${ixit.serviceGroup==service.idService}">
-							        	<tr class="scroll-tr">
+										<tr>
+							        	<!-- <tr class="scroll-tr">  -->
 							        		<td width="3%">${ixit.idIxit}</td>
 							        		<td width="25%">${ixit.name}</td>
 											<td width="55%">${ixit.description}</td>
 											<td width="17%">
 											<!-- <a href=# class="is_editable">${ixit.value}</a>  -->
-											<input type="text" class="form-control" maxlength="255" value="${ixit.value}"/>
+											<input style="width: 100%" type="text" class="form-control" maxlength="255" value="${ixit.value}"/>
 											</td>								
 							        	</tr>
 						        	</c:if>
@@ -96,9 +88,9 @@
 			
 			<!-- Navigation buttons -->
 			<div class="row" align="right">
-				<a id="prevButton" type="button" class="btn btn-custom btn-lg pull-left">« Back</a>
+				<a id="prevButton" type="button" class="btn btn-custom btn-lg pull-left">« Previous Step</a>
         		<!-- <button id="nextButton" class="btn btn-custom btn-lg" data-toggle="modal" data-target="#pleaseWaitDialog">Next »</button> -->
-        		<a id="nextButton" type="button" class="btn btn-custom btn-lg" href="testcase">Next »</a>
+        		<a id="nextButton" type="button" class="btn btn-custom btn-lg" href="testcase">Next Step »</a>
         	</div>
        	</div>
        	
@@ -118,9 +110,6 @@
         </div>
         
         <jsp:include page="/WEB-INF/views/footer.jsp"/>
-        
-        <script src="resources/jquery/js/jquery-1.11.2.min.js"></script>
-		<script src="resources/bootstrap/js/bootstrap.min.js"></script>
       
       	<script>
 			$(document).ready(function() {
@@ -140,8 +129,20 @@
 				
 				$('#1').addClass('in active');
 				
-				var w = $('.scroll-tbody').find('.scroll-tr').first().width();
-				$('.scroll-thead').find('.scroll-tr').width(w);
+				/*var w = $('.scroll-tbody').find('.scroll-tr').first().width();
+				$('.scroll-thead').find('.scroll-tr').width(w);*/
+				
+				$("#1").find('table').dataTable({
+					//autoWidth: false,
+					paging: false,
+					searching: false,
+					"sDom": '<"top">rt<"bottom"flp><"clear">',
+					scrollY: ($(window).height()/2),
+					columnDefs: [        
+						{ orderable: false, targets: 3},
+					],
+					order: [0, 'asc']
+				});
 				
 				var MyRows = $('.table').find('tbody').find('tr');
 				for (var i = 0; i < MyRows.length; i++) {
@@ -161,10 +162,26 @@
 						$(MyRows[i]).find('.form-control').prop('type','number');
 						$(MyRows[i]).find('.form-control').prop('min','1');
 						$(MyRows[i]).find('.form-control').keypress(isNumberKey);
-					}else if(id=="79") {
+					} else if(id=="79") {
 						$(MyRows[i]).find('.form-control').prop('type','date');
-					}else if(id=="80") {
+					} else if(id=="80") {
 						$(MyRows[i]).find('.form-control').prop('type','url');
+					} else if((id=="19")||(id=="22")) {
+						var value = $(MyRows[i]).find('.form-control').val();
+						var selector = "<select class=\"form-control\" style=\"width:100%\">"
+						+"<option value=\"-3\">WPA2_AUTO</option>"
+						+"<option value=\"-2\">WPA_AUTO</option>"
+						+"<option value=\"-1\">Any</option>"
+						+"<option value=\"0\">Open</option>"
+						+"<option value=\"1\">WEP</option>"
+						+"<option value=\"2\">WPA_TKIP</option>"
+						+"<option value=\"3\">WPA_CCMP</option>"
+						+"<option value=\"4\">WPA2_TKIP</option>"
+						+"<option value=\"5\">WPA2_CCMP</option>"
+						+"<option value=\"6\">WPS</option></select>";
+						$(MyRows[i]).find('td:last').empty();
+						$(MyRows[i]).find('td:last').append(selector);
+						$(MyRows[i]).find('.form-control').val(value);
 					}
 					
 					
@@ -181,6 +198,24 @@
 					}
 				}
 			});
+			
+			$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+				   e.target; // activated tab
+				   e.relatedTarget; // previous tab
+				   var tab = $(e.target).attr('href');
+				   if(!$(""+tab).find('table').hasClass('dataTable')) {
+				   $(""+tab).find('table').dataTable({
+					   	paging: false,
+						searching: false,
+						"sDom": '<"top">rt<"bottom"flp><"clear">',
+						scrollY: 500,
+						columnDefs: [        
+							{ orderable: false, targets: 3},
+						],
+						order: [0, 'asc']
+				   });
+				   }
+				});
 		</script>
 		
 		<script>

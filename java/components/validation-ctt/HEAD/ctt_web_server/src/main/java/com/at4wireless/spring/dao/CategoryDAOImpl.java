@@ -25,7 +25,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.at4wireless.spring.model.Category;
-import com.at4wireless.spring.model.Project;
 
 @Repository
 public class CategoryDAOImpl implements CategoryDAO {

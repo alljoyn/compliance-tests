@@ -116,7 +116,7 @@ public class ResultServiceImpl implements ResultService {
 	}
 
 	@Override
-	public boolean createTestReport(String username, Project p) {
+	public boolean createTestReport(String username, Project p, String imgPath) {
 		String outputFileName = File.separator+"Allseen"
 				+File.separator+"Users"+File.separator+username+File.separator
 				+p.getIdProject()
@@ -151,7 +151,7 @@ public class ResultServiceImpl implements ResultService {
 			addSection(document, tcService.pdfData(p.getConfiguration(), p.getResults()),
 					startX, startY, height);
 
-			addReportFooter(document);
+			addReportFooter(document, imgPath);
 			document.save(outputFileName);
 			document.close();
 
@@ -262,7 +262,7 @@ public class ResultServiceImpl implements ResultService {
 	 * @throws IOException 
 	 */ 
 	@SuppressWarnings("rawtypes") 
-	private void addReportFooter(final PDDocument doc) throws IOException { 
+	private void addReportFooter(final PDDocument doc, String imgPath) throws IOException { 
 
 		PDPageContentStream footercontentStream = null;
 		float fontSize = 10;
@@ -276,8 +276,8 @@ public class ResultServiceImpl implements ResultService {
 
 			List pages = doc.getDocumentCatalog().getAllPages();
 			System.out.println("Number of pages: "+pages.size());
-			PDXObjectImage img = new PDJpeg(doc,new FileInputStream(File.separator+"Allseen"+File.separator+"logo.jpg"));
-
+			PDXObjectImage img = new PDJpeg(doc,new FileInputStream(imgPath+File.separator+"pdf_logo.jpg"));
+			
 			for (int i = 0; i < pages.size(); i++) {
 				PDPage page = ((PDPage) pages.get(i));
 				footer = (i + 1) + "/" + pages.size();

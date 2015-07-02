@@ -1,30 +1,15 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" trimDirectiveWhitespaces="true" %>
 <!DOCTYPE HTML>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
 <html lang="en">
     <head>
-    	<title>AllSeen</title>
-    	<meta charset="utf-8">
+    	<jsp:include page="/WEB-INF/views/page_head.jsp"/>
     	
-    	<!-- Add the next line to ensure proper rendering and touch zooming -->
-    	<meta name="viewport" content="width=device-width, initial-scale=1">
-    	
-    	<meta name="_csrf" content="${_csrf.token}"/>
-		<meta name="_csrf_header" content="${_csrf.headerName}"/>
-        
-        <!-- Web icon -->
-        <link rel="shortcut icon" href="resources/img/favicon.ico" type="image/vnd.microsoft.icon" />
-        
-        <!-- Bootstrap -->
-		<link rel="stylesheet" type="text/css" href="resources/bootstrap/css/bootstrap.min.css"/>		    	
-    	<link rel="stylesheet" type="text/css" href="resources/bootstrap/css/custom.css">
-		
-		<!-- Selectpicker -->
-    	<link rel="stylesheet" type="text/css" href="resources/bootstrap-select/css/bootstrap-select.min.css"/>
-    	
+    	<!-- Selectpicker -->
+		<link rel="stylesheet" type="text/css" href="resources/bootstrap-select/css/bootstrap-select.min.css"/>
     </head>
     <body>
     
@@ -42,7 +27,7 @@
     		<jsp:include page="/WEB-INF/views/header.jsp"/>
 		    
 		    <div class="row" align="right">
-		    	<button id="apiKey" type="button" class="btn btn-default pull-left">Generate CTT Local Agent Key</button>	
+		    	<button id="apiKey" type="button" class="btn btn-default pull-left">Generate CTT Local Agent Password</button>	
 		    	<c:if test="${pageContext.request.userPrincipal.name != null}">
 					<h4>
 						Welcome : ${pageContext.request.userPrincipal.name} | <a
@@ -54,75 +39,78 @@
 		    <!-- Projects table -->
 	        <div class="row">
 	        	<div>       
-			       	<table id="table" class="table table-hover">
-			       		<thead class="scroll-thead">
-			       			<tr class="scroll-tr">
-					        	<th width="10%">Project Name</th>
-					        	<th width="8%">Created</th>
-					        	<th width="8%">Modified</th>
-					        	<th width="12%">Type</th>
-					        	<th width="9%">Certification Release</th>
-					        	<th width="7%">TCCL</th>
-					        	<th width="13%">Supported Services</th>
-					        	<th width="7%">DUT</th>
-					        	<th width="7%">GU</th>
-					        	<th width="4%">CRI</th>
-					        	<th width="9%">Configured</th>
-					        	<th width="6%">Results</th>
+			       	<table id="table" class="table table-hover hide dt-responsive">
+			       		<thead>
+			       			<tr>
+					        	<th class="hide">Project ID</th>
+					        	<th></th>
+					        	<th>Project Name</th>
+					        	<th>Modified</th>
+					        	<th>Type</th>
+					        	<th>Certification Release</th>
+					        	<th>Supported Services</th>
+					        	<th>Configured</th>
+					        	<th>Results</th>
+					        	<th>Created</th>
+					        	<th>TCCL</th>
+					        	<th>DUT</th>
+					        	<th>GU</th>
+					        	<th>CRI</th>	 	
 					        </tr>
 					    </thead>
-			        	<tbody class="scroll-tbody">
+			        	<tbody>
 							<c:forEach var="project" items="${projectList}" varStatus="status">
-					        	<tr class="scroll-tr">
-					        		<td class="hide">${project.idProject}</td>
-					        		<td width="10%">${project.name}</td>
-					        		<td width="8%"><fmt:formatDate value="${project.createdDate}"
-										pattern="yyyy-MM-dd HH:mm:ss"/></td>
-									<td width="8%"><fmt:formatDate value="${project.modifiedDate}"
-										pattern="yyyy-MM-dd HH:mm:ss"/></td>
-									<td width="12%">${project.type}</td>
-									<c:forEach var="certrel" items="${certrelList}" varStatus="status">
-										<c:if test="${certrel.idCertrel==project.idCertrel}">
-											<td width="9%">${certrel.name}</td>
-										</c:if>
-									</c:forEach>
-									<c:forEach var="tccl" items="${tcclList}" varStatus="status">
-										<c:if test="${tccl.idTccl==project.idTccl}">
-											<td width="7%">${tccl.name}</td>
-										</c:if>
-									</c:forEach>
-									<td width="13%">${project.supportedServices}</td>
-									<c:choose>
-										<c:when test="${project.idDut!=0}">
-											<c:forEach var="dut" items="${dutList}" varStatus="status">
-												<c:if test="${dut.idDut==project.idDut}">
-													<td width="7%">${dut.name}</td>
-												</c:if>
-											</c:forEach>
-										</c:when>
-										<c:otherwise>
-											<td width="7%">Not selected</td>
-										</c:otherwise>
-									</c:choose>
-									<td width="7%">${project.gUnits}</td>
-									<td width="4%">${project.carId}</td>
-									<c:choose>
-										<c:when test="${project.isConfigured}">
-											<td width="9%">Yes</td>
-										</c:when>
-										<c:otherwise>
-											<td width="9%">No</td>
-										</c:otherwise>
-									</c:choose>
-									<c:choose>
-										<c:when test="${project.hasResults}">
-											<td width="6%"><a href="#" class="result-link">Link to results</a></td>
-										</c:when>
-										<c:otherwise>
-											<td width="6%">No results</td>
-										</c:otherwise>
-									</c:choose>														
-					        	</tr>
+							<tr>
+				        		<td class="hide">${project.idProject}</td>
+				        		<td></td>
+				        		<td>${project.name}</td>
+				        		<td><fmt:formatDate value="${project.modifiedDate}"
+									pattern="yyyy-MM-dd HH:mm:ss"/></td>
+				        		<td>${project.type}</td>
+				        		<c:forEach var="certrel" items="${certrelList}" varStatus="status">
+				        			<c:if test="${certrel.idCertrel==project.idCertrel}">
+				        				<td>${certrel.name}</td>
+				        			</c:if>
+				        		</c:forEach>
+								<td>${project.supportedServices}</td>
+								<c:choose>
+									<c:when test="${project.isConfigured}">
+										<td>Yes</td>
+									</c:when>
+									<c:otherwise>
+										<td>No</td>
+									</c:otherwise>
+								</c:choose>
+								<c:choose>
+									<c:when test="${project.hasResults}">
+										<td><a href="#" class="result-link">Link to results</a></td>
+									</c:when>
+									<c:otherwise>
+										<td>No results</td>
+									</c:otherwise>
+								</c:choose>	
+				        		<td><fmt:formatDate value="${project.createdDate}"
+									pattern="yyyy-MM-dd HH:mm:ss"/></td>
+								<c:forEach var="tccl" items="${tcclList}" varStatus="status">
+									<c:if test="${tccl.idTccl==project.idTccl}">
+										<td>${tccl.name}</td>
+									</c:if>
+								</c:forEach>
+								<c:choose>
+									<c:when test="${project.idDut!=0}">
+										<c:forEach var="dut" items="${dutList}" varStatus="status">
+											<c:if test="${dut.idDut==project.idDut}">
+												<td>${dut.name}</td>
+											</c:if>
+										</c:forEach>
+									</c:when>
+									<c:otherwise>
+										<td>Not selected</td>
+									</c:otherwise>
+								</c:choose>
+								<td>${project.gUnits}</td>
+								<td>${project.carId}</td>								
+				        	</tr>
 							</c:forEach>
 						</tbody>        	
 			       	</table>
@@ -138,8 +126,7 @@
 	        
 	        <!-- Navigation buttons -->
 	        <div class="row" align="left">
-	        	<!-- <a id="prevButton" type="button" class="btn btn-custom btn-lg" href="dut">« Back</a>  -->
-	        	<a id="nextButton" type="button" disabled class="btn btn-custom btn-lg disabled pull-right" href="dut">Next »</a>
+	        	<a id="nextButton" type="button" disabled class="btn btn-custom btn-lg disabled pull-right" href="dut">Next Step »</a>
 	        </div>
 	        
 	        <!-- Error message -->
@@ -178,8 +165,8 @@
 	        						<form:input path="name" type="text" class="form-control" id="projectname" name="projectname"/>
 	        					</div>
 	        					<div class="form-group">
-	        						<label path="type" for="message-text" class="control-label">Type</label>
-	        						<form:select path="type" class="form-control" id="message-text">
+	        						<label for="message-text" class="control-label">Type</label>
+	        						<form:select path="type" class="form-control" id="project-type">
 	        							<option value="Conformance">Conformance</option>
 	        							<option value="Interoperability">Interoperability</option>
 	        							<option value="Conformance and Interoperability">Conformance and Interoperability</option>
@@ -187,9 +174,9 @@
 	        						</form:select>
 	        					</div>
 	        					<div class="form-group">
-	        						<label path="idCertrel" for="project-release" class="control-label">Certification Release</label>
+	        						<label for="project-release" class="control-label">Certification Release Core Version</label>
 	        						<form:select path="idCertrel" class="form-control" id="project-release">
-	        							<c:forEach var="certrel" items="${certrelList}" varStatus="status">
+	        							<!--<c:forEach var="certrel" items="${certrelList}" varStatus="status">
 											<c:choose>
 												<c:when test="${not status.last}">
 													<option value="${certrel.idCertrel}">${certrel.name}</option>
@@ -198,19 +185,16 @@
 													<option value="${certrel.idCertrel}" selected>${certrel.name}</option>
 												</c:otherwise>
 											</c:choose>
-										</c:forEach>
-	        						</form:select>
-	        					</div>
-	        					<div class="form-group">
-	        						<label path="idTccl" for="project-tccl" class="control-label">Test Case Control List</label>
-	        						<form:select path="idTccl" class="form-control" id="project-tccl">
-	        							<!-- <c:forEach var="tccl" items="${tcclList}" varStatus="status">
-											<option value="${tccl.idTccl}">${tccl.name}</option>
 										</c:forEach> -->
 	        						</form:select>
 	        					</div>
 	        					<div class="form-group">
-	        						<label path="carId" for="project-car-id" class="control-label">Certification Application Request ID (*)</label>
+	        						<label for="project-tccl" class="control-label">Test Case Control List</label>
+	        						<form:select path="idTccl" class="form-control" id="project-tccl">
+	        						</form:select>
+	        					</div>
+	        					<div class="form-group">
+	        						<label for="project-car-id" class="control-label">Certification Application Request ID (*)</label>
 	        						<form:input path="carId" type="text" class="form-control" id="project-car-id"/>
 	        					</div>
 	        					<form:input type="hidden" id="supportedServices" name="supportedServices" path="supportedServices" value=""/>
@@ -249,11 +233,11 @@
 	        				<form:form method="POST" id="editProjectForm" action="project/save" modelAttribute="newProject">
 	        					<form:input type="hidden" id="edit_id" path="idProject"/>
 	        					<div class="form-group">
-	        						<label path="name" for="edit_name" class="control-label">Name (*)</label>
+	        						<label for="edit_name" class="control-label">Name (*)</label>
 	        						<form:input path="name" type="text" class="form-control" id="edit_name"/>
 	        					</div>
 	        					<div class="form-group">
-	        						<label path="type" for="edit-type" class="control-label">Type</label>
+	        						<label for="edit-type" class="control-label">Type</label>
 	        						<form:select path="type" class="form-control" id="edit-type">
 	        							<option value="Conformance">Conformance</option>
 	        							<option value="Interoperability">Interoperability</option>
@@ -262,20 +246,20 @@
 	        						</form:select>
 	        					</div>
 	        					<div class="form-group">
-	        						<label path="idCertrel" for="edit-release" class="control-label">Certification Release</label>
+	        						<label for="edit-release" class="control-label">Certification Release Core Version</label>
 	        						<form:select path="idCertrel" class="form-control" id="edit-release">
-	        							<c:forEach var="certrel" items="${certrelList}" varStatus="status">
+	        							<!--<c:forEach var="certrel" items="${certrelList}" varStatus="status">
 											<option value="${certrel.idCertrel}">${certrel.name}</option>
-										</c:forEach>
+										</c:forEach> -->
 	        						</form:select>
 	        					</div>
 	        					<div class="form-group">
-	        						<label path="idTccl" for="edit-tccl" class="control-label">Test Case Control List</label>
+	        						<label for="edit-tccl" class="control-label">Test Case Control List</label>
 	        						<form:select path="idTccl" class="form-control" id="edit-tccl">
 	        						</form:select>
 	        					</div>
 	        					<div class="form-group">
-	        						<label path="carId" for="edit-car-id" class="control-label">Certification Application Request ID (*)</label>
+	        						<label for="edit-car-id" class="control-label">Certification Application Request ID (*)</label>
 	        						<form:input path="carId" type="text" class="form-control" id="edit-car-id"/>
 	        					</div>
 	        					<form:input type="hidden" id="edit-services" name="supportedServices" path="supportedServices" value=""/>
@@ -326,7 +310,7 @@
 	        	<div class="modal-dialog">
 	        		<div class="modal-content">
 	        			<div class="modal-body">
-	        				<h4>Your CTT Local Agent Key is:</h4>
+	        				<h4>Your CTT Local Agent Password is:</h4>
 	        				<h4 id="key"></h4>
 	        				<h4>Please copy it because it cannot be retrieved</h4>
 	        			</div>
@@ -339,15 +323,46 @@
         </div>
         
         <jsp:include page="/WEB-INF/views/footer.jsp"/>
-        
-        <script src="resources/jquery/js/jquery-1.11.2.min.js"></script>
-		<script src="resources/bootstrap/js/bootstrap.min.js"></script>
-		
-		<script src="resources/bootstrap-select/js/bootstrap-select.min.js"></script>
+ 
+        <script src="resources/bootstrap-select/js/bootstrap-select.min.js"></script>
 		
 		<script src="resources/jquery-validation/1.13.1/js/jquery.validate.min.js"></script>
 		<script src="resources/jquery-validation/1.13.1/js/additional-methods.min.js"></script>
-	
+
+		<!-- Document ready script -->
+		<script>
+			var table;
+			
+			$(document).ready(function() {
+				$('#title').text("STEP 1: SELECT/EDIT/CREATE A PROJECT OR VIEW RESULTS");
+				$('.selectpicker').selectpicker();
+				sessionStorage.clear();
+						
+				$('#table').removeClass('hide');
+				
+				table = $('#table').dataTable({
+					//autoWidth: false,
+					pagingType: 'full_numbers',
+					scrollY: ($(window).height()/2),
+					responsive: {
+						details: {
+							type: 'column',
+							target: 1
+						}
+					},
+					columnDefs: [
+					    { className: 'none', searchable: false, targets: [9,10,11,12,13]},         
+						{ className: 'control', orderable: false, targets: 1},
+					],
+					order: [2, 'asc']		
+				});
+			});
+			
+			$(window).resize(function() {
+				table.fnAdjustColumnSizing();
+			});
+		</script>
+		
 		<!-- Logout form script -->
 		<script>
 			function formSubmit() {
@@ -355,14 +370,365 @@
 			}
 		</script>
 		
+		<!-- Selector scripts -->
 		<script>
-			$(document).ready(function() {
-				$('#title').text("STEP 1: SELECT/EDIT/CREATE A PROJECT OR VIEW RESULTS");
-				$('.selectpicker').selectpicker();
-				sessionStorage.clear();
+			$('#project-type').change(function() {
+				var selected = $(this).find("option:selected").val();
 				
-				var w = $('.scroll-tbody').find('.scroll-tr').first().width();
-				$('.scroll-thead').find('.scroll-tr').width(w);		
+				$.ajax({
+					cache: false,
+					type: 'GET',
+					url: 'project/loadCertRel',
+					data : {
+						pjType : selected
+					},
+					success: function(data) {
+						var selectedCR;
+						$('#project-release').empty();
+						$.each(data, function(i, release) {
+							if (i == data.length -1) {
+								$('#project-release').append("<option selected value=\""+release.idCertrel+"\">"+release.name+": ("+release.description+")</option>");
+								selectedCR = release.idCertrel;
+							} else {
+								$('#project-release').append("<option value=\""+release.idCertrel+"\">"+release.name+" ("+release.description+")</option>");
+							}
+						});
+						
+						$.ajax({
+							cache: false,
+							type: 'GET',
+							url: 'project/loadTccl',
+							data : {
+								idCertRel : selectedCR
+							},
+							success: function(data) {
+								$('#project-tccl').empty();
+								$.each(data, function(i, tccl) {
+									$('#project-tccl').append("<option value=\""+tccl.idTccl+"\">"+tccl.name+"</option>");
+								});
+							}
+						});
+					}
+				});
+			});
+			
+			$('#project-release').change(function() {
+				var selected = $(this).find("option:selected").val();
+				
+				$.ajax({
+					cache: false,
+					type: 'GET',
+					url: 'project/loadTccl',
+					data : {
+						idCertRel : selected
+					},
+					success: function(data) {
+						$('#project-tccl').empty();
+						$.each(data, function(i, tccl) {
+							$('#project-tccl').append("<option value=\""+tccl.idTccl+"\">"+tccl.name+"</option>");
+						});
+					}
+				});
+			});
+			
+			$('#edit-type').change(function() {
+				var selected = $(this).find("option:selected").val();
+				
+				$.ajax({
+					cache: false,
+					type: 'GET',
+					url: 'project/loadCertRel',
+					data : {
+						pjType : selected
+					},
+					success: function(data) {
+						var selectedCR;
+						$('#edit-release').empty();
+						$.each(data, function(i, release) {
+							if (i == data.length -1) {
+								$('#edit-release').append("<option selected value=\""+release.idCertrel+"\">"+release.name+" ("+release.description+")</option>");
+								selectedCR = release.idCertrel;
+							} else {
+								$('#edit-release').append("<option value=\""+release.idCertrel+"\">"+release.name+" ("+release.description+")</option>");
+							}
+						});
+						
+						$.ajax({
+							cache: false,
+							type: 'GET',
+							url: 'project/loadTccl',
+							data : {
+								idCertRel : selectedCR
+							},
+							success: function(data) {
+								$('#edit-tccl').empty();
+								$.each(data, function(i, tccl) {
+									$('#edit-tccl').append("<option value=\""+tccl.idTccl+"\">"+tccl.name+"</option>");
+								});
+							}
+						});
+					}
+				});
+			});
+			
+			$('#edit-release').change(function() {
+				var selected = $(this).find("option:selected").val();
+				
+				$.ajax({
+					cache: false,
+					type: 'GET',
+					url: 'project/loadTccl',
+					data : {
+						idCertRel : selected
+					},
+					success: function(data) {
+						$('#edit-tccl').empty();
+						$.each(data, function(i, tccl) {
+							$('#edit-tccl').append("<option value=\""+tccl.idTccl+"\">"+tccl.name+"</option>");
+						});
+					}
+				});
+			});
+		</script>
+		
+		<!-- Button scripts -->
+		<script>
+			function enableButtons(enableNext) {	
+				$('#deleteButton').removeClass('disabled');
+				$('#deleteButton').prop("disabled", false);
+				$('#editButton').removeClass('disabled');
+				$('#editButton').prop("disabled", false);
+				if(enableNext) {
+					$('#nextButton').removeClass('disabled');
+				   	$('#nextButton').removeAttr("disabled", false);
+				}
+			}
+			
+			function disableButtons() {
+				$('#nextButton').addClass('disabled');
+			   	$('#nextButton').attr("disabled", true);
+				$('#deleteButton').addClass('disabled');
+				$('#deleteButton').prop("disabled", true);
+				$('#editButton').addClass('disabled');
+				$('#editButton').prop("disabled", true);
+			}
+			
+			$('#apiKey').on('click', function() {
+				
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");
+				
+				$.ajax({
+					type : 'POST',
+					url : 'project/generateKey',
+					beforeSend: function(xhr) {
+			            xhr.setRequestHeader(header, token);
+			        },
+					success : function (data) {
+						$('#key').empty();
+						$('#key').append(data);
+						$('#generatedKey').modal('show');
+					}
+				});	
+			});
+			
+			$('#closeApiKey').on('click', function() {
+				$('#key').empty();
+			});
+			
+		  	$('#createConfirm').on('click', function(){
+		  		
+				var text="";
+		    	
+		    	$('#new-project-services option:selected').each(function(index){
+		    		text+=$(this).val()+".";
+		    	});
+		    	
+		    	$('#supportedServices').val(text);
+		    	$('#newProjectForm').submit();
+		  	});
+
+			$('#deleteConfirm').on('click', function(e){
+				
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");
+			    
+			    $.ajax({
+						type : 'POST',
+						url : 'project/delete',
+						beforeSend: function(xhr) {
+				            xhr.setRequestHeader(header, token);
+				        },
+						data : {
+							idProject : sessionStorage.getItem("idProject")
+						},
+						success: function () {
+							var MyRows = $('.table').find('tbody').find('tr');
+							for (var i = 0; i < MyRows.length; i++) {
+								if(($(MyRows[i]).find('td:eq(0)').html())==sessionStorage.getItem("idProject")) {
+									var table = $('#table').DataTable();
+									table.row($(MyRows[i])).remove().draw();
+									/*$(MyRows[i]).fadeOut(400, function() {
+										$(MyRows[i]).remove();
+									});*/
+								}
+							}
+							
+							sessionStorage.removeItem("idProject");
+							disableButtons();
+					   }
+				});
+			});
+			
+			$('#editConfirm').on('click', function(e) {
+				e.preventDefault();
+				
+				var text="";
+		    	
+		    	$('#scroll-services option:selected').each(function(index){
+		    		text+=$(this).val()+".";
+		    	});
+		    	
+		    	$('#edit-services').val(text);
+				$('#editProjectForm').submit();
+			});
+			
+			$('#createButton').on('click', function(){	
+				$.ajax({
+					cache: false,
+					type: 'GET',
+					url: 'project/loadCertRel',
+					data : {
+						pjType : "Conformance"
+					},
+					success: function(data) {
+						var selectedCR;
+						$('#project-release').empty();
+						$.each(data, function(i, release) {
+							if (i == data.length -1) {
+								$('#project-release').append("<option selected value=\""+release.idCertrel+"\">"+release.name+" ("+release.description+")</option>");
+								selectedCR = release.idCertrel;
+							} else {
+								$('#project-release').append("<option value=\""+release.idCertrel+"\">"+release.name+" ("+release.description+")</option>");
+							}
+						});
+						
+						$.ajax({
+							cache: false,
+							type: 'GET',
+							url: 'project/loadTccl',
+							data : {
+								idCertRel : selectedCR
+							},
+							success: function(data) {
+								$('#project-tccl').empty();
+								$.each(data, function(i, tccl) {
+									$('#project-tccl').append("<option value=\""+tccl.idTccl+"\">"+tccl.name+"</option>");
+								});
+							}
+						});
+					}
+				});
+			});
+			
+			$('#editButton').on('click', function(){
+				$.ajax({
+					cache: false,
+					type : 'GET',
+					url : 'project/edit',
+					data : {
+						idProject : sessionStorage.getItem("idProject")
+					},
+					success: function (data) {
+						
+						$('#edit_id').val(data.idProject);
+						$('#edit_name').val(data.name);
+						$('#edit-type').val(data.type);
+						$('#edit-car-id').val(data.carId);
+						
+						$.ajax({
+							cache: false,
+							type: 'GET',
+							url: 'project/loadCertRel',
+							data : {
+								pjType : data.type
+							},
+							success: function(releases) {
+
+								$('#edit-release').empty();
+								$.each(releases, function(i, release) {
+									$('#edit-release').append("<option value=\""+release.idCertrel+"\">"+release.name+" ("+release.description+")</option>");
+								});
+								
+								$('#edit-release').val(data.idCertrel);
+								
+								$.ajax({
+									cache: false,
+									type: 'GET',
+									url: 'project/loadTccl',
+									data : {
+										idCertRel : data.idCertrel
+									},
+									success: function(tccls) {
+										$('#edit-tccl').empty();
+										$.each(tccls, function(i, tccl) {
+											$('#edit-tccl').append("<option value=\""+tccl.idTccl+"\">"+tccl.name+"</option>");
+										});
+									}
+								});
+							}
+						});
+						
+						
+						$('#edit-tccl').val(data.idTccl);
+						
+						var services = data.supportedServices.split(".");		
+						$('#scroll-services').selectpicker('val',services);
+				   }
+				});
+			});
+			
+			$('.result-link').on('click', function(e){		
+				e.preventDefault();
+				var id2 = $(this).parent().parent().find('td:first').html();
+				$('#idProject').val(id2);
+				
+				localStorage.setItem("idProject",id2);
+				
+				$('#resultForm').submit();
+			});
+		</script>
+		
+		<!-- Row selector script -->
+		<script>
+			$("#table tbody tr").click(function(){
+				
+				var table = $('#table').DataTable();
+				var data = table.row(this).data();
+				
+				if($(this).hasClass("selected")) {
+					$(this).removeClass('selected');
+					sessionStorage.removeItem("idProject");
+					disableButtons();
+				} else {
+					$(this).addClass('selected').siblings().removeClass('selected');    
+
+				   	var dut = "N/A";
+				   	var gu = "N/A";
+				   	if(data[7]=="Yes") {
+				   		dut = data[11];
+				   		gu = data[12];
+				   	}
+				   		   	
+				   	sessionStorage.setItem("idProject",data[0]);
+				   	sessionStorage.setItem("projectName",data[2]);
+				   	sessionStorage.setItem("type",data[4]);
+				   	sessionStorage.setItem("associatedDut",dut);
+				   	sessionStorage.setItem("associatedGu",gu);
+
+					enableButtons(true);
+				}
+			   	
 			});
 		</script>
 		
@@ -440,246 +806,6 @@
 						maxlength: "CRI must have a max of 60 characters!"
 					}
 				}
-			});
-		</script>
-		
-		<!-- Selector scripts -->
-		<script>
-			$('#project-release').change(function() {
-				var selected = $(this).find("option:selected").val();
-				
-				$.ajax({
-					cache: false,
-					type: 'GET',
-					url: 'project/loadTccl',
-					data : {
-						idCertRel : selected
-					},
-					success: function(data) {
-						$('#project-tccl').empty();
-						$.each(data, function(i, tccl) {
-							$('#project-tccl').append("<option value=\""+tccl.idTccl+"\">"+tccl.name+"</option>");
-						});
-					}
-				});
-			});
-			
-			$('#edit-release').change(function() {
-				var selected = $(this).find("option:selected").val();
-				
-				$.ajax({
-					cache: false,
-					type: 'GET',
-					url: 'project/loadTccl',
-					data : {
-						idCertRel : selected
-					},
-					success: function(data) {
-						$('#edit-tccl').empty();
-						$.each(data, function(i, tccl) {
-							$('#edit-tccl').append("<option value=\""+tccl.idTccl+"\">"+tccl.name+"</option>");
-						});
-					}
-				});
-			});
-		</script>
-		
-		<!-- Button scripts -->
-		<script>
-			$('#apiKey').on('click', function() {
-				
-				var token = $("meta[name='_csrf']").attr("content");
-				var header = $("meta[name='_csrf_header']").attr("content");
-				
-				$.ajax({
-					type : 'POST',
-					url : 'project/generateKey',
-					beforeSend: function(xhr) {
-			            xhr.setRequestHeader(header, token);
-			        },
-					success : function (data) {
-						$('#key').empty();
-						$('#key').append(data);
-						$('#generatedKey').modal('show');
-					}
-				});	
-			});
-			
-			$('#closeApiKey').on('click', function() {
-				$('#key').empty();
-			});
-			
-		  	$('#createConfirm').on('click', function(){
-		  		
-				var text="";
-		    	
-		    	$('#new-project-services option:selected').each(function(index){
-		    		text+=$(this).val()+".";
-		    	});
-		    	
-		    	$('#supportedServices').val(text);
-		    	$('#newProjectForm').submit();
-		  	});
-
-			$('#deleteConfirm').on('click', function(e){
-				
-				var token = $("meta[name='_csrf']").attr("content");
-				var header = $("meta[name='_csrf_header']").attr("content");
-			    
-			    $.ajax({
-						type : 'POST',
-						url : 'project/delete',
-						beforeSend: function(xhr) {
-				            xhr.setRequestHeader(header, token);
-				        },
-						data : {
-							idProject : sessionStorage.getItem("idProject")
-						},
-						success: function () {
-							var MyRows = $('.table').find('tbody').find('tr');
-							for (var i = 0; i < MyRows.length; i++) {
-								if(($(MyRows[i]).find('td:eq(0)').html())==sessionStorage.getItem("idProject")) {
-									$(MyRows[i]).fadeOut(400, function() {
-										$(MyRows[i]).remove();
-									});
-								}
-							}
-							
-							sessionStorage.removeItem("idProject");
-							
-							$('#nextButton').addClass('disabled');
-							$('#nextButton').prop("disabled", true);
-							$('#deleteButton').addClass('disabled');
-							$('#deleteButton').prop("disabled", true);
-							$('#editButton').addClass('disabled');
-							$('#editButton').prop("disabled", true);
-					   }
-				});
-			});
-			
-			$('#editConfirm').on('click', function(e) {
-				e.preventDefault();
-				
-				var text="";
-		    	
-		    	$('#scroll-services option:selected').each(function(index){
-		    		text+=$(this).val()+".";
-		    	});
-		    	
-		    	$('#edit-services').val(text);
-				$('#editProjectForm').submit();
-			});
-			
-			$('#createButton').on('click', function(){
-					$.ajax({
-						cache: false,
-						type: 'GET',
-						url: 'project/loadTccl',
-						data : {
-							idCertRel : $('#project-release').val()
-						},
-						success: function(data) {
-							$('#project-tccl').empty();
-							$.each(data, function(i, tccl) {
-								$('#project-tccl').append("<option value=\""+tccl.idTccl+"\">"+tccl.name+"</option>");
-							});
-						}
-					});
-					
-					/*var services = data.supportedServices.split(".");		
-					$('#scroll-services').selectpicker('val',services);*/
-
-			});
-			
-			$('#editButton').on('click', function(){
-				$.ajax({
-					cache: false,
-					type : 'GET',
-					url : 'project/edit',
-					data : {
-						idProject : sessionStorage.getItem("idProject")
-					},
-					success: function (data) {
-						
-						$('#edit_id').val(data.idProject);
-						$('#edit_name').val(data.name);
-						$('#edit-type').val(data.type);
-						$('#edit-release').val(data.idCertrel);
-						$('#edit-car-id').val(data.carId);
-						
-						$.ajax({
-							type: 'GET',
-							url: 'project/loadTccl',
-							data : {
-								idCertRel : data.idCertrel
-							},
-							success: function(data) {
-								$('#edit-tccl').empty();
-								$.each(data, function(i, tccl) {
-									$('#edit-tccl').append("<option value=\""+tccl.idTccl+"\">"+tccl.name+"</option>");
-								});
-							}
-						});
-						
-						var services = data.supportedServices.split(".");		
-						$('#scroll-services').selectpicker('val',services);
-				   }
-				});
-			});
-			
-			$('.result-link').on('click', function(e){		
-				e.preventDefault();
-				var id2 = $(this).parent().parent().find('td:first').html();
-				$('#idProject').val(id2);
-				
-				localStorage.setItem("idProject",id2);
-				
-				$('#resultForm').submit();
-			});
-		</script>
-		
-		<!-- Row selector script -->
-		<script>
-			$("#table tbody tr").click(function(){
-				
-				if($(this).hasClass("selected")) {
-					$(this).removeClass('selected');
-					sessionStorage.removeItem("idProject");
-					$('#nextButton').addClass('disabled');
-				   	$('#nextButton').attr("disabled");
-					$('#deleteButton').addClass('disabled');
-					$('#deleteButton').prop("disabled", true);
-					$('#editButton').addClass('disabled');
-					$('#editButton').prop("disabled", true);
-				} else {
-					$(this).addClass('selected').siblings().removeClass('selected');    
-				   	var id=$(this).find('td:first').html();			
-				   	
-				   	if(($(this).find('td:eq(11)').html()=="Yes")) {
-					   	var dut=$(this).find('td:eq(8)').html();
-					   	var gu=$(this).find('td:eq(9)').html();
-				   		sessionStorage.setItem("associatedDut", dut);
-				   		sessionStorage.setItem("associatedGu",gu);
-				   	} else {
-				   		sessionStorage.setItem("associatedDut", "N/A");
-				   		sessionStorage.setItem("associatedGu", "N/A");
-				   	}
-				   	var type=$(this).find('td:eq(4)').html();
-				   	
-				   	sessionStorage.setItem("idProject",id);
-				   	sessionStorage.setItem("type",type);
-				   	
-				   	var name=$(this).find('td:eq(1)').html();
-				   	sessionStorage.setItem("projectName",name);
-
-				   	$('#nextButton').removeClass('disabled');
-				   	$('#nextButton').removeAttr("disabled");
-					$('#deleteButton').removeClass('disabled');
-					$('#deleteButton').prop("disabled", false);
-					$('#editButton').removeClass('disabled');
-					$('#editButton').prop("disabled", false);
-				}
-			   	
 			});
 		</script>
     </body>

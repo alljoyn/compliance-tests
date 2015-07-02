@@ -71,4 +71,71 @@ public class CertificationReleaseDAOImpl implements CertificationReleaseDAO{
 		}
 		return intList;
 	}
+
+	@Override
+	public boolean certificationReleaseExists(String certificationRelease) {
+		@SuppressWarnings("unchecked")
+		List<CertificationRelease> listCertrel = (List<CertificationRelease>) sessionFactory.getCurrentSession()
+				.createCriteria(CertificationRelease.class)
+					.add(Restrictions.like("name", certificationRelease))
+				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
+
+		return (listCertrel.size() != 0);
+	}
+
+	@Override
+	public int addCertificationRelease(CertificationRelease certificationRelease) {
+		sessionFactory.getCurrentSession().save(certificationRelease);
+		
+		return certificationRelease.getIdCertrel();
+	}
+
+	@Override
+	public List<CertificationRelease> listReleaseVersions() {
+		@SuppressWarnings("unchecked")
+		List<CertificationRelease> listCertrel = (List<CertificationRelease>) sessionFactory.getCurrentSession()
+				.createCriteria(CertificationRelease.class)
+					.add(Restrictions.like("enabled", true))
+					.add(Restrictions.like("release", true))
+				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
+
+		return listCertrel;
+	}
+
+	@Override
+	public boolean isReleaseVersion(String certificationRelease) {
+		@SuppressWarnings("unchecked")
+		List<CertificationRelease> listCertrel = (List<CertificationRelease>) sessionFactory.getCurrentSession()
+				.createCriteria(CertificationRelease.class)
+					.add(Restrictions.like("name", certificationRelease))
+				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
+
+		return listCertrel.get(0).isRelease();
+	}
+
+	@Override
+	public void fromDebugToRelease(String certificationRelease) {
+		sessionFactory.getCurrentSession().createQuery("update CertificationRelease set release = '"
+				+1+"' where name = '"+certificationRelease+"'").executeUpdate();
+	}
+
+	@Override
+	public String getCertificationReleaseDescription(String certificationRelease) {
+		@SuppressWarnings("unchecked")
+		List<String> listCertrel = (List<String>) sessionFactory.getCurrentSession()
+				.createSQLQuery("select description from certrel where name='"
+						+certificationRelease+"';").list();
+		
+		if(listCertrel.isEmpty()) {
+			return null;
+		} else {
+			return listCertrel.get(0);
+		}
+	}
+
+	@Override
+	public void updateDescription(String certificationRelease, String description) {
+		sessionFactory.getCurrentSession().createQuery("update CertificationRelease set description = '"
+				+description+"' where name = '"+certificationRelease+"'").executeUpdate();
+	}
 }

@@ -16,12 +16,14 @@
 
 package com.at4wireless.spring.controller;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -41,11 +43,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.at4wireless.security.FileEncryption;
 import com.at4wireless.spring.model.Project;
 import com.at4wireless.spring.model.TestCaseResult;
 import com.at4wireless.spring.service.ProjectService;
 import com.at4wireless.spring.service.ResultService;
 import com.at4wireless.spring.service.TestCaseService;
+import com.at4wireless.spring.service.UserService;
 
 /**
  * This class manages all actions related with results view
@@ -63,6 +67,9 @@ public class ResultsController {
 	
 	@Autowired
 	private ResultService resultService;
+	
+	@Autowired
+	private UserService userService;
 	
 	private static final int BUFFER_SIZE = 4096;
 	
@@ -100,20 +107,23 @@ public class ResultsController {
 	 * @param	request		servlet request with the name of the log to be shown
 	 * @return				full log
 	 */
-	@RequestMapping(value="/fullLog", method=RequestMethod.GET, produces="text/plain")
+	@RequestMapping(value="/fullLog", method=RequestMethod.GET, produces="text/plain; charset=UTF-8")
 	public @ResponseBody String showLog(HttpServletRequest request) {
 		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String log = "";
 		if (!(auth instanceof AnonymousAuthenticationToken)) {
 			String username = auth.getName();
+			String path = File.separator+"Allseen"+File.separator+"Users"+File.separator
+					+username+File.separator+request.getParameter("id")
+					+File.separator+request.getParameter("file");
 			try {
-				System.out.println(File.separator+"Allseen"+File.separator+username+File.separator+
-						request.getParameter("id")+File.separator+request.getParameter("file"));
-				log = RestController.readFile(File.separator+"Allseen"+File.separator+"Users"+
-								File.separator+username+File.separator+
-						request.getParameter("id")+File.separator+request.getParameter("file"), 
-						StandardCharsets.UTF_8);
+				FileEncryption fE = new FileEncryption();
+				fE.setAesSecretKey(userService.getAesSecretKey(username));
+				log = fE.decrypt(RestController.readFile(path, StandardCharsets.UTF_8));
+			} catch (GeneralSecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -143,7 +153,9 @@ public class ResultsController {
 			System.out.println(outputFileName);
 			
 			if(tcService.ranAll(p.getConfiguration(), p.getResults())) {
-				return resultService.createTestReport(username, p);
+				String imgPath = request.getSession().getServletContext().getRealPath("/")+"resources"
+						+File.separator+"img";
+				return resultService.createTestReport(username, p, imgPath);
 			}
 		}
 		return false;
@@ -223,10 +235,27 @@ public class ResultsController {
 			
 			for (String str : tcService.zipData(p.getConfiguration(), p.getResults())) {
 				out.putNextEntry(new ZipEntry(str));
-				in = new FileInputStream(File.separator+"Allseen"+File.separator+"Users"
+				ByteArrayInputStream bais = null;
+				/*in = new FileInputStream(File.separator+"Allseen"+File.separator+"Users"
 						+File.separator+p.getUser()
-						+File.separator+p.getIdProject()+File.separator+str);
-				while ((count = in.read(b))>0) {
+						+File.separator+p.getIdProject()+File.separator+str);*/
+				
+				String path = File.separator+"Allseen"+File.separator+"Users"+File.separator
+						+p.getUser()+File.separator+p.getIdProject()
+						+File.separator+str;
+				try {
+					FileEncryption fE = new FileEncryption();
+					fE.setAesSecretKey(userService.getAesSecretKey(p.getUser()));
+					String log = fE.decrypt(RestController.readFile(path, StandardCharsets.UTF_8));
+					bais = new ByteArrayInputStream(log.getBytes());
+				} catch (GeneralSecurityException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				while ((count = bais.read(b))>0) {
 					out.write(b,0,count);
 				}
 			}

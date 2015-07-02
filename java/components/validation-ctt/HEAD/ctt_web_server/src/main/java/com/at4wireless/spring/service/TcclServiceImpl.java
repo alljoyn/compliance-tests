@@ -16,6 +16,8 @@
 
 package com.at4wireless.spring.service;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +26,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.at4wireless.spring.dao.CertificationReleaseDAO;
+import com.at4wireless.spring.dao.TcDAO;
 import com.at4wireless.spring.dao.TcclDAO;
+import com.at4wireless.spring.model.CertificationRelease;
 import com.at4wireless.spring.model.Tccl;
 import com.at4wireless.spring.model.TestCaseTccl;
 
@@ -36,6 +40,9 @@ public class TcclServiceImpl implements TcclService {
 	
 	@Autowired
 	private CertificationReleaseDAO certrelDao;
+	
+	@Autowired
+	private TcDAO tcDao;
 	
 	@Override
 	@Transactional
@@ -121,4 +128,58 @@ public class TcclServiceImpl implements TcclService {
 		return tcclDao.listByCR(idCertRel);
 	}
 
+	@Override
+	@Transactional
+	public void addCertificationReleaseIfNotExists(String certificationRelease, String packageVersion,
+			String description) throws Exception {
+		
+		if(!certrelDao.certificationReleaseExists(certificationRelease)) {
+			CertificationRelease cRelease = new CertificationRelease();
+			cRelease.setName(certificationRelease);
+			cRelease.setEnabled(true);
+			cRelease.setRelease(isReleaseVersion(packageVersion));
+			cRelease.setDescription(description);
+			int crId = certrelDao.addCertificationRelease(cRelease);
+			tcDao.assignTestCasesToCertificationRelease(crId);
+			
+			//certrelDao.assignTestCases(certificationRelease);
+		} else {
+			if (certrelDao.isReleaseVersion(certificationRelease)) {
+				if (!isReleaseVersion(packageVersion)) {
+					throw new Exception("A release version of the package already exists. Debug versions of "+certificationRelease+" are not allowed");
+				}
+				else
+				{
+					certrelDao.updateDescription(certificationRelease, description);
+				}
+			} else {
+				if (isReleaseVersion(packageVersion)) {
+					certrelDao.fromDebugToRelease(certificationRelease);
+					cleanDebugPackages(certificationRelease);
+				}
+				certrelDao.updateDescription(certificationRelease, description);
+			}
+		}
+	}
+	
+	private boolean isReleaseVersion(String packageVersion) {
+		return (packageVersion.charAt(0) == 'R');
+	}
+	
+	private void cleanDebugPackages(final String certificationRelease) {
+		File folder = new File(File.separator+"Allseen"+File.separator+"Technology");
+		File[] files = folder.listFiles(new FilenameFilter()
+		{
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.contains(certificationRelease+"_D");
+			}
+		});
+		
+		for (final File file : files) {
+			if (!file.delete()) {
+				System.err.println("Can't remove "+file.getAbsolutePath());
+			}
+		}
+	}
 }

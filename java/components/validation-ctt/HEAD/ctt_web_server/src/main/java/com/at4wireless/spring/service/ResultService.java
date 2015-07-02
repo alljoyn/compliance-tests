@@ -26,5 +26,5 @@ public interface ResultService {
 	 * @param 	p			project	
 	 * @return				true if Test Report is successfully created, false otherwise
 	 */
-	public boolean createTestReport(String username, Project p);
+	public boolean createTestReport(String username, Project p, String imgPath);
 }

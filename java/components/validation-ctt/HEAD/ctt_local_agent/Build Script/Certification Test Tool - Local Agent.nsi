@@ -6,8 +6,7 @@
 
 !define APP_NAME "Certification Test Tool - Local Agent"
 !define COMP_NAME "AT4 wireless"
-#!define WEB_SITE "http://www.at4wireless.com/"
-!define VERSION "1.01.00.00"
+!define VERSION "1.03.00.00"
 !define COPYRIGHT "AllSeen Alliance 2015"
 !define DESCRIPTION "Installer for CTT-Local Agent"
 !define MAIN_APP_EXE "CTT_Local_Agent.exe"
@@ -19,9 +18,10 @@
 !define REG_START_MENU "Start Menu Folder"
 ######################################################################
 ;Modify values to fit your project
-!define INSTALLER_NAME "C:\Users\at4wireless\Desktop\CTT_Local_Agent_v1.1.0_Installer.exe"
-!define LOCAL_AGENT_PATH "C:\Users\at4wireless\Desktop\TestToolLocalAgent"
-!define MSVS2012_PATH "C:\Users\at4wireless\Desktop\MSVS2012"
+!define INSTALLER_NAME "C:\Users\Administrador\Desktop\CTT_Local_Agent_v1.3.0_Installer.exe"
+!define LOCAL_AGENT_PATH "C:\Users\Administrador\Desktop\ctt_local_agent"
+!define MSVS2012_PATH "C:\Users\Administrador\Desktop\MSVS2012"
+!define MSVS2013_PATH "C:\Users\Administrador\Desktop\MSVS2013"
 
 var SM_Folder
 
@@ -50,8 +50,8 @@ InstallDir "C:\Program Files\CTTLocalAgent"
 
 ;Visual 2012
 !define ICON_PATH "${LOCAL_AGENT_PATH}\res\drawable"
-!define MSVS_DIR "${MSVS2012_PATH}"
- 
+!define MSVS2012_DIR "${MSVS2012_PATH}"
+ !define MSVS2013_DIR "${MSVS2013_PATH}"
 ;Request application privileges for Windows Vista, 7, 8
 RequestExecutionLevel admin 
  
@@ -82,8 +82,8 @@ AutoCloseWindow true
 ######################################################################
 
 !include "MUI.nsh"
-!define MUI_ICON "${ICON_PATH}\icon.ico"
- !define MUI_UNICON "${ICON_PATH}\icon.ico"
+!define MUI_ICON "${ICON_PATH}\allseen128.ico"
+ !define MUI_UNICON "${ICON_PATH}\allseen128.ico"
 
 !insertmacro MUI_PAGE_WELCOME
 
@@ -126,10 +126,11 @@ File "${LOCAL_AGENT_PATH}\config.xml"
 File "${LOCAL_AGENT_PATH}\CTT_Local_Agent.exe"
 
 SetOutPath "$INSTDIR\TestCases"
-File "${LOCAL_AGENT_PATH}\TestCases\TestCases_Package_v14.06.00a.jar"
-File "${LOCAL_AGENT_PATH}\TestCases\TestCases_Package_v14.12.00a.jar"
-File "${LOCAL_AGENT_PATH}\TestCases\TestCases_Package_v14.12.00b.jar"
-File "${LOCAL_AGENT_PATH}\TestCases\TestCases_Package_v15.04.00.jar"
+File "${LOCAL_AGENT_PATH}\TestCases\TestCases_Package_v14.06.00a_R1.jar"
+File "${LOCAL_AGENT_PATH}\TestCases\TestCases_Package_v14.12.00a_R1.jar"
+File "${LOCAL_AGENT_PATH}\TestCases\TestCases_Package_v14.12.00b_R1.jar"
+File "${LOCAL_AGENT_PATH}\TestCases\TestCases_Package_v15.04.00_R1.jar"
+File "${LOCAL_AGENT_PATH}\TestCases\TestCases_Package_v15.04.00a_R1.jar"
 SetOutPath "$INSTDIR\res\drawable"
 File "${LOCAL_AGENT_PATH}\res\drawable\back.jpg"
 File "${LOCAL_AGENT_PATH}\res\drawable\footer.jpg"
@@ -139,7 +140,7 @@ File "${LOCAL_AGENT_PATH}\res\drawable\ico_login.png"
 File "${LOCAL_AGENT_PATH}\res\drawable\ico_next.png"
 File "${LOCAL_AGENT_PATH}\res\drawable\ico_refresh.png"
 File "${LOCAL_AGENT_PATH}\res\drawable\ico_stop.jpg"
-File "${LOCAL_AGENT_PATH}\res\drawable\icon.ico"
+File "${LOCAL_AGENT_PATH}\res\drawable\allseen128.ico"
 File "${LOCAL_AGENT_PATH}\res\drawable\install.jpg"
 File "${LOCAL_AGENT_PATH}\res\drawable\log.jpg"
 File "${LOCAL_AGENT_PATH}\res\drawable\MainWindowBackground.jpg"
@@ -162,6 +163,8 @@ File "${LOCAL_AGENT_PATH}\lib\v14.12.00b\alljoyn_java.dll"
 
 SetOutPath "$INSTDIR\lib\v15.04.00"
 File "${LOCAL_AGENT_PATH}\lib\v15.04.00\alljoyn_java.dll"
+SetOutPath "$INSTDIR\lib\v15.04.00a"
+File "${LOCAL_AGENT_PATH}\lib\v15.04.00a\alljoyn_java.dll"
 SectionEnd
 
 ######################################################################
@@ -214,16 +217,17 @@ ${INSTALL_TYPE}
 Delete "$INSTDIR\config.xml"
 Delete "$INSTDIR\icon.ico"
 Delete "$INSTDIR\CTT_Local_Agent.exe"
-Delete "$INSTDIR\TestCases\TestCases_Package_v14.06.00a.jar"
-Delete "$INSTDIR\TestCases\TestCases_Package_v14.12.00a.jar"
-Delete "$INSTDIR\TestCases\TestCases_Package_v14.12.00b.jar"
-Delete "$INSTDIR\TestCases\TestCases_Package_v15.04.00.jar"
+Delete "$INSTDIR\TestCases\TestCases_Package_v14.06.00a_R1.jar"
+Delete "$INSTDIR\TestCases\TestCases_Package_v14.12.00a_R1.jar"
+Delete "$INSTDIR\TestCases\TestCases_Package_v14.12.00b_R1.jar"
+Delete "$INSTDIR\TestCases\TestCases_Package_v15.04.00_R1.jar"
+Delete "$INSTDIR\TestCases\TestCases_Package_v15.04.00a_R1.jar"
 Delete "$INSTDIR\res\drawable\back.jpg"
 Delete "$INSTDIR\res\drawable\footer.jpg"
 Delete "$INSTDIR\res\drawable\header.jpg"
 Delete "$INSTDIR\res\drawable\ico_close.jpg"
 Delete "$INSTDIR\res\drawable\ico_stop.jpg"
-Delete "$INSTDIR\res\drawable\icon.ico"
+Delete "$INSTDIR\res\drawable\allseen128.ico"
 Delete "$INSTDIR\res\drawable\ic_AllSeen.png"
 Delete "$INSTDIR\res\drawable\ico_login.png"
 Delete "$INSTDIR\res\drawable\ico_next.png"
@@ -239,17 +243,13 @@ Delete "$INSTDIR\res\drawable\run_all.jpg"
 Delete "$INSTDIR\res\drawable\save.jpg"
 Delete "$INSTDIR\res\drawable\short_footer.jpg"
 Delete "$INSTDIR\lib\v14.12.00a\alljoyn_java.dll"
-#Delete "$INSTDIR\lib\v14.12.00a\alljoyn_java.exp"
-#Delete "$INSTDIR\lib\v14.12.00a\alljoyn_java.lib"
 Delete "$INSTDIR\lib\v14.12.00b\alljoyn_java.dll"
 Delete "$INSTDIR\lib\v15.04.00\alljoyn_java.dll"
-#Delete "$INSTDIR\lib\v14.12.00b\alljoyn_java.exp"
-#Delete "$INSTDIR\lib\v14.12.00b\alljoyn_java.lib"
+Delete "$INSTDIR\lib\v15.04.00a\alljoyn_java.dll"
 Delete "$INSTDIR\lib\v14.06.00a\alljoyn_java.dll"
-#Delete "$INSTDIR\lib\v14.06.00a\alljoyn_java.exp"
-#Delete "$INSTDIR\lib\v14.06.00a\alljoyn_java.lib" 
 RmDir "$INSTDIR\lib\v14.12.00a"
 RmDir "$INSTDIR\lib\v15.04.00"
+RmDir "$INSTDIR\lib\v15.04.00a"
 RmDir "$INSTDIR\lib\v14.12.00b"
 RmDir "$INSTDIR\lib\v14.06.00a"
 RmDir "$INSTDIR\lib\"
@@ -412,21 +412,35 @@ Section "MyApp" MyApp
  
 SetOutPath "$INSTDIR"
  
-;Check if we have redistributable installed
-Call  CheckRedistributableInstalled
+;Check if we have redistributable 2012 installed
+Call  CheckRedistributable2012Installed
 Pop $R0
  
 ${If} $R0 == "Error"
-  File "${MSVS_DIR}\vcredist_x64.exe" 	
+  File "${MSVS2012_DIR}\vcredist_x64.exe" 	
   ExecWait '"$INSTDIR\vcredist_x64.exe"  /passive /norestart'	
 ${EndIf}
+
+
+;Check if we have redistributable 2012 installed
+Call  CheckRedistributable2013Installed
+Pop $R0
+ 
+${If} $R0 == "Error"
+  File "${MSVS2013_DIR}\vcredist_x64.exe" 	
+  ExecWait '"$INSTDIR\vcredist_x64.exe"  /passive /norestart'	
+${EndIf}
+
+
+
+
  
 ;do other stuff
  
 SectionEnd
 
  
-Function CheckRedistributableInstalled
+Function CheckRedistributable2012Installed
  
   ;{F0C3E5D1-1ADE-321E-8167-68EF0DE699A5} - msvs2010 sp1
   ;{CF2BEA3C-26EA-32F8-AA9B-331F7E34BA97} - msvs2012 sp1    HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{CF2BEA3C-26EA-32F8-AA9B-331F7E34BA97}
@@ -448,7 +462,26 @@ Function CheckRedistributableInstalled
     Exch $R0 
 FunctionEnd
 
-
+Function CheckRedistributable2013Installed
+ 
+   ;{A749D8E6-B613-3BE3-8F5F-045C84EBA29B}- msvs2013 sp1   minimum runtime
+   
+  Push $R0
+  ClearErrors
+   
+  ;try to read Version subkey to R0
+  ReadRegDword $R0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{A749D8E6-B613-3BE3-8F5F-045C84EBA29B}" "Version"
+ 
+  ;was there error or not?
+  IfErrors 0 NoErrors
+   
+  ;error occured, copy "Error" to R0
+  StrCpy $R0 "Error"
+ 
+  NoErrors:
+  
+    Exch $R0 
+FunctionEnd
 
 
 

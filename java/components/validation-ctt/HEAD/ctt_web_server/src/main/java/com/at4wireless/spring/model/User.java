@@ -13,7 +13,6 @@
  *      ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  *      OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *******************************************************************************/
-
 package com.at4wireless.spring.model;
 
 import javax.persistence.Column;
@@ -41,6 +40,9 @@ public class User {
 	
 	@Transient
 	private String role;
+	
+	@Column(name="aes_cipher_key")
+	private String aesSecretKey;
 	
 	@AssertTrue(message="Repeat password field should be equal than password field")
 	private boolean isValid() {
@@ -79,5 +81,11 @@ public class User {
 	}
 	public void setRole(String role) {
 		this.role = role;
+	}
+	public String getAesSecretKey() {
+		return aesSecretKey;
+	}
+	public void setAesSecretKey(String aesSecretKey) {
+		this.aesSecretKey = aesSecretKey;
 	}
 }

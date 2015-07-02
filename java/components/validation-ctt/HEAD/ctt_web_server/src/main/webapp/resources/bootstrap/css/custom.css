@@ -1,10 +1,5 @@
 @CHARSET "UTF-8";
 
-/*.page-header
-{
-	color: #008882;
-}*/
-
 html,
 body{
 	height: 100%;
@@ -18,33 +13,41 @@ body > .container {
 	color: #D43D1A;
 }
 
-.table-hover {
-	table-layout: fixed;
-	word-break: break-word;
-	-ms-word-break: break-all;
+.pagination>.active>a, 
+.pagination>.active>a:focus, 
+.pagination>.active>a:hover, 
+.pagination>.active>span, 
+.pagination>.active>span:focus, 
+.pagination>.active>span:hover {
+	background-color: #008882;
+	border-color: #005973;
 }
 
-@-moz-document url-prefix() {
-	.table-hover {
-		table-layout: fixed;
-		word-break: break-all;
-		word-wrap: break-word;
-	}
+.pagination > li > a, 
+.pagination > li > span {
+	color: #008882;
 }
 
-.scroll-thead {
-	display: block;
+.dataTable th,
+ .dataTable td {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
-.scroll-tr {
-	width: 100%;
-	display: inline-table;
+table.dataTable thead > tr > th {
+  padding-left: 9px;
+  padding-right: 30px;
 }
 
-.scroll-tbody {
-	display: block;
-	max-height: 500px;
-	overflow-y: auto;
+.dataTable td {
+	max-width: 170px;
+	min-width: 0px;
+}
+
+.dataTable td.control, .dataTable th.control {
+	max-width: 10px;
+	min-width: 10px;
 }
 
 a[disabled] {
@@ -67,27 +70,27 @@ a[disabled] {
 
 .img-responsive 
 {
-	margin-top: 10px;
+	margin-top: 35px;
 }
 
-.table-hover thead
+/*.table-hover thead
 {
 	background-color: #008882;
 	color: #FFFFFF;
 	font-weight: normal; 
-}
+}*/
 
 .nav-tabs>li.active>a, 
 .nav-tabs>li.active>a:focus, 
 .nav-tabs>li.active>a:hover {
-	background-color: #008882;
-	color: #FFFFFF;
-	font-weight: bold;
+	/*background-color: #008882;*/
+	color: #008882;
+	/*font-weight: bold;*/
 }
 
 
 .nav-tabs > li > a {
-	color: #000000;
+	color: #333;
 }
 
 .table-hover tbody tr:hover td
@@ -121,6 +124,7 @@ a[disabled] {
 
 .btn-custom {
   	background-color: #008882;
+  	border-color: #005973;
   	color: #FFFFFF;
 }
 
@@ -145,4 +149,19 @@ fieldset[disabled] .btn-custom:active,
 fieldset[disabled] .btn-custom.active {
   	background-color: #008882;
   	color: #FFFFFF;
+}
+
+.panel-heading a {
+	cursor: pointer;
+}
+
+.panel-heading a:after {
+    font-family:'Glyphicons Halflings';
+    content:"\e114";
+    float: right;
+    color: grey;
+}
+
+.panel-heading a.collapsed:after {
+    content:"\e080";
 }

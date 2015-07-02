@@ -55,4 +55,6 @@ public interface TcDAO {
 	 * @return				list of allowed testcases
 	 */
 	public List<TestCase> getServiceWithRestriction(String type, int idService, List<Integer> intList);
+	
+	public void assignTestCasesToCertificationRelease(int certificationReleaseId);
 }

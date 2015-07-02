@@ -4,12 +4,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import javax.net.ssl.HostnameVerifier;
+import javax.xml.bind.DatatypeConverter;
 
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.jasig.cas.client.authentication.AttributePrincipalImpl;
@@ -145,6 +147,18 @@ public class CustomCas20ServiceTicketValidator implements TicketValidator {
 			} else if(attributes.get("drupal_roles").equalsIgnoreCase("asa-testtool-admin")) {
 				role = "ROLE_ADMIN";
 			}
+			
+			/*if (!userService.hasCipherKey(principal)) {
+				try {
+					FileEncryption fE = new FileEncryption();
+					fE.makeKeys();
+					userService.setCipherKey(principal, 
+							DatatypeConverter.printBase64Binary(fE.getAesSecretKey().getEncoded()));
+				} catch (GeneralSecurityException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}*/
 			userService.update(principal,role);
 		} else {
 			User u = new User();
@@ -156,6 +170,15 @@ public class CustomCas20ServiceTicketValidator implements TicketValidator {
 			} else if(attributes.get("drupal_roles").equalsIgnoreCase("asa-testtool-admin")) {
 				u.setRole("ROLE_ADMIN");
 			}
+			
+			try {
+				FileEncryption fE = new FileEncryption();
+				fE.makeKeys();
+				u.setAesSecretKey(DatatypeConverter.printBase64Binary(fE.getAesSecretKey().getEncoded()));
+			} catch (GeneralSecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			userService.addUser(u);
 		}
 
@@ -163,23 +186,14 @@ public class CustomCas20ServiceTicketValidator implements TicketValidator {
 			AttributePrincipal attributePrincipal = new AttributePrincipalImpl(principal, attributes, proxyGrantingTicket, this.proxyRetriever);
 			assertion = new AssertionImpl(attributePrincipal);
 		} else {
-
-
-			//logger.debug(" *** The  Attributes from extractCustomAttributes() is:"+attributes+"  before set in AssertionImpl");
 			assertion = new AssertionImpl(new AttributePrincipalImpl(principal, attributes));
 		}
-		//customParseResponse(response, assertion);
 		return assertion;
 	}
 
 
 	private String retrieveResponseFromServer(URL validationUrl, String ticket)
 	{
-
-		//logger.debug(" ### In retrieveResponseFromServer() method ### ");
-
-		//logger.debug(" ### The HostnameVerifier is:"+this.hostnameVerifier);
-
 		if (this.hostnameVerifier != null) {
 			return CommonUtils.getResponseFromServer(validationUrl);
 		}
@@ -190,10 +204,9 @@ public class CustomCas20ServiceTicketValidator implements TicketValidator {
 		if (url == null) {
 			return null;
 		}
-		try
-		{
+		try {
 			return URLEncoder.encode(url, "UTF-8"); } catch (UnsupportedEncodingException e) {
-			}
+		}
 		return url;
 	}
 

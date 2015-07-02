@@ -13,7 +13,7 @@
   <stayAlive>true</stayAlive>
   <restartOnCrash>false</restartOnCrash>
   <manifest></manifest>
-  <icon>C:\Users\at4wireless\Desktop\TestToolLocalAgent\res\drawable\ic_AllSeen.ico</icon>
+  <icon>C:\Users\at4wireless\Desktop\TestToolLocalAgent\res\drawable\allseen128.ico</icon>
   <classPath>
     <mainClass>com.at4wireless.alljoyn.localagent.MainWindow</mainClass>
     <cp>.</cp>

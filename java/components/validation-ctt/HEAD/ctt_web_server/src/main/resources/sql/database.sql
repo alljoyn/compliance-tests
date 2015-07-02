@@ -1561,7 +1561,7 @@ INSERT INTO tccl_testcase (id_tccl,type,enable,id_test) VALUES (2,'A',1,224);
 INSERT INTO tccl_testcase (id_tccl,type,enable,id_test) VALUES (2,'A',1,225);
 INSERT INTO tccl_testcase (id_tccl,type,enable,id_test) VALUES (2,'A',1,226);
 
-INSERT INTO certrel (id_certrel,name,enabled) VALUES (3,'v14.12.00b',1);
+INSERT INTO certrel (id_certrel,name,enabled) VALUES (3,'v14.12.00a',1);
 INSERT INTO certrel (id_certrel,name,enabled) VALUES (4,'v15.04.00',1);
 
 INSERT INTO testcases_certrel (id_test,id_certrel) VALUES (1,3);
@@ -2011,8 +2011,9 @@ INSERT INTO testcases_certrel (id_test,id_certrel) VALUES (224,4);
 INSERT INTO testcases_certrel (id_test,id_certrel) VALUES (225,4);
 INSERT INTO testcases_certrel (id_test,id_certrel) VALUES (226,4);
 
+
 INSERT INTO tccl (id_tccl,name,created_date,modified_date,id_certrel,num_tc) VALUES (3,'TCCL_14.12.00b_v0.1',{ts '2015-05-15 13:35:47.'},{ts '2015-05-15 13:40:24.'},3,223);
-INSERT INTO tccl (id_tccl,name,created_date,modified_date,id_certrel,num_tc) VALUES (4,'TCCL_15.04.00_v0.1',{ts '2015-05-15 13:39:32.'},{ts '2015-05-15 13:39:32.'},4,223);
+INSERT INTO tccl (id_tccl,name,created_date,modified_date,id_certrel,num_tc) VALUES (2,'TCCL_15.04.00_v0.1',{ts '2015-05-15 13:39:32.'},{ts '2015-05-15 13:39:32.'},4,223);
 
 INSERT INTO tccl_testcase (id_tccl,type,enable,id_test) VALUES (3,'A',1,1);
 INSERT INTO tccl_testcase (id_tccl,type,enable,id_test) VALUES (3,'A',1,2);

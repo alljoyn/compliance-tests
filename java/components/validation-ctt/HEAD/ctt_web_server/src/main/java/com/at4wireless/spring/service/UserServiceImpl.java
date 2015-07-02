@@ -16,14 +16,24 @@
 
 package com.at4wireless.spring.service;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.security.KeyFactory;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.spec.X509EncodedKeySpec;
+
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.at4wireless.security.FileEncryption;
 import com.at4wireless.spring.dao.UserDAO;
 import com.at4wireless.spring.model.User;
 
@@ -96,4 +106,47 @@ public class UserServiceImpl implements UserService {
 		return pass;
 	}
 
+	@Override
+	@Transactional
+	public String keyExchange(String user, String localKey) {
+		FileEncryption fE;
+		String encryptedKey = "";
+		try {
+			fE = new FileEncryption();
+			KeyFactory kF = KeyFactory.getInstance("RSA");
+			X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(DatatypeConverter.parseBase64Binary(localKey));
+			PublicKey pK = kF.generatePublic(publicKeySpec);
+			fE.setRsaPublicKey(pK);
+			byte[] encodedKey = DatatypeConverter.parseBase64Binary(userDao.getAesCipherKey(user));
+			SecretKey originalKey = new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES");
+			fE.setAesSecretKey(originalKey);
+			encryptedKey = DatatypeConverter.printBase64Binary(fE.encryptAESwithRSA());
+		} catch (GeneralSecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return encryptedKey;
+	}
+
+	@Override
+	@Transactional
+	public SecretKey getAesSecretKey(String user) {
+		byte[] encodedKey = DatatypeConverter.parseBase64Binary(userDao.getAesCipherKey(user));
+		return new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES");
+	}
+
+	@Override
+	@Transactional
+	public boolean hasCipherKey(String user) {
+		return (userDao.getAesCipherKey(user) != null);
+	}
+
+	@Override
+	@Transactional
+	public void setCipherKey(String user, String aesSecretKey) {
+		userDao.setAesCipherKey(user, aesSecretKey);
+	}
 }

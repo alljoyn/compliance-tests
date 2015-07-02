@@ -38,9 +38,17 @@ public interface CertificationReleaseDAO {
 	public String getName(int id);
 	
 	/**
-	 * Retrieves from database all available testcases in a certification release
-	 * @param 	idCertRel	if of the CR whose testcases are going to be returned
-	 * @return				list of testcases
+	 * Retrieves from database all available test cases in a certification release
+	 * @param 	idCertRel	if of the CR whose test cases are going to be returned
+	 * @return				list of test cases
 	 */
 	public List<Integer> getIds(int idCertRel);
+	
+	public boolean certificationReleaseExists(String certificationRelease);
+	public int addCertificationRelease(CertificationRelease certificationRelease);
+	public List<CertificationRelease> listReleaseVersions();
+	public boolean isReleaseVersion(String certificationRelease);
+	public void fromDebugToRelease(String certificationRelease);
+	public String getCertificationReleaseDescription(String certificationRelease);
+	public void updateDescription(String certificationRelease, String description);
 }

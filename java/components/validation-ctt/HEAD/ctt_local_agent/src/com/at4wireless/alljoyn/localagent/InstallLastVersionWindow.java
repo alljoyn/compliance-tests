@@ -1,29 +1,33 @@
-/*
- * Copyright AllSeen Alliance. All rights reserved.
+/*******************************************************************************
+ *  Copyright AllSeen Alliance. All rights reserved.
  *
- *    Permission to use, copy, modify, and/or distribute this software for any
- *    purpose with or without fee is hereby granted, provided that the above
- *    copyright notice and this permission notice appear in all copies.
+ *     Permission to use, copy, modify, and/or distribute this software for any
+ *     purpose with or without fee is hereby granted, provided that the above
+ *     copyright notice and this permission notice appear in all copies.
  *
- *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
- *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
- *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
- *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
- *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
- *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
- *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
+ *     THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *     WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *     MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *     ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *     WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *     ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *******************************************************************************/
 package com.at4wireless.alljoyn.localagent;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -38,6 +42,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
@@ -51,283 +56,278 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-
-/**
- * The Class InstallLastVersionWindow.
- */
-public class InstallLastVersionWindow extends JDialog {
-	/**
-	 * 
-	 */
+public class InstallLastVersionWindow extends JDialog
+{
 	private static final long serialVersionUID = 7573195888353975145L;
-	
-	/** The content panel. */
 	private final JPanel contentPanel = new JPanel();
-	
-	/** The version. */
-	String version=null;
-	
-	/** The token obtained when authenticated. */
-	String token="";
-	
-	/** The main window. */
+	String token = "";
 	MainWindow mainWindow;
-	/**
-	 * Create the dialog.
-	 * @param version 
-	 * @param version 
-	 */ 
-	public InstallLastVersionWindow(final MainWindow mainWindow,String token, String version) {
-		this.version=version;
-		this.mainWindow=mainWindow;		
-		this.token=token;
+	private JLabel downloadingLabel;
+	Logger logger;
+	
+	private static final int INSTALL_LAST_VERSION_PANEL_HEIGHT = 300;
+	private static final int INSTALL_LAST_VERSION_PANEL_WIDTH = 650;
+	private final static String RESOURCES_PATH = "res"+File.separator+"drawable";
+	private final static String INSTALL_BUTTON = "install.jpg";
+	private final static String BACK_BUTTON = "back.jpg";
+	private final static String SHORT_FOOTER = "short_footer.jpg";
+	
+	public InstallLastVersionWindow(final MainWindow mainWindow, String token, 
+			String version, String newestVersion, Level logLevel)
+	{	
+		this.logger = Logger.getLogger(this.getClass().getName());
+		this.logger.setLevel(logLevel);
 		
-		int width=650;
-		int height=300;
-		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-		setBounds(dim.width/2-width/2,
-				dim.height/2-height/2,
-				width,
-				height);
+		this.mainWindow = mainWindow;		
+		this.token = token;
 		
-		
+		Dimension screenDimensions = Toolkit.getDefaultToolkit().getScreenSize();
+		setBounds(screenDimensions.width/2 - INSTALL_LAST_VERSION_PANEL_WIDTH/2,
+				screenDimensions.height/2 - INSTALL_LAST_VERSION_PANEL_HEIGHT/2,
+				INSTALL_LAST_VERSION_PANEL_WIDTH,
+				INSTALL_LAST_VERSION_PANEL_HEIGHT);
 		
 		setResizable(false);
 		setLayout(new GridLayout(0, 1, 0, 0));
 
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
+		addWindowListener(new WindowAdapter()
+		{
+			public void windowClosing(WindowEvent e)
+			{
 				dispose();
-
 				mainWindow.initialize();
-
 			}
 		});
 
-
-		
 		add(mainWindow.getHeaderPanel(), BorderLayout.NORTH);
-		
-		
-		
 		add(contentPanel, BorderLayout.CENTER);
 		JTextPane textPane = new JTextPane();
-		textPane.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		textPane.setFont(new Font("Arial", Font.PLAIN, 15));
 		textPane.setEditable(false);
 		
-		
-
-		String text="";
-		
-			text="You need to upgrade the Test Tool-Local Agent.\n -Version installed: "+version;
-		
+		String text = "You need to upgrade the CTT Local Agent."
+				+ "\nVersion installed: " + version
+				+ "\nNew version: " + newestVersion;
 		
 		textPane.setText(text);
 		contentPanel.add(textPane);
+
+		ImagePanel buttonPane = new ImagePanel(RESOURCES_PATH+File.separator+SHORT_FOOTER);
+		//buttonPane.setLayout(new FlowLayout(FlowLayout.CENTER));
+		buttonPane.setLayout(new GridBagLayout());
+		
+		JButton backButton = new JButton("");
+		Image img = null;
+		try
 		{
-		
-			ImagePanel buttonPane=new ImagePanel("res\\drawable\\short_footer.jpg");
-
-			buttonPane.setLayout(new FlowLayout(FlowLayout.CENTER));
-			
-			JButton backButton=new JButton("");
-		
-			 Image img = null;
-			try {
-				
-				img = ImageIO.read(new File("res\\drawable\\back.jpg"));
-			} catch (IOException e2) {
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
-			}
-			backButton.setIcon(new ImageIcon(img));
-			
-			
-			Dimension preferredSize=new Dimension(83,23);
-			backButton.setPreferredSize(preferredSize);
-			
-			backButton.addActionListener(new ActionListener(){
-				@Override
-				public void actionPerformed(ActionEvent arg0) {
-					
-					dispose();
-
-					mainWindow.initialize();
-					
-					return;
-
-				}});
-			JButton installButton=new JButton("");
-			
-			
-			 Image img2 = null;
-			try {
-				
-				img2 = ImageIO.read(new File("res\\drawable\\install.jpg"));
-			} catch (IOException e2) {
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
-			}
-			installButton.setIcon(new ImageIcon(img2));
-			
-			installButton.setPreferredSize(preferredSize);
-
-			
-			installButton.addActionListener(new ActionListener(){
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					installLastVersion();
-					dispose();
-					mainWindow.initialize();
-					
-					
-					
-				}
-			});
-			
-		
-
-			buttonPane.add(backButton);
-
-			buttonPane.add(installButton);
-			
-
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-
+			img = ImageIO.read(new File(RESOURCES_PATH+File.separator+BACK_BUTTON));
 		}
+		catch (IOException e2)
+		{
+			logger.error("Resource not found");
+			e2.printStackTrace();
+		}
+		backButton.setIcon(new ImageIcon(img));
+		
+		GridBagConstraints backConstraints = new GridBagConstraints();
+		//backConstraints.anchor = GridBagConstraints.NORTHEAST;
+		backConstraints.gridx = 0;
+		backConstraints.gridy = 0;
+		backConstraints.gridheight = 1;
+		backConstraints.gridwidth = 1;
+		backConstraints.anchor = GridBagConstraints.NORTHWEST;
+		backConstraints.fill = GridBagConstraints.NONE;
+		backConstraints.insets = new Insets(0, 0, 10, 0);
+		
+		Dimension preferredSize = new Dimension(83,23);
+		backButton.setPreferredSize(preferredSize);
+		
+		backButton.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0)
+			{
+				dispose();
+				mainWindow.initialize();
+				return;
+			}
+		});
+		
+		buttonPane.add(backButton, backConstraints);
+		
+		JButton installButton = new JButton("");
+		Image img2 = null;
+		try
+		{
+			img2 = ImageIO.read(new File(RESOURCES_PATH+File.separator+INSTALL_BUTTON));
+		}
+		catch (IOException e2)
+		{
+			logger.error("Resource not found");
+			e2.printStackTrace();
+		}
+		
+		installButton.setIcon(new ImageIcon(img2));
+		
+		GridBagConstraints installConstraints = new GridBagConstraints();
+		installConstraints.gridx = 1;
+		installConstraints.gridy = 0;
+		installConstraints.gridheight = 1;
+		installConstraints.gridwidth = 1;
+		installConstraints.anchor = GridBagConstraints.NORTHWEST;
+		installConstraints.fill = GridBagConstraints.NONE;
+		//installConstraints.anchor = GridBagConstraints.NORTH;
+		installConstraints.insets = new Insets(0, 10, 0, 0);
+		
+		installButton.setPreferredSize(preferredSize);
+		
+		installButton.addFocusListener(new FocusListener()
+		{
+			@Override
+			public void focusGained(FocusEvent arg0)
+			{
+				downloadingLabel.setText("Downloading...");
+			}
+
+			@Override
+			public void focusLost(FocusEvent arg0)
+			{
+				downloadingLabel.setText(" ");
+			}
+		});
+		
+		installButton.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				installLastVersion();
+				dispose();
+				mainWindow.initialize();	
+			}
+		});
+		
+		buttonPane.add(installButton, installConstraints);
+		
+		
+		downloadingLabel = new JLabel();
+		downloadingLabel.setText(" ");
+		downloadingLabel.setVisible(true);
+		GridBagConstraints downloadingConstraints = new GridBagConstraints();
+		//downloadingConstraints.gridheight = 1;
+		downloadingConstraints.gridwidth = GridBagConstraints.REMAINDER;
+		downloadingConstraints.gridx = 0;
+		downloadingConstraints.gridy = 1;
+		downloadingConstraints.anchor = GridBagConstraints.CENTER;
+		downloadingConstraints.insets = new Insets(0, 0, 0, 0);
+		buttonPane.add(downloadingLabel, downloadingConstraints);
+		
+		getContentPane().add(buttonPane, BorderLayout.SOUTH);
 	}
 	
-	/**
-	 * Install last version to the default download folder.
-	 */
-	protected void installLastVersion() {
-		
-		
+	protected void installLastVersion()
+	{
 		String path = (new File("")).getAbsolutePath();
-		JOptionPane.showMessageDialog(null, "The installation package is going to be downloaded in the following folder: \n"+path+"\\"
-				+ getConfigValue("DownloadPath").replace("/", "\\")
-				+ "\n Remember to right-click on the installation package icon and press \"Run as Administrator\"");
+		
+		String url = getConfigValue("TestToolWebAppUrl")+getConfigValue("getLastVersion");
+		
+		logger.debug(url);
 
-		String urlVersion=version.replaceAll("\\.", "_");
-		String url=getConfigValue("TestToolWebAppUrl")+
-				getConfigValue("getLastVersion");
-		System.out.println(url);
-		
-		
-		
-		try{
+		try
+		{
 			URI URI = new URI(url);
 			FileOutputStream fos = null;
 			HttpClient httpClient = HttpClientBuilder.create().build();
-
-
-
-
 			HttpGet postRequest = new HttpGet(URI);
+			HttpEntity entity = null;
+			BufferedHttpEntity buf = null;
 			
 			postRequest.addHeader("Authorization", "bearer "+token);
-			
-			
 			HttpResponse response = httpClient.execute(postRequest);
 			
-			HttpEntity entity = response.getEntity();
-			  System.out.println("OK");
-
-			  BufferedHttpEntity buf = new BufferedHttpEntity(entity);
-
-				
-					try{
-				
-				
-				fos = new FileOutputStream(getConfigValue("DownloadPath")+"CTT_Local_Agent_Installer.exe");
-				
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-				File dir=new File(getConfigValue("DownloadPath"));
-					if(dir.mkdirs()){
-						
-						fos = new FileOutputStream(getConfigValue("DownloadPath")+"CTT_Local_Agent_Installer.exe");
-
-						
-					}
-				
-				}
+			String filename = response.getFirstHeader("Content-disposition").getValue().split("=")[1];
+			entity = response.getEntity();
+			//entity = httpClient.execute(postRequest).getEntity();
+			//BufferedHttpEntity buf = new BufferedHttpEntity(entity);
+			buf = new BufferedHttpEntity(entity);
 			
-			buf.writeTo(fos);
-			}catch(IOException e1){
-				e1.printStackTrace();
-				JOptionPane.showMessageDialog(null, "Fail in the communication with the Test Tool Web Server"
-						);
-				} catch (URISyntaxException e) {
-					
-					e.printStackTrace();
+			try
+			{
+				fos = new FileOutputStream(path+File.separator+getConfigValue("DownloadPath")+filename);
+			}
+			catch (FileNotFoundException e)
+			{
+				e.printStackTrace();
+				File dir = new File(path+File.separator+getConfigValue("DownloadPath"));
+				if (dir.mkdirs())
+				{	
+					fos = new FileOutputStream(path+File.separator+getConfigValue("DownloadPath")+filename);
 				}
+			}
+			buf.writeTo(fos);
+		}
+		catch (IOException e1)
+		{
+			e1.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Fail in the communication with the Test Tool Web Server");
+		}
+		catch (URISyntaxException e)
+		{
+			logger.error("Malformed URL");
+		}
 		
-		
-	
-		
-		
+		JOptionPane.showMessageDialog(null, "CTT Local Agent has been successfully downloaded."
+				+ "\nProgram will be closed now to allow you to install the new version."
+				+ "\nInstaller location: "+ path + "\\" + getConfigValue("DownloadPath").replace("/", "\\")
+				+ "\nRemember to right-click on the installation package icon and press \"Run as Administrator\"");
 	}
 	
-	/**
-	 * Gets the configuration value from config.xml.
-	 *
-	 * @param key the key to obtain
-	 * @return the configuration value
-	 */
-	private static String getConfigValue(String key) {
-		String value="";
-		File test = new File("config.xml");
+	private String getConfigValue(String key)
+	{
+		File cfFile = new File("config.xml");
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = null;
-		try {
+		Document doc = null;
+		Element element = null;
+		
+		logger.debug("Retrieving: "+key);
+		try
+		{
 			dBuilder = dbFactory.newDocumentBuilder();
-		} catch (ParserConfigurationException e) {
-			
+			doc = dBuilder.parse(cfFile);
+			element = (Element) doc.getElementsByTagName("Configuration").item(0);
+		}
+		catch (ParserConfigurationException e)
+		{
+			logger.error("DB configuration problem");
 			e.printStackTrace();
 		}
-		Document conf=null;
-		try {
-			conf = dBuilder.parse(test);
-		} catch (SAXException | IOException e) {
-			
+		catch (SAXException e)
+		{
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		NodeList projects = conf.getElementsByTagName("Configuration");
-		Node node = projects.item(0);
-		Element element = (Element) node;
-		value=getValue(key, element);
-		System.out.println(value);
-		return value;
-	}
-
-
-	/**
-	 * Gets the value from the selected tag. 
-	 *
-	 * @param tag the tag
-	 * @param element the element
-	 * @return the value
-	 */
-	private static String getValue(String tag, Element element) {
-
-		NodeList nodes = element.getElementsByTagName(tag).item(0).getChildNodes();
-		Node node = (Node) nodes.item(0);
-		String value="";
-		try{
-			value=node.getNodeValue();
-		}catch(NullPointerException e){
-			value="";
+		catch (IOException e)
+		{
+			logger.error("Configuration file not found");
 		}
 		
-		return value;
+		return getValue(key, element);
 	}
 
+	private static String getValue(String tag, Element element)
+	{
+		NodeList nodes = element.getElementsByTagName(tag).item(0).getChildNodes();
+		Node node = (Node) nodes.item(0);
+		return node.getNodeValue();
+	}
 }

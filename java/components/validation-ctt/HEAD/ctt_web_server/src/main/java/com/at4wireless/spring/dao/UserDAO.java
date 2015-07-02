@@ -51,4 +51,14 @@ public interface UserDAO {
 	 * @param 	key		API key
 	 */
 	public void setKey(String name, String key);
+	
+	/**
+	 * Retrieves stored key that is used to cipher logs
+	 * 
+	 * @param 	user	user whose key is retrieved
+	 * @return			cipher key
+	 */
+	public String getAesCipherKey(String user);
+	
+	public void setAesCipherKey(String user, String aesCipherKey);
 }

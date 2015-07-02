@@ -36,4 +36,16 @@ public class CertificationReleaseServiceImpl implements CertificationReleaseServ
 	public List<CertificationRelease> list() {
 		return certRelDao.list();
 	}
+
+	@Override
+	@Transactional
+	public List<CertificationRelease> listReleaseVersions() {
+		return certRelDao.listReleaseVersions();
+	}
+
+	@Override
+	@Transactional
+	public String getCertificationReleaseDescription(String certificationRelease) {
+		return certRelDao.getCertificationReleaseDescription(certificationRelease);
+	}
 }

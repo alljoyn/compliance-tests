@@ -36,6 +36,12 @@ public class CertificationRelease {
 	@Column(name="enabled")
 	private boolean enabled;
 	
+	@Column(name="isRelease")
+	private boolean release;
+	
+	@Column(name="description")
+	private String description;
+	
 	public int getIdCertrel() {
 		return idCertrel;
 	}
@@ -54,4 +60,18 @@ public class CertificationRelease {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
+	public boolean isRelease() {
+		return release;
+	}
+	public void setRelease(boolean release) {
+		this.release = release;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
+	
 }

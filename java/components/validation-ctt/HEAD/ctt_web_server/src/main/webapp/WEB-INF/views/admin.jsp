@@ -6,24 +6,9 @@
 
 <html lang="en">
     <head>
-    	<title>AllSeen</title>
-    	<meta charset="utf-8">
-    	
-    	<!-- Add the next line to ensure proper rendering and touch zooming -->
-    	<meta name="viewport" content="width=device-width, initial-scale=1">
-    	
-    	<meta name="_csrf" content="${_csrf.token}"/>
-		<meta name="_csrf_header" content="${_csrf.headerName}"/>
-        
-        <!-- Web icon -->
-        <link rel="shortcut icon" href="resources/img/favicon.ico" type="image/vnd.microsoft.icon" />
-        
-        <!-- Bootstrap -->
-		<link rel="stylesheet" type="text/css" href="resources/bootstrap/css/bootstrap.min.css"/>
-    	<link rel="stylesheet" type="text/css" href="resources/bootstrap/css/custom.css">
-    	
+		<jsp:include page="/WEB-INF/views/page_head.jsp"/>
     </head>
-    <body style="overflow-y: scroll;">
+    <body>
     
   		<!-- CSRT for logout -->
     	<c:url value="/j_spring_security_logout" var="logoutUrl" />
@@ -47,45 +32,136 @@
 				</c:if>
 		    </div>
 		    
-		    <!-- Tccls table -->
-	        <div class="row">
-	        	<div>       
-			       	<table id="table" class="table table-hover">
-			       		<thead>
-			       			<tr>
-					        	<th>TCCL Name</th>
-					        	<th>Created</th>
-					        	<th>Modified</th>
-					        	<th>Certification Release</th>
-					        </tr>
-					    </thead>
-			        	<tbody>
-							<c:forEach var="tccl" items="${tcclList}" varStatus="status">
-					        	<tr>
-					        		<td class="hide">${tccl.idTccl}</td>
-					        		<td>${tccl.name}</td>
-									<td><fmt:formatDate value="${tccl.createdDate}"
-										pattern="yyyy-MM-dd HH:mm:ss"/></td>
-									<td><fmt:formatDate value="${tccl.modifiedDate}"
-										pattern="yyyy-MM-dd HH:mm:ss"/></td>
-									<c:forEach var="certrel" items="${certrelList}" varStatus="status">
-										<c:if test="${certrel.idCertrel==tccl.idCertrel}">
-											<td>${certrel.name}</td>
-										</c:if>
+		    <!-- Test Cases Control List panel -->
+		    <div class="row" align="left">
+				<div class="panel panel-default">
+		        	<div class="panel-heading">
+		        		<h4 class="panel-title">
+		        			<a data-toggle="collapse" data-target="#collapseTccl">Test Cases Control List</a>
+		        		</h4>
+		        	</div>
+		        	<div id="collapseTccl" class="panel-collapse collapse in">
+						<div class="panel-body">      
+					       	<table id="table" class="table table-hover">
+					       		<thead>
+					       			<tr>
+					       				<th>TCCL ID</th>
+							        	<th width="25%">TCCL Name</th>
+							        	<th width="25%">Created</th>
+							        	<th width="25%">Modified</th>
+							        	<th width="25%">Certification Release</th>
+							        </tr>
+							    </thead>
+					        	<tbody>
+									<c:forEach var="tccl" items="${tcclList}" varStatus="status">
+							        	<tr>
+							        		<td>${tccl.idTccl}</td>
+							        		<td width="25%">${tccl.name}</td>
+											<td width="25%"><fmt:formatDate value="${tccl.createdDate}"
+												pattern="yyyy-MM-dd HH:mm:ss"/></td>
+											<td width="25%"><fmt:formatDate value="${tccl.modifiedDate}"
+												pattern="yyyy-MM-dd HH:mm:ss"/></td>
+											<c:forEach var="certrel" items="${certrelList}" varStatus="status">
+												<c:if test="${certrel.idCertrel==tccl.idCertrel}">
+													<td width="25%">${certrel.name}</td>
+												</c:if>
+											</c:forEach>
+										</tr>
 									</c:forEach>
-								</tr>
-							</c:forEach>
-						</tbody>        	
-			       	</table>
-			    </div>
-		     </div>
+								</tbody>        	
+					       	</table>
+					       	<!-- Action buttons -->
+							<div align="left">
+					        	<button id="newTcclButton" class="btn btn-default btn-lg" data-toggle="modal" data-target="#newTcclModal">New TCCL</button>
+					        	<button id="viewButton" disabled class="btn btn-default btn-lg disabled" data-toggle="modal" data-target="#viewTcclModal">View TCCL</button>
+					        	<button id="editButton" disabled class="btn btn-default btn-lg disabled" data-toggle="modal" data-target="#editTcclModal">Edit TCCL</button>
+					        	<button id="deleteButton" disabled class="btn btn-default btn-lg disabled" data-toggle="modal" data-target="#delTcclModal">Delete TCCL</button>
+					        </div>
+					    </div>
+				    </div>
+				</div>
+			</div>
 		
-			<!-- Action buttons -->
-			<div class="row" align="left">
-	        	<button class="btn btn-default btn-lg" data-toggle="modal" data-target="#newTcclModal">New TCCL</button>
-	        	<button id="viewButton" disabled class="btn btn-default btn-lg disabled" data-toggle="modal" data-target="#viewTcclModal">View TCCL</button>
-	        	<button id="editButton" disabled class="btn btn-default btn-lg disabled" data-toggle="modal" data-target="#editTcclModal">Edit TCCL</button>
-	        	<button id="deleteButton" disabled class="btn btn-default btn-lg disabled" data-toggle="modal" data-target="#delTcclModal">Delete TCCL</button>
+	        <!-- Test Cases Packages panel -->
+	        <div class="row" align="left">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+		        		<h4 class="panel-title">
+		        			<a data-toggle="collapse" class="collapsed" data-target="#collapseTCPackages">Test Cases Packages</a>
+		        		</h4>
+		        	</div>
+					<!-- <div class="panel-heading"><strong>Test Cases Packages panel</strong>  </div>  -->
+					<div id="collapseTCPackages" class="panel-collapse collapse">
+						<div class="panel-body">
+							<!-- Available packages -->
+							<div>
+								<h4>Available packages</h4>
+								<div class="list-group" id="tcPackages">
+								</div>
+							</div>
+							<!-- Standard Form -->
+							<h4>Select file from your computer <small> Uploading an already existing package will cause overriding</small></h4>
+							<form method="post" enctype="multipart/form-data" id="tcUploadForm">
+								<div class="form-inline">
+									<div class="form-group">
+										<input type="file" name="file" id="file" accept=".jar">
+									</div>
+									<button type="submit" disabled class="btn btn-sm btn-custom disabled" id="tcUploadSubmit">Upload file</button>
+								</div>
+								<div class="form-group">
+									<label for="tcDescription" class="control-label">Package description</label>
+									<input type="text" class="form-control" id="tcDescription" name="tcDescription">
+								</div>
+							</form>
+													
+							<!-- Upload Finished -->
+					        <div>
+					        	<h4>Processed files</h4>
+					        	<div class="list-group" id="tcUploadResults">
+					         	</div>
+				        </div>
+					</div>
+					</div>
+				</div>
+	        </div>
+	        
+	        <!-- Local Agent Installers panel -->
+	        <div class="row" align="left">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+		        		<h4 class="panel-title">
+		        			<a data-toggle="collapse" class="collapsed" data-target="#collapseLAInstallers">CTT Local Agent Installers</a>
+		        		</h4>
+		        	</div>
+					<!-- <div class="panel-heading"><strong>Local Agent Installers panel</strong>  </div>  -->
+					<div id="collapseLAInstallers" class="panel-collapse collapse">
+						<div class="panel-body">
+							<!-- Available packages -->
+							<div>
+								<h4>Available installers</h4>
+								<div class="list-group" id="laInstallers">
+								</div>
+							</div>
+							<!-- Standard Form -->
+							<h4>Select file from your computer <small> Uploading an already existing installer will cause overriding</small></h4>
+							<form method="post" enctype="multipart/form-data" id="laUploadForm">
+								<div class="form-inline">
+									<div class="form-group">
+										<input type="file" name="laFile" id="laFile" accept=".exe">
+									</div>
+									<button type="submit" disabled class="btn btn-sm btn-custom disabled" id="laUploadSubmit">Upload file</button>
+								</div>
+							</form>
+													
+							<!-- Upload Finished -->
+					        <div>
+					        	<h4>Processed files</h4>
+					        	<div class="list-group" id="laUploadResults">
+					         	</div>
+					        </div>
+						</div>
+					</div>
+				</div>
 	        </div>
         </div>
         
@@ -100,7 +176,7 @@
 	        					<div class="form-group">
 	        						<label path="idCertrel" for="tccl-certrel" class="control-label">Certification Release</label>
 	        						<form:select path="idCertrel" class="form-control" id="tccl-certrel">
-	        							<c:forEach var="certrel" items="${certrelList}" varStatus="status">
+	        							<!--<c:forEach var="certrel" items="${certrelList}" varStatus="status">
 											<c:choose>
 												<c:when test="${not status.last}">
 													<option value="${certrel.idCertrel}">${certrel.name}</option>
@@ -109,7 +185,7 @@
 													<option value="${certrel.idCertrel}" selected>${certrel.name}</option>
 												</c:otherwise>
 											</c:choose>
-										</c:forEach>
+										</c:forEach> -->
 	        						</form:select>
 	        					</div>			
 	        				</form:form>
@@ -128,14 +204,19 @@
 	        		<div class="modal-content">
 	        			<div class="modal-body">
 	        				<table id="tcTable" class="table table-hover">
-	        					<thead class="scroll-thead">
-	        						<tr class="scroll-tr">
-	        							<th width="20%">Test Case</th>
+	        					<!-- <thead class="scroll-thead">
+	        						<tr class="scroll-tr">  -->
+	        					<thead>
+	        						<tr>
+	        							<th class="hide">Test Case ID</th>
+	        							<th width="25%">Test Case</th>
 	        							<th width="60%">Test Case Description</th>
 	        							<th width="10%">Type</th>
 	        							<th width="10%">Enable</th>
+	        						</tr>
 	        					</thead>
-	        					<tbody id="tcBody" class="scroll-tbody">
+	        					<!-- <tbody id="tcBody" class="scroll-tbody">  -->
+	        					<tbody id="tcBody">
 	        					</tbody>
 	        				</table>
 	        			</div>
@@ -153,14 +234,19 @@
 	        		<div class="modal-content">
 	        			<div class="modal-body">
 	        				<table id="viewTcTable" class="table table-hover">
-	        					<thead class="scroll-thead">
-	        						<tr class="scroll-tr">
+	        					<!-- <thead class="scroll-thead">
+	        						<tr class="scroll-tr">  -->
+	        					<thead>
+	        						<tr>
+	        							<th class="hide">Test Case ID</th>
 	        							<th width="20%">Test Case</th>
 	        							<th width="60%">Test Case Description</th>
 	        							<th width="10%">Type</th>
 	        							<th width="10%">Enable</th>
+	        						</tr>
 	        					</thead>
-	        					<tbody id="viewTcBody" class="scroll-tbody">
+	        					<!-- <tbody id="viewTcBody" class="scroll-tbody">  -->
+	        					<tbody id="viewTcBody">
 	        					</tbody>
 	        				</table>
 	        			</div>
@@ -177,14 +263,19 @@
 	        		<div class="modal-content">
 	        			<div class="modal-body">
 	        				<table id="editTcTable" class="table table-hover">
-	        					<thead class="scroll-thead">
-	        						<tr class="scroll-tr">
+	        					<!-- <thead class="scroll-thead">
+	        						<tr class="scroll-tr">  -->
+	        					<thead>
+	        						<tr>
+	        							<th class="hide">Test Case ID</th>
 	        							<th width="20%">Test Case</th>
 	        							<th width="60%">Test Case Description</th>
 	        							<th width="10%">Type</th>
 	        							<th width="10%">Enable</th>
+	        						</tr>
 	        					</thead>
-	        					<tbody id="editTcBody" class="scroll-tbody">
+	        					<!-- <tbody id="editTcBody" class="scroll-tbody">  -->
+	        					<tbody id="editTcBody">
 	        					</tbody>
 	        				</table>
 	        			</div>
@@ -212,10 +303,28 @@
 	        </div>
         </div>
         
+        <!-- Processing... modal -->
+        <div class="modal" tabindex="-1" role="dialog" aria-hidden="true" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false">
+			<div class="modal-dialog">
+		        <div class="modal-content">
+		        	<div class="modal-header">
+		        		<h1>Uploading...</h1>
+		        	</div>
+		        	<div class="modal-body">
+		        		<div class="progress progress-striped active">
+			        			<div class="progress-bar" role="progressbar" aria-valuenow="100"
+									aria-valuemin="0" aria-valuemax="100" style="width:100%">
+		        				</div>
+			        	</div>
+		        	</div>
+		        </div>
+			</div>
+        </div>
+        
         <jsp:include page="/WEB-INF/views/footer.jsp"/>
         
-        <script src="resources/jquery/js/jquery-1.11.2.min.js"></script>
-		<script src="resources/bootstrap/js/bootstrap.min.js"></script>
+        <!-- <script src="resources/jquery-validation/1.13.1/js/jquery.validate.min.js"></script>
+		<script src="resources/jquery-validation/1.13.1/js/additional-methods.min.js"></script>  -->
 	
 		<!-- Logout form script -->
 		<script>
@@ -224,14 +333,84 @@
 			}
 		</script>
 		<script>
+			var table = null;
 			$(document).ready(function() {
-				$('#title').text("VIEW/EDIT/CREATE A TEST CASE CONTROL LIST (TCCL)");
+				$('#title').text("ADMINISTRATION TASKS");
 				
-				var w = $('#table').find('.scroll-tbody').find('.scroll-tr').first().width();
-				$('#table').find('.scroll-thead').find('.scroll-tr').width(w);
+				$('#table').dataTable({
+					scrollY: ($(window).height()/2),
+					columnDefs: [
+						{visible: false, searchable: false, targets: 0},
+					],
+					order: [0, 'asc']
+				});
+				
+				$.ajax({
+					cache: false,
+					type: 'GET',
+					url: 'admin/availablePackages',
+					success: function (data) {
+						$('#tcPackages').html('');
+						$.each(data, function(i, file) {
+							var split = file.split(": C");
+							$('#tcPackages').append('<a class=\"list-group-item\"><strong>'+split[0]+"</strong> <small>C"+split[1]+'</small></a>');
+						});
+					}
+				});
+				
+				$.ajax({
+					cache: false,
+					type: 'GET',
+					url: 'admin/availableInstallers',
+					success: function (data) {
+						$('#laInstallers').html('');
+						$.each(data, function(i, file) {
+							$('#laInstallers').append('<a class=\"list-group-item\">'+file+'</a>');
+						});
+					}
+				});
+				
+		        $('#file').on('change', function() {
+	                if ($(this).val()) {
+	                    $('#tcUploadSubmit').prop('disabled',false);
+	                    $('#tcUploadSubmit').removeClass('disabled');
+	                } else {
+	                	$('#tcUploadSubmit').prop('disabled',true);
+	                    $('#tcUploadSubmit').addClass('disabled');
+	                } 
+		        });
+		        
+		        $('#laFile').on('change', function() {
+	                if ($(this).val()) {
+	                    $('#laUploadSubmit').prop('disabled',false);
+	                    $('#laUploadSubmit').removeClass('disabled');
+	                } else {
+	                	$('#laUploadSubmit').prop('disabled',true);
+	                    $('#laUploadSubmit').addClass('disabled');
+	                } 
+		        });
+		        
+		        //$('#collapseTccl').collapse('hide');
 			});
 		</script>
-		<script>	
+		<script>
+			$('#newTcclButton').on('click', function() {
+				$.ajax({
+					cache: false,
+					type: 'GET',
+					url : 'admin/crVersions',
+					success : function (data) {
+						$('#tccl-certrel').empty();
+						$.each(data, function(i, cr) {
+							if (i != data.length -1) 
+								$('#tccl-certrel').append("<option value=\""+cr.idCertrel+"\">"+cr.name+"</option>");
+							else
+								$('#tccl-certrel').append("<option selected value=\""+cr.idCertrel+"\">"+cr.name+"</option>");
+						});
+					}
+				});
+			});
+			
 			$('#createContinue').on('click', function(){
 										
 				$.ajax({
@@ -252,10 +431,25 @@
 	
 						$('#tcBody').empty();
 						$.each(data, function(i, tc) {
-							$('#tcBody').append("<tr class=\"scroll-tr\"><td class=\"hide\">"+tc[0]+"</td><td width=\"20%\">"
+							$('#tcBody').append("<tr><td class=\"hide\">"+tc[0]+"</td><td width=\"20%\">"
 									+tc[1]+"</td><td width=\"60%\">"+tc[8]+selector
 									+"</td><td width=\"10%\" style=\"text-align: center\"><input class=\"is_checkbox\" type=\"checkbox\">");
 						});
+						
+						$('#testCasesModal').show();
+						
+						if(!$('#tcTable').hasClass("dataTable")) {
+							table = $('#tcTable').dataTable({
+								paging: false,
+								//searching: false,
+								"sDom": '<"top">rt<"bottom"flp><"clear">',
+								scrollY: ($(window).height()/2),
+								columnDefs: [        
+									{ orderable: false, targets: [3, 4]},
+								],
+								order: [0, 'asc']
+							});				
+						}
 						
 						$('#tcBody').find('.is_checkbox').prop('checked', true);
 						$('#tcBody').find('.is_checkbox').prop('disabled', true);
@@ -322,25 +516,42 @@
 				                    md.getMinutes().padLeft(),
 				                    md.getSeconds().padLeft()].join(':');
 						
-					    var row = "<tr><td class=\"hide\">"+tccl.idTccl+"</td>"
-		        			+"<td>"+tccl.name+"</td><td>"+cdFormat+"</td>"
-							+"<td>"+mdFormat+"</td>"
-							+"<td>"+tccl.nameCertrel+"</td></tr>";
+					    /*var row = '<td class=\"hide\">'+tccl.idTccl+'</td>'
+		        			+'<td>'+tccl.name+'</td><td>'+cdFormat+'</td>'
+							+'<td>'+mdFormat+'</td>'
+							+'<td>'+tccl.nameCertrel+'</td>';*/
 						
-					    $('#table').find('tbody').append(row);
+					    //$('#table').find('tbody').append(row);
 					    
-					    $("#table tbody tr").click(function(){
-						   	$(this).addClass('selected').siblings().removeClass('selected');    
-						   	var id=$(this).find('td:first').html();
+					    $('#table').DataTable().row.add([tccl.idTccl,tccl.name,cdFormat,mdFormat,tccl.nameCertrel]).draw();
+					    
+					    $("#table tbody tr:last").click(function(){
 						   	
-						   	sessionStorage.setItem("idTccl",id);
-
-							$('#viewButton').removeClass('disabled');
-							$('#viewButton').prop("disabled", false);
-							$('#deleteButton').removeClass('disabled');
-							$('#deleteButton').prop("disabled", false);
-							$('#editButton').removeClass('disabled');
-							$('#editButton').prop("disabled", false);
+							if($(this).hasClass("selected")) {
+								$(this).removeClass('selected');
+								sessionStorage.removeItem("idTccl");
+								
+								$('#viewButton').addClass('disabled');
+								$('#viewButton').prop("disabled", true);
+								$('#deleteButton').addClass('disabled');
+								$('#deleteButton').prop("disabled", true);
+								$('#editButton').addClass('disabled');
+								$('#editButton').prop("disabled", true);
+							} else { 
+								$(this).addClass('selected').siblings().removeClass('selected');    
+								var id = $('#table').DataTable().row(this).data()[0];
+								
+								//var id=$(this).find('td:first').html();
+							   	
+							   	sessionStorage.setItem("idTccl",id);
+				
+							   	$('#viewButton').removeClass('disabled');
+								$('#viewButton').prop("disabled", false);
+								$('#deleteButton').removeClass('disabled');
+								$('#deleteButton').prop("disabled", false);
+								$('#editButton').removeClass('disabled');
+								$('#editButton').prop("disabled", false);
+							}
 						});
 				   }
 				});
@@ -361,12 +572,16 @@
 							idTccl : sessionStorage.getItem("idTccl")
 						},
 						success: function () {
-							var MyRows = $('.table').find('tbody').find('tr');
+							var MyRows = $('#table').find('tbody').find('tr');
 							for (var i = 0; i < MyRows.length; i++) {
-								if(($(MyRows[i]).find('td:eq(0)').html())==sessionStorage.getItem("idTccl")) {
-									$(MyRows[i]).fadeOut(400, function() {
+								//if(($(MyRows[i]).find('td:eq(0)').html())==sessionStorage.getItem("idTccl")) {
+								if(($('#table').DataTable().row($(MyRows[i])).data()[0])==sessionStorage.getItem("idTccl")) {	
+									var table = $('#table').DataTable();
+									table.row($(MyRows[i])).remove().draw();
+									
+									/*$(MyRows[i]).fadeOut(400, function() {
 										$(MyRows[i]).remove();
-									});
+									});*/
 								}
 							}
 							
@@ -408,6 +623,21 @@
 							$('#editTcBody tr:last').find('.form-control').val(tc[3]);
 							$('#editTcBody tr:last').find('.is_checkbox').prop('checked',tc[4]);
 						});
+						
+						$('#editTcclModal').show();
+						
+						if(!$('#editTcTable').hasClass("dataTable")) {
+							table = $('#editTcTable').dataTable({
+								paging: false,
+								//searching: false,
+								"sDom": '<"top">rt<"bottom"flp><"clear">',
+								scrollY: ($(window).height()/2),
+								columnDefs: [        
+									{ orderable: false, targets: [3, 4]},
+								],
+								order: [0, 'asc']
+							});				
+						}
 						
 						$('#editTcBody').find('.is_checkbox').prop('disabled', true);
 						
@@ -463,8 +693,16 @@
 						
 						var MyRows = $('#table').find('tbody').find('tr');
 						for (var i = 0; i < MyRows.length; i++) {
-							if($(MyRows[i]).find('td:eq(0)').html()==tccl.idTccl) {
+							/*if($(MyRows[i]).find('td:eq(0)').html()==tccl.idTccl) {
 								$(MyRows[i]).find('td:eq(3)').html(mdFormat);
+							}*/
+							var data = $('#table').DataTable().row($(MyRows[i])).data();
+
+							if(data[0]==tccl.idTccl) {
+								/*$(MyRows[i]).find('td:eq(2)').html(mdFormat);
+								$('#table').dataTable().draw();*/
+								$('#table').dataTable().fnUpdate(mdFormat, $(MyRows[i]), 3);//.fnAdjustColumnSizing();
+								$('#table').dataTable().fnAdjustColumnSizing();
 							}
 						}
 				   }
@@ -491,27 +729,196 @@
 							$('#viewTcBody tr:last').find('.is_checkbox').prop('checked',tc[4]);
 						});
 						
+						$('#viewTcclModal').show();
+						
+						if(!$('#viewTcTable').hasClass("dataTable")) {
+							table = $('#viewTcTable').dataTable({
+								paging: false,
+								//searching: false,
+								"sDom": '<"top">rt<"bottom"flp><"clear">',
+								scrollY: ($(window).height()/2),
+								columnDefs: [        
+									{ orderable: false, targets: [3, 4]},
+								],
+								order: [0, 'asc']
+							});				
+						}
+						
 						$('#viewTcBody').find('.is_checkbox').prop('disabled', true);
 				   }
 				});
 			});
+			
+			function comprobarDT()
+			{
+				console.log(table);
+				
+			}
 		</script>
 		
 		<!-- Row selector script -->
 		<script>
 			$("#table tbody tr").click(function(){
-			   	$(this).addClass('selected').siblings().removeClass('selected');    
-			   	var id=$(this).find('td:first').html();
 			   	
-			   	sessionStorage.setItem("idTccl",id);
-
-			   	$('#viewButton').removeClass('disabled');
-				$('#viewButton').prop("disabled", false);
-				$('#deleteButton').removeClass('disabled');
-				$('#deleteButton').prop("disabled", false);
-				$('#editButton').removeClass('disabled');
-				$('#editButton').prop("disabled", false);
+				if($(this).hasClass("selected")) {
+					$(this).removeClass('selected');
+					sessionStorage.removeItem("idTccl");
+					
+					$('#viewButton').addClass('disabled');
+					$('#viewButton').prop("disabled", true);
+					$('#deleteButton').addClass('disabled');
+					$('#deleteButton').prop("disabled", true);
+					$('#editButton').addClass('disabled');
+					$('#editButton').prop("disabled", true);
+				} else { 
+					$(this).addClass('selected').siblings().removeClass('selected');    
+					var id = $('#table').DataTable().row(this).data()[0];
+					
+					//var id=$(this).find('td:first').html();
+				   	
+				   	sessionStorage.setItem("idTccl",id);
+	
+				   	$('#viewButton').removeClass('disabled');
+					$('#viewButton').prop("disabled", false);
+					$('#deleteButton').removeClass('disabled');
+					$('#deleteButton').prop("disabled", false);
+					$('#editButton').removeClass('disabled');
+					$('#editButton').prop("disabled", false);
+				}
 			});
+		</script>
+		
+		<script>
+			$('#tcUploadSubmit').on('click', function(e) {
+				e.preventDefault();
+				
+				//if($('#tcUploadForm').valid()) {
+				
+					$("#pleaseWaitDialog").modal('show');
+					
+					var oMyForm = new FormData();
+					oMyForm.append("file", $('#file')[0].files[0]);
+					oMyForm.append("description", $('#tcDescription').val());
+					
+					var token = $("meta[name='_csrf']").attr("content");
+					var header = $("meta[name='_csrf_header']").attr("content");
+					
+					$.ajax({
+						url: 'admin/uploadTCP',
+						beforeSend: function(xhr) {
+				            xhr.setRequestHeader(header, token);
+				        },
+						data: oMyForm,
+						dataType: "json",
+						processData: false,
+						contentType: false,
+						type: 'POST',
+						success: function(data) {
+	
+							$("#pleaseWaitDialog").modal('hide');
+							if (data.result=="Success") {
+								$('#tcUploadResults').append('<a class=\"list-group-item list-group-item-success\"><span class=\"badge alert-success pull-right\">Success</span>'+data.message+'</a>');
+								
+								$.ajax({
+									cache: false,
+									type: 'GET',
+									url: 'admin/availablePackages',
+									success: function (data) {
+										$('#tcPackages').html('');
+										$.each(data, function(i, file) {
+											var split = file.split(": C");
+											$('#tcPackages').append('<a class=\"list-group-item\"><strong>'+split[0]+"</strong> <small>C"+split[1]+'</small></a>');
+										});
+									}
+								});
+							} else {
+								$('#tcUploadResults').append('<a class=\"list-group-item list-group-item-danger\"><span class=\"badge alert-danger pull-right\">Fail</span>'+data.message+'</a>');
+							}
+							$('#file').val('');
+							$('#tcUploadSubmit').prop('disabled',true);
+		                    $('#tcUploadSubmit').addClass('disabled');
+						}
+					});
+				//}
+			});
+			
+			$('#laUploadSubmit').on('click', function(e) {
+				e.preventDefault();
+				
+				$("#pleaseWaitDialog").modal('show');
+				
+				var oMyForm = new FormData();
+				oMyForm.append("file", $('#laFile')[0].files[0]);
+				
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");
+				
+				$.ajax({
+					url: 'admin/uploadLA',
+					beforeSend: function(xhr) {
+			            xhr.setRequestHeader(header, token);
+			        },
+					data: oMyForm,
+					dataType: "json",
+					processData: false,
+					contentType: false,
+					type: 'POST',
+					success: function(data) {
+
+						if (data.result=="Success") {
+							$('#laUploadResults').append('<a class=\"list-group-item list-group-item-success\"><span class=\"badge alert-success pull-right\">Success</span>'+data.message+'</a>');
+							
+							$.ajax({
+								cache: false,
+								type: 'GET',
+								url: 'admin/availableInstallers',
+								success: function (data) {
+									
+									$("#pleaseWaitDialog").modal('hide');
+									$('#laInstallers').html('');
+									$.each(data, function(i, file) {
+										$('#laInstallers').append('<a class=\"list-group-item\">'+file+'</a>');
+									});
+								}
+							});
+						} else {
+							$('#laUploadResults').append('<a class=\"list-group-item list-group-item-danger\"><span class=\"badge alert-danger pull-right\">Fail</span>'+data.message+'</a>');
+						}
+						$('#laFile').val('');
+						$('#laUploadSubmit').prop('disabled',true);
+	                    $('#laUploadSubmit').addClass('disabled');
+					}
+				});
+			});
+			
+			/*$('#collapseTccl').on('shown.bs.collapse', function() {
+				$('#table').dataTable().fnAdjustColumnSizing();
+			});*/
+		</script>
+		
+		<!-- Validation scripts -->
+		<script>
+			/*$('#tcUploadForm').validate({
+				rules: {
+					file: {
+						required: true,
+						accept: "*.jar"
+					},
+					tcDescription: {
+						required: true,
+						maxlength: 255,
+					}
+				},
+				messages: {
+					file: {
+						required: "Please select a file!",
+					},
+					tcDescription: {
+						required: "Please enter a description!",
+						maxlength: "Description must have a max of 255 characters!"
+					}
+				}
+			});*/
 		</script>
     </body>
 </html>

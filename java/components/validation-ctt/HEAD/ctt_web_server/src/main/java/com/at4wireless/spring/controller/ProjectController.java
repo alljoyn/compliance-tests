@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.at4wireless.spring.model.CertificationRelease;
 import com.at4wireless.spring.model.Project;
 import com.at4wireless.spring.model.Tccl;
 import com.at4wireless.spring.service.CertificationReleaseService;
@@ -249,5 +250,21 @@ public class ProjectController
 			pass = userService.setKey(auth.getName());
 		}
 		return pass;
+	}
+	
+	/**
+	 * Async load of Certification Releases of a given project type
+	 * 
+     * @param 	request 	servlet request with the type of the project
+     * @return 				list of Certification Releases related to the project type
+     */
+	@RequestMapping(value="/loadCertRel", method = RequestMethod.GET)
+	public @ResponseBody List<CertificationRelease> loadCertRel(HttpServletRequest request)
+	{
+		if (request.getParameter("pjType").equals("Pre-certification")) {
+			return crService.list();
+		} else {
+			return crService.listReleaseVersions();
+		}
 	}
 }

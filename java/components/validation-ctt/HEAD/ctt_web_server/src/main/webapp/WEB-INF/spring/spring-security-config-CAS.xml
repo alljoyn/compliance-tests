@@ -36,7 +36,7 @@
 	<bean id="serviceProperties"
 		class="org.springframework.security.cas.ServiceProperties">
 		<property name="service"
-			value="https://www.at4wireless.com/TestToolWebApp/j_spring_cas_security_check"/>
+			value="https://192.168.110.50:8443/TestToolWebApp/j_spring_cas_security_check"/>
 		<property name="sendRenew" value="false"/>
 	</bean>
 	

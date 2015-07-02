@@ -5,19 +5,7 @@
 
 <html lang="en">
     <head>
-    	<title>AllSeen</title>
-    	<meta charset="utf-8">
-    	
-    	<!-- Add the next line to ensure proper rendering and touch zooming -->
-    	<meta name="viewport" content="width=device-width, initial-scale=1">
-        
-        <!-- Web icon -->
-        <link rel="shortcut icon" href="resources/img/favicon.ico" type="image/vnd.microsoft.icon" />
-        
-        <!-- Bootstrap -->
-		<link rel="stylesheet" type="text/css" href="resources/bootstrap/css/bootstrap.min.css"/>
-    	<link rel="stylesheet" type="text/css" href="resources/bootstrap/css/custom.css">
-		
+    	<jsp:include page="/WEB-INF/views/page_head.jsp"/>
     </head>
     <body>
     
@@ -50,22 +38,26 @@
 		        <!-- Service tables -->
 
 				<table class="table table-hover">
-		       		<thead class="scroll-thead">
-		       			<tr class="scroll-tr">
+		       		<!-- <thead class="scroll-thead">
+		       			<tr class="scroll-tr">  -->
+		       		<thead>
+		       			<tr>
 				        	<th width="3%">Id</th>
 				        	<th width="30%">Name</th>
 				        	<th width="57%">Description</th>
 				        	<th width="10%">Value</th>
 				        </tr>
 				    </thead>
-		        	<tbody class="scroll-tbody">
+		        	<!-- <tbody class="scroll-tbody">  -->
+		        	<tbody>
 						<c:forEach var="parameter" items="${listParameter}" varStatus="status">
-					        	<tr class="scroll-tr">
+							<tr>
+					        	<!-- <tr class="scroll-tr">  -->
 					        		<td width="3%">${parameter.idParam}</td>
 					        		<td width="30%">${parameter.name}</td>
 									<td width="57%">${parameter.description}</td>
 									<td width="10%">
-									<input type="number" min="1" class="form-control" value="${parameter.value}"/>
+									<input style="width: 100%" type="number" min="1" class="form-control" value="${parameter.value}"/>
 									</td>								
 					        	</tr>
 						</c:forEach>
@@ -76,9 +68,9 @@
 			
 			<!-- Navigation buttons -->
 			<div class="row" align="right">
-				<a id="prevButton" type="button" class="btn btn-custom btn-lg pull-left">« Back</a>
+				<a id="prevButton" type="button" class="btn btn-custom btn-lg pull-left">« Previous Step</a>
         		<!-- <button id="nextButton" class="btn btn-custom btn-lg" data-toggle="modal" data-target="#pleaseWaitDialog">Next »</button> -->
-        		<a id="nextButton" type="button" class="btn btn-custom btn-lg" href="testcase">Next »</a>
+        		<a id="nextButton" type="button" class="btn btn-custom btn-lg" href="testcase">Next Step »</a>
         	</div>
        	</div>
        	
@@ -90,9 +82,6 @@
         </div>
         
         <jsp:include page="/WEB-INF/views/footer.jsp"/>
-        
-        <script src="resources/jquery/js/jquery-1.11.2.min.js"></script>
-		<script src="resources/bootstrap/js/bootstrap.min.js"></script>
       
       	<script>
 			$(document).ready(function() {
@@ -110,8 +99,20 @@
 					$('#selectedProject').append(" / GUs: "+sessionStorage.getItem("guNames"));
 				}
 				
-				var w = $('.scroll-tbody').find('.scroll-tr').first().width();
-				$('.scroll-thead').find('.scroll-tr').width(w);
+				/*var w = $('.scroll-tbody').find('.scroll-tr').first().width();
+				$('.scroll-thead').find('.scroll-tr').width(w);*/
+				
+				$('.table').dataTable({
+					//autoWidth: false,
+					paging: false,
+					searching: false,
+					"sDom": '<"top">rt<"bottom"flp><"clear">',
+					scrollY: ($(window).height()/2),
+					columnDefs: [        
+						{ orderable: false, targets: 3},
+					],
+					order: [0, 'asc']
+				});
 				
 				var MyRows = $('.table').find('tbody').find('tr');
 				for (var i = 0; i < MyRows.length; i++) {

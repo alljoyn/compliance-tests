@@ -34,9 +34,17 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public void addUser(User user) {
-		sessionFactory.getCurrentSession().createSQLQuery("INSERT INTO users (username, password) VALUES ('"
-				+user.getUser()+"', '"+user.getPassword()+"')").executeUpdate();
-		sessionFactory.getCurrentSession().createSQLQuery("INSERT INTO user_roles (username, ROLE) VALUES ('"+user.getUser()+"', '"+user.getRole()+"')").executeUpdate();
+		/*sessionFactory.getCurrentSession()
+			.createSQLQuery("INSERT INTO users (username, password, server_public_key, server_private_key, local_public_key, des_cipher_key) VALUES ('"
+				+user.getUser()+"', '"+user.getPassword()+"', '"+user.getServerPublicKey()+"', '"
+				+user.getServerPrivateKey()+"', '"+""+"', '"+user.getDesSecretKey()+"')").executeUpdate();*/
+		
+		sessionFactory.getCurrentSession()
+		.createSQLQuery("INSERT INTO users (username, password, aes_cipher_key) VALUES ('"
+			+user.getUser()+"', '"+user.getPassword()+"', '"+user.getAesSecretKey()+"')").executeUpdate();
+		sessionFactory.getCurrentSession()
+			.createSQLQuery("INSERT INTO user_roles (username, ROLE) VALUES ('"+user.getUser()+"', '"+user.getRole()+"')")
+				.executeUpdate();
 	}
 
 	@Override
@@ -64,5 +72,25 @@ public class UserDAOImpl implements UserDAO {
 	public void setKey(String name, String key) {
 		sessionFactory.getCurrentSession().createSQLQuery("update users set password = '"
 				+key+"' where username = '"+name+"'").executeUpdate();
+	}
+
+	@Override
+	public String getAesCipherKey(String user) {
+		@SuppressWarnings("unchecked")
+		List<byte[]> aesKey = (List<byte[]>) sessionFactory.getCurrentSession()
+				.createSQLQuery("select (aes_cipher_key) from users where username = '"
+						+user+"'").list();
+		
+		if (aesKey.size()>0) {
+			return new String(aesKey.get(0));
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public void setAesCipherKey(String user, String aesCipherKey) {
+		sessionFactory.getCurrentSession().createSQLQuery("update users set aes_cipher_key = '"
+				+aesCipherKey+"' where username = '"+user+"'").executeUpdate();
 	}
 }

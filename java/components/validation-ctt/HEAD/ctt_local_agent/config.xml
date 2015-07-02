@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Configuration>
 <TestCasesPackagePath>TestCases/</TestCasesPackagePath>
-
 <ResultPath>results/</ResultPath>
 <LogPath>log/</LogPath>
 <TestToolWebAppUrl>http://192.168.110.50:8080/TestToolWebApp/</TestToolWebAppUrl>
@@ -18,4 +17,7 @@
 <isLastVersion>rest/isLastVersion/</isLastVersion>
 <DownloadPath>downloads/</DownloadPath>
 <getLastVersion>rest/getLastVersion</getLastVersion>
+<keyExchange>rest/keyExchange/</keyExchange>
+<logLevel>DEBUG</logLevel>
+<ExistsRelease>rest/existsRelease/</ExistsRelease>
 </Configuration>

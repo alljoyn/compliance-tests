@@ -1,26 +1,11 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" trimDirectiveWhitespaces="true" %>
 <!DOCTYPE HTML>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <html>
     <head>
-    	<title>AllSeen</title>
-    	<meta charset="utf-8">
-    	
-    	<!-- Add the next line to ensure proper rendering and touch zooming -->
-    	<meta name="viewport" content="width=device-width, initial-scale=1">
-    	
-    	<meta name="_csrf" content="${_csrf.token}"/>
-		<meta name="_csrf_header" content="${_csrf.headerName}"/>
-        
-        <!-- Web icon -->
-        <link rel="shortcut icon" href="resources/img/favicon.ico" type="image/vnd.microsoft.icon" />
-        
-        <!-- Bootstrap -->
-		<link rel="stylesheet" type="text/css" href="resources/bootstrap/css/bootstrap.min.css"/>
-    	<link rel="stylesheet" type="text/css" href="resources/bootstrap/css/custom.css">
-    	
+		<jsp:include page="/WEB-INF/views/page_head.jsp"/>	
     </head>
     <body>
     
@@ -48,20 +33,24 @@
 		    
 		    <!-- Results table -->
 	        <div class="row">      
-			       	<table id="table" class="table table-hover">
-			       		<thead class="scroll-thead">
-			       			<tr class="scroll-tr">
+			       	<table id="table" class="table table-hover hide dt-responsive">
+			       		<!-- <thead class="scroll-thead">
+			       			<tr class="scroll-tr">  -->
+			       		<thead>
+			       			<tr>
 					        	<th width="20%">Name</th>
 					        	<th width="50%">Description</th>
 					        	<th width="10%">Date and Time Execution</th>
 					        	<th width="10%">Certification Release</th>
 					        	<th width="10%">Final Verdict</th>
-					        	<!-- <th width="10%">Full Log</th>  -->
+					        	<th class="hide">Full Log</th>
 					        </tr>
 					    </thead>
-			        	<tbody class="scroll-tbody">
+					    <tbody>
+			        	<!-- <tbody class="scroll-tbody">  -->
 							<c:forEach var="result" items="${listTCResult}" varStatus="status">
-					        	<tr class="scroll-tr">
+								<tr>
+					        	<!-- <tr class="scroll-tr">  -->
 					        		<td width="20%">${result.name}</td>
 					        		<td width="50%">${result.description}</td>
 									<td width="10%">${result.execTimestamp}</td>
@@ -102,9 +91,6 @@
         </div>
         
         <jsp:include page="/WEB-INF/views/footer.jsp"/>
-        
-        <script src="resources/jquery/js/jquery-1.11.2.min.js"></script>
-		<script src="resources/bootstrap/js/bootstrap.min.js"></script>
 
 		<script>
 			$(document).ready(function() {
@@ -114,8 +100,17 @@
 				
 				$('#title').text("TEST CASES RESULTS FOR \"${projectName}\"");
 				
-				var w = $('.scroll-tbody').find('.scroll-tr').first().width();
-				$('.scroll-thead').find('.scroll-tr').width(w);
+				/*var w = $('.scroll-tbody').find('.scroll-tr').first().width();
+				$('.scroll-thead').find('.scroll-tr').width(w);*/
+				
+				$('#table').removeClass('hide');
+				
+				$('#table').dataTable({
+					autoWidth: false,
+					pagingType: 'full_numbers',
+					scrollY: ($(window).height()/2),
+					order: [0, 'asc']
+				});
 				
 				$.ajax({
 					type: 'GET',
@@ -177,11 +172,12 @@
 			    return this;
 			};
 			
-			$('.scroll-tbody').find('.scroll-tr').on('click', function() {
+			$('#table tbody tr').on('click', function() {
 				$.ajax({
 					cache: false,
 					type : 'GET',
 					url : 'results/fullLog',
+					contentType: "text/plain; charset=UTF-8",
 					data : {
 						id : localStorage.getItem("idProject"),
 						file : $(this).find('td:last').html()
@@ -189,7 +185,8 @@
 					success: function (data) {
 						var w = window.open();
 
-						$(w.document.body).multiline(data);
+						$(w.document.head).html('<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />');
+						$(w.document.body).multiline(data);		
 				   }
 				});
 			});

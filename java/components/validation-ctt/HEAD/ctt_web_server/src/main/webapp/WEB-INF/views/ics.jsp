@@ -1,23 +1,11 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" trimDirectiveWhitespaces="true"%>
 <!DOCTYPE HTML>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 <html lang="en">
     <head>
-    	<title>AllSeen</title>
-    	<meta charset="utf-8">
-    	
-    	<!-- Add the next line to ensure proper rendering and touch zooming -->
-    	<meta name="viewport" content="width=device-width, initial-scale=1">
-        
-        <!-- Web icon -->
-        <link rel="shortcut icon" href="resources/img/favicon.ico" type="image/vnd.microsoft.icon" />
-        
-        <!-- Bootstrap -->
-		<link rel="stylesheet" type="text/css" href="resources/bootstrap/css/bootstrap.min.css"/>	
-    	<link rel="stylesheet" type="text/css" href="resources/bootstrap/css/custom.css">
-		
+    	<jsp:include page="/WEB-INF/views/page_head.jsp"/>	
     </head>
     <body>
     
@@ -75,22 +63,26 @@
 			        <c:forEach var="service" items="${serviceList}" varStatus="status">
 			        	<div class="tab-pane" id="${service.idService}">
 					       	<table class="table table-hover">
-					       		<thead class="scroll-thead">
-					       			<tr class="scroll-tr">
-							        	<th width="3%">Id</th>
-							        	<th width="30%">Name</th>
-							        	<th width="57%">Description</th>
-							        	<th width="10%">Value</th>
+					       		<!-- <thead class="scroll-thead">
+					       			<tr class="scroll-tr">  -->
+					       		<thead>
+					       			<tr>
+							        	<th>Id</th>
+							        	<th>Name</th>
+							        	<th>Description</th>
+							        	<th>Value</th>
 							        </tr>
 							    </thead>
-					        	<tbody class="scroll-tbody">
+					        	<!-- <tbody class="scroll-tbody">  -->
+					        	<tbody>
 									<c:forEach var="ics" items="${icsList}" varStatus="status">
 										<c:if test="${ics.serviceGroup==service.idService}">
-								        	<tr class="scroll-tr">
-								        		<td width="3%">${ics.id}</td>
-								        		<td width="30%">${ics.name}</td>
-												<td width="57%">${ics.description}</td>
-												<td width="10%">
+											<tr>
+								        	<!-- <tr class="scroll-tr">  -->
+								        		<td>${ics.id}</td>
+								        		<td>${ics.name}</td>
+												<td>${ics.description}</td>
+												<td>
 													<select class="form-control">
 														<option value="${ics.value}">${ics.value}</option>
 														<option value="${ics.value==false}">${ics.value==false}</option>
@@ -113,10 +105,10 @@
 	        
 	        <!-- Navigation and SCR buttons -->
 	        <div class="row" align="right">
-	       		<a id="prevButton" type="button" class="btn btn-custom btn-lg pull-left">« Back</a>
+	       		<a id="prevButton" type="button" class="btn btn-custom btn-lg pull-left">« Previous Step</a>
 	       		<button id="changeButton" type="button" class="btn btn-default btn-lg">Change All Service ICS</button>
 	        	<button id="scrButton" type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#pleaseWaitDialog">SCR</button>
-	        	<button id="nextButton" disabled class="btn btn-custom btn-lg disabled">Next »</button>
+	        	<button id="nextButton" disabled class="btn btn-custom btn-lg disabled">Next Step »</button>
 	        </div>
         </div>
         
@@ -155,9 +147,6 @@
         </div>
         
         <jsp:include page="/WEB-INF/views/footer.jsp"/>
-        
-        <script src="resources/jquery/js/jquery-1.11.2.min.js"></script>
-		<script src="resources/bootstrap/js/bootstrap.min.js"></script>
 		
 		<script>
 			$(document).ready(function() {
@@ -181,10 +170,26 @@
 					$('#selectedProject').append(" / GUs: "+sessionStorage.getItem("guNames"));
 				}
 				
+				/*var w = $('.scroll-tbody').find('.scroll-tr').first().width();
+				$('.scroll-thead').find('.scroll-tr').width(w);*/
+				
+				//$('.table').removeClass('hide');
 				$('#1').addClass('in active');
 				
-				var w = $('.scroll-tbody').find('.scroll-tr').first().width();
-				$('.scroll-thead').find('.scroll-tr').width(w);
+				$("#1").find('table').dataTable({
+					autoWidth: false,
+					paging: false,
+					searching: false,
+					"sDom": '<"top">rt<"bottom"flp><"clear">',
+					scrollY: ($(window).height()/2),
+					columnDefs: [       
+					    { width: "3%", targets: 0},
+					    { width: "30%", targets: 1},
+					    { width: "57%", targets: 2},
+						{ width: "10%", orderable: false, targets: 3}
+					],
+					order: [0, 'asc']
+				});
 				
 				var MyRows = $('.table').find('tbody').find('tr');
 				for (var i = 0; i < MyRows.length; i++) {
@@ -194,6 +199,28 @@
 						$(MyRows[i]).find('.form-control').val(sessionStorage.getItem(id));
 					}
 				}
+			});
+			
+			$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+			   e.target; // activated tab
+			   e.relatedTarget; // previous tab
+			   var tab = $(e.target).attr('href');
+			   if(!$(""+tab).find('table').hasClass('dataTable')) {
+				   $(""+tab).find('table').dataTable({
+					    autoWidth: false,
+					   	paging: false,
+						searching: false,
+						"sDom": '<"top">rt<"bottom"flp><"clear">',
+						scrollY: ($(window).height()/2),
+						columnDefs: [        
+							{ width: "3%", targets: 0},
+						    { width: "30%", targets: 1},
+						    { width: "57%", targets: 2},
+							{ width: "10%", orderable: false, targets: 3}
+						],
+						order: [0, 'asc']
+				   });
+			   }
 			});
 		</script>
 		
@@ -215,7 +242,7 @@
 		</script>
 		
 		<script>
-			$('.scroll-tbody').find('tr').dblclick(function() {
+			$('tbody').find('tr').dblclick(function() {
 				var val = $(this).find('.form-control').val();
 				$(this).find('.form-control').val((val=="false").toString());
 				$('#nextButton').addClass('disabled');

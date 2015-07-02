@@ -68,4 +68,6 @@ public interface TcclService {
 	 * @return				list of TCCL
 	 */
 	public List<Tccl> listByCR(int idCertRel);
+	
+	public void addCertificationReleaseIfNotExists(String certificationRelease, String packageVersion, String description) throws Exception;
 }

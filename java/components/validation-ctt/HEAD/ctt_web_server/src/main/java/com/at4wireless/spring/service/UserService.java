@@ -15,6 +15,8 @@
  *******************************************************************************/
 package com.at4wireless.spring.service;
 
+import javax.crypto.SecretKey;
+
 import com.at4wireless.spring.model.User;
 
 /**
@@ -51,4 +53,24 @@ public interface UserService {
 	 * @param	name	user's name
 	 */
 	public int setKey(String name);
+	
+	/**
+	 * Sets Local Agent Encryption Key
+	 * 
+	 * @param 	user		user's name
+	 * @param 	localKey	local agent's encryption key
+	 */
+	public String keyExchange(String user, String localKey);
+	
+	/**
+	 * Returns cipher key converted to object
+	 * 
+	 * @param 	user	user whose key is returned
+	 * @return			secret key
+	 */
+	public SecretKey getAesSecretKey(String user);
+	
+	public boolean hasCipherKey(String user);
+	
+	public void setCipherKey(String user, String aesSecretKey);
 }

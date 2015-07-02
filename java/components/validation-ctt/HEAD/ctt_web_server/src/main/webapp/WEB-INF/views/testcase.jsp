@@ -5,19 +5,7 @@
 
 <html lang="en">
     <head>
-    	<title>AllSeen</title>
-    	<meta charset="utf-8">
-    	
-    	<!-- Add the next line to ensure proper rendering and touch zooming -->
-    	<meta name="viewport" content="width=device-width, initial-scale=1">
-        
-        <!-- Web icon -->
-        <link rel="shortcut icon" href="resources/img/favicon.ico" type="image/vnd.microsoft.icon" />
-        
-        <!-- Bootstrap -->
-		<link rel="stylesheet" type="text/css" href="resources/bootstrap/css/bootstrap.min.css"/>
-    	<link rel="stylesheet" type="text/css" href="resources/bootstrap/css/custom.css">
-	    
+    	<jsp:include page="/WEB-INF/views/page_head.jsp"/>
     </head>
     <body>
     
@@ -47,20 +35,21 @@
 	        <!-- Testcases table -->
 	        <div class="row">
 		       	<table class="table table-hover">
-		       		<thead class="scroll-thead">
-		       			<tr class="scroll-tr">
-				        	<th width="15%">Test Case</th>
-				        	<th width="79%">Description</th>
-				        	<th width="6%">Select</th>
+		       		<thead>
+		       			<tr>
+		       				<th class="hide">TC ID</th>
+				        	<th>Test Case</th>
+				        	<th>Description</th>
+				        	<th>Select</th>
 				        </tr>
 				    </thead>
-		        	<tbody id="tcBody" class="scroll-tbody">
+		        	<tbody id="tcBody">
 						<c:forEach var="tc" items="${tcList}" varStatus="status">
-				        	<tr class="scroll-tr">
+							<tr>
 				        		<td class="hide">${tc.idTC}</td>
 				        		<td width="15%">${tc.name}</td>
-								<td width="79%">${tc.description}</td>
-								<td width="6%" style="text-align: center">
+								<td width="80%">${tc.description}</td>
+								<td width="5%" style="text-align: center">
 									<input class="is_checkbox" type="checkbox">
 								</td>								
 				        	</tr>
@@ -81,8 +70,8 @@
 	        
 	        <!-- Navigation buttons -->
 	        <div class="row" align="left">
-	        	<button id="prevButton" class="btn btn-custom btn-lg">« Back</button>
-	        	<a id="nextButton" type="button" class="btn btn-custom btn-lg pull-right" href="end">Next »</a>
+	        	<button id="prevButton" class="btn btn-custom btn-lg">« Previous Step</button>
+	        	<a id="nextButton" type="button" class="btn btn-custom btn-lg pull-right" href="end">Next Step »</a>
 	        </div>
         </div>
         
@@ -90,7 +79,6 @@
         <div>
         	<form:form method="GET" id="prevForm" action="parameter" modelAttribute="newProject">
         		<form:input type="hidden" id="idProject" name="idProject" path="idProject" value=""/>
-        		<!-- <form:input type="hidden" id="isConfigured" name="isConfigured" path="isConfigured" value=""/> -->
         	</form:form>
         </div>
         
@@ -113,12 +101,9 @@
         </div>
         
         <jsp:include page="/WEB-INF/views/footer.jsp"/>
-
-        <script src="resources/jquery/js/jquery-1.11.2.min.js"></script>
-		<script src="resources/bootstrap/js/bootstrap.min.js"></script>
 		
 		<!-- Test Case selection depends on project type -->
-		<script>
+		<script>	
 			$(document).ready(function() {
 				
 				$("#pleaseWaitDialog").modal('show');
@@ -152,10 +137,22 @@
 				   success: function (data) {
 					   	$('#tcBody').empty();
 						$.each(data, function(i, tc) {
-							$('#tcBody').append("<tr class=\"scroll-tr\"><td class=\"hide\">"+tc.idTC
+							$('#tcBody').append("<tr><td class=\"hide\">"+tc.idTC
 									+"</td><td width=\"15%\">"+tc.name
 									+"</td><td width=\"80%\">"+tc.description
 									+"</td><td width=\"5%\" style=\"text-align: center\"><input class=\"is_checkbox\" type=\"checkbox\"/></td></tr>");
+						});
+						
+						$('.table').dataTable({
+							autoWidth: false,
+							paging: false,
+							searching: false,
+							"sDom": '<"top">rt<"bottom"flp><"clear">',
+							scrollY: ($(window).height()/2),
+							columnDefs: [        
+								{ orderable: false, targets: 3},
+							],
+							order: [0, 'asc']
 						});
 						
 						$('.is_checkbox').prop('checked', true);
@@ -181,10 +178,10 @@
 							}
 						});
 						
-						var w = $('.scroll-tbody').find('.scroll-tr').first().width();
-						$('.scroll-thead').find('.scroll-tr').width(w);
+						/*var w = $('.scroll-tbody').find('.scroll-tr').first().width();
+						$('.scroll-thead').find('.scroll-tr').width(w);*/
 						
-						$('.scroll-tbody').find('tr').dblclick(function() {
+						$('tbody').find('tr').dblclick(function() {
 							if(!($(this).hasClass("text-muted"))) {
 								var val = $(this).find('.is_checkbox').is(':checked');
 								$(this).find('.is_checkbox').prop('checked',!(val));
