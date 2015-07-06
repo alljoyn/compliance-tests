@@ -351,7 +351,8 @@ public class ProjectServiceImpl implements ProjectService {
 		listString.add("Certification Application Request ID"+separator+p.getCarId());
 		listString.add("Type of Project"+separator+p.getType());
 		listString.add("Supported Services"+separator+p.getSupportedServices());
-		listString.add("Certification Release Version"+separator+crDao.getName(p.getIdCertrel()));
+		listString.add("Certification Release Version"+separator+crDao.getName(p.getIdCertrel())
+				+" ("+crDao.getCertificationReleaseDescription(crDao.getName(p.getIdCertrel()))+")");
 		listString.add("TCCL Version"+separator+tcclDao.getTcclName(p.getIdTccl()));
 		
 		return listString;
