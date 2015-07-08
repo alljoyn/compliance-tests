@@ -433,7 +433,19 @@ public class AboutTestSuite
 				logger.info(String.format("Found object at %s implementing %s", objectDetail.getPath(), intfName.getName()));
 			}
 		}
-		ValidationResult validationResult = getInterfaceValidator().validate(standardizedIntrospectionInterfacesExposedOnBus);
+		
+		//[ASACOMP-48] start
+		ValidationResult validationResult = null;
+		try
+		{
+			validationResult = getInterfaceValidator().validate(standardizedIntrospectionInterfacesExposedOnBus);
+		}
+		catch (Exception e)
+		{
+			fail(e.getMessage());
+			return;
+		}
+		//[ASACOMP-48] end
 
 		//assertTrue(validationResult.getFailureReason(), validationResult.isValid());
 		if (!validationResult.isValid())

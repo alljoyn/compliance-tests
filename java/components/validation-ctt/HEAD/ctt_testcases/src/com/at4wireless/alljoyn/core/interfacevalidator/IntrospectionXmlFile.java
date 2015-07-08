@@ -24,7 +24,8 @@ public enum IntrospectionXmlFile
             "introspection-xml/Onboarding.xml"), Peer("introspection-xml/Peer.xml"), Property("introspection-xml/Property.xml"), Lighting("introspection-xml/Lamp.xml"),
             GWAgentCtrlAcl("introspection-xml/GWAgentCtrlAcl.xml"), GWAgentCtrlAclMgmt("introspection-xml/GWAgentCtrlAclMgmt.xml"),
             GWAgentCtrlApp("introspection-xml/GWAgentCtrlApp.xml"),GWAgentCtrlAppMgmt("introspection-xml/GWAgentCtrlAppMgmt.xml"),
-            LightingController("introspection-xml/ControllerService.xml"), LeaderElectionAndStateSync("introspection-xml/LeaderElectionAndStateSync.xml");
+            LightingController("introspection-xml/ControllerService.xml"), LeaderElectionAndStateSync("introspection-xml/LeaderElectionAndStateSync.xml"),
+            Introspectable("introspection-xml/Introspectable.xml");
 
     private String value;
 

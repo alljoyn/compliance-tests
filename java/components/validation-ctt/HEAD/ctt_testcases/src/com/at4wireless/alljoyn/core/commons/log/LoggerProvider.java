@@ -15,19 +15,7 @@
  *******************************************************************************/
 package com.at4wireless.alljoyn.core.commons.log;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Interface LoggerProvider.
- */
 public interface LoggerProvider
 {
-
-    /**
-     * Gets the logger.
-     *
-     * @param tag the tag
-     * @return the logger
-     */
     WindowsLoggerImpl getLogger(String tag);
-
 }

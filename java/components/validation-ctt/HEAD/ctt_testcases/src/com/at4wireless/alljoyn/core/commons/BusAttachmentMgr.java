@@ -24,34 +24,15 @@ import org.alljoyn.bus.Status;
 import com.at4wireless.alljoyn.core.commons.log.Logger;
 import com.at4wireless.alljoyn.core.commons.log.LoggerFactory;
 
-
-/**
- * The Class BusAttachmentMgr.
- */
 public class BusAttachmentMgr
 {
-    
-    /** The bus attachment. */
     private BusAttachment busAttachment;
-    
-    /** The Constant TAG. */
     private static final String TAG = BusAttachmentMgr.class.getSimpleName();
-    
-    /** The Constant logger. */
     private static final Logger logger = LoggerFactory.getLogger(TAG);
-    
-    /** The daemon name. */
     private String daemonName;
-    
-    /** The advertised name. */
     private String advertisedName;
-    
-    /** The initialized. */
     private static boolean initialized = false;
 
-    /**
-     * Instantiates a new bus attachment mgr.
-     */
     public BusAttachmentMgr() 
     {
         if (!initialized)
@@ -61,13 +42,6 @@ public class BusAttachmentMgr
         }
     }
 
-    /**
-     * Creates the.
-     *
-     * @param busApplicationName the bus application name
-     * @param policy the policy
-     * @throws BusException the bus exception
-     */
     public void create(String busApplicationName, BusAttachment.RemoteMessage policy) throws BusException
     {
        
@@ -75,11 +49,6 @@ public class BusAttachmentMgr
         busAttachment = createBusAttachment(busApplicationName, policy);
     }
 
-    /**
-     * Connect.
-     *
-     * @throws BusException the bus exception
-     */
     public void connect() throws BusException
     {
        
@@ -94,11 +63,6 @@ public class BusAttachmentMgr
         }
     }
 
-    /**
-     * Advertise.
-     *
-     * @throws BusException the bus exception
-     */
     public void advertise() throws BusException
     {
         daemonName = "org.alljoyn.BusNode_" + busAttachment.getGlobalGUIDString();
@@ -124,9 +88,6 @@ public class BusAttachmentMgr
         }
     }
 
-    /**
-     * Release.
-     */
     public void release()
     {
         if (advertisedName != null)
@@ -160,34 +121,16 @@ public class BusAttachmentMgr
         }
     }
 
-    /**
-     * Creates the bus attachment.
-     *
-     * @param applicationName the application name
-     * @param policy the policy
-     * @return the bus attachment
-     */
     protected BusAttachment createBusAttachment(String applicationName, BusAttachment.RemoteMessage policy)
     {
         return new BusAttachment(applicationName, policy);
     }
 
-    /**
-     * Gets the bus attachment.
-     *
-     * @return the bus attachment
-     */
     public BusAttachment getBusAttachment()
     {
         return busAttachment;
     }
 
-    /**
-     * Register signal handler.
-     *
-     * @param signalHandler the signal handler
-     * @throws BusException the bus exception
-     */
     public void registerSignalHandler(Object signalHandler) throws BusException
     {
         Status status = busAttachment.registerSignalHandlers(signalHandler);
@@ -200,13 +143,6 @@ public class BusAttachmentMgr
         }
     }
 
-    /**
-     * Register bus object.
-     *
-     * @param busObject the bus object
-     * @param objectPath the object path
-     * @throws BusException the bus exception
-     */
     public void registerBusObject(BusObject busObject, String objectPath) throws BusException
     {
         Status status = busAttachment.registerBusObject(busObject, objectPath);
@@ -219,11 +155,6 @@ public class BusAttachmentMgr
         }
     }
 
-    /**
-     * Gets the bus unique name.
-     *
-     * @return the bus unique name
-     */
     public String getBusUniqueName()
     {
         return busAttachment.getUniqueName();

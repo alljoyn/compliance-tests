@@ -32,23 +32,8 @@ import org.xml.sax.XMLReader;
 
 import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionNode;
 
-
-// TODO: Auto-generated Javadoc
-/**
- * The Class IntrospectionXmlParser.
- */
 public class IntrospectionXmlParser
 {
-    
-    /**
-     * Parses the xml.
-     *
-     * @param inputStream the input stream
-     * @return the introspection node
-     * @throws IOException Signals that an I/O exception has occurred.
-     * @throws ParserConfigurationException the parser configuration exception
-     * @throws SAXException the SAX exception
-     */
     public IntrospectionNode parseXML(InputStream inputStream) throws IOException, ParserConfigurationException, SAXException
     {
         IntrospectionXmlHandler introspectionXmlHandler = new IntrospectionXmlHandler();
@@ -56,15 +41,6 @@ public class IntrospectionXmlParser
         return introspectionXmlHandler.getIntrospectionNode();
     }
 
-    /**
-     * Parses the.
-     *
-     * @param inputStream the input stream
-     * @param testMetadataXmlHandler the test metadata xml handler
-     * @throws IOException Signals that an I/O exception has occurred.
-     * @throws SAXException the SAX exception
-     * @throws ParserConfigurationException the parser configuration exception
-     */
     private void parse(InputStream inputStream, IntrospectionXmlHandler testMetadataXmlHandler) throws IOException, SAXException, ParserConfigurationException
     {
         XMLReader xmlReader = null;
@@ -77,15 +53,9 @@ public class IntrospectionXmlParser
         xmlReader.parse(new InputSource(inputStream));
     }
 
-    /**
-     * Gets the SAX parser factory.
-     *
-     * @return the SAX parser factory
-     */
     protected SAXParserFactory getSAXParserFactory()
     {
         SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
         return saxParserFactory;
     }
-
 }

@@ -20,37 +20,19 @@ import java.util.concurrent.TimeUnit;
 
 import org.alljoyn.services.common.ServiceAvailabilityListener;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class ServiceAvailabilityHandler.
- */
 public class ServiceAvailabilityHandler implements ServiceAvailabilityListener
 {
-    
-    /** The count down latch. */
-    private  CountDownLatch countDownLatch = new CountDownLatch(1);
+    private CountDownLatch countDownLatch = new CountDownLatch(1);
 
-    /* (non-Javadoc)
-     * @see org.alljoyn.services.common.ServiceAvailabilityListener#connectionLost()
-     */
     @Override
     public void connectionLost()
     {
         countDownLatch.countDown();
     }
 
-    /**
-     * Wait for session lost.
-     *
-     * @param timeout the timeout
-     * @param unit the unit
-     * @return true, if successful
-     * @throws InterruptedException the interrupted exception
-     */
-    public  boolean waitForSessionLost(long timeout, TimeUnit unit) throws InterruptedException
+    public boolean waitForSessionLost(long timeout, TimeUnit unit) throws InterruptedException
     {
         return countDownLatch.await(timeout, unit);
     }
-
 }
 
