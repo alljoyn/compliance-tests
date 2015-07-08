@@ -18,6 +18,8 @@ package com.at4wireless.alljoyn.core.onboarding;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import com.at4wireless.alljoyn.wifiapi.ScanResult;
+
 public interface WifiHelper
 {
 	

@@ -19,7 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.alljoyn.about.AboutKeys;
+//import org.alljoyn.about.AboutKeys;
+import org.alljoyn.bus.AboutKeys;
 import org.alljoyn.about.client.AboutClient;
 import org.alljoyn.bus.BusException;
 import org.alljoyn.bus.ErrorReplyBusException;
@@ -147,18 +148,24 @@ public class OnboardingTestSuite
 		TIME_TO_WAIT_FOR_DISCONNECT_IN_MS = Integer.parseInt(gPON_Disconnect);;
 		TIME_TO_WAIT_FOR_NEXT_DEVICE_ANNOUNCEMENT_IN_MS = Integer.parseInt(gPON_NextAnnouncement);;
 
-		try {
+		try
+		{
 			runTestCase(testCase);
-		} catch (Exception e) {
-			inconc = true;
-			
-			if (e != null) {
-				if (e.getMessage().equals("Timed out waiting for About announcement")) {
-					fail("Timed out waiting for About announcement");
-				} else {
-					fail("Exception: "+e.getMessage());
-				}
+		}
+		catch (Exception e)
+		{
+			if ((e.getMessage() != null) && (e.getMessage().equals("Timed out waiting for About announcement")))
+			{
+				//fail("Timed out waiting for About announcement");
 			}
+			else
+			{
+				String errorMsg = "Exception: "+e.toString();
+				logger.error(errorMsg);
+				//fail(errorMsg);
+			}
+			inconc = true;
+			tearDown();
 		}
 	}
 
@@ -236,14 +243,16 @@ public class OnboardingTestSuite
 			String onboardeeSoftApPassphrase = ixit.get("IXITON_SoftAPpassphrase");
 			logger.info(String.format("Running Onboarding test case against OnboardeeSoftApPassphrase: %s", onboardeeSoftApPassphrase));
 			//String onboardeeSoftApSecurityType = getOnboardeeSoftApSecurityType();
-			String onboardeeSoftApSecurityType = ixit.get("IXITON_SoftAPAuthType");
+			short onboardeeSoftApSecurityType = Short.parseShort(ixit.get("IXITON_SoftAPAuthType"));
 			logger.info(String.format("Running Onboarding test case against OnboardeeSoftApSecurityType: %s", onboardeeSoftApSecurityType));
 
 			String authTypeString = onboardingHelper.mapAuthTypeToAuthTypeString(personalApSecurity);
 			personalAPConfig = new WifiNetworkConfig(personalApSsid, personalApPassphrase, authTypeString);
 			onboardingHelper.setPersonalAPConfig(personalAPConfig);
 
-			softAPConfig = new WifiNetworkConfig(onboardeeSoftApSsid, onboardeeSoftApPassphrase, onboardeeSoftApSecurityType);
+			String onboardeeSoftApSecurityTypeString = onboardingHelper.mapAuthTypeToAuthTypeString(onboardeeSoftApSecurityType);
+			//softAPConfig = new WifiNetworkConfig(onboardeeSoftApSsid, onboardeeSoftApPassphrase, onboardeeSoftApSecurityType);
+			softAPConfig = new WifiNetworkConfig(onboardeeSoftApSsid, onboardeeSoftApPassphrase, onboardeeSoftApSecurityTypeString);
 			onboardingHelper.setSoftAPConfig(softAPConfig);
 			
 			onboardingHelper.initialize(keyStorePath, dutDeviceId, dutAppId);
@@ -292,9 +301,10 @@ public class OnboardingTestSuite
 		
 		checkDeviceIsInOnboardedStateAndWaitForAnnouncement();
 	
+		logger.info("Checking Onboarding interface version property");
 		short version = onboardingHelper.retrieveVersionProperty();
 		//assertEquals("Onboarding interface version mismatch", 1, version);
-		assertEquals("Onboarding interface version mismatch", Short.parseShort(ixit.get("IXITON_OnboardingVersion")), version);
+		assertEquals("Onboarding interface version mismatchs IXITON_OnboardingVersion", Short.parseShort(ixit.get("IXITON_OnboardingVersion")), version);
 
 		placeDUTInOffboardState();
 		
@@ -381,7 +391,9 @@ public class OnboardingTestSuite
 
 		verifyOnboardingState(OBS_STATE_PERSONAL_AP_CONFIGURED_ERROR);
 		//verifyOnboardingErrorCode(OBS_LASTERROR_UNAUTHORIZED);
+		logger.info("Retrieving error property from Onboarding interface");
 		assertTrue(onboardingHelper.retrieveStateProperty() != OBS_LASTERROR_VALIDATED);
+		//assertTrue(onboardingHelper.retrieveLastErrorProperty().getErrorCode() != OBS_LASTERROR_VALIDATED); //[AT4]
 	}
 
 	public void testOnboarding_v1_07_ConfigureWiFiAuthTypeOfAny() throws Exception
@@ -424,7 +436,7 @@ public class OnboardingTestSuite
 			for (MyScanResult myScanResult : scanResults)
 			{
 				validateScanResult(myScanResult);
-				
+				System.out.println(myScanResult.m_ssid);
 				if (personalAPNetworkName.equals(myScanResult.m_ssid))
 				{
 					foundPersonalAP = true;
@@ -502,7 +514,7 @@ public class OnboardingTestSuite
 
         onboardingHelper.setPasscode(deviceAboutAnnouncement, TEMP_PASSCODE);
 
-        logger.info("Calling Onboarding.getVerion() after changing passcode");
+        logger.info("Calling Onboarding.getVersion() after changing passcode");
         onboardingHelper.retrieveVersionProperty();
 
         configClient = onboardingHelper.connectConfigClient(deviceAboutAnnouncement);
@@ -567,7 +579,7 @@ public class OnboardingTestSuite
 
         try
         {
-            logger.info("calling factory reset");
+            logger.info("Calling factory reset");
             configClient.factoryReset();
         }
         catch (ErrorReplyBusException e)
@@ -672,6 +684,8 @@ public class OnboardingTestSuite
 	{
 		onboardingHelper.callOffboard();
 		
+		logger.info("Partial Verdict: PASS");
+		
 		String ssid = onboardingHelper.connectToDUTOnSoftAP();
 		if (softAPssid == null)
 		{
@@ -679,6 +693,7 @@ public class OnboardingTestSuite
 		}
 
 		onboardingHelper.waitForAboutAnnouncementAndThenConnect();
+		logger.info("Partial Verdict: PASS");
 	}
 	
     /*protected String getOnboardeeSoftApSsid()
@@ -901,6 +916,8 @@ public class OnboardingTestSuite
 	{
 		if (first != second) {
 			fail(errorMessage);
+		} else {
+			logger.info("Partial Verdict: PASS");
 		}
 	}
 

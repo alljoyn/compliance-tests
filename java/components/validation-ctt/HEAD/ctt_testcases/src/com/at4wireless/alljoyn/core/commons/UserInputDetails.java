@@ -17,19 +17,10 @@ package com.at4wireless.alljoyn.core.commons;
 
 import javax.swing.JOptionPane;
 
-/**
- * Manages the user inputs such as selectors or yes/no questions
- */
 public class UserInputDetails
 {
 	int selected;
 	
-	/**
-	 * Instantiates a new user input details.
-	 *
-	 * @param message the message
-	 * @param msgArray the msg array
-	 */
 	public UserInputDetails(String message, String[] msgArray)
 	{
 		 selected = JOptionPane.showOptionDialog(null, message, "Title",
@@ -37,13 +28,6 @@ public class UserInputDetails
 		        null, msgArray, msgArray[0]);
 	}
 	
-	/**
-	 * Instantiates a new user input details.
-	 *
-	 * @param title the title
-	 * @param message the message
-	 * @param button the button
-	 */
 	public UserInputDetails(String title, String message, String[] button)
 	{
 		 selected = JOptionPane.showOptionDialog(null, message, title,

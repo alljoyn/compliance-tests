@@ -15,16 +15,8 @@
  *******************************************************************************/
 package com.at4wireless.alljoyn.core.commons.log;
 
-
-/**
- * The Class WindowsLoggerProvider.
- */
 public class WindowsLoggerProvider implements LoggerProvider
 {
-
-    /* (non-Javadoc)
-     * @see com.at4wireless.alljoyn.core.commons.log.LoggerProvider#getLogger(java.lang.String)
-     */
     @Override
     public WindowsLoggerImpl getLogger(String tag)
     {

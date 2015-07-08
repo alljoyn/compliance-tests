@@ -23,26 +23,14 @@ import org.alljoyn.bus.Variant;
 
 import com.at4wireless.alljoyn.core.audio.AudioTransports.MetadataSource;
 
-
-// TODO: Auto-generated Javadoc
-/**
- * The Class MetadataSourceObject.
- */
 public class MetadataSourceObject implements MetadataSource, BusObject
 {
-    
-    /* (non-Javadoc)
-     * @see com.at4wireless.alljoyn.core.audio.AudioTransports.MetadataSource#getVersion()
-     */
     @Override
     public short getVersion() throws BusException
     {
         return 1;
     }
 
-    /* (non-Javadoc)
-     * @see com.at4wireless.alljoyn.core.audio.AudioTransports.MetadataSource#Data(java.util.Map)
-     */
     @Override
     public void Data(Map<String, Variant> dictionary) throws BusException
     {

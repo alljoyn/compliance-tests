@@ -17,55 +17,36 @@ package com.at4wireless.alljoyn.core.commons;
 
 import org.alljoyn.ns.commons.GenericLogger;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class GenericLoggerImp.
- */
-public class GenericLoggerImp implements GenericLogger {
-
-	/* (non-Javadoc)
-	 * @see org.alljoyn.ns.commons.GenericLogger#debug(java.lang.String, java.lang.String)
-	 */
+public class GenericLoggerImp implements GenericLogger
+{
 	@Override
-	public void debug(String TAG, String msg) {
+	public void debug(String TAG, String msg)
+	{
 		// TODO Auto-generated method stub
-
 	}
 
-	/* (non-Javadoc)
-	 * @see org.alljoyn.ns.commons.GenericLogger#info(java.lang.String, java.lang.String)
-	 */
 	@Override
-	public void info(String TAG, String msg) {
+	public void info(String TAG, String msg)
+	{
 		// TODO Auto-generated method stub
-
 	}
 
-	/* (non-Javadoc)
-	 * @see org.alljoyn.ns.commons.GenericLogger#warn(java.lang.String, java.lang.String)
-	 */
 	@Override
-	public void warn(String TAG, String msg) {
+	public void warn(String TAG, String msg)
+	{
 		// TODO Auto-generated method stub
-
 	}
 
-	/* (non-Javadoc)
-	 * @see org.alljoyn.ns.commons.GenericLogger#error(java.lang.String, java.lang.String)
-	 */
 	@Override
-	public void error(String TAG, String msg) {
+	public void error(String TAG, String msg)
+	{
 		// TODO Auto-generated method stub
-
 	}
 
-	/* (non-Javadoc)
-	 * @see org.alljoyn.ns.commons.GenericLogger#fatal(java.lang.String, java.lang.String)
-	 */
 	@Override
-	public void fatal(String TAG, String msg) {
+	public void fatal(String TAG, String msg)
+	{
 		// TODO Auto-generated method stub
-
 	}
 
 }

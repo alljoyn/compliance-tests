@@ -15,17 +15,9 @@
  *******************************************************************************/
 package com.at4wireless.alljoyn.core.audio;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Enum AudioSinkParameter.
- */
 public enum AudioSinkParameter
 {
-    
-    /** The Channels. */
     Channels, 
- /** The Format. */
- Format, 
- /** The Rate. */
- Rate;
+    Format, 
+    Rate;
 }

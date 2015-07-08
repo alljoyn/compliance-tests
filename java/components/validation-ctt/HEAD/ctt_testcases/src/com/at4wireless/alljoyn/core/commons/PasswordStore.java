@@ -18,33 +18,15 @@ package com.at4wireless.alljoyn.core.commons;
 import java.util.HashMap;
 import java.util.Map;
 
-
-/**
- * The Class PasswordStore.
- */
 public class PasswordStore
 {
-    
-    /** The password store. */
     private Map<String, char[]> passwordStore = new HashMap<String, char[]>();
 
-    /**
-     * Gets the password.
-     *
-     * @param peerName the peer name
-     * @return the password
-     */
     public char[] getPassword(String peerName)
     {
         return passwordStore.get(peerName);
     }
 
-    /**
-     * Sets the password.
-     *
-     * @param peerName the peer name
-     * @param password the password
-     */
     public void setPassword(String peerName, char[] password)
     {
         passwordStore.put(peerName, password);

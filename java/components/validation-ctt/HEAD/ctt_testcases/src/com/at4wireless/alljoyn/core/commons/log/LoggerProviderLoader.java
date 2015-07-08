@@ -15,19 +15,8 @@
  *******************************************************************************/
 package com.at4wireless.alljoyn.core.commons.log;
 
-
-// TODO: Auto-generated Javadoc
-/**
- * The Class LoggerProviderLoader.
- */
 public class LoggerProviderLoader
 {
-    
-    /**
-     * Load logger provider.
-     *
-     * @return the windows logger provider
-     */
     public WindowsLoggerProvider loadLoggerProvider()
     {
         try
@@ -40,17 +29,6 @@ public class LoggerProviderLoader
         }
     }
 
-  
-
-
-/**
- * Load windows logger provider.
- *
- * @return the windows logger provider
- * @throws InstantiationException the instantiation exception
- * @throws IllegalAccessException the illegal access exception
- * @throws ClassNotFoundException the class not found exception
- */
 public WindowsLoggerProvider loadWindowsLoggerProvider() throws InstantiationException, IllegalAccessException, ClassNotFoundException
     {
         return  new WindowsLoggerProvider();

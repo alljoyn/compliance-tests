@@ -20,26 +20,14 @@ import org.alljoyn.bus.BusObject;
 
 import com.at4wireless.alljoyn.core.audio.AudioTransports.ImageSink;
 
-
-// TODO: Auto-generated Javadoc
-/**
- * The Class ImageSourceObject.
- */
 public class ImageSourceObject implements ImageSink, BusObject
 {
-    
-    /* (non-Javadoc)
-     * @see com.at4wireless.alljoyn.core.audio.AudioTransports.ImageSink#getVersion()
-     */
     @Override
     public short getVersion() throws BusException
     {
         return 1;
     }
-
-    /* (non-Javadoc)
-     * @see com.at4wireless.alljoyn.core.audio.AudioTransports.ImageSink#Data(byte[])
-     */
+    
     @Override
     public void Data(byte[] data) throws BusException
     {

@@ -15,38 +15,19 @@
  *******************************************************************************/
 package com.at4wireless.alljoyn.core.audio;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Enum AudioSinkParameterSignature.
- */
 public enum AudioSinkParameterSignature
 {
-    
-    /** The Channels. */
     Channels("ay"), 
- /** The Format. */
- Format("as"), 
- /** The Rate. */
- Rate("aq"), ;
+    Format("as"), 
+ 	Rate("aq");
 
-    /** The value. */
     private String value;
 
-    /**
-     * Instantiates a new audio sink parameter signature.
-     *
-     * @param value the value
-     */
     AudioSinkParameterSignature(String value)
     {
         this.value = value;
     }
 
-    /**
-     * Gets the value.
-     *
-     * @return the value
-     */
     public String getValue()
     {
         return value;
