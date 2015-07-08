@@ -1,18 +1,18 @@
-/*
- * Copyright AllSeen Alliance. All rights reserved.
+/*******************************************************************************
+ *  Copyright AllSeen Alliance. All rights reserved.
  *
- *    Permission to use, copy, modify, and/or distribute this software for any
- *    purpose with or without fee is hereby granted, provided that the above
- *    copyright notice and this permission notice appear in all copies.
+ *     Permission to use, copy, modify, and/or distribute this software for any
+ *     purpose with or without fee is hereby granted, provided that the above
+ *     copyright notice and this permission notice appear in all copies.
  *
- *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
- *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
- *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
- *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
- *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
- *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
- *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
+ *     THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *     WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *     MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *     ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *     WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *     ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *******************************************************************************/
 package com.at4wireless.alljoyn.core.lightingcontroller;
 
 import org.alljoyn.bus.BusAttachment;
@@ -28,34 +28,14 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.introspection.BusIntrospector;
 import com.at4wireless.alljoyn.core.introspection.XmlBasedBusIntrospector;
 
-// TODO: Auto-generated Javadoc
-/**
- * Class to connect to the ControllerService and establish a multi-point
- * session.
- */
 public class ControllerServiceHelper extends ServiceHelper
 {
-    
-    /** The Constant TAG. */
     private static final String TAG   = "ControllerServiceHelper";
-	
-	/** The Constant logger. */
 	private static final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
-
-    /** The session id. */
     private int sessionId;
-    
-    /** The service name. */
     private String serviceName;
-    
-    /** The contact port. */
     private short contactPort;
 
-    /**
-     * Instantiates a new controller service helper.
-     *
-     * @param logger the logger
-     */
     public ControllerServiceHelper(WindowsLoggerImpl logger)
     {
         super(logger);
@@ -63,12 +43,6 @@ public class ControllerServiceHelper extends ServiceHelper
         serviceName = null;
     }
 
-    /**
-     * Connect.
-     *
-     * @param aboutAnnouncementDetails the about announcement details
-     * @throws Exception the exception
-     */
     public void connect(AboutAnnouncementDetails aboutAnnouncementDetails) throws Exception
     {
         serviceName = aboutAnnouncementDetails.getServiceName();
@@ -87,65 +61,31 @@ public class ControllerServiceHelper extends ServiceHelper
         logger.info("Partial Verdict: PASS");
     }
 
-    /**
-     * Gets the port.
-     *
-     * @return the port
-     */
     public short getPort()
     {
         return contactPort;
     }
 
-    /**
-     * Gets the service name.
-     *
-     * @return the service name
-     */
     public String getServiceName()
     {
         return serviceName;
     }
 
-    /**
-     * Gets the session id.
-     *
-     * @return the session id
-     */
     public int getSessionId()
     {
         return sessionId;
     }
 
-    /**
-     * Gets the bus introspector.
-     *
-     * @return the bus introspector
-     */
     public BusIntrospector getBusIntrospector()
     {
         return new XmlBasedBusIntrospector(getBusAttachment(), getServiceName(), getSessionId());
     }
 
-    /**
-     * Gets the proxy bus object.
-     *
-     * @param path the path
-     * @param classes the classes
-     * @return the proxy bus object
-     */
     public ProxyBusObject getProxyBusObject(String path, Class<?>[] classes)
     {
         return getBusAttachment().getProxyBusObject(serviceName, path, sessionId, classes);
     }
-
-    /**
-     * Do join session.
-     *
-     * @param name the name
-     * @param contactPort the contact port
-     * @return the status
-     */
+    
     private Status doJoinSession(final String name, short contactPort)
     {
         SessionOpts sessionOpts = new SessionOpts();
@@ -160,9 +100,12 @@ public class ControllerServiceHelper extends ServiceHelper
             {
 
             }
-
+            // [ASACOMP-66] sessionLost method changes its input attributes
+            // [ASACOMP-66] Changes start.
             @Override
-            public void sessionLost(int sid)
+            //public void sessionLost(int sid) 				
+            public void sessionLost(int sid, int reason)
+            // [ASACOMP-66] Changes end.
             {
 
             }

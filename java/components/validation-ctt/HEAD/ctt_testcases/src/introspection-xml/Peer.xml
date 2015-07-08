@@ -103,6 +103,15 @@
           <arg type="u" direction="in"/>
           <arg type="u" direction="out"/>
         </method>
+        <!-- [ASACOMP-50 start] -->
+        <method name="SetIdleTimeouts">
+          <arg type="u" direction="in"/>
+          <arg type="u" direction="in"/>
+          <arg type="u" direction="out"/>
+          <arg type="u" direction="out"/>
+          <arg type="u" direction="out"/>
+        </method>
+        <!-- [ASACOMP-50 ends] -->
     </interface>
     <interface name="org.alljoyn.Bus.Peer.HeaderCompression">
         <method name="GetExpansion">
