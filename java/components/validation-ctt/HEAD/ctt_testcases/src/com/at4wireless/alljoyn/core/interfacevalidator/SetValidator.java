@@ -18,24 +18,8 @@ package com.at4wireless.alljoyn.core.interfacevalidator;
 import java.util.HashSet;
 import java.util.Set;
 
-
-
-// TODO: Auto-generated Javadoc
-/**
- * The Class SetValidator.
- *
- * @param <E> the element type
- */
 public class SetValidator<E>
 {
-    
-    /**
-     * Validate.
-     *
-     * @param expectedObjectSet the expected object set
-     * @param foundObjectSet the found object set
-     * @return the validation result
-     */
     public ValidationResult validate(Set<E> expectedObjectSet, Set<E> foundObjectSet)
     {
         boolean valid = true;
@@ -68,13 +52,6 @@ public class SetValidator<E>
         return new ValidationResult(valid, failureReasonBuilder.toString());
     }
 
-    /**
-     * Subtract.
-     *
-     * @param expectedObjectSet the expected object set
-     * @param foundObjectSet the found object set
-     * @return the sets the
-     */
     private Set<Object> subtract(Set<E> expectedObjectSet, Set<E> foundObjectSet)
     {
         Set<Object> missingObjects = new HashSet<Object>();

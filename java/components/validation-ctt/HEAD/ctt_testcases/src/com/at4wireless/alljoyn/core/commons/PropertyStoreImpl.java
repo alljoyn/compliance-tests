@@ -26,27 +26,13 @@ import org.alljoyn.about.AboutKeys;
 import org.alljoyn.services.common.PropertyStore;
 import org.alljoyn.services.common.PropertyStoreException;
 
-
-
-// TODO: Auto-generated Javadoc
-/**
- * The Class PropertyStoreImpl.
- */
 public class PropertyStoreImpl  implements PropertyStore
 {
-	
-	/** The m_ announce keys. */
 	private Set < String > m_AnnounceKeys = new HashSet < String >();
 	
-	/** The m_ data map. */
 	private Map < String, Map < String, Object > > m_DataMap = new HashMap < 
 			String, Map < String, Object > >();
 
-	/**
-	 * Instantiates a new about store.
-	 *
-	 * @param defaultMap the default map
-	 */
 	public PropertyStoreImpl(Map < String, Map < String, Object > > defaultMap)
 	{
 		// Initialize set of Announce keys
@@ -63,33 +49,21 @@ public class PropertyStoreImpl  implements PropertyStore
 
 	}
 
-
-
-	/**
-	 * Instantiates a new property store impl.
-	 */
 	public PropertyStoreImpl() {
 		// TODO Auto-generated constructor stub
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see org.alljoyn.services.common.PropertyStore#readAll(java.lang.String, org.alljoyn.services.common.PropertyStore.Filter, java.util.Map)
-	 */
 	@Override
 	public void readAll(String languageTag, Filter filter, Map<String, 
-			Object> dataMap) throws PropertyStoreException {
-
-		
-
-	
-
-		for (Entry<String, Map<String, Object>> entry :m_DataMap.entrySet()) {
+			Object> dataMap) throws PropertyStoreException
+	{
+		for (Entry<String, Map<String, Object>> entry :m_DataMap.entrySet())
+		{
 			if (entry.getValue().containsKey(languageTag))
 			{
 				String lang = "";
-				if (entry.getValue().containsKey(languageTag)) {
+				if (entry.getValue().containsKey(languageTag))
+				{
 					lang = languageTag;
 				}
 				switch (filter) 
@@ -109,79 +83,40 @@ public class PropertyStoreImpl  implements PropertyStore
 								entry.getValue().get(lang));
 					}
 					break;
-
-
-
 				}
 			}
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.alljoyn.services.common.PropertyStore#reset(java.lang.String, java.lang.String)
-	 */
 	@Override
 	public void reset(String key, String languageTag) throws 
 	PropertyStoreException {
 	}
 
-	/* (non-Javadoc)
-	 * @see org.alljoyn.services.common.PropertyStore#resetAll()
-	 */
 	@Override
 	public void resetAll() throws PropertyStoreException {
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see org.alljoyn.services.common.PropertyStore#update(java.lang.String, java.lang.String, java.lang.Object)
-	 */
 	@Override
 	public void update(String key, String languageTag, Object newValue)
 			throws PropertyStoreException {
 	}
 
-
-
-	/**
-	 * Sets the value.
-	 *
-	 * @param aboutkey the aboutkey
-	 * @param value the value
-	 * @param lang the lang
-	 */
-	public void setValue(String aboutkey, String value, String lang) {
-		// TODO Auto-generated method stub
-		
-		
+	public void setValue(String aboutkey, String value, String lang)
+	{
 		Map < String, Object > defaultMap = new HashMap <String, Object>();
 		defaultMap.put(lang, value);
 		
-		m_DataMap.put(aboutkey, defaultMap);
-		
+		m_DataMap.put(aboutkey, defaultMap);	
 	}
 
-
-
-	/**
-	 * Sets the value.
-	 *
-	 * @param aboutkeys the aboutkeys
-	 * @param appId the app id
-	 * @param lang the lang
-	 */
-	public void setValue(String aboutkeys, UUID appId, String lang) {
-		// TODO Auto-generated method stub
-		
-		
-		
+	public void setValue(String aboutkeys, UUID appId, String lang)
+	{
 		UUID uuid = appId;
 		Map < String, Object > defaultAppId = new HashMap <String, Object>();
 		defaultAppId.put(lang, uuid);
 		
 		m_DataMap.put(AboutKeys.ABOUT_APP_ID, defaultAppId);
-		
 	}
 
 

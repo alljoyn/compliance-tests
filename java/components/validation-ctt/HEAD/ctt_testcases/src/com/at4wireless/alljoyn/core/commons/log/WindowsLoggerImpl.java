@@ -18,20 +18,10 @@ package com.at4wireless.alljoyn.core.commons.log;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * The Class WindowsLoggerImpl.
- */
 public class WindowsLoggerImpl implements Logger
 {
-    
-    /** The tag. */
     private final String tag;
 
-    /**
-     * Instantiates a new windows logger impl.
-     *
-     * @param tag the tag
-     */
     public WindowsLoggerImpl(String tag)
     {
     	this.tag = tag;
@@ -41,9 +31,6 @@ public class WindowsLoggerImpl implements Logger
         }
     }
 
-    /* (non-Javadoc)
-     * @see com.at4wireless.alljoyn.core.commons.log.Logger#error(java.lang.String, java.lang.Object[])
-     */
     @Override
     public void error(String format, Object... args)
     {
@@ -51,90 +38,60 @@ public class WindowsLoggerImpl implements Logger
         
     }
 
-    /* (non-Javadoc)
-     * @see com.at4wireless.alljoyn.core.commons.log.Logger#warn(java.lang.String, java.lang.Object[])
-     */
     @Override
     public void warn(String format, Object... args)
     {
     	 Print("W/"+tag+"("+getPID()+"):"+format);
     }
 
-    /* (non-Javadoc)
-     * @see com.at4wireless.alljoyn.core.commons.log.Logger#info(java.lang.String, java.lang.Object[])
-     */
     @Override
     public void info(String format, Object... args)
     {
     	 Print("I/"+tag+"("+getPID()+"):"+format);
     }
 
-    /* (non-Javadoc)
-     * @see com.at4wireless.alljoyn.core.commons.log.Logger#debug(java.lang.String, java.lang.Object[])
-     */
     @Override
     public void debug(String format, Object... args)
     {
     	 Print("D/"+tag+"("+getPID()+"):"+format);	 
     }
 
-    /* (non-Javadoc)
-     * @see com.at4wireless.alljoyn.core.commons.log.Logger#error(java.lang.String, java.lang.Throwable)
-     */
     @Override
     public void error(String message, Throwable t)
     {
     	 Print("D/"+tag+"("+getPID()+"):"+message);
     }
 
-    /* (non-Javadoc)
-     * @see com.at4wireless.alljoyn.core.commons.log.Logger#warn(java.lang.String, java.lang.Throwable)
-     */
     @Override
     public void warn(String message, Throwable t)
     {
     	 Print("W/"+tag+"("+getPID()+"):"+message);
     }
 
-    /* (non-Javadoc)
-     * @see com.at4wireless.alljoyn.core.commons.log.Logger#info(java.lang.String, java.lang.Throwable)
-     */
     @Override
     public void info(String message, Throwable t)
     {
     	 Print("I/"+tag+"("+getPID()+"):"+message);
     }
 
-    /* (non-Javadoc)
-     * @see com.at4wireless.alljoyn.core.commons.log.Logger#debug(java.lang.String, java.lang.Throwable)
-     */
     @Override
     public void debug(String message, Throwable t)
     {
     	 Print("D/"+tag+"("+getPID()+"):"+message);
     }
 
-	/* (non-Javadoc)
-	 * @see com.at4wireless.alljoyn.core.commons.log.Logger#pass(java.lang.String)
-	 */
 	@Override
 	public void pass(String format)
 	{
 		System.out.println(tag+"("+getPID()+"): PASS: "+format);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.at4wireless.alljoyn.core.commons.log.Logger#fail(java.lang.String)
-	 */
 	@Override
 	public void fail(String format)
 	{
 		Print("F/"+format);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.at4wireless.alljoyn.core.commons.log.Logger#addNote(java.lang.String)
-	 */
 	@Override
 	public void addNote(String format)
 	{
@@ -151,22 +108,12 @@ public class WindowsLoggerImpl implements Logger
 		System.out.println(format);
 	}
 	
-	/**
-	 * Prints the string.
-	 *
-	 * @param string the string
-	 */
 	private void Print(String string)
 	{
 		String str = getTimeStamp()+":"+string;
 		System.out.println(str);
 	}
 
-	/**
-	 * Gets the time stamp.
-	 *
-	 * @return the time stamp
-	 */
 	public String getTimeStamp()
 	{
 		Date utilDate = new java.util.Date(); 
@@ -178,16 +125,11 @@ public class WindowsLoggerImpl implements Logger
 		return timeStamp;
 	}
 	
-	/**
-	 * Gets the pid.
-	 *
-	 * @return the pid
-	 */
 	public static long getPID()
 	{
 	    String processName = 
 	    		java.lang.management.ManagementFactory.getRuntimeMXBean().getName();
 	    return Long.parseLong(processName.split("@")[0]);
-	  }
+	}
 }
 

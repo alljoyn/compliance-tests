@@ -73,12 +73,10 @@ import com.at4wireless.alljoyn.testcases.iop.lighting.LightingIOP;
 import com.at4wireless.alljoyn.testcases.iop.notification.NotificationIOP;
 import com.at4wireless.alljoyn.testcases.iop.onboarding.OnboardingIOP;
  
-/**
- * The Class Manager.
- */
-public class Manager extends Thread {
-
-	static {
+public class Manager extends Thread
+{
+	static
+	{
 		System.loadLibrary("alljoyn_java");
 	}
 	
@@ -86,7 +84,7 @@ public class Manager extends Thread {
 	protected static final String TAG = "TestRunner";
 	
 	/** CTT Local Agent Certification Release */
-	String versionKey="15.04.00";
+	String versionKey="15.04.00a";
 	
 	/** Map where Golden Units will be precharged */
 	private Map<String, List<String>> goldenUnits = new HashMap<String,List<String>>();

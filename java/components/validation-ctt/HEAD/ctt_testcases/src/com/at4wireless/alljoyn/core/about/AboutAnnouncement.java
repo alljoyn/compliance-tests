@@ -19,7 +19,6 @@ import java.util.Map;
 
 import org.alljoyn.bus.AboutObjectDescription;
 import org.alljoyn.bus.Variant;
-import org.alljoyn.services.common.BusObjectDescription;
 
 /**
  * This class contains details of the announcement broadcast by About feature
@@ -30,7 +29,7 @@ public class AboutAnnouncement
 {
     private String serviceName;
     private short port;
-    //private BusObjectDescription[] objectDescriptions;
+    //private BusObjectDescription[] objectDescriptions; //[AT4] deprecated
     private AboutObjectDescription[] objectDescriptions;
     private Map<String, Variant> aboutData;
     

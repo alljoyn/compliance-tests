@@ -34,9 +34,7 @@ import org.alljoyn.onboarding.transport.ScanInfo;
 import com.at4wireless.alljoyn.core.about.AboutAnnouncementDetails;
 import com.at4wireless.alljoyn.core.commons.ServiceHelper;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
-import com.at4wireless.alljoyn.core.onboarding.ScanResult;
-import com.at4wireless.alljoyn.core.onboarding.WifiHelper;
-import com.at4wireless.alljoyn.core.onboarding.WifiNetworkConfig;
+import com.at4wireless.alljoyn.wifiapi.ScanResult;
 
 public class OnboardingHelper
 {
@@ -108,9 +106,9 @@ public class OnboardingHelper
 
     	releaseServiceHelper();
     	
-    	if (wifiHelper.getCurrentSSID() != null) { //[AT4]
+    	/*if (wifiHelper.getCurrentSSID() != null) { //[AT4]
     		wifiHelper.waitForDisconnect(5, TimeUnit.SECONDS);
-    	}
+    	}*/
     	
     	boolean isSoftAPAvailable = false;
     	String ssid = getSoftAPSsid();
@@ -131,7 +129,8 @@ public class OnboardingHelper
                 {
                     for (ScanResult scanResult : availableAccessPoints)
                     {
-                        if (scanResult.SSID.startsWith("AJ_") && softAPMatchesDeviceId(scanResult.SSID, deviceId)) //[AT4]
+                        if ((scanResult.SSID.startsWith("AJ_") || scanResult.SSID.endsWith("_AJ")) //[AT4]
+                        		&& softAPMatchesDeviceId(scanResult.SSID, deviceId)) 
                         {
                             ssid = scanResult.SSID;
                             logger.info(String.format("Found matching ssid: %s for deviceId: %s", ssid, deviceId));
@@ -235,9 +234,10 @@ public class OnboardingHelper
         releaseServiceHelper();
         String personalAPNetworkName = personalAPConfig.getSsid();
         
-        if (wifiHelper.getCurrentSSID() != null) { //[AT4]
+        //System.out.println(wifiHelper.getCurrentSSID());
+        /*if (wifiHelper.getCurrentSSID() != null) { //[AT4]
         	wifiHelper.waitForDisconnect(5, TimeUnit.SECONDS);
-        }
+        }*/
         
         String connectedSsid = null;
         int numTries = 0;
@@ -256,6 +256,7 @@ public class OnboardingHelper
         {
             throw new Exception(String.format("Connected network ssid is not personal AP; was: %s; expected: %s", connectedSsid, personalAPNetworkName));
         }
+
         initServiceHelper();
     }
 
@@ -292,7 +293,7 @@ public class OnboardingHelper
                     else
                     {
                         message = String.format(
-                                "Soft AP became available while waiting to receive About announcement from app  supporting Onboarding and having a deviceId ending in: %s",
+                                "Soft AP became available while waiting to receive About announcement from app supporting Onboarding and having a deviceId ending in: %s",
                                 deviceIdSuffix);
                     }
                     throw new Exception(message);
@@ -406,10 +407,11 @@ public class OnboardingHelper
         String softAPSsid = getSoftApSsid();
 
         String currentSsid = null;
-
+        
         while (currentSsid == null)
         {
             currentSsid = wifiHelper.getCurrentSSID();
+
             if (currentSsid == null)
             {
                 connectToPersonalAP();

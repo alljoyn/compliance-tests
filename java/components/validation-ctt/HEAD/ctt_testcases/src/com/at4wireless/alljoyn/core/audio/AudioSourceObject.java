@@ -20,26 +20,14 @@ import org.alljoyn.bus.BusObject;
 
 import com.at4wireless.alljoyn.core.audio.AudioTransports.AudioSource;
 
-
-// TODO: Auto-generated Javadoc
-/**
- * The Class AudioSourceObject.
- */
 public class AudioSourceObject implements AudioSource, BusObject
 {
-    
-    /* (non-Javadoc)
-     * @see com.at4wireless.alljoyn.core.audio.AudioTransports.AudioSource#getVersion()
-     */
     @Override
     public short getVersion() throws BusException
     {
         return 1;
     }
 
-    /* (non-Javadoc)
-     * @see com.at4wireless.alljoyn.core.audio.AudioTransports.AudioSource#Data(long, byte[])
-     */
     @Override
     public void Data(long timestamp, byte[] data) throws BusException
     {

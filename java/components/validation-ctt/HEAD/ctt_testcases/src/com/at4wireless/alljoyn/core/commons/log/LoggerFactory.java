@@ -15,39 +15,18 @@
  *******************************************************************************/
 package com.at4wireless.alljoyn.core.commons.log;
 
-// TODO: Auto-generated Javadoc
-/**
- * A factory for creating Logger objects.
- */
 public class LoggerFactory
 {
-    
-    /** The logger provider. */
     private static WindowsLoggerProvider loggerProvider = new LoggerProviderLoader().loadLoggerProvider();
 
-    /**
-     * Gets the logger.
-     *
-     * @param tag the tag
-     * @return the logger
-     */
     public static WindowsLoggerImpl getLogger(String tag)
     {
         return loggerProvider.getLogger(tag);
     }
     
-    
-    
-    /**
-     * Gets the windows logger logger.
-     *
-     * @param tag the tag
-     * @return the windows logger logger
-     */
     public WindowsLoggerImpl getWindowsLoggerLogger(String tag)
     {
         return loggerProvider.getLogger(tag);
     }
-
 }
  

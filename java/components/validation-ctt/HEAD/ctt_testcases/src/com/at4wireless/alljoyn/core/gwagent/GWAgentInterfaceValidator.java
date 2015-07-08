@@ -32,39 +32,18 @@ import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionNode;
 import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionProperty;
 import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionSignal;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class GWAgentInterfaceValidator.
- */
 public class GWAgentInterfaceValidator
 {
-    
-    /** The introspection nodes loaded from xml files. */
     private final List<IntrospectionNode> introspectionNodesLoadedFromXmlFiles = new ArrayList<IntrospectionNode>();
-    
-    /** The introspection xml parser. */
     private IntrospectionXmlParser introspectionXmlParser;
-    
-    /** The Constant TAG. */
     private static final String TAG = "GWAIfaceValidator";
-	
-	/** The Constant logger. */
 	private static final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
 
-    /**
-     * Instantiates a new GW agent interface validator.
-     */
     public GWAgentInterfaceValidator( )
     {
         
     }
 
-    /**
-     * Validate.
-     *
-     * @param interfaceDetail the interface detail
-     * @return the validation result
-     */
     public ValidationResult validate(InterfaceDetail interfaceDetail)
     {
         StringBuilder failureReasonBuilder = new StringBuilder();
@@ -84,12 +63,6 @@ public class GWAgentInterfaceValidator
         return new ValidationResult(valid, failureReasonBuilder.toString());
     }
 
-    /**
-     * Validate.
-     *
-     * @param interfaceDetailList the interface detail list
-     * @return the validation result
-     */
     public ValidationResult validate(List<InterfaceDetail> interfaceDetailList)
     {
         StringBuilder failureReasonBuilder = new StringBuilder();
@@ -109,24 +82,12 @@ public class GWAgentInterfaceValidator
         return new ValidationResult(valid, failureReasonBuilder.toString());
     }
 
-    /**
-     * Gets the xml files to be loaded.
-     *
-     * @return the xml files to be loaded
-     */
     List<String> getXmlFilesToBeLoaded()
     {
         return Arrays.asList(IntrospectionXmlFile.GWAgentCtrlAppMgmt.getValue(), IntrospectionXmlFile.GWAgentCtrlApp.getValue(),
                 IntrospectionXmlFile.GWAgentCtrlAclMgmt.getValue(), IntrospectionXmlFile.GWAgentCtrlAcl.getValue());
     }
 
-    /**
-     * Validate interface.
-     *
-     * @param standardizedIntrospectionInterface the standardized introspection interface
-     * @param path the path
-     * @return the validation result
-     */
     private ValidationResult validateInterface(IntrospectionInterface standardizedIntrospectionInterface, String path)
     {
         ValidationResult validationResult = null;
@@ -145,14 +106,6 @@ public class GWAgentInterfaceValidator
         return validationResult;
     }
 
-    /**
-     * Compare.
-     *
-     * @param interfaceDetail the interface detail
-     * @param standardizedIntrospectionInterface the standardized introspection interface
-     * @param path the path
-     * @return the validation result
-     */
     private ValidationResult compare(InterfaceDetail interfaceDetail, IntrospectionInterface standardizedIntrospectionInterface, String path)
     {
         boolean valid = true;
@@ -218,13 +171,6 @@ public class GWAgentInterfaceValidator
         return new ValidationResult(valid, failureReasonBuilder.toString());
     }
 
-    /**
-     * Checks if is version property missing.
-     *
-     * @param expectedIntrospectionInterface the expected introspection interface
-     * @param propertyValidationResult the property validation result
-     * @return true, if is version property missing
-     */
     private boolean isVersionPropertyMissing(IntrospectionInterface expectedIntrospectionInterface, ValidationResult propertyValidationResult)
     {
         return !propertyValidationResult.isValid()
@@ -232,37 +178,18 @@ public class GWAgentInterfaceValidator
                 && propertyValidationResult.getFailureReason().equals(" - Missing Property [name=Version, type=q, access=read]");
     }
 
-    /**
-     * Checks if is undefined method present for config interface.
-     *
-     * @param expectedIntrospectionInterface the expected introspection interface
-     * @param methodValidationResult the method validation result
-     * @return true, if is undefined method present for config interface
-     */
     private boolean isUndefinedMethodPresentForConfigInterface(IntrospectionInterface expectedIntrospectionInterface, ValidationResult methodValidationResult)
     {
         return !methodValidationResult.isValid() && expectedIntrospectionInterface.getName().equals("org.alljoyn.Config")
                 && methodValidationResult.getFailureReason().equals(" - Undefined Method [name=getVersion, args=[[type=q]], annotations=[]]");
     }
 
-    /**
-     * Checks if is annotation missing for peer authentication interface.
-     *
-     * @param expectedIntrospectionInterface the expected introspection interface
-     * @param annotationValidationResult the annotation validation result
-     * @return true, if is annotation missing for peer authentication interface
-     */
     private boolean isAnnotationMissingForPeerAuthenticationInterface(IntrospectionInterface expectedIntrospectionInterface, ValidationResult annotationValidationResult)
     {
         return !annotationValidationResult.isValid() && expectedIntrospectionInterface.getName().equals("org.alljoyn.Bus.Peer.Authentication")
                 && annotationValidationResult.getFailureReason().contains("Missing Annotation") && !annotationValidationResult.getFailureReason().contains("Undefined Annotation");
     }
 
-    /**
-     * Gets the introspection nodes loaded from xml files.
-     *
-     * @return the introspection nodes loaded from xml files
-     */
     private List<IntrospectionNode> getIntrospectionNodesLoadedFromXmlFiles()
     {
         if (introspectionNodesLoadedFromXmlFiles.isEmpty())
@@ -274,9 +201,6 @@ public class GWAgentInterfaceValidator
         return introspectionNodesLoadedFromXmlFiles;
     }
 
-    /**
-     * Builds the introspection nodes from xml files.
-     */
     private void buildIntrospectionNodesFromXmlFiles()
     {
         for (String xmlFileToBeLoaded : getXmlFilesToBeLoaded())
@@ -294,13 +218,6 @@ public class GWAgentInterfaceValidator
         }
     }
 
-    /**
-     * Gets the interface detail.
-     *
-     * @param introspectionNodes the introspection nodes
-     * @param introspectionInterfaceName the introspection interface name
-     * @return the interface detail
-     */
     private InterfaceDetail getInterfaceDetail(List<IntrospectionNode> introspectionNodes, String introspectionInterfaceName)
     {
         for (IntrospectionNode introspectionNode : introspectionNodes)
@@ -320,12 +237,6 @@ public class GWAgentInterfaceValidator
         return null;
     }
 
-    /**
-     * Append to failure reason.
-     *
-     * @param failureReasonBuilder the failure reason builder
-     * @param reason the reason
-     */
     private void appendToFailureReason(StringBuilder failureReasonBuilder, String reason)
     {
         if (!reason.trim().isEmpty())
