@@ -1,18 +1,18 @@
-/*
- * Copyright AllSeen Alliance. All rights reserved.
+/*******************************************************************************
+ *  Copyright AllSeen Alliance. All rights reserved.
  *
- *    Permission to use, copy, modify, and/or distribute this software for any
- *    purpose with or without fee is hereby granted, provided that the above
- *    copyright notice and this permission notice appear in all copies.
+ *     Permission to use, copy, modify, and/or distribute this software for any
+ *     purpose with or without fee is hereby granted, provided that the above
+ *     copyright notice and this permission notice appear in all copies.
  *
- *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
- *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
- *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
- *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
- *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
- *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
- *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
+ *     THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *     WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *     MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *     ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *     WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *     ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *******************************************************************************/
 package com.at4wireless.alljoyn.testcases.conf.configuration;
 
 import java.util.Arrays;
@@ -25,8 +25,8 @@ import org.alljoyn.about.AboutKeys;
 import org.alljoyn.about.client.AboutClient;
 import org.alljoyn.bus.BusException;
 import org.alljoyn.bus.ErrorReplyBusException;
+import org.alljoyn.bus.Mutable.StringValue;
 import org.alljoyn.config.client.ConfigClient;
-
 import org.alljoyn.onboarding.transport.OnboardingTransport;
 
 import com.at4wireless.alljoyn.core.about.AboutAnnouncementDetails;
@@ -36,104 +36,60 @@ import com.at4wireless.alljoyn.core.commons.ServiceHelper;
 import com.at4wireless.alljoyn.core.commons.SrpAnonymousKeyListener;
 import com.at4wireless.alljoyn.core.commons.UserInputDetails;
 import com.at4wireless.alljoyn.core.commons.log.Logger;
+import com.at4wireless.alljoyn.core.commons.log.LoggerFactory;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.introspection.BusIntrospector;
 
+public class ConfigurationService
+{
+	private final String TAG = "ConfigTestSuite";
+	//private final Logger logger = LoggerFactory.getLogger(TAG);
+	private final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	private  final String NEW_DEVICE_NAME = "newDeviceName";
+	private  final String INVALID_LANGUAGE_CODE = "INVALID";
+    private static final int CONFIG_CLIENT_RECONNECT_WAIT_TIME = 10000;
+    private static final String BUS_APPLICATION_NAME = "ConfigTestSuite";
+    //public static final long SESSION_LOST_TIMEOUT_IN_SECONDS = 30;
+    //private static final long SESSION_CLOSE_TIMEOUT_IN_SECONDS = 5;
+    public static long SESSION_LOST_TIMEOUT_IN_SECONDS = 30; //[AT4] Deleted final state to support customization
+    private static long SESSION_CLOSE_TIMEOUT_IN_SECONDS = 5;
+    
+    private ConfigClient configClient = null;
+    private ServiceHelper serviceHelper;
+    private AboutClient aboutClient;
+    
+    private AboutAnnouncementDetails deviceAboutAnnouncement;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class ConfigurationService.
- */
-public class ConfigurationService {
-
-
+    //private AppUnderTestDetails appUnderTestDetails; [AT4] Not needed
+    //private UUID dutAppId; [AT4] Not needed
+    private String dutDeviceId;
+    private ServiceAvailabilityHandler serviceAvailabilityHandler;
+    private String keyStorePath;
+    private static final String[] DEVICE_NAME_FIELD = new String[]
+    { AboutKeys.ABOUT_DEVICE_NAME };
+    private static final String[] DEFAULT_LANGUAGE_FIELD = new String[]
+    { AboutKeys.ABOUT_DEFAULT_LANGUAGE };
+    private static final String[] BOTH_FIELDS = new String[]
+    { AboutKeys.ABOUT_DEVICE_NAME, AboutKeys.ABOUT_DEFAULT_LANGUAGE };
+    private static final String[] INVALID_FIELD = new String[]
+    { "INVALID" };
+    private static final char[] NEW_PASSCODE = "111111".toCharArray();
+    private static final char[] SINGLE_CHAR_PASSCODE = "1".toCharArray();
+    private static final char[] DEFAULT_PINCODE = SrpAnonymousKeyListener.DEFAULT_PINCODE;
+    private static final char[] SPECIAL_CHARS_PASSCODE = "!@#$%^".toCharArray();
+    private long aboutAnnouncementTimeout;
+    
 	/** The pass. */
 	boolean pass=true;
 	
 	/** The inconc. */
 	boolean inconc=false;
 	
-	/** The about client. */
-	private  AboutClient aboutClient;
-	
-	/** The config client. */
-	private  ConfigClient configClient = null;
-	
-	/** The service availability handler. */
-	private  ServiceAvailabilityHandler serviceAvailabilityHandler;
-	
-	/** The device about announcement. */
-	private  AboutAnnouncementDetails deviceAboutAnnouncement;
-	
-	/** The service helper. */
-	private  ServiceHelper serviceHelper; 
-	
 	/** The bus introspector. */
 	private  BusIntrospector busIntrospector;
 
-	/** The key store path. */
-	private  String  keyStorePath="/KeyStore";
-	
 	/** The dut app id. */
 	private  UUID dutAppId;
-	
-	/** The dut device id. */
-	private  String dutDeviceId;
-	
-	/** The time out. */
-	private  int  timeOut=30;
-
-	/** The about announcement timeout. */
-	private  long aboutAnnouncementTimeout;
-
-	/** The bus application name. */
-	private  final String BUS_APPLICATION_NAME = "ConfigTestSuite";
-	
-	/** The tag. */
-	private  final String TAG = "ConfigTestSuite";
-	
-	/** The logger. */
-	private  final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
-
-	/** The new device name. */
-	private  final String NEW_DEVICE_NAME = "newDeviceName";
-	
-	/** The invalid language code. */
-	private  final String INVALID_LANGUAGE_CODE = "INVALID";
-	
-	/** The device name field. */
-	private  final String[] DEVICE_NAME_FIELD = new String[]
-			{ AboutKeys.ABOUT_DEVICE_NAME };
-	
-	/** The default language field. */
-	private  final String[] DEFAULT_LANGUAGE_FIELD = new String[]
-			{ AboutKeys.ABOUT_DEFAULT_LANGUAGE };
-	
-	/** The both fields. */
-	private  final String[] BOTH_FIELDS = new String[]
-			{ AboutKeys.ABOUT_DEVICE_NAME, AboutKeys.ABOUT_DEFAULT_LANGUAGE };
-	
-	/** The invalid field. */
-	private  final String[] INVALID_FIELD = new String[]
-			{ "INVALID" };
-	
-	/** The new passcode. */
-	private  final char[] NEW_PASSCODE = "111111".toCharArray();
-	
-	/** The single char passcode. */
-	private  final char[] SINGLE_CHAR_PASSCODE = "1".toCharArray();
-	
-	/** The default pincode. */
-	private  final char[] DEFAULT_PINCODE = SrpAnonymousKeyListener.DEFAULT_PINCODE;
-	
-	/** The special chars passcode. */
-	private  final char[] SPECIAL_CHARS_PASSCODE = "!@#$%^".toCharArray();
-
-	/** The session lost timeout in seconds. */
-	public long SESSION_LOST_TIMEOUT_IN_SECONDS = 30;
-	
-	/** The session close timeout in seconds. */
-	private long SESSION_CLOSE_TIMEOUT_IN_SECONDS = 5;
 
 	/** The ics. */
 	Map<String,Boolean> ics;
@@ -141,22 +97,6 @@ public class ConfigurationService {
 	/** The ixit. */
 	Map<String,String> ixit;
 
-	/**
-	 * Instantiates a new configuration service.
-	 *
-	 * @param testCase the test case
-	 * @param iCSCF_ConfigurationServiceFramework the i csc f_ configuration service framework
-	 * @param iCSCF_ConfigurationInterface the i csc f_ configuration interface
-	 * @param iCSCF_FactoryResetMethod the i csc f_ factory reset method
-	 * @param iXITCO_AppId the i xitc o_ app id
-	 * @param iXITCO_DeviceId the i xitc o_ device id
-	 * @param iXITCO_DefaultLanguage the i xitc o_ default language
-	 * @param iXITCF_ConfigVersion the i xitc f_ config version
-	 * @param iXITCF_Passcode the i xitc f_ passcode
-	 * @param gPCO_AnnouncementTimeout the g pc o_ announcement timeout
-	 * @param gPCF_SessionLost the g pc f_ session lost
-	 * @param gPCF_SessionClose the g pc f_ session close
-	 */
 	public ConfigurationService(String testCase,
 			boolean iCSCF_ConfigurationServiceFramework,
 			boolean iCSCF_ConfigurationInterface,
@@ -164,21 +104,22 @@ public class ConfigurationService {
 			String iXITCO_DeviceId, String iXITCO_DefaultLanguage,
 			String iXITCF_ConfigVersion, String iXITCF_Passcode,
 			String gPCO_AnnouncementTimeout, String gPCF_SessionLost,
-			String gPCF_SessionClose) {
-
+			String gPCF_SessionClose)
+	{
 		ics = new HashMap<String,Boolean>();
+		ixit = new HashMap<String,String>();
+		
 		ics.put("ICSCF_ConfigurationServiceFramework",iCSCF_ConfigurationServiceFramework);
 		ics.put("ICSCF_ConfigurationInterface",iCSCF_ConfigurationInterface);
 		ics.put("ICSCF_FactoryResetMethod",iCSCF_FactoryResetMethod);
 		
-		ixit = new HashMap<String,String>();
 		ixit.put("IXITCO_AppId",iXITCO_AppId);
 		//ixit.put("IXITCO_DefaultLanguage",iXITCO_DefaultLanguage);
 		ixit.put("IXITCO_DeviceId",iXITCO_DeviceId);
 		ixit.put("IXITCF_ConfigVersion",iXITCF_ConfigVersion);
 		ixit.put("IXITCF_Passcode", iXITCF_Passcode);
 
-		timeOut = Integer.parseInt(gPCO_AnnouncementTimeout);
+		aboutAnnouncementTimeout = Integer.parseInt(gPCO_AnnouncementTimeout);
 		SESSION_LOST_TIMEOUT_IN_SECONDS = Integer.parseInt(gPCF_SessionLost);
 		SESSION_CLOSE_TIMEOUT_IN_SECONDS = Integer.parseInt(gPCF_SessionClose);
 
@@ -203,131 +144,203 @@ public class ConfigurationService {
 	 * @param testCase the test case
 	 * @throws Exception the exception
 	 */
-	public  void runTestCase(String testCase) throws Exception{
+	public void runTestCase(String testCase) throws Exception
+	{
 		setUp();
 		logger.info("Running testcase: "+testCase);
-		if(testCase.equals("Config-v1-01")){
+		
+		if (testCase.equals("Config-v1-01")) {
 			testConfig_v1_01AppIdEqualsDeviceId();
-		}else if(testCase.equals("Config-v1-02")){
+		} else if (testCase.equals("Config-v1-02")) {
 			testConfig_v1_02ConnectWithWrongPasscode();
-		/*}else if(testCase.equals("Config-v1-03")){
+		/*} else if (testCase.equals("Config-v1-03")) {
 			testConfig_v1_03_ValidateVersion();*/
-		}else if(testCase.equals("Config-v1-04")){
+		} else if (testCase.equals("Config-v1-04")) {
 			testConfig_v1_04GetConfigurationsWithDefaultLanguage();
-		}else if(testCase.equals("Config-v1-05")){
+		} else if (testCase.equals("Config-v1-05")) {
 			testConfig_v1_05UnspecifiedLanguage();
-		}else if(testCase.equals("Config-v1-06")){
+		} else if (testCase.equals("Config-v1-06")) {
 			testConfig_v1_06LangConsistence();
-		}else if(testCase.equals("Config-v1-07")){
+		} else if (testCase.equals("Config-v1-07")) {
 			testConfig_v1_07UnsupportedLanguage();
-		}else if(testCase.equals("Config-v1-08")){
+		} else if (testCase.equals("Config-v1-08")) {
 			testConfig_v1_08UpdateConfigurationsWithANewDeviceName();
-		}else if(testCase.equals("Config-v1-12")){
+		/*} else if (testCase.equals("Config-v1-09")) {
+			testConfig_v1_09UpdateConfigurationsMaxLengthEqDeviceName();
+		} else if (testCase.equals("Config-v1-10")) {
+			testConfig_v1_10DeviceNameExceedsMaxLength();
+		} else if (testCase.equals("Config-v1-11")) {
+			testConfig_v1_11ChangeDeviceNametoEmpty();*/
+		} else if (testCase.equals("Config-v1-12")) {
 			testConfig_v1_12DeviceNameSpecial();
-		}else if(testCase.equals("Config-v1-13")){
+		} else if (testCase.equals("Config-v1-13")) {
 			testConfig_v1_13UpdateUnsupportedLanguage();
-		}else if(testCase.equals("Config-v1-14")){
+		} else if (testCase.equals("Config-v1-14")) {
 			testConfig_v1_14UpdateDefaultLang();
-		}else if(testCase.equals("Config-v1-15")){
+		} else if (testCase.equals("Config-v1-15")) {
 			testConfig_v1_15UpdateDefaultLanguageToUnsupportedLanguage();
-		}else if(testCase.equals("Config-v1-16")){
-			testConfig_v1_16TestChangetoUnspecifiedLanguage();	
-		}else if(testCase.equals("Config-v1-19")){
+		} else if (testCase.equals("Config-v1-16")) {
+			testConfig_v1_16TestChangetoUnspecifiedLanguage();
+		/*} else if (testCase.equals("Config-v1-18")) {
+			testConfig_v1_18TestUpdateReadOnlyField();*/
+		} else if (testCase.equals("Config-v1-19")) {
 			testConfig_v1_19TestUpdateInvalidField();
-		}else if(testCase.equals("Config-v1-20")){
+		} else if (testCase.equals("Config-v1-20")) {
 			testConfig_v1_20TestResetDeviceName();
-		}else if(testCase.equals("Config-v1-21")){
+		} else if (testCase.equals("Config-v1-21")) {
 			testConfig_v1_21ResetDefaultLanguage();
-		}else if(testCase.equals("Config-v1-22")){
+		} else if (testCase.equals("Config-v1-22")) {
 			testConfig_v1_22ResetDefaultMultiLanguage();		
-		}else if(testCase.equals("Config-v1-24")){
+		} else if (testCase.equals("Config-v1-24")) {
 			testConfig_v1_24FailResetUnsupportedLang();
-		}else if(testCase.equals("Config-v1-25")){
+		} else if (testCase.equals("Config-v1-25")) {
 			testConfig_v1_25FailResetInvalidField();
-		}else if(testCase.equals("Config-v1-26")){
+		} else if (testCase.equals("Config-v1-26")) {
 			testConfig_v1_26DeviceRestart();
-		}else if(testCase.equals("Config-v1-27")){
+		} else if (testCase.equals("Config-v1-27")) {
 			testConfig_v1_27DeviceRestartRememberConfData();
-		}else if(testCase.equals("Config-v1-29")){
+		} else if (testCase.equals("Config-v1-29")) {
 			testConfig_v1_29PasscodeChanged();
-		}else if(testCase.equals("Config-v1-30")){
+		} else if (testCase.equals("Config-v1-30")) {
 			testConfig_v1_30PasscodeChangedSingleChar();
-		}else if(testCase.equals("Config-v1-31")){
+		} else if (testCase.equals("Config-v1-31")) {
 			testConfig_v1_31PasscodeChangedSpecialChars();
-		}else if(testCase.equals("Config-v1-32")){
+		} else if (testCase.equals("Config-v1-32")) {
 			testConfig_v1_32PasscodeChangedPersistOnRestart();
-		}else if(testCase.equals("Config-v1-33")){
+		} else if (testCase.equals("Config-v1-33")) {
 			testConfig_v1_33FactoryResetNoUpdateConfiguratins();
-		/*}else if(testCase.equals("Config-v1-34")){
+		/*} else if (testCase.equals("Config-v1-34")) {
 			testConfig_v1_34FactoryResetAfterUpdateConfigurations();
-		}else if(testCase.equals("Config-v1-35")){
-			testConfig_v1_35FactoryResetResetsPasscode();*/ //Not valid TCs in 14.12
-		}else{
-			fail("TestCase not valid");
+		} else if (testCase.equals("Config-v1-35")) {
+			testConfig_v1_35FactoryResetResetsPasscode();*/
+		} else {
+			fail("Test Case not valid");
 		}
+		
 		tearDown();
-
 	}
 	
-	/**
-	 * Sets the up.
-	 *
-	 * @throws Exception the exception
-	 */
-	protected  void setUp() throws Exception
+	protected void setUp() throws Exception
 	{
-
-
-		System.out.println("====================================================");
+		logger.noTag("====================================================");
 		logger.info("test setUp started");
 
 		try
 		{
+			//appUnderTestDetails = getValidationTestContext().getAppUnderTestDetails(); //[AT4] Not needed
+			//dutDeviceId = appUnderTestDetails.getDevideId();
 			dutDeviceId = ixit.get("IXITCO_DeviceId");
 			logger.info(String.format("Running Config test case against Device ID: %s", dutDeviceId));
+			//dutAppId = appUnderTestDetails.getAppId();
 			dutAppId = UUID.fromString(ixit.get("IXITCO_AppId"));
 			logger.info(String.format("Running Config test case against App ID: %s", dutAppId));
+			//keyStorePath = getValidationTestContext().getKeyStorePath();
 			keyStorePath="/KeyStore";
 			logger.info(String.format("Running Config test case using KeyStorePath: %s", keyStorePath));
-			aboutAnnouncementTimeout = timeOut;
+			//aboutAnnouncementTimeout = determineAboutAnnouncementTimeout();
 
 			initServiceHelper();
 			resetPasscodeIfNeeded();
 
 			logger.info("test setUp done");
+			logger.noTag("====================================================");
 		}
 		catch (Exception e)
 		{
-			inconc("test setUp thrown an exception: "+e.getMessage());
+			//logger.debug("test setUp thrown an exception", e);
+			inconc("test setUp thrown an exception: "+e.getMessage()); //[AT4] inconcluse function
 			releaseResources();
 			throw e;
 		}
-
-		System.out.println("====================================================");
 	}
 	
-	/**
-	 * Tear down.
-	 *
-	 * @throws Exception the exception
-	 */
-	protected  void tearDown() throws Exception
+	protected void initServiceHelper() throws BusException, Exception
 	{
-		System.out.println("====================================================");
+		releaseServiceHelper();
+		serviceHelper = createServiceHelper();
+
+		serviceHelper.initialize(BUS_APPLICATION_NAME, dutDeviceId, dutAppId);
+
+		serviceHelper.startConfigClient();
+
+		deviceAboutAnnouncement = waitForNextDeviceAnnouncement();
+
+		logger.info("Partial Verdict: PASS"); //[AT4]
+
+		connectAboutClient(deviceAboutAnnouncement);
+		connectConfigClient(deviceAboutAnnouncement);
+
+		logger.info("Partial Verdict: PASS"); //[AT4]
+
+		serviceHelper.enableAuthentication(keyStorePath);
+	}
+	
+	private void releaseServiceHelper()
+	{
+		try {
+			if (aboutClient != null)
+			{
+				aboutClient.disconnect();
+				aboutClient = null;
+			}
+			if (configClient != null)
+			{
+				configClient.disconnect();
+				configClient = null;
+			}
+			if (serviceHelper != null)
+			{
+				serviceHelper.release();
+				waitForSessionToClose();
+				serviceHelper = null;
+			}
+		}
+		catch (Exception ex)
+		{
+			logger.info("Exception releasing resources", ex);
+		}
+	}
+	
+	private void reconnectClients() throws Exception
+	{
+		releaseServiceHelper();
+		initServiceHelper();
+	}
+	
+	private void connectConfigClient(AboutAnnouncementDetails aboutAnnouncement) throws Exception
+	{
+		configClient = serviceHelper.connectConfigClient(aboutAnnouncement);
+	}
+
+	private void connectAboutClient(AboutAnnouncementDetails aboutAnnouncement) throws Exception
+	{
+		serviceAvailabilityHandler = createServiceAvailabilityHandler();
+		aboutClient = serviceHelper.connectAboutClient(aboutAnnouncement, serviceAvailabilityHandler);
+	}
+	
+	private AboutAnnouncementDetails waitForNextDeviceAnnouncement() throws Exception
+	{
+		logger.info("Waiting for About announcement");
+		return serviceHelper.waitForNextDeviceAnnouncement(aboutAnnouncementTimeout, TimeUnit.SECONDS, true);
+	}
+
+	private void waitForSessionToClose() throws Exception 
+	{
+		logger.info("Waiting for session to close");
+		serviceHelper.waitForSessionToClose(SESSION_CLOSE_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
+
+	}
+	
+	protected void tearDown() throws Exception
+	{
+		logger.noTag("====================================================");
 		logger.info("test tearDown started");
 		releaseResources();
 		logger.info("test tearDown done");
-		System.out.println("====================================================");
+		logger.noTag("====================================================");
 	}
 	
-	/*TestCases*/
-
-	/**
-	 * Test config_v1_01 app id equals device id.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testConfig_v1_01AppIdEqualsDeviceId() throws Exception
+	public void testConfig_v1_01AppIdEqualsDeviceId() throws Exception
 	{
 		UUID dutAppId = deviceAboutAnnouncement.getAppId();
 		String dutDeviceId = deviceAboutAnnouncement.getDeviceId();
@@ -339,16 +352,12 @@ public class ConfigurationService {
 		}
 		else
 		{
+            //getValidationTestContext().addNote(String.format("System App AppId: %s is not equal to DeviceId: %s", dutAppId.toString(), dutDeviceId));
 			fail(String.format("System App AppId: %s is not equal to DeviceId: %s", dutAppId.toString().replace("-", ""), dutDeviceId.replace("-", "")));
 		}
 	}
 
-	/**
-	 * Test config_v1_02 connect with wrong passcode.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testConfig_v1_02ConnectWithWrongPasscode() throws Exception
+	public void testConfig_v1_02ConnectWithWrongPasscode() throws Exception
 	{
 		reconnectClients();
 		char[] wrongPasscode = "123456".toCharArray();
@@ -367,9 +376,9 @@ public class ConfigurationService {
 			exceptionThrown = true;
 			logger.info("Expected exception thrown");
 			logger.info("Exception details:"+ be);
-			logger.info("Checking if authentication was attempted");
+			logger.info("Checking if authentication was attempted"); //[AT4]
 			assertTrue("A call to a Config interface method must require authentication", serviceHelper.isPeerAuthenticationAttempted(deviceAboutAnnouncement));
-			logger.info("Checking if authentication was not successful");
+			logger.info("Checking if authentication was not successful"); //[AT4]
 			assertFalse("A call to a Config interface method with the wrong passcode must fail authentication",
 					serviceHelper.isPeerAuthenticationSuccessful(deviceAboutAnnouncement));
 		}
@@ -380,56 +389,36 @@ public class ConfigurationService {
 		}
 	}
 
-
-	/*public  void testConfig_v1_03_ValidateVersion() throws Exception
+	/*public void testConfig_v1_03_ValidateVersion() throws Exception
 	{
 		short version = callGetVersionOnConfig();
+		assertEquals("Config version does not match", 1, version);
 		assertEquals("Config version does not match", ixit.get("IXITCF_ConfigVersion"), version);
 	}*/
 
-
-
-	/**
-	 * Test config_v1_04 get configurations with default language.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testConfig_v1_04GetConfigurationsWithDefaultLanguage() throws Exception
+	public void testConfig_v1_04GetConfigurationsWithDefaultLanguage() throws Exception
 	{
-		logger.info("Partial Verdict: PASS");
+		logger.info("Partial Verdict: PASS"); //[AT4]
 		Map<String, Object> configMap = callGetConfigurationsWithDefaultLanguage();
 		checkMapForRequiredFields(configMap);
 		checkConsistencyWithAboutAnnouncement(configMap);
 	}
 
-
-	/**
-	 * Test config_v1_05 unspecified language.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testConfig_v1_05UnspecifiedLanguage() throws Exception
+	public void testConfig_v1_05UnspecifiedLanguage() throws Exception
 	{
 		Map<String, Object> configMapWithDefaultLanguage = callGetConfigurationsWithDefaultLanguage();
 		Map<String, Object> configMapWithUnspecifiedLanguage = callGetConfigurations("");
 		
-		logger.info("Checking received parameters when default language");
+		logger.info("Checking received parameters when default language"); //[AT4]
 		checkMapForRequiredFields(configMapWithDefaultLanguage);
-		logger.info("Checking received parameters when unspecified language");
+		logger.info("Checking received parameters when unspecified language"); //[AT4]
 		checkMapForRequiredFields(configMapWithUnspecifiedLanguage);
 
 		logger.info("Checking that DeviceName and DefaultLanguage from the two GetConfigurations() calls match");
 		compareMaps(configMapWithDefaultLanguage, configMapWithUnspecifiedLanguage);
 	}
 
-
-
-	/**
-	 * Test config_v1_06 lang consistence.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testConfig_v1_06LangConsistence() throws Exception
+	public void testConfig_v1_06LangConsistence() throws Exception
 	{
 		Map<String, Object> aboutMap = callGetAboutForDefaultLanguage();
 
@@ -440,10 +429,9 @@ public class ConfigurationService {
 			for (String lang : suppLangs)
 			{
 				Map<String, Object> configMapForLang = callGetConfigurations(lang);
-				//Map<String, Object> aboutMapForLang = callGetAbout(lang);
-				checkMapForRequiredFields(configMapForLang);
-				
 				Map<String, Object> aboutMapForLang = callGetAbout(lang);
+				
+				checkMapForRequiredFields(configMapForLang);
 				checkMapForRequiredFields(aboutMapForLang);
 
 				logger.info(String.format("Comparing config and about maps for the language: %s", lang));
@@ -452,19 +440,12 @@ public class ConfigurationService {
 		}
 		else
 		{
+			//getValidationTestContext().addNote("Only one language is supported");
 			logger.addNote("Only one language is supported");
 		}
 	}
 
-
-
-
-	/**
-	 * Test config_v1_07 unsupported language.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testConfig_v1_07UnsupportedLanguage() throws Exception
+	public void testConfig_v1_07UnsupportedLanguage() throws Exception
 	{
 		String expectedError = AllJoynErrorReplyCodes.LANGUAGE_NOT_SUPPORTED;
 
@@ -488,36 +469,125 @@ public class ConfigurationService {
 		}
 	}
 
-
-	/**
-	 * Test config_v1_08 update configurations with a new device name.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testConfig_v1_08UpdateConfigurationsWithANewDeviceName() throws Exception
+	public void testConfig_v1_08UpdateConfigurationsWithANewDeviceName() throws Exception
 	{
 		testUpdateConfigurations(AboutKeys.ABOUT_DEVICE_NAME, NEW_DEVICE_NAME);
 	}
+	
+	/*public void testConfig_v1_09UpdateConfigurationsMaxLengthEqDeviceName() throws Exception
+    {
+        Map<String, Object> aboutMap = aboutClient.getAbout("");
+        String originalDeviceName = getOriginalDeviceName(aboutMap);
+        Short maxLength = (Short) aboutMap.get("MaxLength");
+        logger.debug("About map returned max length as : " + maxLength);
 
+        if (maxLength == null || maxLength == 0)
+        {
+            logger.debug("Max length does not exist, adding a note and returning");
+            getValidationTestContext().addNote("MAX_LENGTH DOES NOT EXIST!");
+            return;
+        }
 
+        Map<String, Object> mapToUpdateConfig = new HashMap<String, Object>();
+        String newGeneratedDeviceName = generateDeviceName(maxLength);
+        logger.debug("Update original device name : " + originalDeviceName + " to new device name : " + newGeneratedDeviceName);
+        mapToUpdateConfig.put(AboutKeys.ABOUT_DEVICE_NAME, newGeneratedDeviceName);
+        configClient.setConfig(mapToUpdateConfig, "");
 
-	/**
-	 * Test config_v1_12 device name special.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testConfig_v1_12DeviceNameSpecial() throws Exception
+        AboutAnnouncementDetails nextDeviceAnnouncement = serviceHelper.waitForNextDeviceAnnouncement(aboutAnnouncementTimeout, TimeUnit.SECONDS, true);
+
+        logger.debug("Device Name returned from the new about announcement : " + nextDeviceAnnouncement.getDeviceName() + " and it should be : " + newGeneratedDeviceName);
+
+        assertEquals(newGeneratedDeviceName, nextDeviceAnnouncement.getDeviceName());
+
+        aboutMap = aboutClient.getAbout("");
+        Map<String, Object> configMap = configClient.getConfig("");
+        verifyValueForAboutAndConfig(aboutMap, configMap, AboutKeys.ABOUT_DEVICE_NAME, newGeneratedDeviceName);
+
+        logger.debug("Reverting back to original device Name");
+        mapToUpdateConfig = new HashMap<String, Object>();
+        mapToUpdateConfig.put(AboutKeys.ABOUT_DEVICE_NAME, originalDeviceName);
+        configClient.setConfig(mapToUpdateConfig, "");
+
+        nextDeviceAnnouncement = serviceHelper.waitForNextDeviceAnnouncement(aboutAnnouncementTimeout, TimeUnit.SECONDS, true);
+
+        logger.debug("Device Name returned from the new about announcement : " + nextDeviceAnnouncement.getDeviceName() + " and it should be : " + originalDeviceName);
+
+        assertEquals(originalDeviceName, nextDeviceAnnouncement.getDeviceName());
+
+        aboutMap = aboutClient.getAbout("");
+        configMap = configClient.getConfig("");
+        verifyValueForAboutAndConfig(aboutMap, configMap, AboutKeys.ABOUT_DEVICE_NAME, originalDeviceName);
+    }*/
+	
+	/*public void testConfig_v1_10DeviceNameExceedsMaxLength() throws Exception
+    {
+        Map<String, Object> aboutMap = aboutClient.getAbout("");
+        String originalDeviceName = getOriginalDeviceName(aboutMap);
+
+        Short maxLength = (Short) aboutMap.get("MaxLength");
+
+        logger.debug("About map returned max length as : " + maxLength);
+
+        if (maxLength == null || maxLength == 0)
+        {
+            logger.debug("Max length does not exist, adding a note and returning");
+            getValidationTestContext().addNote("MAX_LENGTH DOES NOT EXIST!");
+            return;
+        }
+
+        try
+        {
+            Map<String, Object> mapToUpdateConfig = new HashMap<String, Object>();
+            logger.debug("Setting device name to exceed max length");
+            String newGeneratedDeviceName = generateDeviceName(maxLength + 1);
+            mapToUpdateConfig.put(AboutKeys.ABOUT_DEVICE_NAME, newGeneratedDeviceName);
+            configClient.setConfig(mapToUpdateConfig, "");
+            fail("Calling setConfig with deviceName exceeding the Max length should throw an exception");
+
+        }
+        catch (ErrorReplyBusException erbe)
+        {
+            aboutMap = aboutClient.getAbout("");
+            Map<String, Object> configMap = configClient.getConfig("");
+            verifyValueForAboutAndConfig(aboutMap, configMap, AboutKeys.ABOUT_DEVICE_NAME, originalDeviceName);
+        }
+
+    }*/
+	
+	/*public void testConfig_v1_11ChangeDeviceNametoEmpty() throws Exception
+    {
+        logger.debug("Test change the DeviceName to empty");
+
+        String originalDeviceName = deviceAboutAnnouncement.getDeviceName();
+        logger.debug("Original Device Name : " + originalDeviceName);
+
+        try
+        {
+            Map<String, Object> mapConfig = new HashMap<String, Object>();
+            mapConfig.put(AboutKeys.ABOUT_DEVICE_NAME, "");
+            configClient.setConfig(mapConfig, deviceAboutAnnouncement.getDefaultLanguage());
+            fail("Calling UpdateConfigurations() to set DeviceName to an empty string must return an error");
+        }
+        catch (ErrorReplyBusException erbe)
+        {
+            assertEquals(AllJoynErrorReplyCodes.INVALID_VALUE, erbe.getErrorName());
+
+            Map<String, Object> configMap = configClient.getConfig(deviceAboutAnnouncement.getDefaultLanguage());
+            Map<String, Object> aboutMap = aboutClient.getAbout(deviceAboutAnnouncement.getDefaultLanguage());
+
+            verifyValueForAboutAndConfig(aboutMap, configMap, AboutKeys.ABOUT_DEVICE_NAME, originalDeviceName);
+            return;
+        }
+
+    }*/
+
+	public void testConfig_v1_12DeviceNameSpecial() throws Exception
 	{
 		testUpdateConfigurations(AboutKeys.ABOUT_DEVICE_NAME, getDeviceNameWithSpecialCharacters());
 	}
 
-
-	/**
-	 * Test config_v1_13 update unsupported language.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testConfig_v1_13UpdateUnsupportedLanguage() throws Exception
+	public void testConfig_v1_13UpdateUnsupportedLanguage() throws Exception
 	{
 		String origDeviceName = deviceAboutAnnouncement.getDeviceName();
 
@@ -544,13 +614,7 @@ public class ConfigurationService {
 
 	}
 
-
-	/**
-	 * Test config_v1_14 update default lang.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testConfig_v1_14UpdateDefaultLang() throws Exception
+	public void testConfig_v1_14UpdateDefaultLang() throws Exception
 	{
 		String newLang = getAnotherSupportedLanguage();
 		if (newLang != null)
@@ -559,19 +623,36 @@ public class ConfigurationService {
 		}
 		else
 		{
+			//getValidationTestContext().addNote("Only one language is supported");
 			logger.addNote("Only one language is supported");
 		}
 	}
+	
+	private String getAnotherSupportedLanguage() throws BusException
+	{
+		String defaultLanguage = deviceAboutAnnouncement.getDefaultLanguage();
 
+		Map<String, Object> aboutMap = callGetAboutForDefaultLanguage();
 
+		String newLang = null;
+		String[] suppLangs = getSupportedLanguages(aboutMap);
+		if (suppLangs.length > 1)
+		{
+			for (String lang : suppLangs)
+			{
+				if (!lang.equals(defaultLanguage))
+				{
+					newLang = lang;
+					logger.info(String.format("Found a supported language: %s", newLang));
+					break;
+				}
+			}
+			assertNotNull("SupportedLanguages field contains duplicate languages", newLang);
+		}
+		return newLang;
+	}
 
-
-	/**
-	 * Test config_v1_15 update default language to unsupported language.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testConfig_v1_15UpdateDefaultLanguageToUnsupportedLanguage() throws Exception
+	public void testConfig_v1_15UpdateDefaultLanguageToUnsupportedLanguage() throws Exception
 	{
 		String defaultLanguage = deviceAboutAnnouncement.getDefaultLanguage();
 
@@ -597,14 +678,7 @@ public class ConfigurationService {
 		}
 	}
 
-
-
-	/**
-	 * Test config_v1_16 test changeto unspecified language.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testConfig_v1_16TestChangetoUnspecifiedLanguage() throws Exception
+	public void testConfig_v1_16TestChangetoUnspecifiedLanguage() throws Exception
 	{
 		String expectedError = AllJoynErrorReplyCodes.LANGUAGE_NOT_SUPPORTED;
 		String defaultLanguage = deviceAboutAnnouncement.getDefaultLanguage();
@@ -631,13 +705,31 @@ public class ConfigurationService {
 							expectedError));
 		}
 	}
+	
+	/*public void testConfig_v1_18TestUpdateReadOnlyField() throws Exception
+    {
+        String defaultLanguage = deviceAboutAnnouncement.getDefaultLanguage();
+        boolean exceptionThrown = false;
+        try
+        {
+            Map<String, Object> updateConfigData = new HashMap<String, Object>();
+            updateConfigData.put(AboutKeys.ABOUT_DEVICE_ID, INVALID_LANGUAGE_CODE);
 
-	/**
-	 * Test config_v1_19 test update invalid field.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testConfig_v1_19TestUpdateInvalidField() throws Exception
+            callUpdateConfigurations(defaultLanguage, updateConfigData);
+        }
+        catch (ErrorReplyBusException ex)
+        {
+            exceptionThrown = true;
+            logger.debug("Received exception from UpdateConfigurations() when trying to update DeviceId", ex);
+            assertEquals("Calling UpdateConfigurations() to update the DeviceId did not return the expected error", AllJoynErrorReplyCodes.UPDATE_NOT_ALLOWED, ex.getErrorName());
+        }
+        if (!exceptionThrown)
+        {
+            fail("Calling UpdateConfigurations() to update the DeviceId did not return an error, expecting UpdateNotAllowed (since DeviceId is a read only field)");
+        }
+    }*/
+
+	public void testConfig_v1_19TestUpdateInvalidField() throws Exception
 	{
 		String defaultLanguage = deviceAboutAnnouncement.getDefaultLanguage();
 		String expectedError = AllJoynErrorReplyCodes.INVALID_VALUE;
@@ -664,15 +756,7 @@ public class ConfigurationService {
 		}
 	}
 
-
-
-
-	/**
-	 * Test config_v1_20 test reset device name.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testConfig_v1_20TestResetDeviceName() throws Exception
+	public void testConfig_v1_20TestResetDeviceName() throws Exception
 	{
 		String defaultLanguage = deviceAboutAnnouncement.getDefaultLanguage();
 
@@ -706,13 +790,13 @@ public class ConfigurationService {
 		aboutMap = callGetAboutForDefaultLanguage();
 		verifyValueForAboutAndConfig(aboutMap, configMap, AboutKeys.ABOUT_DEVICE_NAME, originalDeviceName);
 	}
+	
+	/*private String getOriginalDeviceName(Map<String, Object> aboutMap)
+	{
+		return (String) aboutMap.get(AboutKeys.ABOUT_DEVICE_NAME);
+	}*/ //[AT4] Not used
 
-	/**
-	 * Test config_v1_21 reset default language.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testConfig_v1_21ResetDefaultLanguage() throws Exception
+	public void testConfig_v1_21ResetDefaultLanguage() throws Exception
 	{
 		String defaultLanguage = deviceAboutAnnouncement.getDefaultLanguage();
 
@@ -724,13 +808,7 @@ public class ConfigurationService {
 		compareMapsForField(AboutKeys.ABOUT_DEFAULT_LANGUAGE, aboutMap, configMap);
 	}
 
-
-	/**
-	 * Test config_v1_22 reset default multi language.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testConfig_v1_22ResetDefaultMultiLanguage() throws Exception
+	public void testConfig_v1_22ResetDefaultMultiLanguage() throws Exception
 	{
 		String newDefaultLanguage = getAnotherSupportedLanguage();
 		if (newDefaultLanguage != null)
@@ -771,16 +849,29 @@ public class ConfigurationService {
 		}
 		else
 		{
+			//getValidationTestContext().addNote("Only one language is supported");
 			logger.addNote("Only one language is supported");
 		}
 	}
+	
+    /*public void testConfig_v1_23FailResetDeviceId() throws Exception
+    {
+        logger.debug("Verify impossibility to reset the DeviceId");
 
-	/**
-	 * Test config_v1_24 fail reset unsupported lang.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testConfig_v1_24FailResetUnsupportedLang() throws Exception
+        final String EXP_EXCEPTION = "org.alljoyn.Error.InvalidValue";
+        Map<String, Object> aboutSett = aboutClient.getAbout(deviceAboutAnnouncement.getDefaultLanguage());
+        String origDeviceId = (String) aboutSett.get(AboutKeys.ABOUT_DEVICE_ID);
+
+        testFailReset(EXP_EXCEPTION, deviceAboutAnnouncement.getDefaultLanguage(), new String[]
+        { AboutKeys.ABOUT_DEVICE_ID });
+
+        logger.debug("Verify with getAbout() that the DeviceId hasn't changed");
+        aboutSett = aboutClient.getAbout(deviceAboutAnnouncement.getDefaultLanguage());
+        String deviceId = (String) aboutSett.get(AboutKeys.ABOUT_DEVICE_ID);
+        assertEquals(origDeviceId, deviceId);
+    }*/
+
+	public void testConfig_v1_24FailResetUnsupportedLang() throws Exception
 	{
 		boolean exceptionThrown = false;
 		try
@@ -801,12 +892,7 @@ public class ConfigurationService {
 		}
 	}
 
-	/**
-	 * Test config_v1_25 fail reset invalid field.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testConfig_v1_25FailResetInvalidField() throws Exception
+	public void testConfig_v1_25FailResetInvalidField() throws Exception
 	{
 		boolean exceptionThrown = false;
 		try
@@ -827,30 +913,20 @@ public class ConfigurationService {
 		}
 	}
 
-	/**
-	 * Test config_v1_26 device restart.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testConfig_v1_26DeviceRestart() throws Exception
+	public void testConfig_v1_26DeviceRestart() throws Exception
 	{
 		reconnectClients();
 		callRestartOnConfig();
-		//TODO not ready
+
+		loseSessionOrWait();
 		//assertTrue("Timed out waiting for session to be lost", ServiceAvailabilityHandler.waitForSessionLost(SESSION_LOST_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
 
-		deviceAboutAnnouncement = waitForNextDeviceAnnouncement();
+		//deviceAboutAnnouncement = waitForNextDeviceAnnouncement();
 
 		connectAboutClient(deviceAboutAnnouncement);
 	}
 
-	
-	/**
-	 * Test config_v1_27 device restart remember conf data.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testConfig_v1_27DeviceRestartRememberConfData() throws Exception
+	public void testConfig_v1_27DeviceRestartRememberConfData() throws Exception
 	{
 		reconnectClients();
 		String originalDeviceName = deviceAboutAnnouncement.getDeviceName();
@@ -858,10 +934,12 @@ public class ConfigurationService {
 		updateConfigurationsAndVerifyResult(AboutKeys.ABOUT_DEVICE_NAME, NEW_DEVICE_NAME);
 
 		callRestartOnConfig();
+		
+		loseSessionOrWait();
 
-		assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(SESSION_LOST_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
+		//assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(SESSION_LOST_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
 
-		deviceAboutAnnouncement = waitForNextAnnouncementAndCheckFieldValue(AboutKeys.ABOUT_DEVICE_NAME, NEW_DEVICE_NAME);
+		//deviceAboutAnnouncement = waitForNextAnnouncementAndCheckFieldValue(AboutKeys.ABOUT_DEVICE_NAME, NEW_DEVICE_NAME);
 
 		reconnectClients();
 
@@ -871,55 +949,85 @@ public class ConfigurationService {
 
 		updateConfigurationsAndVerifyResult(AboutKeys.ABOUT_DEVICE_NAME, originalDeviceName);
 	}
+	
+	/*public void testConfig_v1_28EmptyPasscodeNotChanged() throws Exception
+    {
+        logger.debug("start testConfig_v1_28EmptyPasscodeNotChanged");
+        String realm = "";
+        try
+        {
+            logger.debug("Call setPasscode for the Realm: '" + realm + "', and the empty Passcode");
+            configClient.setPasscode(realm, new char[]
+            {});
+            fail("Calling SetPasscode() with an empty value for the passcode must return an error, InvalidValue");
+        }
+        catch (BusException be)
+        {
+            logger.debug("ReceivedBusException", be);
 
+            if (!(be instanceof ErrorReplyBusException))
+            {
+                fail("The received exception is not ErrorReplyBusException");
+            }
 
-	/**
-	 * Test config_v1_29 passcode changed.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testConfig_v1_29PasscodeChanged() throws Exception
+            ErrorReplyBusException erbe = (ErrorReplyBusException) be;
+            if (erbe.getErrorName().equals(AllJoynErrorReplyCodes.FEATURE_NOT_AVAILABLE))
+            {
+
+                logger.debug("setPasscode feature is not supported");
+                getValidationTestContext().addNote("Set passcode feature is not supported");
+
+                serviceHelper.clearKeyStore();
+                configClient.disconnect();
+
+                Thread.sleep(CONFIG_CLIENT_RECONNECT_WAIT_TIME);
+
+                Status status = configClient.connect();
+                if (status != Status.OK)
+                {
+                    fail("Fail to connect to the Config server");
+                }
+
+                logger.debug("Call getConfig to verify authentication with an old password");
+                try
+                {
+                    assertNotNull(configClient.getConfig(deviceAboutAnnouncement.getDefaultLanguage()));
+                }
+                catch (BusException beGetConf)
+                {
+                    fail("Failed to call getConfig for the defaultLanguage: '" + deviceAboutAnnouncement.getDefaultLanguage() + "'");
+                }
+            }
+        }
+
+    }*/
+
+	public void testConfig_v1_29PasscodeChanged() throws Exception
 	{
 		testChangePasscode(NEW_PASSCODE);
 	}
 
-
-	/**
-	 * Test config_v1_30 passcode changed single char.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testConfig_v1_30PasscodeChangedSingleChar() throws Exception
+	public void testConfig_v1_30PasscodeChangedSingleChar() throws Exception
 	{
 		testChangePasscode(SINGLE_CHAR_PASSCODE);
 	}
 
-
-	/**
-	 * Test config_v1_31 passcode changed special chars.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testConfig_v1_31PasscodeChangedSpecialChars() throws Exception
+	public void testConfig_v1_31PasscodeChangedSpecialChars() throws Exception
 	{
 		testChangePasscode(SPECIAL_CHARS_PASSCODE);
 	}
 
-
-	/**
-	 * Test config_v1_32 passcode changed persist on restart.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testConfig_v1_32PasscodeChangedPersistOnRestart() throws Exception
+	public void testConfig_v1_32PasscodeChangedPersistOnRestart() throws Exception
 	{
 		changePasscodeAndReconnect(NEW_PASSCODE);
 
 		callRestartOnConfig();
+		
+		loseSessionOrWait();
 
-		assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(SESSION_LOST_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
+		/*assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(SESSION_LOST_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
 
-		deviceAboutAnnouncement = waitForNextDeviceAnnouncement();
+		deviceAboutAnnouncement = waitForNextDeviceAnnouncement();*/
 
 		reconnectClients();
 		serviceHelper.clearKeyStore();
@@ -931,21 +1039,14 @@ public class ConfigurationService {
 		changePasscodeAndReconnect(DEFAULT_PINCODE);
 	}
 
-
-
-	/**
-	 * Test config_v1_33 factory reset no update configuratins.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testConfig_v1_33FactoryResetNoUpdateConfiguratins() throws Exception
+	public void testConfig_v1_33FactoryResetNoUpdateConfiguratins() throws Exception
 	{
 		String deviceNameBeforeReset = null;
 		String defaultLanguageBeforeReset = null;
 		if (deviceAboutAnnouncement.supportsInterface(OnboardingTransport.INTERFACE_NAME))
 		{
+			//getValidationContext().addNote("The device supports Onboarding so this Test Case is Not Applicable");
 			logger.addNote("The device supports Onboarding so this Test Case is Not Applicable");
-
 		}
 		else
 		{
@@ -976,15 +1077,18 @@ public class ConfigurationService {
 
 			if (!factoryResetSupport)
 			{
+				//getValidationTestContext().addNote("FactoryReset method is not a supported feature!");
 				fail("FactoryReset method is not a supported feature!");
 			}
 			else
 			{
-				assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(SESSION_LOST_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
+				loseSessionOrWait();
+				
+				//assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(SESSION_LOST_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
 
 				UserInputDetails userInputDetails = createUserInputDetails();
 				// always continue, we ignore the response here
-				// getValidationTestContext().waitForUserInput(userInputDetails);
+				// getValidationTestContext().waitForUserInput(userInputDetails); //[AT4]
 
 				waitForNextDeviceAnnouncement();
 
@@ -999,16 +1103,23 @@ public class ConfigurationService {
 			}
 		}
 	}
+	
+	protected UserInputDetails createUserInputDetails()
+	{
+		String[] msg = {"Continue"};
+		return new UserInputDetails("Onboard DUT (if needed)",
+				"FactoryReset() has been called on the DUT. Please Onboard the device to the Personal AP (if needed) and then click Continue", msg);
+	}
 
 
 
-	/*public  void testConfig_v1_34FactoryResetAfterUpdateConfigurations() throws Exception
+	/*public void testConfig_v1_34FactoryResetAfterUpdateConfigurations() throws Exception
 	{
 		String defaultDeviceName = null;
 		if (deviceAboutAnnouncement.supportsInterface(OnboardingTransport.INTERFACE_NAME))
 		{
+			//getValidationContext().addNote("The device supports Onboarding so this Test Case is Not Applicable");
 			logger.addNote("The device supports Onboarding so this Test Case is Not Applicable");
-
 		}
 		else
 		{
@@ -1044,17 +1155,19 @@ public class ConfigurationService {
 
 			if (!factoryResetSupport)
 			{
+				//getValidationTestContext().addNote("FactoryReset method is not a supported feature!");
 				fail("FactoryReset method is not a supported feature!");
 
 				updateConfigurationsAndVerifyResult(AboutKeys.ABOUT_DEVICE_NAME, defaultDeviceName);
 			}
 			else
 			{
-				assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(SESSION_LOST_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
+				loseSessionOrWait();
+				//assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(SESSION_LOST_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
 
 				UserInputDetails userInputDetails = createUserInputDetails();
 				// always continue, we ignore the response here
-
+				//getValidationTestContext().waitForUserInput(userInputDetails);
 
 				deviceAboutAnnouncement = waitForNextDeviceAnnouncement();
 
@@ -1067,13 +1180,11 @@ public class ConfigurationService {
 		}
 	}*/ 
 
-
-
-
-	/*public  void  testConfig_v1_35FactoryResetResetsPasscode() throws Exception
+	/*public void testConfig_v1_35FactoryResetResetsPasscode() throws Exception
 	{
 		if (deviceAboutAnnouncement.supportsInterface(OnboardingTransport.INTERFACE_NAME))
 		{
+			//getValidationTestContext().addNote("The device supports Onboarding so this Test Case is Not Applicable");
 			logger.addNote("The device supports Onboarding so this Test Case is Not Applicable");
 		}
 		else
@@ -1099,17 +1210,19 @@ public class ConfigurationService {
 
 			if (!factoryResetSupport)
 			{
+				//getValidationTestContext().addNote("FactoryReset method is not a supported feature!");
 				fail("FactoryReset method is not a supported feature!");
 
 				changePasscodeAndReconnect(DEFAULT_PINCODE);
 			}
 			else
 			{
-				assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(SESSION_LOST_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
+				loseSessionOrWait();
+				//assertTrue("Timed out waiting for session to be lost", serviceAvailabilityHandler.waitForSessionLost(SESSION_LOST_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS));
 
 				UserInputDetails userInputDetails = createUserInputDetails();
 				// always continue, we ignore the response here
-
+				//getValidationTestContext().waitForUserInput(userInputDetails);
 
 				deviceAboutAnnouncement = waitForNextDeviceAnnouncement();
 
@@ -1123,148 +1236,8 @@ public class ConfigurationService {
 		}
 
 	}*/
-
-
-	/*
-	 *  Utilities
-	 */
-
-	/**
-	 * Creates the user input details.
-	 *
-	 * @return the user input details
-	 */
-	protected  UserInputDetails createUserInputDetails()
-	{
-		String[] msg={"Continue"};
-		return new UserInputDetails("Onboard DUT (if needed)",
-				"FactoryReset() has been called on the DUT. Please Onboard the device to the Personal AP (if needed) and then click Continue", msg);
-	}
-
-
-	/**
-	 * Call factory reset on config.
-	 *
-	 * @throws BusException the bus exception
-	 */
-	private  void callFactoryResetOnConfig() throws BusException
-	{
-		logger.info("Calling FactoryReset() on Config");
-		configClient.factoryReset();
-	}
-
-
-
-	/**
-	 * Test change passcode.
-	 *
-	 * @param newPasscode the new passcode
-	 * @throws BusException the bus exception
-	 * @throws Exception the exception
-	 */
-	private  void testChangePasscode(char[] newPasscode) throws BusException, Exception
-	{
-		changePasscodeAndReconnect(newPasscode);
-
-		changePasscodeAndReconnect(DEFAULT_PINCODE);
-	}
-
-
-	/**
-	 * Call restart on config.
-	 *
-	 * @throws BusException the bus exception
-	 */
-	private  void callRestartOnConfig() throws BusException
-	{
-		logger.info("Calling Restart() on Config");
-		configClient.restart();
-	}
-
-
-	/**
-	 * Call reset configurations.
-	 *
-	 * @param languageTag the language tag
-	 * @param fields the fields
-	 * @throws BusException the bus exception
-	 */
-	private  void callResetConfigurations(String languageTag, String[] fields) throws BusException
-	{
-		logger.info(String.format("Calling ResetConfigurations() with language: \"%s\" and %s", languageTag, Arrays.toString(fields)));
-		configClient.ResetConfigurations(languageTag, fields);
-	}
-
-	/**
-	 * Gets the another supported language.
-	 *
-	 * @return the another supported language
-	 * @throws BusException the bus exception
-	 */
-	private  String getAnotherSupportedLanguage() throws BusException
-	{
-		String defaultLanguage = deviceAboutAnnouncement.getDefaultLanguage();
-
-		Map<String, Object> aboutMap = callGetAboutForDefaultLanguage();
-
-		String newLang = null;
-		String[] suppLangs = getSupportedLanguages(aboutMap);
-		if (suppLangs.length > 1)
-		{
-			for (String lang : suppLangs)
-			{
-				if (!lang.equals(defaultLanguage))
-				{
-					newLang = lang;
-					logger.info(String.format("Found a supported language: %s", newLang));
-					break;
-				}
-			}
-			assertNotNull("SupportedLanguages field contains duplicate languages", newLang);
-		}
-		return newLang;
-	}
-
-	/**
-	 * Gets the device name with special characters.
-	 *
-	 * @return the device name with special characters
-	 */
-	protected  String getDeviceNameWithSpecialCharacters()
-	{
-		StringBuilder builder = new StringBuilder();
-		appendChars(builder, 33, 47);
-		appendChars(builder, 58, 64);
-		appendChars(builder, 91, 96);
-		appendChars(builder, 123, 126);
-		return builder.toString();
-	}
-
-
-	/**
-	 * Append chars.
-	 *
-	 * @param builder the builder
-	 * @param startIdx the start idx
-	 * @param endIdx the end idx
-	 */
-	private  void appendChars(StringBuilder builder, int startIdx, int endIdx)
-	{
-		for (int asciiCode = startIdx; asciiCode < endIdx; asciiCode++)
-		{
-			builder.append((char) asciiCode);
-		}
-	}
-
-	/**
-	 * Test update configurations.
-	 *
-	 * @param fieldName the field name
-	 * @param newFieldValue the new field value
-	 * @throws BusException the bus exception
-	 * @throws Exception the exception
-	 */
-	private  void testUpdateConfigurations(String fieldName, String newFieldValue) throws BusException, Exception
+	
+	private void testUpdateConfigurations(String fieldName, String newFieldValue) throws BusException, Exception
 	{
 		String defaultLanguage = deviceAboutAnnouncement.getDefaultLanguage();
 
@@ -1281,49 +1254,21 @@ public class ConfigurationService {
 
 		updateConfigurationsAndVerifyResult(fieldName, originalValue);
 	}
-
-
-
-	/**
-	 * Update configurations and verify result.
-	 *
-	 * @param fieldName the field name
-	 * @param newFieldValue the new field value
-	 * @throws BusException the bus exception
-	 * @throws Exception the exception
-	 */
-	private  void updateConfigurationsAndVerifyResult(String fieldName, String newFieldValue) throws BusException, Exception
+	
+	private void updateConfigurationsAndVerifyResult(String fieldName, String newFieldValue) throws BusException, Exception
 	{
 		String defaultLanguage = deviceAboutAnnouncement.getDefaultLanguage();
+		
 		Map<String, Object> mapConfig = new HashMap<String, Object>();
 		mapConfig.put(fieldName, newFieldValue);
 		callUpdateConfigurations(defaultLanguage, mapConfig);
-		watiForNextAnnouncementAndVerifyFieldValue(fieldName, newFieldValue);
+		
+		//watiForNextAnnouncementAndVerifyFieldValue(fieldName, newFieldValue);
+		waitForNextAnnouncementAndVerifyFieldValue(fieldName, newFieldValue); //[AT4] Changed from "wati" to "wait"
 	}
-
-	/**
-	 * Call update configurations.
-	 *
-	 * @param languageTag the language tag
-	 * @param configMap the config map
-	 * @throws BusException the bus exception
-	 */
-	private  void callUpdateConfigurations(String languageTag, Map<String, Object> configMap) throws BusException
-	{
-		logger.info(String.format("Calling UpdateConfigurations() with language: \"%s\" and %s", languageTag, configMap));
-		configClient.setConfig(configMap, languageTag);
-	}
-
-
-	/**
-	 * Wati for next announcement and verify field value.
-	 *
-	 * @param fieldName the field name
-	 * @param newFieldValue the new field value
-	 * @throws Exception the exception
-	 * @throws BusException the bus exception
-	 */
-	private  void watiForNextAnnouncementAndVerifyFieldValue(String fieldName, String newFieldValue) throws Exception, BusException
+	
+	//private void watiForNextAnnouncementAndVerifyFieldValue(String fieldName, String newFieldValue) throws Exception, BusException
+	private void waitForNextAnnouncementAndVerifyFieldValue(String fieldName, String newFieldValue) throws Exception, BusException
 	{
 		deviceAboutAnnouncement = waitForNextAnnouncementAndCheckFieldValue(fieldName, newFieldValue);
 
@@ -1331,32 +1276,233 @@ public class ConfigurationService {
 		Map<String, Object> aboutMap = callGetAboutForDefaultLanguage();
 		verifyValueForAboutAndConfig(aboutMap, configMap, fieldName, newFieldValue);
 	}
-
-	/**
-	 * Verify value for about and config.
-	 *
-	 * @param aboutMap the about map
-	 * @param configMap the config map
-	 * @param key the key
-	 * @param verifyValue the verify value
-	 */
-	private  void verifyValueForAboutAndConfig(Map<String, Object> aboutMap, Map<String, Object> configMap, String key, String verifyValue)
+	
+	public void connectionLost()
 	{
-		logger.info("Checking if "+key+" from GetConfigurations() matches expected value");
-		assertEquals(String.format("Value for %s retrieved from GetConfigurations() does not match expected value", key), verifyValue,(String)  configMap.get(key));
-		logger.info("Checking if "+key+" from GetAboutData() matches expected value");
-		assertEquals(String.format("Value for %s retrieved from GetAboutData() does not match expected value", key), verifyValue, (String) aboutMap.get(key));
+		logger.info("The connection with the remote device has lost");
+	}
+	
+    /*private String generateDeviceName(int length)
+    {
+
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 1; i <= length; ++i)
+        {
+            sb.append("A");
+        }
+
+        return sb.toString();
+    }*/ //[AT4] Never used
+	
+	protected ServiceHelper createServiceHelper()
+	{
+		return new ServiceHelper(logger);
 	}
 
-	/**
-	 * Wait for next announcement and check field value.
-	 *
-	 * @param fieldName the field name
-	 * @param fieldValue the field value
-	 * @return the about announcement details
-	 * @throws Exception the exception
-	 */
-	protected  AboutAnnouncementDetails waitForNextAnnouncementAndCheckFieldValue(String fieldName, String fieldValue) throws Exception
+	protected ServiceAvailabilityHandler createServiceAvailabilityHandler()
+	{
+		return new ServiceAvailabilityHandler();
+	}
+	
+    public String buildNewDeviceNameWithSpecialChars(int maxLength)
+    {
+
+        String specChars = "! @ # $ % ^ & * ( ) - _ + = [ ] { } | \\ \" ' : ; , . < > ~";
+        StringBuilder newGeneratedDeviceNameBuilder = new StringBuilder("newDeviceName_").append(specChars);
+        int newDeviceNameLength = newGeneratedDeviceNameBuilder.length();
+        logger.debug("Generated Device name with special characters : " + newGeneratedDeviceNameBuilder.toString());
+        if (maxLength > 0 && newDeviceNameLength > maxLength)
+        {
+            newGeneratedDeviceNameBuilder.delete(maxLength, newDeviceNameLength);
+            logger.debug("Truncated device name since length was greater than maxlength : " + newGeneratedDeviceNameBuilder.toString());
+
+        }
+
+        logger.debug("Length of truncated device name : " + newGeneratedDeviceNameBuilder.length());
+        String newGeneratedDeviceName = newGeneratedDeviceNameBuilder.toString().trim();
+        logger.debug("Length of trimmed device name : " + newGeneratedDeviceName.length());
+        return newGeneratedDeviceName;
+    }
+    
+	private void verifyValueForAboutAndConfig(Map<String, Object> aboutMap, Map<String, Object> configMap, String key, String verifyValue)
+	{
+		logger.info("Checking if "+key+" from GetConfigurations() matches expected value"); //[AT4]
+		assertEquals(String.format("Value for %s retrieved from GetConfigurations() does not match expected value", key), verifyValue,(String)  configMap.get(key));
+		logger.info("Checking if "+key+" from GetAboutData() matches expected value"); //[AT4]
+		assertEquals(String.format("Value for %s retrieved from GetAboutData() does not match expected value", key), verifyValue, (String) aboutMap.get(key));
+	}
+	
+    private void testFailReset(String exceptionName, String resetLang, String[] fieldsToReset)
+    {
+        try
+        {
+            configClient.ResetConfigurations(resetLang, fieldsToReset);
+            fail("The expected exception hasn't being thrown while resetting the illegal fields for a language: '" + resetLang + "'");
+        }
+        catch (BusException be)
+        {
+
+            if (be instanceof ErrorReplyBusException)
+            {
+                ErrorReplyBusException erbe = (ErrorReplyBusException) be;
+
+                String name = erbe.getErrorName();
+                String msg = erbe.getErrorMessage();
+                logger.debug("Received the expected exception, name: '" + name + "', msg: '" + msg + "'");
+                logger.debug("Verifying that the received exception name is as expected: '" + exceptionName + "'");
+                assertEquals(exceptionName, name);
+            }
+            return;
+        }
+
+    }
+    
+    protected StringValue createStringValue()
+    {
+        return new StringValue();
+    }
+    
+	protected String getDeviceNameWithSpecialCharacters()
+	{
+		StringBuilder builder = new StringBuilder();
+		appendChars(builder, 33, 47);
+		appendChars(builder, 58, 64);
+		appendChars(builder, 91, 96);
+		appendChars(builder, 123, 126);
+		return builder.toString();
+	}
+
+	private void appendChars(StringBuilder builder, int startIdx, int endIdx)
+	{
+		for (int asciiCode = startIdx; asciiCode < endIdx; asciiCode++)
+		{
+			builder.append((char) asciiCode);
+		}
+	}
+	
+	private boolean isAppIdEqualToDeviceId(UUID dutAppId, String dutDeviceId)
+	{
+		logger.info(String.format("Comparing DeviceId: %s to AppId: %s", dutDeviceId, dutAppId.toString().replace("-", "")));
+		//return dutDeviceId.equals(dutAppId.toString());
+		return dutDeviceId.equals(dutAppId.toString().replace("-", ""));
+	}
+	
+	private void checkMapForRequiredFields(Map<String, Object> map)
+	{
+		logger.info("Checking that DeviceName field is present"); //[AT4]
+		assertTrue("Required DeviceName field not present in map", map.containsKey(AboutKeys.ABOUT_DEVICE_NAME));
+		logger.info("Checking that DefaultLanguage field is present"); //[AT4]
+		assertTrue("Required DefaultLanguage field not present in map", map.containsKey(AboutKeys.ABOUT_DEFAULT_LANGUAGE));
+	}
+	
+	private void checkConsistencyWithAboutAnnouncement(Map<String, Object> configMap) throws BusException
+	{
+		logger.info("Checking that DeviceName and DefaultLanguage from GetConfigurations() matches the values in About announcemment");
+		assertEquals("DeviceName from GetConfigurations() does not match About announcement", deviceAboutAnnouncement.getDeviceName(), (String) configMap.get(AboutKeys.ABOUT_DEVICE_NAME));
+		logger.info("Checking that DefaultLanguage from GetConfigurations() matches About announcement"); //[AT4]
+		assertEquals("DefaultLanguage from GetConfigurations() does not match About announcement", deviceAboutAnnouncement.getDefaultLanguage(),
+				(String) configMap.get(AboutKeys.ABOUT_DEFAULT_LANGUAGE));
+	}
+	
+	private void compareMaps(Map<String, Object> map1, Map<String, Object> map2) throws Exception
+	{
+		logger.info("Comparing DeviceName"); //[AT4]
+		compareMapsForField(AboutKeys.ABOUT_DEVICE_NAME, map1, map2);
+		logger.info("Comparing DefaultLanguage"); //[AT4]
+		compareMapsForField(AboutKeys.ABOUT_DEFAULT_LANGUAGE, map1, map2);
+	}
+
+	private void compareMapsForField(String fieldName, Map<String, Object> map1, Map<String, Object> map2) throws Exception
+	{
+		logger.info("Comparing GetConfigurations() and GetAbout() "+fieldName+" field"); //[AT4]
+		assertEquals(String.format("%s does not match", fieldName), (String) map1.get(fieldName),(String) map2.get(fieldName));
+	}
+
+	private Map<String, Object> callGetConfigurationsWithDefaultLanguage() throws BusException
+	{
+		String defaultLanguage = deviceAboutAnnouncement.getDefaultLanguage();
+		Map<String, Object> configMap = callGetConfigurations(defaultLanguage);
+		return configMap;
+	}
+	
+	private Map<String, Object> callGetConfigurations(String languageTag) throws BusException
+	{
+		logger.info(String.format("Calling GetConfigurations() with language: \"%s\"", languageTag));
+		Map<String, Object> configMap = configClient.getConfig(languageTag);
+		return configMap;
+	}
+	
+	private void callUpdateConfigurations(String languageTag, Map<String, Object> configMap) throws BusException
+	{
+		logger.info(String.format("Calling UpdateConfigurations() with language: \"%s\" and %s", languageTag, configMap));
+		configClient.setConfig(configMap, languageTag);
+	}
+	
+	private void callResetConfigurations(String languageTag, String[] fields) throws BusException
+	{
+		logger.info(String.format("Calling ResetConfigurations() with language: \"%s\" and %s", languageTag, Arrays.toString(fields)));
+		configClient.ResetConfigurations(languageTag, fields);
+	}
+	
+	private Map<String, Object> callGetAboutForDefaultLanguage() throws BusException
+	{
+		String defaultLanguage = deviceAboutAnnouncement.getDefaultLanguage();
+		return callGetAbout(defaultLanguage);
+	}
+
+	private Map<String, Object> callGetAbout(String language) throws BusException
+	{
+		logger.info(String.format("Calling getAboutData() with the language: \"%s\"", language));
+		return aboutClient.getAbout(language);
+	}
+	
+	private String[] getSupportedLanguages(Map<String, Object> aboutMap)
+	{
+		String[] suppLangs = (String[]) aboutMap.get(AboutKeys.ABOUT_SUPPORTED_LANGUAGES);
+		logger.info(String.format("Supported languages: %s", Arrays.toString(suppLangs)));
+		return suppLangs;
+	}
+
+	private short callGetVersionOnConfig() throws BusException
+	{
+		short version = configClient.getVersion();
+		logger.info(String.format("Call to getVersion() returns: %d", version));
+		return version;
+	}
+	
+	//private short callMethodToCheckAuthentication() throws BusException
+	private void callMethodToCheckAuthentication() throws BusException
+	{
+		callGetConfigurations("");
+		// TODO add this back one getVersion() issue is resolved
+		// short version = configClient.getVersion();
+		// logger.info(String.format("Call to getVersion() returns: %d",
+		// version));
+		// return version;
+	}
+	
+	private void callRestartOnConfig() throws BusException
+	{
+		logger.info("Calling Restart() on Config");
+		configClient.restart();
+	}
+	
+	private void callFactoryResetOnConfig() throws BusException
+	{
+		logger.info("Calling FactoryReset() on Config");
+		configClient.factoryReset();
+	}
+	
+	private void callSetPasscodeOnConfig(char[] newPasscode) throws BusException
+	{
+		String realm = "";
+		logger.info(String.format("Calling SetPasscode() on Config with realm: %s; and passcode: %s", realm, Arrays.toString(newPasscode)));
+		configClient.setPasscode(realm, newPasscode);
+
+	}
+	
+	protected AboutAnnouncementDetails waitForNextAnnouncementAndCheckFieldValue(String fieldName, String fieldValue) throws Exception
 	{
 		logger.info("Waiting for updating About announcement");
 		AboutAnnouncementDetails nextDeviceAnnouncement = waitForNextDeviceAnnouncement();
@@ -1370,298 +1516,32 @@ public class ConfigurationService {
 		}
 		return nextDeviceAnnouncement;
 	}
-
-
-	/**
-	 * Call get about for default language.
-	 *
-	 * @return the map
-	 * @throws BusException the bus exception
-	 */
-	private  Map<String, Object> callGetAboutForDefaultLanguage() throws BusException
+	
+	private void testChangePasscode(char[] newPasscode) throws BusException, Exception
 	{
-		String defaultLanguage = deviceAboutAnnouncement.getDefaultLanguage();
-		return callGetAbout(defaultLanguage);
+		changePasscodeAndReconnect(newPasscode);
+
+		changePasscodeAndReconnect(DEFAULT_PINCODE);
+	}
+	
+	private void changePasscodeAndReconnect(char[] newPasscode) throws BusException, Exception
+	{
+		callSetPasscodeOnConfig(newPasscode);
+
+		reconnectClients();
+		serviceHelper.clearKeyStore();
+
+		serviceHelper.setAuthPassword(deviceAboutAnnouncement, newPasscode);
+
+		callMethodToCheckAuthentication();
 	}
 
-	/**
-	 * Call get about.
-	 *
-	 * @param language the language
-	 * @return the map
-	 * @throws BusException the bus exception
-	 */
-	private  Map<String, Object> callGetAbout(String language) throws BusException
-	{
-		logger.info(String.format("Calling getAboutData() with the language: \"%s\"", language));
-		return aboutClient.getAbout(language);
-	}
-
-	/**
-	 * Gets the supported languages.
-	 *
-	 * @param aboutMap the about map
-	 * @return the supported languages
-	 */
-	private  String[] getSupportedLanguages(Map<String, Object> aboutMap)
-	{
-		String[] suppLangs = (String[]) aboutMap.get(AboutKeys.ABOUT_SUPPORTED_LANGUAGES);
-		logger.info(String.format("Supported languages: %s", Arrays.toString(suppLangs)));
-		return suppLangs;
-	}
-
-	/**
-	 * Compare maps.
-	 *
-	 * @param map1 the map1
-	 * @param map2 the map2
-	 * @throws Exception the exception
-	 */
-	private  void compareMaps(Map<String, Object> map1, Map<String, Object> map2) throws Exception
-	{
-		logger.info("Comparing DeviceName");
-		compareMapsForField(AboutKeys.ABOUT_DEVICE_NAME, map1, map2);
-		logger.info("Comparing DefaultLanguage");
-		compareMapsForField(AboutKeys.ABOUT_DEFAULT_LANGUAGE, map1, map2);
-	}
-
-	/**
-	 * Compare maps for field.
-	 *
-	 * @param fieldName the field name
-	 * @param map1 the map1
-	 * @param map2 the map2
-	 * @throws Exception the exception
-	 */
-	private  void compareMapsForField(String fieldName, Map<String, Object> map1, Map<String, Object> map2) throws Exception
-	{
-		logger.info("Comparing GetConfigurations() and GetAbout() "+fieldName+" field");
-		assertEquals(String.format("%s does not match", fieldName), (String) map1.get(fieldName),(String) map2.get(fieldName));
-	}
-
-
-	/**
-	 * Call get configurations with default language.
-	 *
-	 * @return the map
-	 * @throws BusException the bus exception
-	 */
-	private  Map<String, Object> callGetConfigurationsWithDefaultLanguage() throws BusException
-	{
-		String defaultLanguage = deviceAboutAnnouncement.getDefaultLanguage();
-		Map<String, Object> configMap = callGetConfigurations(defaultLanguage);
-		return configMap;
-	}
-
-	/**
-	 * Check map for required fields.
-	 *
-	 * @param map the map
-	 */
-	private  void checkMapForRequiredFields(Map<String, Object> map)
-	{
-		logger.info("Checking that DeviceName field is present");
-		assertTrue("Required DeviceName field not present in map", map.containsKey(AboutKeys.ABOUT_DEVICE_NAME));
-		logger.info("Checking that DefaultLanguage field is present");
-		assertTrue("Required DefaultLanguage field not present in map", map.containsKey(AboutKeys.ABOUT_DEFAULT_LANGUAGE));
-	}
-
-	/**
-	 * Check consistency with about announcement.
-	 *
-	 * @param configMap the config map
-	 * @throws BusException the bus exception
-	 */
-	private  void checkConsistencyWithAboutAnnouncement(Map<String, Object> configMap) throws BusException
-	{
-		logger.info("Checking that DeviceName and DefaultLanguage from GetConfigurations() matches the values in About announcemment");
-		assertEquals("DeviceName from GetConfigurations() does not match About announcement", deviceAboutAnnouncement.getDeviceName(), (String) configMap.get(AboutKeys.ABOUT_DEVICE_NAME));
-		logger.info("Checking that DefaultLanguage from GetConfigurations() matches About announcement");
-		assertEquals("DefaultLanguage from GetConfigurations() does not match About announcement", deviceAboutAnnouncement.getDefaultLanguage(),
-				(String) configMap.get(AboutKeys.ABOUT_DEFAULT_LANGUAGE));
-		/*if(pass){
-			logger.info("Partial Verdict: PASS");
-
-		}*/
-	}
-
-	/**
-	 * Call get version on config.
-	 *
-	 * @return the short
-	 * @throws BusException the bus exception
-	 */
-	private  short callGetVersionOnConfig() throws BusException
-	{
-		short version = configClient.getVersion();
-		logger.info(String.format("Call to getVersion() returns: %d", version));
-		return version;
-	}
-
-
-	/**
-	 * Checks if is app id equal to device id.
-	 *
-	 * @param dutAppId the dut app id
-	 * @param dutDeviceId the dut device id
-	 * @return true, if is app id equal to device id
-	 */
-	private  boolean isAppIdEqualToDeviceId(UUID dutAppId, String dutDeviceId)
-	{
-		logger.info(String.format("Comparing DeviceId: %s to AppId: %s", dutDeviceId, dutAppId.toString().replace("-", "")));
-		return dutDeviceId.equals(dutAppId.toString().replace("-", ""));
-	}
-
-	/**
-	 * Inits the service helper.
-	 *
-	 * @throws BusException the bus exception
-	 * @throws Exception the exception
-	 */
-	protected  void initServiceHelper() throws BusException, Exception
+	private void releaseResources() throws Exception
 	{
 		releaseServiceHelper();
-		serviceHelper = createServiceHelper();
-
-		serviceHelper.initialize(BUS_APPLICATION_NAME, dutDeviceId, dutAppId);
-
-		serviceHelper.startConfigClient();
-
-		deviceAboutAnnouncement = waitForNextDeviceAnnouncement();
-
-		logger.info("Partial Verdict: PASS");
-
-		connectAboutClient(deviceAboutAnnouncement);
-		connectConfigClient(deviceAboutAnnouncement);
-
-		logger.info("Partial Verdict: PASS");
-
-		serviceHelper.enableAuthentication(keyStorePath);
 	}
-
-	/**
-	 * Creates the service helper.
-	 *
-	 * @return the service helper
-	 */
-	protected  ServiceHelper createServiceHelper()
-	{
-		return new ServiceHelper(logger);
-	}
-
-
-	/**
-	 * Release resources.
-	 *
-	 * @throws Exception the exception
-	 */
-	private  void releaseResources() throws Exception
-	{
-		releaseServiceHelper();
-	} 
-
-	/**
-	 * Release service helper.
-	 *
-	 * @throws Exception the exception
-	 */
-	private  void releaseServiceHelper() throws Exception
-	{
-
-		if (aboutClient != null)
-		{
-			aboutClient.disconnect();
-			aboutClient = null;
-		}
-		if (configClient != null)
-		{
-			configClient.disconnect();
-			configClient = null;
-		}
-		if (serviceHelper != null)
-		{
-			serviceHelper.release();
-			waitForSessionToClose();
-			serviceHelper = null;
-		}
-
-	}
-
-	/**
-	 * Reconnect clients.
-	 *
-	 * @throws Exception the exception
-	 */
-	private  void reconnectClients() throws Exception
-	{
-		releaseServiceHelper();
-		initServiceHelper();
-	}
-
-	/**
-	 * Connect config client.
-	 *
-	 * @param aboutAnnouncement the about announcement
-	 * @throws Exception the exception
-	 */
-	private  void connectConfigClient(AboutAnnouncementDetails aboutAnnouncement) throws Exception
-	{
-		configClient = serviceHelper.connectConfigClient(aboutAnnouncement);
-	}
-
-	/**
-	 * Connect about client.
-	 *
-	 * @param aboutAnnouncement the about announcement
-	 * @throws Exception the exception
-	 */
-	private  void connectAboutClient(AboutAnnouncementDetails aboutAnnouncement) throws Exception
-	{
-		serviceAvailabilityHandler = createServiceAvailabilityHandler();
-		aboutClient = serviceHelper.connectAboutClient(aboutAnnouncement, serviceAvailabilityHandler);
-	}
-
-	/**
-	 * Creates the service availability handler.
-	 *
-	 * @return the service availability handler
-	 */
-	protected  ServiceAvailabilityHandler createServiceAvailabilityHandler()
-	{
-		return new ServiceAvailabilityHandler();
-	}
-
-	/**
-	 * Wait for next device announcement.
-	 *
-	 * @return the about announcement details
-	 * @throws Exception the exception
-	 */
-	private  AboutAnnouncementDetails waitForNextDeviceAnnouncement() throws Exception
-	{
-		logger.info("Waiting for About announcement");
-		return serviceHelper.waitForNextDeviceAnnouncement(aboutAnnouncementTimeout, TimeUnit.SECONDS, true);
-	}
-
-	/**
-	 * Wait for session to close.
-	 *
-	 * @throws Exception the exception
-	 */
-	private  void waitForSessionToClose() throws Exception 
-	{
-		logger.info("Waiting for session to close");
-
-		serviceHelper.waitForSessionToClose(SESSION_CLOSE_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
-
-	}
-
-	/**
-	 * Reset passcode if needed.
-	 *
-	 * @throws Exception the exception
-	 */
-	private  void resetPasscodeIfNeeded() throws Exception
+	
+	private void resetPasscodeIfNeeded() throws Exception
 	{
 		try
 		{
@@ -1687,200 +1567,116 @@ public class ConfigurationService {
 		}
 	}
 
-
-
-	/**
-	 * Sets the passcode.
-	 *
-	 * @param pwd the new passcode
-	 * @throws Exception the exception
-	 */
-	private  void setPasscode(char[] pwd) throws Exception
+	private void setPasscode(char[] pwd) throws Exception
 	{
 		serviceHelper.clearKeyStore();
 		serviceHelper.setAuthPassword(deviceAboutAnnouncement, pwd);
 		callMethodToCheckAuthentication();
 		changePasscodeAndReconnect(DEFAULT_PINCODE);
 	}
-
-	/**
-	 * Change passcode and reconnect.
-	 *
-	 * @param newPasscode the new passcode
-	 * @throws BusException the bus exception
-	 * @throws Exception the exception
-	 */
-	private  void changePasscodeAndReconnect(char[] newPasscode) throws BusException, Exception
-	{
-		callSetPasscodeOnConfig(newPasscode);
-
-		reconnectClients();
-		serviceHelper.clearKeyStore();
-
-		serviceHelper.setAuthPassword(deviceAboutAnnouncement, newPasscode);
-
-		callMethodToCheckAuthentication();
-	}
-
-	/**
-	 * Call set passcode on config.
-	 *
-	 * @param newPasscode the new passcode
-	 * @throws BusException the bus exception
-	 */
-	private  void callSetPasscodeOnConfig(char[] newPasscode) throws BusException
-	{
-		String realm = "";
-		logger.info(String.format("Calling SetPasscode() on Config with realm: %s; and passcode: %s", realm, Arrays.toString(newPasscode)));
-		configClient.setPasscode(realm, newPasscode);
-
-	}
-
-	/**
-	 * Call method to check authentication.
-	 *
-	 * @return the short
-	 * @throws BusException the bus exception
-	 */
-	private short callMethodToCheckAuthentication() throws BusException
-	{
-		//callGetConfigurations("");
-		short version = configClient.getVersion();
-		logger.info(String.format("Call to getVersion() returns: %d",
-		version));
-		return version;
-	}
-
-
-
-	/**
-	 * Call get configurations.
-	 *
-	 * @param languageTag the language tag
-	 * @return the map
-	 * @throws BusException the bus exception
-	 */
-	private  Map<String, Object> callGetConfigurations(String languageTag) throws BusException
-	{
-		logger.info(String.format("Calling GetConfigurations() with language: \"%s\"", languageTag));
-		Map<String, Object> configMap = configClient.getConfig(languageTag);
-		return configMap;
-	}
-
-
-	/*
-	 * Verdicts
-	 */
 	
+	private void loseSessionOrWait() throws Exception
+    {
+        if (serviceAvailabilityHandler.waitForSessionLost(SESSION_LOST_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS))
+        {
+            deviceAboutAnnouncement = waitForNextDeviceAnnouncement();
+        }
+        else
+        {
+            logger.info("Failed to lose session, waiting before attempting to reconnect");
+            Thread.sleep(CONFIG_CLIENT_RECONNECT_WAIT_TIME);
+        }
+    }
+	
+	/** 
+	 * [AT4] Added methods to emulate JUnit behaviour
+	 * 
+	 * assertEquals
+	 * assertTrue
+	 * assertFalse
+	 * assertNotNull
+	 * 
+	 * */
 
+	private void assertEquals(String errorMessage, String first, String second)
+	{
+		if (!first.equals(second)) {
+			fail(errorMessage);
+		} else {
+			logger.info("Partial Verdict: PASS");
+		}
+	}
+	
+	private void assertEquals(String first, String second)
+	{
+		if (!first.equals(second)) {
+			fail("Strings are not equal");
+		} else {
+			logger.info("Partial Verdict: PASS");
+		}
+	}
+
+	private void assertTrue(String errorMessage, boolean condition)
+	{
+		if (!condition) {
+			fail(errorMessage);
+		} else {
+			logger.info("Partial Verdict: PASS");
+		}
+	}
+
+	private void assertFalse(String errorMessage, boolean condition)
+	{
+		if (condition) {
+			fail(errorMessage);
+		} else {
+			logger.info("Partial Verdict: PASS");
+		}
+	}
+
+	private void assertNotNull(String errorMessage, String string)
+	{
+		if (string == null) {
+			fail(errorMessage);
+		} else {
+			logger.info("Partial Verdict: PASS");
+		}
+	}
+	
 	/**
-	 * Fail.
-	 *
-	 * @param msg the msg
-	 */
-	private  void fail(String msg) {
+	 * [AT4] Added methods to manage the verdict
+	 * 
+	 * fail
+	 * getFinalVerdict
+	 * 
+	 *  */
+	
+	private void fail(String msg)
+	{
 		logger.error(msg);
 		logger.info("Partial Verdict: FAIL");
 		pass=false;
 
 	}
 
-	/**
-	 * Inconc.
-	 *
-	 * @param msg the msg
-	 */
-	private void inconc(String msg) {
+	private void inconc(String msg)
+	{
 		logger.error(msg);
 		logger.info("Partial Verdict: INCONC");
 		inconc = true;
 	}
 
-	/**
-	 * Assert equals.
-	 *
-	 * @param errorMsg the error msg
-	 * @param string1 the string1
-	 * @param string2 the string2
-	 */
-	private  void assertEquals(String errorMsg,
-			String string1, String string2) {
-		if(!string1.equals(string2)){
-			fail(errorMsg);
+	public String getFinalVerdict()
+	{
+		if (inconc) {
+			return "INCONC";
+		} 
+		
+		if (pass) {
+			return "PASS";
 		} else {
-			logger.info("Partial Verdict: PASS");
+			return "FAIL";
 		}
-
-	}
-
-	/**
-	 * Assert true.
-	 *
-	 * @param errorMsg the error msg
-	 * @param bool the bool
-	 */
-	private  void assertTrue(String errorMsg,
-			boolean bool) {
-		if(!bool){
-			fail(errorMsg);
-		} else {
-			logger.info("Partial Verdict: PASS");
-		}
-
-	}
-
-
-	/**
-	 * Assert false.
-	 *
-	 * @param errorMsg the error msg
-	 * @param bool the bool
-	 */
-	private  void assertFalse(String errorMsg,
-			boolean bool) {
-		if(bool){
-			fail(errorMsg);
-		} else {
-			logger.info("Partial Verdict: PASS");
-		}
-
-	}
-
-	/**
-	 * Assert not null.
-	 *
-	 * @param msgError the msg error
-	 * @param notNull the not null
-	 */
-	private  void assertNotNull(String msgError, String notNull) {
-
-		if(notNull==null){
-			fail(msgError);
-		}else {
-			logger.info("Partial Verdict: PASS");
-		}
-
-	}
-	
-	/*
-	 * Verdict
-	 */
-
-	/**
-	 * Gets the verdict.
-	 *
-	 * @return the verdict
-	 */
-	public String getVerdict() {
-		String verdict=null;
-		if(inconc){
-			verdict="INCONC";
-		} else if(pass){
-			verdict="PASS";
-		}else if(!pass){
-			verdict="FAIL";
-		}
-		return verdict;
 	}
 
 }

@@ -1,18 +1,18 @@
-/*
- * Copyright AllSeen Alliance. All rights reserved.
+/*******************************************************************************
+ *  Copyright AllSeen Alliance. All rights reserved.
  *
- *    Permission to use, copy, modify, and/or distribute this software for any
- *    purpose with or without fee is hereby granted, provided that the above
- *    copyright notice and this permission notice appear in all copies.
+ *     Permission to use, copy, modify, and/or distribute this software for any
+ *     purpose with or without fee is hereby granted, provided that the above
+ *     copyright notice and this permission notice appear in all copies.
  *
- *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
- *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
- *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
- *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
- *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
- *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
- *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
+ *     THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *     WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *     MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *     ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *     WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *     ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *******************************************************************************/
 package com.at4wireless.alljoyn.core.introspection;
 
 import java.util.List;
@@ -49,111 +49,42 @@ import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionProperty;
 import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionSignal;
 import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionSubNode;
 
-
-// TODO: Auto-generated Javadoc
-/**
- * The Class IntrospectionXmlHandler.
- */
 public class IntrospectionXmlHandler extends DefaultHandler
 {
-    
-    /** The Constant XML_QNAME_NAME. */
     private static final String XML_QNAME_NAME = "name";
-    
-    /** The Constant XML_QNAME_VALUE. */
     private static final String XML_QNAME_VALUE = "value";
-    
-    /** The Constant XML_QNAME_TYPE. */
     private static final String XML_QNAME_TYPE = "type";
-    
-    /** The Constant XML_QNAME_DIRECTION. */
     private static final String XML_QNAME_DIRECTION = "direction";
-    
-    /** The Constant XML_QNAME_ACCESS. */
     private static final String XML_QNAME_ACCESS = "access";
-
-    /** The Constant NODE_TAG. */
     private static final String NODE_TAG = "node";
-    
-    /** The Constant INTERFACE_TAG. */
     private static final String INTERFACE_TAG = "interface";
-    
-    /** The Constant METHOD_TAG. */
     private static final String METHOD_TAG = "method";
-    
-    /** The Constant SIGNAL_TAG. */
     private static final String SIGNAL_TAG = "signal";
-    
-    /** The Constant PROPERTY_TAG. */
     private static final String PROPERTY_TAG = "property";
-    
-    /** The Constant ARG_TAG. */
     private static final String ARG_TAG = "arg";
-    
-    /** The Constant ANNOTATION_TAG. */
     private static final String ANNOTATION_TAG = "annotation";
-
-    /** The saw root node. */
     private boolean sawRootNode = false;
-    
-    /** The process method args. */
     private boolean processMethodArgs = false;
-    
-    /** The process signal args. */
     private boolean processSignalArgs = false;
-    
-    /** The introspection node. */
     private IntrospectionNode introspectionNode;
-    
-    /** The interfaces. */
     private List<IntrospectionInterface> interfaces;
-    
-    /** The ifaces. */
     private IntrospectionInterface ifaces;
-    
-    /** The methods. */
     private Set<IntrospectionMethod> methods;
-    
-    /** The method. */
     private IntrospectionMethod method;
-    
-    /** The properties. */
     private Set<IntrospectionProperty> properties;
-    
-    /** The signals. */
     private Set<IntrospectionSignal> signals;
-    
-    /** The interface annotations. */
     private Set<IntrospectionAnnotation> interfaceAnnotations;
-    
-    /** The sub nodes. */
     private List<IntrospectionSubNode> subNodes;
-    
-    /** The method args. */
     private List<IntrospectionArg> methodArgs;
-    
-    /** The signal. */
     private IntrospectionSignal signal;
-    
-    /** The signal args. */
     private List<IntrospectionArg> signalArgs;
-    
-    /** The method annotations. */
     private Set<IntrospectionAnnotation> methodAnnotations;
 
-    /**
-     * Gets the introspection node.
-     *
-     * @return the introspection node
-     */
     public IntrospectionNode getIntrospectionNode()
     {
         return introspectionNode;
     }
 
-    /* (non-Javadoc)
-     * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
-     */
     @Override
     public void startElement(String namespaceURI, String localName, String qName, Attributes attrs) throws SAXException
     {
@@ -169,9 +100,6 @@ public class IntrospectionXmlHandler extends DefaultHandler
         createSubNode(localName, attrs);
     }
 
-    /* (non-Javadoc)
-     * @see org.xml.sax.helpers.DefaultHandler#endElement(java.lang.String, java.lang.String, java.lang.String)
-     */
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException
     {
@@ -185,12 +113,6 @@ public class IntrospectionXmlHandler extends DefaultHandler
         }
     }
 
-    /**
-     * Creates the method annotation.
-     *
-     * @param localName the local name
-     * @param attrs the attrs
-     */
     private void createMethodAnnotation(String localName, Attributes attrs)
     {
         if (localName.equals(ANNOTATION_TAG) && processMethodArgs)
@@ -203,12 +125,6 @@ public class IntrospectionXmlHandler extends DefaultHandler
         }
     }
 
-    /**
-     * Creates the signal arg.
-     *
-     * @param localName the local name
-     * @param attrs the attrs
-     */
     private void createSignalArg(String localName, Attributes attrs)
     {
         if (localName.equals(ARG_TAG) && processSignalArgs)
@@ -222,12 +138,6 @@ public class IntrospectionXmlHandler extends DefaultHandler
         }
     }
 
-    /**
-     * Creates the method arg.
-     *
-     * @param localName the local name
-     * @param attrs the attrs
-     */
     private void createMethodArg(String localName, Attributes attrs)
     {
         if (localName.equals(ARG_TAG) && processMethodArgs)
@@ -241,12 +151,6 @@ public class IntrospectionXmlHandler extends DefaultHandler
         }
     }
 
-    /**
-     * Creates the sub node.
-     *
-     * @param localName the local name
-     * @param attrs the attrs
-     */
     private void createSubNode(String localName, Attributes attrs)
     {
         if (localName.equals(NODE_TAG) && sawRootNode)
@@ -262,13 +166,6 @@ public class IntrospectionXmlHandler extends DefaultHandler
         }
     }
 
-    /**
-     * Creates the property.
-     *
-     * @param localName the local name
-     * @param attrs the attrs
-     * @throws SAXException the SAX exception
-     */
     private void createProperty(String localName, Attributes attrs) throws SAXException
     {
         if (localName.equals(PROPERTY_TAG))
@@ -282,13 +179,6 @@ public class IntrospectionXmlHandler extends DefaultHandler
         }
     }
 
-    /**
-     * Creates the signal.
-     *
-     * @param localName the local name
-     * @param attrs the attrs
-     * @throws SAXException the SAX exception
-     */
     private void createSignal(String localName, Attributes attrs) throws SAXException
     {
         if (localName.equals(SIGNAL_TAG))
@@ -301,13 +191,6 @@ public class IntrospectionXmlHandler extends DefaultHandler
         }
     }
 
-    /**
-     * Creates the annotation.
-     *
-     * @param localName the local name
-     * @param attrs the attrs
-     * @throws SAXException the SAX exception
-     */
     private void createAnnotation(String localName, Attributes attrs) throws SAXException
     {
         if (localName.equals(ANNOTATION_TAG) && !processMethodArgs)
@@ -320,13 +203,6 @@ public class IntrospectionXmlHandler extends DefaultHandler
         }
     }
 
-    /**
-     * Creates the method.
-     *
-     * @param localName the local name
-     * @param attrs the attrs
-     * @throws SAXException the SAX exception
-     */
     private void createMethod(String localName, Attributes attrs) throws SAXException
     {
         if (localName.equals(METHOD_TAG))
@@ -339,13 +215,6 @@ public class IntrospectionXmlHandler extends DefaultHandler
         }
     }
 
-    /**
-     * Creates the interface.
-     *
-     * @param localName the local name
-     * @param attrs the attrs
-     * @throws SAXException the SAX exception
-     */
     private void createInterface(String localName, Attributes attrs) throws SAXException
     {
         if (localName.equals(INTERFACE_TAG))
@@ -357,13 +226,6 @@ public class IntrospectionXmlHandler extends DefaultHandler
         }
     }
 
-    /**
-     * Creates the introspection node.
-     *
-     * @param localName the local name
-     * @param attrs the attrs
-     * @throws SAXException the SAX exception
-     */
     private void createIntrospectionNode(String localName, Attributes attrs) throws SAXException
     {
         if (localName.equals(NODE_TAG) && !sawRootNode)

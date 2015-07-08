@@ -1,103 +1,122 @@
-/*
- * Copyright AllSeen Alliance. All rights reserved.
+/*******************************************************************************
+ *  Copyright AllSeen Alliance. All rights reserved.
  *
- *    Permission to use, copy, modify, and/or distribute this software for any
- *    purpose with or without fee is hereby granted, provided that the above
- *    copyright notice and this permission notice appear in all copies.
+ *     Permission to use, copy, modify, and/or distribute this software for any
+ *     purpose with or without fee is hereby granted, provided that the above
+ *     copyright notice and this permission notice appear in all copies.
  *
- *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
- *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
- *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
- *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
- *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
- *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
- *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
+ *     THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *     WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *     MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *     ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *     WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *     ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *******************************************************************************/
 package  com.at4wireless.alljoyn.core.onboarding;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
-import com.at4wireless.alljoyn.core.onboarding.ScanResult;
-import com.at4wireless.alljoyn.core.onboarding.WifiHelper;
-import com.at4wireless.alljoyn.core.onboarding.WifiNetworkConfig;
-import com.at4wireless.alljoyn.core.onboarding.WifiNotEnabledException;
+import com.at4wireless.alljoyn.wifiapi.ScanResult;
+import com.at4wireless.alljoyn.wifiapi.WifiManager;
 
-
-/**
- * The Class WifiHelperImpl to manage WIFI connections using netsh.
- */
-public class WifiHelperImpl implements WifiHelper {
-
-
-
-	/** The ssid. */
-	String SSID=null;
-
-	/** The TAG. */
+public class WifiHelperImpl implements WifiHelper
+{
 	private static final String TAG = "WifiHelperImpl";
-
-	/** The logger. */
 	private static final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	//private Context context;
+	//private WifiBroadcastReceiver wifiBroadcastReceiver;
+	private WifiManager wifiManager;
 
+	//String SSID; //[quitar]
 
-	/* (non-Javadoc)
-	 * @see com.at4wireless.alljoyn.core.onboarding.WifiHelper#initialize()
-	 */
 	@Override
-	public void initialize() {
-		SSID=null;
+	public void initialize()
+	{
+		/*wifiManager = getWifiManager(context);
 
+        wifiBroadcastReceiver = new WifiBroadcastReceiver(context);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        filter.addAction(android.net.ConnectivityManager.CONNECTIVITY_ACTION);
+        filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        filter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
+        context.registerReceiver(wifiBroadcastReceiver, filter);*/
+		
+		wifiManager = new WifiManager();
+		//SSID = null;
+	}
+	
+	@Override
+	public void release()
+	{
+		/*if (wifiBroadcastReceiver != null)
+		{
+			context.unregisterReceiver(wifiBroadcastReceiver);
+			wifiBroadcastReceiver = null;
+		} */
+		
+		if (wifiManager != null)
+		{
+			wifiManager.release();
+			wifiManager = null;
+		} //[JTF]
+		
+		//SSID = null;
+		//disconnect();
+	}
+	
+	//protected WifiManager getWifiManager(Context context)
+	protected WifiManager getWifiManager()
+	{
+		//return (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+		return wifiManager;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.at4wireless.alljoyn.core.onboarding.WifiHelper#isWifiEnabled()
-	 */
 	@Override
-	public boolean isWifiEnabled() {
-
-		return true;
+	public boolean isWifiEnabled()
+	{
+		return wifiManager.isWifiEnabled();
+		//return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.at4wireless.alljoyn.core.onboarding.WifiHelper#getCurrentSSID()
-	 */
 	@Override
-	public String getCurrentSSID() {
-		return SSID;
+	public String getCurrentSSID()
+	{
+		checkForWifiEnabled();
+		//return wifiBroadcastReceiver.connectedSSID();
+		return wifiManager.connectedSsid();
+		//return SSID;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.at4wireless.alljoyn.core.onboarding.WifiHelper#waitForScanResults(long, java.util.concurrent.TimeUnit)
-	 */
 	@Override
-	public List<ScanResult> waitForScanResults(long timeout, TimeUnit unit)
-			throws InterruptedException {		
-		List<ScanResult> scanResults=null;
+	public List<ScanResult> waitForScanResults(long timeout, TimeUnit unit) throws InterruptedException
+	//public List<ScanResult> waitForScanResults(long timeout, TimeUnit unit)
+	{
+		checkForWifiEnabled();
+        //return wifiBroadcastReceiver.waitForScanResults(timeout, unit);
+		return wifiManager.waitForScanResults(timeout, unit);
+		/*List<ScanResult> scanResults=null;
 		long timeToWaitInMs = TimeUnit.MILLISECONDS.convert(timeout, unit);
 		long startTime = System.currentTimeMillis();
 		while ((scanResults==null) && (System.currentTimeMillis() < startTime + timeToWaitInMs))
 		{
 			scanResults=getScanResults();
 		}
-		return scanResults;
+		return scanResults;*/
 	}
 
-
-	/* (non-Javadoc)
-	 * @see com.at4wireless.alljoyn.core.onboarding.WifiHelper#waitForDisconnect(long, java.util.concurrent.TimeUnit)
-	 */
 	@Override
-	public String waitForDisconnect(long timeout, TimeUnit unit)
-			throws InterruptedException {
-		String disconnectedSsid=null;
+	public String waitForDisconnect(long timeout, TimeUnit unit) throws InterruptedException
+	{
+		checkForWifiEnabled();
+        //return wifiBroadcastReceiver.waitForDisconnect(timeout, unit);
+		return wifiManager.waitForDisconnect(timeout, unit);
+		
+		/*String disconnectedSsid=null;
 		boolean disconnected = false;
 		long timeToWaitInMs = TimeUnit.MILLISECONDS.convert(timeout, unit);
 		long startTime = System.currentTimeMillis();
@@ -114,19 +133,20 @@ public class WifiHelperImpl implements WifiHelper {
 			logger.info("It has not been disconnected from the Wifi Network");
 		}
 
-		return disconnectedSsid;
+		return disconnectedSsid;*/
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see com.at4wireless.alljoyn.core.onboarding.WifiHelper#waitForConnect(java.lang.String, long, java.util.concurrent.TimeUnit)
-	 */
 	@Override
-	public String waitForConnect(String ssid, long timeout, TimeUnit unit)
-			throws InterruptedException {
-
-		boolean connected = false;
+	public String waitForConnect(String ssid, long timeout, TimeUnit unit) throws InterruptedException
+	{
+		checkForWifiEnabled();
+        //return wifiBroadcastReceiver.waitForConnect(ssid, timeout, unit);
+		
+		logger.info(String.format("Waiting for WiFi to connect to %s", ssid));
+		
+		return wifiManager.waitForConnect(ssid, timeout, unit);
+		
+		/*boolean connected = false;
 		long timeToWaitInMs = TimeUnit.MILLISECONDS.convert(timeout, unit);
 		long startTime = System.currentTimeMillis();
 
@@ -140,28 +160,27 @@ public class WifiHelperImpl implements WifiHelper {
 		}else{
 			logger.info("Not connected to: "+ssid);
 			return null;
-		}
+		}*/
 	}
 
-	/* (non-Javadoc)
-	 * @see com.at4wireless.alljoyn.core.onboarding.WifiHelper#waitForNetworkAvailable(java.lang.String, long, java.util.concurrent.TimeUnit)
-	 */
 	@Override
 	public boolean waitForNetworkAvailable(String ssid, long timeout, TimeUnit unit) throws InterruptedException
 	{
-		//disconnect();
-		logger.info("Waiting for network "+ssid+" to be available");
+		logger.info("Waiting for network "+ssid+" to be available"); //[AT4]
+		
 		boolean isAvailable = false;
 		long timeToWaitInMs = TimeUnit.MILLISECONDS.convert(timeout, unit);
 		long startTime = System.currentTimeMillis();
+		
 		while ((!isAvailable) && (System.currentTimeMillis() < startTime + timeToWaitInMs))
 		{
 			long timeRemaining = startTime + timeToWaitInMs - System.currentTimeMillis();
+			
 			List<ScanResult> scanResults = waitForScanResults(timeRemaining, TimeUnit.MILLISECONDS);
 			if (scanResults != null)
 			{
 				for (ScanResult scanResult : scanResults)
-				{						
+				{
 					if (ssid.equals(scanResult.SSID))
 					{
 						isAvailable = true;
@@ -173,45 +192,234 @@ public class WifiHelperImpl implements WifiHelper {
 		return isAvailable;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.at4wireless.alljoyn.core.onboarding.WifiHelper#connectToNetwork(com.at4wireless.alljoyn.core.onboarding.WifiNetworkConfig, boolean, long, java.util.concurrent.TimeUnit)
-	 */
 	@Override
-	public String connectToNetwork(WifiNetworkConfig wifiNetworkConfig,
-			boolean recreate, long timeout, TimeUnit unit)
-					throws InterruptedException {
-		Boolean validAuth = createWifiProfile(wifiNetworkConfig.getSsid(), wifiNetworkConfig.getSsid(),
+	public String connectToNetwork(WifiNetworkConfig wifiNetworkConfig, boolean recreate, long timeout, TimeUnit unit) throws InterruptedException
+	{
+		String ssid = wifiNetworkConfig.getSsid();
+        String password = wifiNetworkConfig.getPassphrase();
+        String securityType = wifiNetworkConfig.getSecurityType();
+
+        long timeToWaitInMs = TimeUnit.MILLISECONDS.convert(timeout, unit);
+        long startTime = System.currentTimeMillis();
+
+        logger.info(String.format("Attempting to connect to SSID is: %s", ssid));
+
+        /*Integer networkId = null;
+        List<WifiConfiguration> configuredNetworks = wifiManager.getConfiguredNetworks();
+        for (WifiConfiguration tempConfig : configuredNetworks)
+        {
+            if (tempConfig.SSID != null && tempConfig.SSID.equals("\"" + ssid + "\""))
+            {
+                networkId = tempConfig.networkId;
+                break;
+            }
+        }*/
+        
+        String network = null;
+        List<String> configuredNetworks = wifiManager.getConfiguredNetworks();
+        for (String tempConfig : configuredNetworks)
+        {
+        	if (tempConfig != null && tempConfig.equals(ssid))
+        	{
+        		network = tempConfig;
+        		break;
+        	}
+        }
+
+        /*if (null == networkId)
+        {
+            WifiConfiguration tmpConfig = createWifiConfiguration(ssid, password, securityType);
+            logger.debug("Adding Wifi network");
+            networkId = wifiManager.addNetwork(tmpConfig);
+            saveWifiConfiguration();
+        }
+        else if (recreate)
+        {
+            WifiConfiguration tmpConfig = createWifiConfiguration(ssid, password, securityType);
+            logger.debug("Removing Wifi network config");
+            tmpConfig.networkId = networkId;
+            removeWifiNetwork(networkId);
+
+            saveWifiConfiguration();
+            logger.debug("Adding Wifi network");
+            networkId = wifiManager.addNetwork(tmpConfig);
+            saveWifiConfiguration();
+        }*/
+        
+        boolean status = true;
+        if (null == network)
+        {
+        	String profileConfig = createWifiConfiguration(ssid, password, securityType);
+        	//logger.info("Adding WiFi network");
+        	status = wifiManager.addNetwork(profileConfig);
+        }
+        else if (recreate)
+        {
+        	String profileConfig = createWifiConfiguration(ssid, password, securityType);
+        	//logger.info("Removing WiFi network config");
+        	removeWifiNetwork(network);
+        	
+        	//logger.info("Adding WiFi network");
+        	status = wifiManager.addNetwork(profileConfig);
+        }
+
+        /*if (-1 == networkId)
+        {
+            throw new WifiUnableToAddNetworkException("Unable to add wifi network with ssid: " + ssid);
+        }*/
+
+        if (false == status)
+        {
+        	throw new WifiUnableToAddNetworkException("Unable to add wifi network with ssid: " + ssid);
+        }
+        
+        //String currentSsid = wifiBroadcastReceiver.connectedSSID();
+        String currentSsid = wifiManager.connectedSsid();
+
+        /*if (!wifiManager.enableNetwork(networkId, false))
+        {
+            throw new WifiHelperException("WifiManager.enableNetwork returned false");
+        }
+
+        if (!wifiManager.disconnect())
+        {
+            throw new WifiHelperException("WifiManager.disconnect returned false");
+        }*/
+
+        long timeRemaining = startTime + timeToWaitInMs - System.currentTimeMillis();
+        if (currentSsid != null)
+        {
+            if (waitForDisconnect(timeRemaining, TimeUnit.MILLISECONDS) == null)
+            {
+                throw new WifiHelperException(String.format("Timed out waiting for disconnect from %s", currentSsid));
+            }
+        }
+
+        /*if (!wifiManager.enableNetwork(networkId, true))
+        {
+            throw new WifiHelperException("WifiManager.enableNetwork returned false");
+        }*/
+
+        timeRemaining = startTime + timeToWaitInMs - System.currentTimeMillis();
+        return waitForConnect(ssid, timeRemaining, TimeUnit.MILLISECONDS);
+		
+		/*Boolean validAuth = createWifiProfile(wifiNetworkConfig.getSsid(), wifiNetworkConfig.getSsid(),
 				wifiNetworkConfig.getSecurityType(),
 				wifiNetworkConfig.getPassphrase());
 
 		SSID=waitForConnect(wifiNetworkConfig.getSsid(), timeout, unit);
-		return SSID;
+		return SSID;*/
 	}
 
+	/*private WifiConfiguration createWifiConfiguration(String ssid, String password, String securityType)
+    {
+        WifiConfiguration tmpConfig = new WifiConfiguration();
+        tmpConfig.SSID = "\"" + ssid + "\"";
 
+        if (isValidSecurityType(securityType))
+        {
+            tmpConfig.preSharedKey = "\"" + password + "\"";
+        }
+        else if (OnboardingService.AuthType.OPEN.name().equalsIgnoreCase(securityType) || "NONE".equalsIgnoreCase(securityType))
+        {
+            tmpConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Invalid security type: " + securityType);
+        }
 
+        return tmpConfig;
+    }*/
 
-	/* (non-Javadoc)
-	 * @see com.at4wireless.alljoyn.core.onboarding.WifiHelper#release()
-	 */
-	@Override
-	public void release() {
-		SSID=null;
-		disconnect();
+	/*private boolean isValidSecurityType(String securityType)
+    {
+        boolean validSecurityType = false;
 
+        if (OnboardingService.AuthType.WPA2_AUTO.name().equalsIgnoreCase(securityType))
+        {
+            validSecurityType = true;
+        }
+        else if (OnboardingService.AuthType.WPA_AUTO.name().equalsIgnoreCase(securityType))
+        {
+            validSecurityType = true;
+        }
+        else if (OnboardingService.AuthType.WEP.name().equalsIgnoreCase(securityType))
+        {
+            validSecurityType = true;
+        }
+        else if (OnboardingService.AuthType.WPA_TKIP.name().equalsIgnoreCase(securityType))
+        {
+            validSecurityType = true;
+        }
+        else if (OnboardingService.AuthType.WPA_CCMP.name().equalsIgnoreCase(securityType))
+        {
+            validSecurityType = true;
+        }
+        else if (OnboardingService.AuthType.WPA2_TKIP.name().equalsIgnoreCase(securityType))
+        {
+            validSecurityType = true;
+        }
+        else if (OnboardingService.AuthType.WPA2_CCMP.name().equalsIgnoreCase(securityType))
+        {
+            validSecurityType = true;
+        }
+        else if (OnboardingService.AuthType.WPS.name().equalsIgnoreCase(securityType))
+        {
+            validSecurityType = true;
+        }
+        else if ("WPA".equalsIgnoreCase(securityType))
+        {
+            validSecurityType = true;
+        }
+        else if ("WPA2".equalsIgnoreCase(securityType))
+        {
+            validSecurityType = true;
+        }
+
+        return validSecurityType;
+    }*/
+	
+	private void removeWifiNetwork(String profileName)
+    {
+        if (!wifiManager.removeNetwork(profileName))
+        {
+            throw new WifiHelperException("WifiManager.removeNetwork returned false");
+        }
+    }
+
+    /*private void saveWifiConfiguration()
+    {
+        if (!wifiManager.saveConfiguration())
+        {
+            throw new WifiHelperException("WifiManager.saveConfiguration returned false");
+        }
+    }*/
+	
+	private void checkForWifiEnabled()
+	{
+		if (false == isWifiEnabled())
+		{
+			throw new WifiNotEnabledException();
+		}
 	}
-
-
-
+	
 	/**
-	 * Connect to WIFI profile.
-	 *
-	 * @param profileName the profile name
-	 * @return true, if successful
+	 * [AT4] 	Temporary functions to manage WiFi connections with netsh. The main problem
+	 * 			found when using this method is not to be able to receive other feedback than
+	 * 			console output, what makes it strongly dependent of the language. It has to be
+	 * 			changed to JNI ASAP.
 	 */
-	private boolean connectToProfile(String profileName) {
 
-		ProcessBuilder pb = new ProcessBuilder("netsh", "wlan", "connect","name=\""+profileName+"\"");
+	/*private boolean connectToProfile(String profileName)
+	{
+		List<String> commands = new ArrayList<String>();
+			commands.add("netsh");
+			commands.add("wlan");
+			commands.add("connect");
+			commands.add("name="+profileName);
+		ProcessBuilder pb = new ProcessBuilder(commands);
+		//ProcessBuilder pb = new ProcessBuilder("netsh", "wlan", "connect","name=\""+profileName+"\"");
 		pb.redirectErrorStream(true);
 		Process process = null;
 		try { 
@@ -225,127 +433,194 @@ public class WifiHelperImpl implements WifiHelper {
 		String line = null;
 		try {
 			while ((line = reader.readLine()) != null) {
-				System.out.println(line);
-				if(line.contains("correct")){
+				//if(line.contains("correct")){ //[AT4] This has to be changed to Native API
 					return true; 
-				}
-
+				//}
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return false;
+	}*/
 
+	private String createWifiConfiguration(String ssid, String password, String securityType)
+	{
+		String profile = null;
 
-	}
-
-
-
-
-
-
-
-	/**
-	 * Creates the WIFI profile.
-	 *
-	 * @param profileName the profile name
-	 * @param ssid the ssid
-	 * @param securityType the security type
-	 * @param passphrase the passphrase
-	 * @return the boolean
-	 */
-	private Boolean createWifiProfile(String profileName,String ssid, String securityType,
-			String passphrase) {
-		//Creates the XML to connects the WIFI
-		String profile=null;
-
-		Boolean correctSecurityType=true;
-		if(securityType.startsWith("WPA2")){
-			profile="<?xml version=\"1.0\"?>"
+		if (securityType.equals("OPEN"))
+		{	
+			profile = "<?xml version=\"1.0\"?>"
 					+ "<WLANProfile xmlns=\"http://www.microsoft.com/networking/WLAN/profile/v1\">"
-					+ "	<name>"+profileName+"</name>"
-					+ "		<SSIDConfig>"
-					+ "			<SSID>"
-					+ "				<name>"+ssid+"</name>"
-					+ "			</SSID>"
-					+ "		</SSIDConfig>"
+					+ "<name>"+ssid+"</name>"
+					+ "<SSIDConfig>"
+					+ "	<SSID>"
+					+ "		<name>"+ssid+"</name>"
+					+ "	</SSID>"
+					//+ "	<nonBroadcast>false</nonBroadcast>"
+					+ "</SSIDConfig>"
 					+ "<connectionType>ESS</connectionType>"
-					+ "	<connectionMode>auto</connectionMode>"
-					+ "	<MSM>"
-					+ "		<security>"
-					+ "			<authEncryption>"
-					+ "				<authentication>WPA2PSK</authentication>"
-					+ "				<encryption>AES</encryption>"
-					+ "								<useOneX>false</useOneX>"
-					+ "			</authEncryption>"
-					+ "					<sharedKey>"
-					+ "				<keyType>passPhrase</keyType>"
-					+ "				<protected>false</protected>"
-					+ "				<keyMaterial>"+passphrase+"</keyMaterial>"
-					+ "			</sharedKey>"
-					+ "		</security>"
-					+ "	</MSM>"
+					//+ "<connectionMode>manual</connectionMode>"
+					+ "<MSM>"
+					+ "	<security>"
+					+ "		<authEncryption>"
+					+ "			<authentication>open</authentication>"
+					+ "			<encryption>none</encryption>"
+					+ "			<useOneX>false</useOneX>"
+					+ "		</authEncryption>"
+					+ "	</security>"
+					+ "</MSM>"
 					+ "</WLANProfile>";
-
-
-		}else if(securityType.startsWith("WPA")){
-			profile="<?xml version=\"1.0\"?>"
-					+ "		<WLANProfile xmlns=\"http://www.microsoft.com/networking/WLAN/profile/v1\">"
-					+ "			<name>"+profileName+"</name>"
-					+ "				<SSIDConfig>"
-					+ "					<SSID>"						
-					+ "						<name>"+ssid+"</name>"
-					+ "					</SSID>"
-					+ "				</SSIDConfig>"
-					+ "				<connectionType>ESS</connectionType>"
-					+ "				<connectionMode>auto</connectionMode>"
-					+ "				<MSM>"
-					+ "					<security>"
-					+ "						<authEncryption>"
-					+ "							<authentication>WPAPSK</authentication>"
-					+ "							<encryption>TKIP</encryption>"
-					+ "							<useOneX>false</useOneX>"
-					+ "						</authEncryption>"
-					+ "						<sharedKey>"
-					+ "							<keyType>passPhrase</keyType>"
-					+ "							<protected>false</protected>"
-					+ "							<keyMaterial>"+passphrase+"</keyMaterial>"
-					+ "						</sharedKey>"
-					+ "					</security>"
-					+ "				</MSM>"
-					+ "			</WLANProfile>";
-
-		}else if(securityType.equalsIgnoreCase("OPEN")){	
-
-			profile="<?xml version=\"1.0\"?>"
-					+ "	<WLANProfile xmlns=\"http://www.microsoft.com/networking/WLAN/profile/v1\">"
-					+ "		<name>"+profileName+"</name>"
-					+ "			<SSIDConfig>"
-					+ "				<SSID>"
-					+ "					<name>"+ssid+"</name>"
-					+ "				</SSID>"
-					+ "				<nonBroadcast>false</nonBroadcast>"
-					+ "			</SSIDConfig>"
-					+ "			<connectionType>ESS</connectionType>"
-					+ "			<connectionMode>manual</connectionMode>"
-					+ "			<MSM>"
-					+ "				<security>"
-					+ "					<authEncryption>"
-					+ "									<authentication>open</authentication>"
-					+ "						<encryption>none</encryption>"
-					+ "						<useOneX>false</useOneX>"
-					+ "					</authEncryption>"
-					+ "				</security>"
-					+ "			</MSM>"
-					+ "	</WLANProfile>";
-		}else  {
-			logger.info("It isn't a supported Security Type");
 		}
+		else if (securityType.equals("WEP"))
+		{
+        	profile = "<?xml version=\"1.0\"?>"
+        			+ "<WLANProfile xmlns=\"http://www.microsoft.com/networking/WLAN/profile/v1\">"
+        			+ "<name>"+ssid+"</name>"
+        			+ "<SSIDConfig>"
+        			+ "	<SSID>"
+        			+ "		<name>"+ssid+"</name>"
+        			+ "	</SSID>"
+        			+ "</SSIDConfig>"
+        			+ "<connectionType>ESS</connectionType>"
+        			+ "<MSM>"
+        			+ "	<security>"
+        			+ "		<authEncryption>"
+        			+ "			<authentication>open</authentication>"
+        			+ "			<encryption>WEP</encryption>"
+        			+ "			<useOneX>false</useOneX>"
+        			+ "		</authEncryption>"
+        			+ "		<sharedKey>"
+        			+ "			<keyType>networkKey</keyType>"
+        			+ "			<protected>false</protected>"
+        			+ "			<keyMaterial>"+password+"</keyMaterial>"
+        			+ "		</sharedKey>"
+        			+ "		<keyIndex>0</keyIndex>"
+        			+ "	</security>"
+        			+ "</MSM>"
+        			+ "</WLANProfile>";
+        }
+		else if (securityType.equals("WPA_TKIP"))
+        {
+			profile = "<?xml version=\"1.0\"?>"
+					+ "<WLANProfile xmlns=\"http://www.microsoft.com/networking/WLAN/profile/v1\">"
+					+ "<name>"+ssid+"</name>"
+					+ "<SSIDConfig>"
+					+ "	<SSID>"						
+					+ "		<name>"+ssid+"</name>"
+					+ "	</SSID>"
+					+ "</SSIDConfig>"
+					+ "<connectionType>ESS</connectionType>"
+					+ "<connectionMode>auto</connectionMode>"
+					+ "<MSM>"
+					+ "	<security>"
+					+ "		<authEncryption>"
+					+ "			<authentication>WPAPSK</authentication>"
+					+ "			<encryption>TKIP</encryption>"
+					+ "			<useOneX>false</useOneX>"
+					+ "		</authEncryption>"
+					+ "		<sharedKey>"
+					+ "			<keyType>passPhrase</keyType>"
+					+ "			<protected>false</protected>"
+					+ "			<keyMaterial>"+password+"</keyMaterial>"
+					+ "		</sharedKey>"
+					+ "	</security>"
+					+ "</MSM>"
+					+ "</WLANProfile>";
+        }
+		else if (securityType.equals("WPA_CCMP"))
+        {
+			profile = "<?xml version=\"1.0\"?>"
+					+ "<WLANProfile xmlns=\"http://www.microsoft.com/networking/WLAN/profile/v1\">"
+					+ "<name>"+ssid+"</name>"
+					+ "<SSIDConfig>"
+					+ "	<SSID>"						
+					+ "		<name>"+ssid+"</name>"
+					+ "	</SSID>"
+					+ "</SSIDConfig>"
+					+ "<connectionType>ESS</connectionType>"
+					+ "<connectionMode>auto</connectionMode>"
+					+ "<MSM>"
+					+ "	<security>"
+					+ "		<authEncryption>"
+					+ "			<authentication>WPAPSK</authentication>"
+					+ "			<encryption>AES</encryption>"
+					+ "			<useOneX>false</useOneX>"
+					+ "		</authEncryption>"
+					+ "		<sharedKey>"
+					+ "			<keyType>passPhrase</keyType>"
+					+ "			<protected>false</protected>"
+					+ "			<keyMaterial>"+password+"</keyMaterial>"
+					+ "		</sharedKey>"
+					+ "	</security>"
+					+ "</MSM>"
+					+ "</WLANProfile>";
+        }
+		else if (securityType.equals("WPA2_TKIP"))
+		{
+        	profile="<?xml version=\"1.0\"?>"
+					+ "<WLANProfile xmlns=\"http://www.microsoft.com/networking/WLAN/profile/v1\">"
+					+ "<name>"+ssid+"</name>"
+					+ "<SSIDConfig>"
+					+ "	<SSID>"
+					+ "		<name>"+ssid+"</name>"
+					+ "	</SSID>"
+					+ "</SSIDConfig>"
+					+ "<connectionType>ESS</connectionType>"
+					+ "<connectionMode>auto</connectionMode>"
+					+ "<MSM>"
+					+ "	<security>"
+					+ "		<authEncryption>"
+					+ "			<authentication>WPA2PSK</authentication>"
+					+ "			<encryption>TKIP</encryption>"
+					+ "			<useOneX>false</useOneX>"
+					+ "		</authEncryption>"
+					+ "		<sharedKey>"
+					+ "			<keyType>passPhrase</keyType>"
+					+ "			<protected>false</protected>"
+					+ "			<keyMaterial>"+password+"</keyMaterial>"
+					+ "		</sharedKey>"
+					+ "	</security>"
+					+ "</MSM>"
+					+ "</WLANProfile>";
+        }
+		else if (securityType.equals("WPA2_CCMP"))
+		{
+        	profile="<?xml version=\"1.0\"?>"
+					+ "<WLANProfile xmlns=\"http://www.microsoft.com/networking/WLAN/profile/v1\">"
+					+ "<name>"+ssid+"</name>"
+					+ "<SSIDConfig>"
+					+ "	<SSID>"
+					+ "		<name>"+ssid+"</name>"
+					+ "	</SSID>"
+					+ "</SSIDConfig>"
+					+ "<connectionType>ESS</connectionType>"
+					+ "<connectionMode>auto</connectionMode>"
+					+ "<MSM>"
+					+ "	<security>"
+					+ "		<authEncryption>"
+					+ "			<authentication>WPA2PSK</authentication>"
+					+ "			<encryption>AES</encryption>"
+					+ "			<useOneX>false</useOneX>"
+					+ "		</authEncryption>"
+					+ "		<sharedKey>"
+					+ "			<keyType>passPhrase</keyType>"
+					+ "			<protected>false</protected>"
+					+ "			<keyMaterial>"+password+"</keyMaterial>"
+					+ "		</sharedKey>"
+					+ "	</security>"
+					+ "</MSM>"
+					+ "</WLANProfile>";
+        }
+		else
+		{
+        	logger.info("Security type not supported");
+        	//return false;
+        }
+		
+		return profile;
 
-
-
-		PrintWriter xml = null;
+		/*PrintWriter xml = null;
 		try {
 			xml = new PrintWriter(profileName+".xml");
 		} catch (FileNotFoundException e) {
@@ -356,8 +631,13 @@ public class WifiHelperImpl implements WifiHelper {
 		xml.println(profile);
 		xml.close();
 
-		ProcessBuilder pb = new ProcessBuilder("netsh", "wlan", "add",
-				"profile","filename=\""+profileName+".xml\"");
+		List<String> commands = new ArrayList<String>();
+		commands.add("netsh");
+		commands.add("wlan");
+		commands.add("add");
+		commands.add("profile");
+		commands.add("filename="+profileName+".xml");
+		ProcessBuilder pb = new ProcessBuilder(commands);
 		pb.redirectErrorStream(true);
 		Process process = null;
 		try {
@@ -372,27 +652,16 @@ public class WifiHelperImpl implements WifiHelper {
 		try {
 			while ((line = reader.readLine()) != null) {
 				System.out.println(line);
-
-
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;
-
-
+		return null;*/
 	}
 
-
-
-	/**
-	 * Gets the scan results.
-	 *
-	 * @return the scan results
-	 */
-	private List<ScanResult> getScanResults() {
-
+	/*private List<ScanResult> getScanResults()
+	{
 		List<ScanResult> scanResults= new ArrayList<ScanResult>();
 		ScanResult scannedNetwork = new ScanResult();
 		ProcessBuilder pb = new ProcessBuilder("netsh", "wlan", "show","networks");
@@ -424,35 +693,11 @@ public class WifiHelperImpl implements WifiHelper {
 			e.printStackTrace();
 		}
 
-
-
 		return scanResults;
+	}*/
 
-
-
-	}
-
-
-	/**
-	 * Check for wifi enabled.
-	 */
-	private void checkForWifiEnabled()
+	/*private boolean disconnect()
 	{
-		if (false == isWifiEnabled())
-		{
-			throw new WifiNotEnabledException();
-		}
-	}
-
-	/**
-	 * Disconnect.
-	 *
-	 * @return true, if successful
-	 */
-	private boolean disconnect() {
-
-
-
 		ProcessBuilder pb = new ProcessBuilder("netsh", "wlan", "disconnect");
 		pb.redirectErrorStream(true);
 		Process process = null;
@@ -468,26 +713,15 @@ public class WifiHelperImpl implements WifiHelper {
 		try {
 			while ((line = reader.readLine()) != null) {
 				// System.out.println(line);
-				if(line.contains("correct")){
+				//if(line.contains("correct")){ //[AT4] This has to be changed to native API
 					return true; 
-				}
-
+				//}
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-
 		return false;
-
-	}
-
-
-
-
-
-
-
-
+	}*/
 }
