@@ -19,6 +19,7 @@
 			<zipfileset src="jar-in-jar-loader.zip"/>
 			<zipfileset dir="..\lib"/>
 			<zipfileset dir="..\..\dll"/>
+        	<zipfileset dir="..\bin\introspection-xml" prefix="introspection-xml"/>
 		</jar>
     </target>
 	<target name="compile" depends="clean">
