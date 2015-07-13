@@ -104,37 +104,29 @@ public class NotificationValidator implements NotificationReceiver, Runnable
 
                 try
                 {
-                	//notificationCounter.getAndIncrement();
+                	notificationCounter.getAndIncrement(); //[AT4] Moved to the top of the code to avoid non-execution when Exeption thrown
                     boolean includedRichIconUrl = false;
                     boolean includedRichAudioUrl = false;
                     boolean includesResponseObjectPath = false;
                     
+                    logger.info("Checking Version field of received notification message");
                     //assertEquals(String.format("Notification version must be %s", NOTIFICATION_SERVICE_VERSION), NOTIFICATION_SERVICE_VERSION, notification.getVersion());
-                    assertEquals(String.format("Notification version received: "+notification.getVersion()+" does not match IXIT: "
-                    		+IXITN_NotificationVersion), IXITN_NotificationVersion, notification.getVersion());
-                    /*logger.info("Notification version received: "+notification.getVersion()+" matches IXIT: "
-                    		+IXITN_NotificationVersion);
-                    logger.info("Partial Verdict: PASS");*/
+                    assertEquals(String.format("Notification version received (%s) does not match IXITN_NotificationVersion (%s)",
+                    		notification.getVersion(), IXITN_NotificationVersion), IXITN_NotificationVersion, notification.getVersion());
                     
+                    logger.info("Checking AppName field of received notification message");
                     String notifAppName = notification.getAppName();
                     //assertEquals("AppName in notification does not match AboutAnnouncement", deviceAboutAnnouncement.getAppName(), notifAppName);
                     assertEquals("AppName parameter received in notification: "+notifAppName+" does not match About Announcement parameter: "
                     		+deviceAboutAnnouncement.getAppName(), deviceAboutAnnouncement.getAppName(), notifAppName);
-                    /*logger.info("AppName parameter received: "+notification.getAppName()+" matches About Announcement parameter: "
-                    		+deviceAboutAnnouncement.getAppName());
-                    logger.info("Partial Verdict: PASS");*/
 
+                    logger.info("Checking DeviceName field of received notification message");
                     String notifdeviceName = notification.getDeviceName();
                     //assertEquals("DeviceName in notification does not match AboutAnnouncement", deviceAboutAnnouncement.getDeviceName(), notifdeviceName);
                     assertEquals("DeviceName parameter received in notification: "+notifdeviceName+" does not match About Announcement parameter: "
                     		+deviceAboutAnnouncement.getDeviceName(), deviceAboutAnnouncement.getDeviceName(), notifdeviceName);
-                    /*logger.info("DeviceName parameter received in notification: "+notification.getDeviceName()+" matches About Announcement parameter: "
-                    		+deviceAboutAnnouncement.getDeviceName());
-                    logger.info("Partial Verdict: PASS");*/
                     
                     assertNotNull("Notification messageType value not valid!", notification.getMessageType());
-                    /*logger.info("Valid notification messageType value: "+notification.getMessageType());
-                    logger.info("Partial Verdict: PASS");*/
       
                     logger.info("The received Message Id: " + notification.getMessageId());
 
@@ -151,8 +143,13 @@ public class NotificationValidator implements NotificationReceiver, Runnable
                         }
                         catch (MalformedURLException e)
                         {
-                            throw new Exception("RichIconUrl malformed: '" + richIconUrlString + "'", e);
+                            throw new Exception("Malformed RichIconUrl: '" + richIconUrlString + "'", e);
                         }
+                    }
+                    else if ((ICSN_RichIconUrl && richIconUrlString == null) ||
+                    		(!ICSN_RichIconUrl && richIconUrlString != null))
+                    {
+                    	throw new Exception("RichIconUrl support is not the defined by ICSN_RichIconUrl");
                     }
 
                     List<RichAudioUrl> richAudioUrls = notification.getRichAudioUrl();
@@ -175,6 +172,11 @@ public class NotificationValidator implements NotificationReceiver, Runnable
                             }
                         }
                     }
+                    else if ((ICSN_RichAudioUrl && richAudioUrls == null) ||
+                    		(!ICSN_RichAudioUrl && richAudioUrls != null))
+                    {
+                    	throw new Exception("RichAudioUrl support is not the defined by ICSN_RichAudioUrl");
+                    }
 
                     String responseObjectPath = notification.getResponseObjectPath();
                     //if(responseObjectPath != null)
@@ -193,7 +195,13 @@ public class NotificationValidator implements NotificationReceiver, Runnable
 
                         includesResponseObjectPath = true;
                     }
-                   
+                    else if ((ICSN_RespObjectPath && responseObjectPath == null) ||
+                    		(!ICSN_RespObjectPath && responseObjectPath != null))
+                    {
+                    	throw new Exception("RespObjectPath support is not the defined by ICSN_RespObjectPath");
+                    }
+                    
+                    //notificationCounter.getAndIncrement();
 
                     StringBuilder noteMsg = new StringBuilder();
                     noteMsg.append("Notification Received: ");
@@ -239,7 +247,6 @@ public class NotificationValidator implements NotificationReceiver, Runnable
 	 * assertNotNull
 	 * 
 	 * */
-	
 	private void assertEquals(String errorMessage, String first, String second) throws Exception
 	{
 		if (!first.equals(second)) {	
