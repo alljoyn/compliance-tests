@@ -131,7 +131,6 @@ public class NotificationService
 			String iXITN_NotificationDismisserVersion,
 			String gPCO_AnnouncementTimeout)
 	{
-		
 		/** 
 		 * [AT4] Attributes initialization
 		 * */
@@ -157,15 +156,21 @@ public class NotificationService
 		
 		ANNOUNCEMENT_TIMEOUT_IN_SECONDS = Integer.parseInt(gPCO_AnnouncementTimeout);
 
-		try {
+		try
+		{
 			runTestCase(testCase);
-		} catch (Exception e) {
-			if (e != null) {
-				if (e.getMessage().equals("Timed out waiting for About announcement")) {
-					inconc=true;
+		}
+		catch (Exception e)
+		{
+			inconc = true;
+			if (e != null)
+			{
+				if (e.getMessage().equals("Timed out waiting for About announcement"))
+				{
 					fail("Timed out waiting for About announcement");
-				} else {
-					inconc=true;
+				}
+				else
+				{
 					fail("Exception: "+e.toString());
 				}
 			}
@@ -174,11 +179,14 @@ public class NotificationService
 
 	public void runTestCase(String testCase) throws Exception
 	{
-		if (testCase.equals("Notification-Consumer-v1-01")) {
+		if (testCase.equals("Notification-Consumer-v1-01"))
+		{
 			setUp();
 			logger.info(String.format("Running testcase: %s", testCase));
 			testNotification_Consumer_v1_01();
-		} else if (testCase.equals("Notification-Consumer-v1-02")) {
+		}
+		else if (testCase.equals("Notification-Consumer-v1-02"))
+		{
 			setUp();
 			logger.info(String.format("Running testcase: %s", testCase));
 			testNotification_Consumer_v1_02();
@@ -186,27 +194,43 @@ public class NotificationService
 			setUp();
 			logger.info(String.format("Running testcase: %s", testCase));
 			testNotification_Consumer_v1_03();*/
-		} else if(testCase.equals("Notification-Consumer-v1-04")) {
+		}
+		else if(testCase.equals("Notification-Consumer-v1-04"))
+		{
 			setUp();
 			logger.info(String.format("Running testcase: %s", testCase));
 			testNotification_Consumer_v1_04();
-		} else if(testCase.equals("Notification-Consumer-v1-05")) {
+		}
+		else if(testCase.equals("Notification-Consumer-v1-05"))
+		{
 			setUp();
 			logger.info(String.format("Running testcase: %s", testCase));
 			testNotification_Consumer_v1_05();
-		} else if(testCase.equals("Notification-Consumer-v1-06")) {
+		}
+		else if(testCase.equals("Notification-Consumer-v1-06"))
+		{
 			setUp();
 			logger.info(String.format("Running testcase: %s", testCase));
 			testNotification_Consumer_v1_06();
-		} else if(testCase.equals("Notification-v1-01")) {	
+		}
+		else if(testCase.equals("Notification-v1-01"))
+		{	
 			setUpReceiver();
 			logger.info(String.format("Running testcase: %s", testCase));
 			testNotificationsReceived();
-		} else {
+		}
+		else
+		{
 			fail("Test Case not valid");
 		}
-
-		tearDown();
+		
+		if (testCase.equals("Notification-v1-01"))
+		{
+			tearDownReceiver();
+		} else
+		{
+			tearDown();
+		}
 	}
 	
 	private void setUp() throws Exception
@@ -241,7 +265,8 @@ public class NotificationService
 		}
 	}
 	
-	private  void tearDown() {
+	private  void tearDown()
+	{
 		logger.noTag("====================================================");
 		logger.info("test tearDown started");
 		releaseResources();
@@ -251,8 +276,7 @@ public class NotificationService
 	
 	public void testNotification_Consumer_v1_01() throws Exception
 	{
-		String[] msgArray =
-			{ "Test Msg 1", "Test Msg 2", "Test Msg 3" };
+		String[] msgArray = {"Test Msg 1", "Test Msg 2", "Test Msg 3"};
 
 		String msgToSend = msgArray[getRandomNumber(msgArray.length)];
 
@@ -270,8 +294,7 @@ public class NotificationService
 
 	public void testNotification_Consumer_v1_02() throws Exception
 	{
-		String[] msgArray =
-			{ "Two languages Msg 1", "Two languages Msg 2", "Two languages Msg 3" };
+		String[] msgArray = {"Two languages Msg 1", "Two languages Msg 2", "Two languages Msg 3"};
 
 		String msgToSend = msgArray[getRandomNumber(msgArray.length)];
 
@@ -320,8 +343,7 @@ public class NotificationService
 
 	public void testNotification_Consumer_v1_04() throws Exception
 	{
-		String[] msgArray =
-			{ "Invalid langTag Msg 1", "Invalid langTag Msg 2", "Invalid langTag Msg 3" };
+		String[] msgArray = {"Invalid langTag Msg 1", "Invalid langTag Msg 2", "Invalid langTag Msg 3"};
 
 		String msgToSend = msgArray[getRandomNumber(msgArray.length)];
 
@@ -407,8 +429,7 @@ public class NotificationService
 
 	public void testNotification_Consumer_v1_06() throws Exception
 	{
-		String[] msgArray =
-			{ "Msg w/ attributes 1", "Msg w/ attributes 2", "Msg w/ attributes 3" };
+		String[] msgArray = {"Msg w/ attributes 1", "Msg w/ attributes 2", "Msg w/ attributes 3"};
 
 		String msgToSend = msgArray[getRandomNumber(msgArray.length)];
 
@@ -558,7 +579,7 @@ public class NotificationService
 				throw new Exception("Timed out waiting for About announcement");
 			}
 			
-			logger.info("Partial Verdict: PASS"); //[AT4]
+			//logger.info("Partial Verdict: PASS"); //[AT4]
 
 			aboutClient = serviceHelper.connectAboutClient(deviceAboutAnnouncement);
 
@@ -568,7 +589,8 @@ public class NotificationService
 		catch (Exception e)
 		{
 			logger.error("Received exception during setup "+ e.getMessage());
-			releaseResources();
+			//releaseResources();
+			tearDown();
 			throw e;
 		}
 	}
@@ -590,22 +612,19 @@ public class NotificationService
 
 	public void testNotificationsReceived() throws Exception
 	{
-		/*logger.info("Starting testNotificationReceived method");
-		userInputDetails = new UserInputDetails("Notification Producer Test",
-				"Please initiate the sending of notifications from the DUT and click Continue when all notifications that you want to test have been sent","Continue");*/
+		//logger.info("Starting testNotificationReceived method");
 		String[] msg = {"Continue"};
-		UserInputDetails userInputDetails = new UserInputDetails("Notification Producer Test",
-				"Please initiate the sending of notifications from the DUT and click Continue when all notifications that you want to test have been sent",msg);
+		//UserInputDetails userInputDetails = new UserInputDetails("Notification Producer Test",
+		//		"Please initiate the sending of notifications from the DUT and click Continue when all notifications that you want to test have been sent", msg);
 		
 		BusIntrospector busIntrospector = serviceHelper.getBusIntrospector(aboutClient);
 		notificationValidator.initializeForDevice(deviceAboutAnnouncement, busIntrospector, new NotificationValidationExceptionHandler()
 		{
-
 			@Override
 			public void onNotificationValidationException(Exception exception)
 			{
-				//logger.debug("Notificiation failed validation checks", exception);
-				fail(String.format("Notificiation failed validation checks %s",exception));
+				//logger.debug("Notification failed validation checks", exception);
+				fail(String.format("Notification failed validation checks: %s", exception.getMessage()));
 				notificationAssertionFailure = exception;
 				waitingforUserInputThread.interrupt();
 			}
@@ -627,32 +646,34 @@ public class NotificationService
             }
             throw e;
         }*/
-
 		logger.info("Waiting for user input");
+		UserInputDetails userInputDetails = new UserInputDetails("Notification Producer Test",
+				"Please initiate the sending of notifications from the DUT and click Continue when all notifications that you want to test have been sent", msg);
+		
 		
 		logger.info(String.format("Received: %d notifications", notificationValidator.getNumberOfNotificationsReceived()));
 		assertTrue("No notifications received!", notificationValidator.getNumberOfNotificationsReceived() > 0);
 	}
 	
-    /*protected void tearDown() throws Exception
+    protected void tearDownReceiver() throws Exception
     {
-        super.tearDown();
-
+        //super.tearDown();
+    	logger.noTag("====================================================");
         logger.debug("test tearDown started");
 
-        releaseResources();
+        releaseResourcesReceiver();
 
         logger.debug("test tearDown done");
+        logger.noTag("====================================================");
     }
 
-    private void releaseResources() throws Exception
+    private void releaseResourcesReceiver() throws Exception
     {
-
         InterruptedException exception = null;
         executorService.shutdownNow();
         try
         {
-            logger.debug("Waiting for thread to shutdown");
+            logger.info("Waiting for thread to shutdown");
             executorService.awaitTermination(TIMEOUT_FOR_SHUTDOWN_IN_SECONDS, TimeUnit.SECONDS);
         }
         catch (InterruptedException e)
@@ -685,7 +706,7 @@ public class NotificationService
             aboutClient.disconnect();
             aboutClient = null;
         }
-    }*/
+    }
 
 	/**
 	 * Displays text messages with \n to avoid screen overflow
@@ -693,18 +714,19 @@ public class NotificationService
 	 * @param msgArray 	array of possible messages
 	 * @param msgToSend message to be sent
 	 */
-	private void checkUserInputLongText(String[] msgArray, String msgToSend) {
+	private void checkUserInputLongText(String[] msgArray, String msgToSend)
+	{
 		logger.info("Waiting for user response...");
-		String[] buttons={"Message 1","Message 2","Message 3", "Message 4", "Message 5", "Message 6"};
+		String[] buttons = {"Message 1","Message 2","Message 3", "Message 4", "Message 5", "Message 6"};
 		UserInputDetails userResponse = new UserInputDetails(TAG,"Select the message(s) received: \n"
-				+"\n Message 1: "+msgArray[0]+"\n Message 2: "+msgArray[1]+"\n Message 3: "+msgArray[2]
-				+"\n Message 4: "+msgArray[3]+"\n Message 5: "+msgArray[4]+"\n Message 6: "+msgArray[5], buttons);
+				+ "\n Message 1: " + msgArray[0] + "\n Message 2: " + msgArray[1] + "\n Message 3: " + msgArray[2]
+				+ "\n Message 4: " + msgArray[3] + "\n Message 5: " + msgArray[4] + "\n Message 6: " + msgArray[5], buttons);
 
 		assertTrue("A message option was not selected", userResponse.getOptionSelected() >= 0 && userResponse.getOptionSelected() < msgArray.length);
 		String messageSelected = msgArray[userResponse.getOptionSelected()];
 		
-		logger.info("Notification messages sent: "+msgToSend);
-		logger.info("Option selected: "+messageSelected);
+		logger.info("Notification messages sent: " + msgToSend);
+		logger.info("Option selected: " + messageSelected);
 		
 		assertEquals("Incorrect message option selected", msgToSend, messageSelected);
 	}
@@ -716,20 +738,26 @@ public class NotificationService
 	 * assertTrue
 	 * 
 	 * */
-	
 	private void assertEquals(String errorMessage, String first, String second)
 	{
-		if (!first.equals(second)) {
+		if (!first.equals(second))
+		{
 			fail(errorMessage);
-		} else {
+		}
+		else
+		{
 			logger.info("Partial Verdict: PASS");
 		}
 	}
 
-	private void assertTrue(String errorMessage, boolean condition) {
-		if (!condition) {
+	private void assertTrue(String errorMessage, boolean condition)
+	{
+		if (!condition)
+		{
 			fail(errorMessage);
-		} else {
+		}
+		else
+		{
 			logger.info("Partial Verdict: PASS");
 		}
 	}
@@ -745,18 +773,22 @@ public class NotificationService
 	{
 		logger.error(msg);
 		logger.info("Partial Verdict: FAIL");
-		pass=false;
+		pass = false;
 	}
 
 	public String getFinalVerdict()
 	{
-		if (inconc) {
+		if (inconc)
+		{
 			return "INCONC";
 		}
 		
-		if (pass) {
+		if (pass)
+		{
 			return "PASS";
-		} else {
+		}
+		else
+		{
 			return "FAIL";
 		}
 	}
