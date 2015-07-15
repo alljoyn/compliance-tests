@@ -6,7 +6,7 @@
 
 !define APP_NAME "Certification Test Tool - Local Agent"
 !define COMP_NAME "AT4 wireless"
-!define VERSION "1.03.00.00"
+!define VERSION "1.04.00.00"
 !define COPYRIGHT "AllSeen Alliance 2015"
 !define DESCRIPTION "Installer for CTT-Local Agent"
 !define MAIN_APP_EXE "CTT_Local_Agent.exe"
@@ -18,7 +18,7 @@
 !define REG_START_MENU "Start Menu Folder"
 ######################################################################
 ;Modify values to fit your project
-!define INSTALLER_NAME "C:\Users\Administrador\Desktop\CTT_Local_Agent_v1.3.0_Installer.exe"
+!define INSTALLER_NAME "C:\Users\Administrador\Desktop\CTT_Local_Agent_v1.4.0_Installer.exe"
 !define LOCAL_AGENT_PATH "C:\Users\Administrador\Desktop\ctt_local_agent"
 !define MSVS2012_PATH "C:\Users\Administrador\Desktop\MSVS2012"
 !define MSVS2013_PATH "C:\Users\Administrador\Desktop\MSVS2013"
@@ -127,10 +127,10 @@ File "${LOCAL_AGENT_PATH}\CTT_Local_Agent.exe"
 
 SetOutPath "$INSTDIR\TestCases"
 File "${LOCAL_AGENT_PATH}\TestCases\TestCases_Package_v14.06.00a_R1.jar"
-File "${LOCAL_AGENT_PATH}\TestCases\TestCases_Package_v14.12.00a_R1.jar"
-File "${LOCAL_AGENT_PATH}\TestCases\TestCases_Package_v14.12.00b_R1.jar"
-File "${LOCAL_AGENT_PATH}\TestCases\TestCases_Package_v15.04.00_R1.jar"
-File "${LOCAL_AGENT_PATH}\TestCases\TestCases_Package_v15.04.00a_R1.jar"
+File "${LOCAL_AGENT_PATH}\TestCases\TestCases_Package_v14.12.00a_R2.jar"
+File "${LOCAL_AGENT_PATH}\TestCases\TestCases_Package_v14.12.00b_R2.jar"
+File "${LOCAL_AGENT_PATH}\TestCases\TestCases_Package_v15.04.00_R2.jar"
+File "${LOCAL_AGENT_PATH}\TestCases\TestCases_Package_v15.04.00a_R5.jar"
 SetOutPath "$INSTDIR\res\drawable"
 File "${LOCAL_AGENT_PATH}\res\drawable\back.jpg"
 File "${LOCAL_AGENT_PATH}\res\drawable\footer.jpg"
@@ -176,7 +176,7 @@ WriteUninstaller "$INSTDIR\uninstall.exe"
 !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
 CreateDirectory "$SMPROGRAMS\$SM_Folder"
 CreateShortCut "$SMPROGRAMS\$SM_Folder\${APP_NAME}.lnk" "$INSTDIR\${MAIN_APP_EXE}"
-CreateShortCut "$DESKTOP\${APP_NAME}.lnk" "$INSTDIR\${MAIN_APP_EXE}" "" "$INSTDIR\res\drawable\icon.ico" 0
+CreateShortCut "$DESKTOP\${APP_NAME}.lnk" "$INSTDIR\${MAIN_APP_EXE}" "" "$INSTDIR\res\drawable\allseen128.ico" 0
 CreateShortCut "$SMPROGRAMS\$SM_Folder\Uninstall ${APP_NAME}.lnk" "$INSTDIR\uninstall.exe"
 
 !ifdef WEB_SITE
@@ -218,10 +218,10 @@ Delete "$INSTDIR\config.xml"
 Delete "$INSTDIR\icon.ico"
 Delete "$INSTDIR\CTT_Local_Agent.exe"
 Delete "$INSTDIR\TestCases\TestCases_Package_v14.06.00a_R1.jar"
-Delete "$INSTDIR\TestCases\TestCases_Package_v14.12.00a_R1.jar"
-Delete "$INSTDIR\TestCases\TestCases_Package_v14.12.00b_R1.jar"
-Delete "$INSTDIR\TestCases\TestCases_Package_v15.04.00_R1.jar"
-Delete "$INSTDIR\TestCases\TestCases_Package_v15.04.00a_R1.jar"
+Delete "$INSTDIR\TestCases\TestCases_Package_v14.12.00a_R2.jar"
+Delete "$INSTDIR\TestCases\TestCases_Package_v14.12.00b_R2.jar"
+Delete "$INSTDIR\TestCases\TestCases_Package_v15.04.00_R2.jar"
+Delete "$INSTDIR\TestCases\TestCases_Package_v15.04.00a_R5.jar"
 Delete "$INSTDIR\res\drawable\back.jpg"
 Delete "$INSTDIR\res\drawable\footer.jpg"
 Delete "$INSTDIR\res\drawable\header.jpg"
@@ -422,7 +422,7 @@ ${If} $R0 == "Error"
 ${EndIf}
 
 
-;Check if we have redistributable 2012 installed
+;Check if we have redistributable 2013 installed
 Call  CheckRedistributable2013Installed
 Pop $R0
  
