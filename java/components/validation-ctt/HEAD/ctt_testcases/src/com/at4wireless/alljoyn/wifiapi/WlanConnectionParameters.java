@@ -20,7 +20,6 @@ import java.util.List;
 
 import com.sun.jna.Structure;
 import com.sun.jna.WString;
-import com.sun.jna.platform.win32.WinDef.DWORD;
 
 /**
  * Specifies the parameters used when using the WlanConnect function

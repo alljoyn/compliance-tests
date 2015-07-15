@@ -19,28 +19,7 @@ import java.util.Map;
 import org.alljoyn.bus.Variant;
 import org.alljoyn.services.common.BusObjectDescription;
 
-// TODO: Auto-generated Javadoc
-/**
- * The listener interface for receiving announcementReceived events.
- * The class that is interested in processing a announcementReceived
- * event implements this interface, and the object created
- * with that class is registered with a component using the
- * component's <code>addAnnouncementReceivedListener<code> method. When
- * the announcementReceived event occurs, that object's appropriate
- * method is invoked.
- *
- * @see AnnouncementReceivedEvent
- */
 public interface AnnouncementReceivedListener
 {
-	
-	/**
-	 * Announcement received.
-	 *
-	 * @param peerName the peer name
-	 * @param port the port
-	 * @param interfaces the interfaces
-	 * @param aboutMap the about map
-	 */
 	public void announcementReceived(String peerName, short port, BusObjectDescription[] interfaces, Map<String, Variant> aboutMap);
 }

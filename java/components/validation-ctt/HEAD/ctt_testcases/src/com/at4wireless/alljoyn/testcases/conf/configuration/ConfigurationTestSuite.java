@@ -40,7 +40,7 @@ import com.at4wireless.alljoyn.core.commons.log.LoggerFactory;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.introspection.BusIntrospector;
 
-public class ConfigurationService
+public class ConfigurationTestSuite
 {
 	private final String TAG = "ConfigTestSuite";
 	//private final Logger logger = LoggerFactory.getLogger(TAG);
@@ -97,7 +97,7 @@ public class ConfigurationService
 	/** The ixit. */
 	Map<String,String> ixit;
 
-	public ConfigurationService(String testCase,
+	public ConfigurationTestSuite(String testCase,
 			boolean iCSCF_ConfigurationServiceFramework,
 			boolean iCSCF_ConfigurationInterface,
 			boolean iCSCF_FactoryResetMethod, String iXITCO_AppId,

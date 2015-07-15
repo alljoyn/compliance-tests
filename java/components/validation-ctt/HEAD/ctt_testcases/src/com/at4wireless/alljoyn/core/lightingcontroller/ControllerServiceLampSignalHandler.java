@@ -20,36 +20,20 @@ import java.util.Map;
 import org.alljoyn.bus.Variant;
 import org.alljoyn.bus.annotation.BusSignalHandler;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class ControllerServiceLampSignalHandler.
- */
 public class ControllerServiceLampSignalHandler
 {
    /* static
     {
         System.loadLibrary("alljoyn_java");
-    }
-*/
-    /** The signal listener. */
-   private ControllerServiceSignalListener signalListener;
+    }*/
 
-    /**
-     * Sets the update listener.
-     *
-     * @param listener the new update listener
-     */
+	private ControllerServiceSignalListener signalListener;
+
     public void setUpdateListener(ControllerServiceSignalListener listener)
     {
         signalListener = listener;
     }
 
-    /**
-     * Lamp name changed.
-     *
-     * @param lampID the lamp id
-     * @param lampName the lamp name
-     */
     @BusSignalHandler(iface = "org.allseen.LSF.ControllerService.Lamp", signal = "LampNameChanged")
     public void LampNameChanged(String lampID, String lampName)
     {
@@ -60,12 +44,6 @@ public class ControllerServiceLampSignalHandler
         }
     }
 
-    /**
-     * Lamp state changed.
-     *
-     * @param lampID the lamp id
-     * @param lampState the lamp state
-     */
     @BusSignalHandler(iface = "org.allseen.LSF.ControllerService.Lamp", signal = "LampStateChanged")
     public void LampStateChanged(String lampID, Map<String, Variant> lampState)
     {
@@ -75,11 +53,6 @@ public class ControllerServiceLampSignalHandler
         }
     }
 
-    /**
-     * Lamps found.
-     *
-     * @param lampIDs the lamp i ds
-     */
     @BusSignalHandler(iface = "org.allseen.LSF.ControllerService.Lamp", signal = "LampsFound")
     public void LampsFound(String[] lampIDs)
     {
@@ -89,11 +62,6 @@ public class ControllerServiceLampSignalHandler
         }
     }
 
-    /**
-     * Lamps lost.
-     *
-     * @param lampIDs the lamp i ds
-     */
     @BusSignalHandler(iface = "org.allseen.LSF.ControllerService.Lamp", signal = "LampsLost")
     public void LampsLost(String[] lampIDs)
     {

@@ -17,14 +17,8 @@ package com.at4wireless.alljoyn.core.audio;
 
 public enum MediaType
 {
-    AudioPrefix("audio/"), 
-    ImagePrefix("image/"), 
-    AudioXAlac("audio/x-alac"), 
-    AudioXRaw("audio/x-raw"), 
-    AudioXUnknown("audio/x-unknown"), 
-    ApplicationXMetadata(
-            "application/x-metadata"), 
-    ImageJpeg("image/jpeg"); //JTF
+    AudioPrefix("audio/"), ImagePrefix("image/"), AudioXAlac("audio/x-alac"), AudioXRaw("audio/x-raw"), AudioXUnknown("audio/x-unknown"), ApplicationXMetadata(
+            "application/x-metadata"), ImageJpeg("image/jpeg"); //[AT4] Added ImageJpeg
 
     private String value;
 

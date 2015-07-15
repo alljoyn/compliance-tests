@@ -18,26 +18,14 @@ package org.alljoyn.smarthome.centralizedmanagement.client;
 import org.alljoyn.bus.Variant;
 import org.alljoyn.bus.annotation.Position;
 
-// TODO: Auto-generated Javadoc
-/**
- * 	This class used to describe the information of bus object.
- */
-
-public class ObjectInfo {
-	
-	// Interface Name
-	/** The interface name. */
+public class ObjectInfo
+{
 	@Position(0)
 	public String interfaceName;
 
-	// Bus Object Path
-	/** The object path. */
 	@Position(1)
 	public String objectPath;
-	
-	// The descriptions of arguments
-	/** The args descs. */
+
 	@Position(2)
-	public Variant argsDescs;
-	
+	public Variant argsDescs;	
 }

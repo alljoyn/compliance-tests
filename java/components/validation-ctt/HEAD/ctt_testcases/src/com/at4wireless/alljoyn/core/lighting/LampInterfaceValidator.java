@@ -13,7 +13,7 @@
  *     ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  *     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *******************************************************************************/
-package com.at4wireless.alljoyn.core.gwagent;
+package com.at4wireless.alljoyn.core.lighting;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -32,26 +32,31 @@ import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionNode;
 import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionProperty;
 import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionSignal;
 
-public class GWAgentInterfaceValidator
+public class LampInterfaceValidator
 {
-    private final List<IntrospectionNode> introspectionNodesLoadedFromXmlFiles = new ArrayList<IntrospectionNode>();
+    private List<IntrospectionNode> introspectionNodesLoadedFromXmlFiles = new ArrayList<IntrospectionNode>();
     private IntrospectionXmlParser introspectionXmlParser;
-    private static final String TAG = "GWAIfaceValidator";
+    //private ValidationTestContext validationTestContext;
+    private static final String TAG = "InterfaceValidator";
+    //private static final Logger logger = LoggerFactory.getLogger(TAG);
 	private static final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
 
-    public GWAgentInterfaceValidator( )
+    public LampInterfaceValidator()
+    //public LampInterfaceValidator(ValidationTestContext validationTestContext)
     {
-        
+       //this.validationTestContext = validationTestContext;
     }
 
     public ValidationResult validate(InterfaceDetail interfaceDetail)
     {
         StringBuilder failureReasonBuilder = new StringBuilder();
         boolean valid = true;
-
+        
+        logger.debug(" before for loop in validate ");
         for (IntrospectionInterface standardizedIntrospectionInterface : interfaceDetail.getIntrospectionInterfaces())
         {
-            ValidationResult validationResult = validateInterface(standardizedIntrospectionInterface, interfaceDetail.getPath());
+        	logger.debug(" in for loop "+ interfaceDetail );
+        	ValidationResult validationResult = validateInterface(standardizedIntrospectionInterface, interfaceDetail.getPath());
 
             if (!validationResult.isValid())
             {
@@ -68,8 +73,10 @@ public class GWAgentInterfaceValidator
         StringBuilder failureReasonBuilder = new StringBuilder();
         boolean valid = true;
 
+        logger.debug(" before for loop in validate ");
         for (InterfaceDetail interfaceDetail : interfaceDetailList)
         {
+        	logger.debug(" in for loop "+ interfaceDetail );
             ValidationResult validationResult = validate(interfaceDetail);
 
             if (!validationResult.isValid())
@@ -84,8 +91,7 @@ public class GWAgentInterfaceValidator
 
     List<String> getXmlFilesToBeLoaded()
     {
-        return Arrays.asList(IntrospectionXmlFile.GWAgentCtrlAppMgmt.getValue(), IntrospectionXmlFile.GWAgentCtrlApp.getValue(),
-                IntrospectionXmlFile.GWAgentCtrlAclMgmt.getValue(), IntrospectionXmlFile.GWAgentCtrlAcl.getValue());
+        return Arrays.asList("introspection-xml/Lamp.xml");
     }
 
     private ValidationResult validateInterface(IntrospectionInterface standardizedIntrospectionInterface, String path)
@@ -95,12 +101,16 @@ public class GWAgentInterfaceValidator
 
         if (interfaceDetail == null)
         {
-            logger.warn(String.format("Interface definition does not exist for: %s", standardizedIntrospectionInterface.getName()));
-            validationResult = new ValidationResult(true, null);
+            StringBuilder failureReasonBuilder = new StringBuilder();
+            appendToFailureReason(failureReasonBuilder, "Interface definition does not exist for ");
+            appendToFailureReason(failureReasonBuilder, standardizedIntrospectionInterface.getName());
+            validationResult = new ValidationResult(false, failureReasonBuilder.toString());
+            logger.debug(" in validateInterface, null " + path );
         }
         else
         {
-            validationResult = compare(interfaceDetail, standardizedIntrospectionInterface, path);
+			validationResult = compare(interfaceDetail, standardizedIntrospectionInterface, path);
+			logger.debug(" in validateInterface " + path );
         }
 
         return validationResult;
@@ -120,7 +130,7 @@ public class GWAgentInterfaceValidator
             appendToFailureReason(failureReasonBuilder, " found at invalid path ");
             appendToFailureReason(failureReasonBuilder, path);
         }
-        
+
         ValidationResult methodValidationResult = new SetValidator<IntrospectionMethod>().validate(expectedIntrospectionInterface.getMethods(),
                 standardizedIntrospectionInterface.getMethods());
         ValidationResult propertyValidationResult = new SetValidator<IntrospectionProperty>().validate(expectedIntrospectionInterface.getProperties(),
@@ -133,26 +143,27 @@ public class GWAgentInterfaceValidator
         if (!methodValidationResult.isValid() || !propertyValidationResult.isValid() || !signalValidationResult.isValid() || !annotationValidationResult.isValid())
         {
             valid = false;
-
+			/* 
             if (isVersionPropertyMissing(expectedIntrospectionInterface, propertyValidationResult))
             {
-                logger.warn(String.format("Ignoring interface property match comparison: %s", propertyValidationResult.getFailureReason()));
-                logger.addNote(String.format("Interface definition does not match for %s - %s", standardizedIntrospectionInterface.getName(),
+                logger.error(String.format("Ignoring interface property match comparison: %s", propertyValidationResult.getFailureReason()));
+                validationTestContext.addNote(String.format("Interface definition does not match for %s - %s", standardizedIntrospectionInterface.getName(),
                         propertyValidationResult.getFailureReason()));
                 valid = true;
             }
             if (isUndefinedMethodPresentForConfigInterface(expectedIntrospectionInterface, methodValidationResult))
             {
-                logger.warn(String.format("Ignoring interface method match comparison: %s", methodValidationResult.getFailureReason()));
-                logger.addNote(String.format("Interface definition does not match for %s - %s", standardizedIntrospectionInterface.getName(),
+                logger.error(String.format("Ignoring interface method match comparison: %s", methodValidationResult.getFailureReason()));
+                validationTestContext.addNote(String.format("Interface definition does not match for %s - %s", standardizedIntrospectionInterface.getName(),
                         methodValidationResult.getFailureReason()));
                 valid = true;
             }
             if (isAnnotationMissingForPeerAuthenticationInterface(expectedIntrospectionInterface, annotationValidationResult))
             {
-                logger.warn(String.format("Ignoring interface annotation match comparison: %s", annotationValidationResult.getFailureReason()));
+                logger.error(String.format("Ignoring interface annotation match comparison: %s", annotationValidationResult.getFailureReason()));
                 valid = true;
             }
+			*/
             if (!valid)
             {
                 appendToFailureReason(failureReasonBuilder, methodValidationResult.getFailureReason());
@@ -165,9 +176,10 @@ public class GWAgentInterfaceValidator
 
         if (!valid)
         {
+        	logger.debug(" in compare, invalid " );
             failureReasonBuilder.insert(0, "Interface definition does not match for " + standardizedIntrospectionInterface.getName());
         }
-
+        logger.debug(" in compare" );
         return new ValidationResult(valid, failureReasonBuilder.toString());
     }
 
@@ -203,10 +215,12 @@ public class GWAgentInterfaceValidator
 
     private void buildIntrospectionNodesFromXmlFiles()
     {
+    	logger.debug(" before loading xml " );
         for (String xmlFileToBeLoaded : getXmlFilesToBeLoaded())
         {
+        	logger.debug(" loading xml " + xmlFileToBeLoaded);
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream(xmlFileToBeLoaded);
-
+            StringBuilder failureReasonBuilder = new StringBuilder();
             try
             {
                 introspectionNodesLoadedFromXmlFiles.add(introspectionXmlParser.parseXML(inputStream));
@@ -214,8 +228,10 @@ public class GWAgentInterfaceValidator
             catch (Exception exception)
             {
                 logger.error("While loading xml " + xmlFileToBeLoaded + " exception caught: " + exception);
+                appendToFailureReason(failureReasonBuilder, "While loading xml " + xmlFileToBeLoaded + " exception caught: " + exception);
             }
         }
+    
     }
 
     private InterfaceDetail getInterfaceDetail(List<IntrospectionNode> introspectionNodes, String introspectionInterfaceName)

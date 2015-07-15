@@ -132,8 +132,8 @@ public class AboutTestSuite
 	
 	private Map<String, Boolean> ics;
 	private Map<String, String> ixit;
-	private Boolean pass=true;
-	private boolean inconcluse=false;
+	private boolean pass = true;
+	private boolean inconcluse = false;
 
 	public AboutTestSuite(String testCase,
 			boolean iCSCO_DateOfManufacture, boolean iCSCO_HardwareVersion,
@@ -248,7 +248,8 @@ public class AboutTestSuite
 
 			deviceAboutAnnouncement = serviceHelper.waitForNextDeviceAnnouncement(ANNOUNCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
 			//assertNotNull("Timed out waiting for About Announcement", deviceAboutAnnouncement); //[AT4] Uncomment and delete if
-			if(deviceAboutAnnouncement==null){
+			if (deviceAboutAnnouncement == null)
+			{
 				throw new Exception("Timed out waiting for About announcement");
 			}	
 			
@@ -1603,7 +1604,7 @@ public class AboutTestSuite
 	{
 		logger.error(msg);
 		logger.info("Partial Verdict: FAIL");
-		pass=false;
+		pass = false;
 	}
 
 	public String getFinalVerdict()

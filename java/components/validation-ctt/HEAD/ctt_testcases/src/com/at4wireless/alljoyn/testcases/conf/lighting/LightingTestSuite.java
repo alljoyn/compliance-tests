@@ -28,17 +28,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.alljoyn.about.AboutKeys;
 import org.alljoyn.about.client.AboutClient;
 import org.alljoyn.bus.AboutObjectDescription;
+import org.alljoyn.bus.BusAttachment;
 import org.alljoyn.bus.BusException;
-
-
-
-
-
-
-
-
-
-
 import org.alljoyn.bus.ProxyBusObject;
 import org.alljoyn.bus.Variant;
 import org.xml.sax.SAXException;
@@ -49,207 +40,90 @@ import com.at4wireless.alljoyn.core.commons.ServiceHelper;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.interfacevalidator.ValidationResult;
 import com.at4wireless.alljoyn.core.introspection.BusIntrospector;
+import com.at4wireless.alljoyn.core.introspection.XmlBasedBusIntrospector;
 import com.at4wireless.alljoyn.core.introspection.bean.InterfaceDetail;
 import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionInterface;
+import com.at4wireless.alljoyn.core.lighting.AllJoynManager;
 import com.at4wireless.alljoyn.core.lighting.LampDetailsBusInterface;
 import com.at4wireless.alljoyn.core.lighting.LampDetailsBusObject;
+import com.at4wireless.alljoyn.core.lighting.LampInterfaceValidator;
 import com.at4wireless.alljoyn.core.lighting.LampParametersBusInterface;
 import com.at4wireless.alljoyn.core.lighting.LampParametersBusObject;
 import com.at4wireless.alljoyn.core.lighting.LampServiceBusInterface;
+import com.at4wireless.alljoyn.core.lighting.LampServiceBusInterface.Values;
 import com.at4wireless.alljoyn.core.lighting.LampServiceBusObject;
 import com.at4wireless.alljoyn.core.lighting.LampStateBusInterface;
 import com.at4wireless.alljoyn.core.lighting.LampStateBusObject;
-import com.at4wireless.alljoyn.core.lighting.LampServiceBusInterface.Values;
+import com.at4wireless.alljoyn.core.lighting.LampStateSignalHandler;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class LightingService.
- */
-public class LightingService {
-
-
-	/** The port. */
-	private  Short PORT = 91;
-	
-	/** The service helper. */
-	private  ServiceHelper serviceHelper;
-	
-	/** The pass. */
-	Boolean pass=true;
-	
-	/** The inconc. */
-	boolean inconc=false;
-	
-	/** The tag. */
-	protected  final String TAG = "LSF_LampTestSuite";
-	
-	/** The logger. */
-	private  final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
-	
-	/** The lamp object path. */
-	private  String lampObjectPath;
-	
-	/** The dut app id. */
-	private  UUID dutAppId;
-	
-	/** The dut device id. */
-	private  String dutDeviceId;
-	
-	/** The bus object path. */
-	public  String BUS_OBJECT_PATH = "/org/allseen/LSF/Lamp";
-	
-	/** The signal received. */
-	private  boolean signalReceived = false;
-
-
-
-	/** The bus application name. */
-	private  final String BUS_APPLICATION_NAME = "LSF_LampTestSuite";
-	
-	/** The annoucement timeout in seconds. */
+public class LightingTestSuite
+{
+	//private static final String TAG = "LSF_LampTestSuite";
+	private static final String TAG = "LightingTestSuite";
+	//private static final Logger logger = LoggerFactory.getLogger(TAG);
+	private static final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	private static final String BUS_APPLICATION_NAME = "LSF_LampTestSuite";
+	//public static final long ANNOUCEMENT_TIMEOUT_IN_SECONDS = 30;
 	public long ANNOUCEMENT_TIMEOUT_IN_SECONDS = 30;
-	
-	/** The session close timeout in seconds. */
+    //private static final long SESSION_CLOSE_TIMEOUT_IN_SECONDS = 5;
 	private long SESSION_CLOSE_TIMEOUT_IN_SECONDS = 5;
-
-	/** The null string. */
-	private  String NULL_STRING = "\\0";
 	
-	/** The lamp state field on off. */
-	private  String LAMP_STATE_FIELD_ON_OFF = "OnOff";
+	private ServiceHelper serviceHelper;
+	private AboutClient aboutClient;
+	private LampStateSignalHandler lampStateSignalHandler;
+    private LampStateBusObject lampStateBusObject;
+    private LampServiceBusObject lampServiceBusObject;
+    private LampParametersBusObject lampParametersBusObject;
+    private LampDetailsBusObject lampDetailsBusObject;
+    private String lampObjectPath;
+    private static final String SLASH_CHARACTER = "/";
+    private static final String LAMPSERVICE_INTERFACE_NAME = "org.allseen.LSF.LampService";
+    private static final String LAMPPARAMETERS_INTERFACE_NAME = "org.allseen.LSF.LampParameters";
+	private static final String LAMPDETAILS_INTERFACE_NAME = "org.allseen.LSF.LampDetails";
+	private static final String LAMPSTATE_INTERFACE_NAME = "org.allseen.LSF.LampState";
+
+    private AboutAnnouncementDetails deviceAboutAnnouncement;
+
+    //private AppUnderTestDetails appUnderTestDetails;
+    private UUID dutAppId;
+    private String dutDeviceId;
+    private ServiceAvailabilityHandler serviceAvailabilityHandler;
+
+    private static boolean signalReceived = false;
+
+    private static String NULL_STRING = "\\0";
+    private static String LAMP_STATE_FIELD_ON_OFF = "OnOff";
+    private static String LAMP_STATE_FIELD_BRIGHTNESS = "Brightness";
+    private static String LAMP_STATE_FIELD_HUE = "Hue";
+    private static String LAMP_STATE_FIELD_SATURATION = "Saturation";
+    private static String LAMP_STATE_FIELD_COLOR_TEMP = "ColorTemp";
+
+    public static String BUS_OBJECT_PATH = "/org/allseen/LSF/Lamp";
+
+	public static final int LAMP_SERVICE_INTERFACE_VERSION = 1;
+	public static final int LAMP_STATE_INTERFACE_VERSION = 1;
+	public static final int LAMP_PARAMETERS_INTERFACE_VERSION = 1;
+	public static final int LAMP_DETAILS_INTERFACE_VERSION = 1;
+
+	public static final int LAMP_SERVICE_VERSION = 1;
+
+	//private  Short PORT = 91;
 	
-	/** The lamp state field brightness. */
-	private  String LAMP_STATE_FIELD_BRIGHTNESS = "Brightness";
-	
-	/** The lamp state field hue. */
-	private  String LAMP_STATE_FIELD_HUE = "Hue";
-	
-	/** The lamp state field saturation. */
-	private  String LAMP_STATE_FIELD_SATURATION = "Saturation";
-	
-	/** The lamp state field color temp. */
-	private  String LAMP_STATE_FIELD_COLOR_TEMP = "ColorTemp";
+	/** 
+	 * [AT4] Added attributes to perform the test cases
+	 * 
+	 * pass	stores the final verdict of the test case
+	 * inconc indicates abnormal behaviours
+	 * ics	map that stores ICS values	
+	 * ixit	map that stores IXIT values
+	 * 
+	 * */
+	boolean pass = true;
+	boolean inconc = false;
+	Map<String, Boolean> ics;
+	Map<String, String> ixit;
 
-
-	/** The lampservice interface name. */
-	private  final String LAMPSERVICE_INTERFACE_NAME = "org.allseen.LSF.LampService";
-	
-	/** The lampparameters interface name. */
-	private  final String LAMPPARAMETERS_INTERFACE_NAME = "org.allseen.LSF.LampParameters";
-	
-	/** The lampdetails interface name. */
-	private  final String LAMPDETAILS_INTERFACE_NAME = "org.allseen.LSF.LampDetails";
-	
-	/** The lampstate interface name. */
-	private  final String LAMPSTATE_INTERFACE_NAME = "org.allseen.LSF.LampState";
-
-	/** The about client. */
-	private  AboutClient aboutClient;
-	
-	/** The lamp state signal handler. */
-	private  LampStateSignalHandler lampStateSignalHandler;
-	
-	/** The lamp state bus object. */
-	private  LampStateBusObject lampStateBusObject;
-	
-	/** The lamp service bus object. */
-	private  LampServiceBusObject lampServiceBusObject;
-	
-	/** The lamp parameters bus object. */
-	private  LampParametersBusObject lampParametersBusObject;
-	
-	/** The lamp details bus object. */
-	private  LampDetailsBusObject lampDetailsBusObject;
-	
-	/** The service availability handler. */
-	private  ServiceAvailabilityHandler serviceAvailabilityHandler;
-	
-	/** The device about announcement. */
-	private  AboutAnnouncementDetails deviceAboutAnnouncement;
-
-
-	/** The ICS l_ lighting service framework. */
-	boolean ICSL_LightingServiceFramework=false;
-
-	/** The ICS l_ lamp service interface. */
-	boolean ICSL_LampServiceInterface=false;
-
-	/** The ICS l_ lamp parameters interface. */
-	boolean ICSL_LampParametersInterface=false;
-
-	/** The ICS l_ lamp details interface. */
-	boolean ICSL_LampDetailsInterface=false;
-
-	/** The ICS l_ dimmable. */
-	boolean ICSL_Dimmable=false;
-
-	/** The ICS l_ color. */
-	boolean ICSL_Color=false;
-
-	/** The ICS l_ color temperature. */
-	boolean ICSL_ColorTemperature=false;
-
-
-	/** The ICS l_ effects. */
-	boolean ICSL_Effects=false;
-
-	/** The ICS l_ lamp state interface. */
-	boolean ICSL_LampStateInterface=false;
-
-
-
-	////////////////
-	/** The IXITC o_ app id. */
-	String IXITCO_AppId=null;
-
-	/** The IXITC o_ device id. */
-	String IXITCO_DeviceId=null;
-
-	/** The IXITC o_ default language. */
-	String IXITCO_DefaultLanguage=null;
-
-
-
-	////////////////
-
-
-	/** The IXIT l_ lamp service version. */
-	String IXITL_LampServiceVersion=null;
-
-	/** The IXIT l_ lamp parameters version. */
-	String IXITL_LampParametersVersion=null;
-
-	/** The IXIT l_ lamp details version. */
-	String IXITL_LampDetailsVersion=null;
-
-	/** The IXIT l_ lamp state version. */
-	String IXITL_LampStateVersion=null;
-
-
-	/**
-	 * Instantiates a new lighting service.
-	 *
-	 * @param testCase the test case
-	 * @param iCSL_LightingServiceFramework the i cs l_ lighting service framework
-	 * @param iCSL_LampServiceInterface the i cs l_ lamp service interface
-	 * @param iCSL_LampParametersInterface the i cs l_ lamp parameters interface
-	 * @param iCSL_LampDetailsInterface the i cs l_ lamp details interface
-	 * @param iCSL_Dimmable the i cs l_ dimmable
-	 * @param iCSL_Color the i cs l_ color
-	 * @param iCSL_ColorTemperature the i cs l_ color temperature
-	 * @param iCSL_Effects the i cs l_ effects
-	 * @param iCSL_LampStateInterface the i cs l_ lamp state interface
-	 * @param iXITCO_AppId the i xitc o_ app id
-	 * @param iXITCO_DeviceId the i xitc o_ device id
-	 * @param iXITCO_DefaultLanguage the i xitc o_ default language
-	 * @param iXITL_LampServiceVersion the i xit l_ lamp service version
-	 * @param iXITL_LampParametersVersion the i xit l_ lamp parameters version
-	 * @param iXITL_LampDetailsVersion the i xit l_ lamp details version
-	 * @param iXITL_LampStateVersion the i xit l_ lamp state version
-	 * @param gPCO_AnnouncementTimeout the g pc o_ announcement timeout
-	 * @param gPL_SessionClose the g p l_ session close
-	 */
-	public LightingService(String testCase,
+	public LightingTestSuite(String testCase,
 			boolean iCSL_LightingServiceFramework,
 			boolean iCSL_LampServiceInterface,
 			boolean iCSL_LampParametersInterface,
@@ -260,40 +134,46 @@ public class LightingService {
 			String iXITCO_DefaultLanguage, String iXITL_LampServiceVersion,
 			String iXITL_LampParametersVersion,
 			String iXITL_LampDetailsVersion, String iXITL_LampStateVersion,
-			String gPCO_AnnouncementTimeout, String gPL_SessionClose)  {
+			String gPCO_AnnouncementTimeout, String gPL_SessionClose)
+	{
+		ics = new HashMap<String, Boolean>();
+		ixit = new HashMap<String, String>();
 
-
-		ICSL_LightingServiceFramework=iCSL_LightingServiceFramework;
-		ICSL_LampServiceInterface=iCSL_LampServiceInterface;
-		ICSL_LampParametersInterface=iCSL_LampParametersInterface;
-		ICSL_LampDetailsInterface=iCSL_LampDetailsInterface;
-		ICSL_Dimmable=iCSL_Dimmable;
-		ICSL_Color=iCSL_Color;
-		ICSL_ColorTemperature=iCSL_ColorTemperature;
-		ICSL_Effects=iCSL_Effects;
-		ICSL_LampStateInterface=iCSL_LampStateInterface;
-		IXITCO_AppId=iXITCO_AppId;
-		IXITCO_DeviceId=iXITCO_DeviceId;
-		IXITCO_DefaultLanguage=iXITCO_DefaultLanguage;
-		IXITL_LampServiceVersion=iXITL_LampServiceVersion;
-		IXITL_LampParametersVersion=iXITL_LampParametersVersion;
-		IXITL_LampDetailsVersion=iXITL_LampDetailsVersion;
-		IXITL_LampStateVersion=iXITL_LampStateVersion;
+		ics.put("ICSL_LightingServiceFramework", iCSL_LightingServiceFramework);
+		ics.put("ICSL_LampServiceInterface", iCSL_LampServiceInterface);
+		ics.put("ICSL_LampParametersInterface", iCSL_LampParametersInterface);
+		ics.put("ICSL_LampDetailsInterface", iCSL_LampDetailsInterface);
+		ics.put("ICSL_Dimmable", iCSL_Dimmable);
+		ics.put("ICSL_Color", iCSL_Color);
+		ics.put("ICSL_ColorTemperature", iCSL_ColorTemperature);
+		ics.put("ICSL_Effects", iCSL_Effects);
+		ics.put("ICSL_LampStateInterface", iCSL_LampStateInterface);
+		
+		ixit.put("IXITCO_AppId", iXITCO_AppId);
+		ixit.put("IXITCO_DeviceId", iXITCO_DeviceId);
+		ixit.put("IXITCO_DefaultLanguage", iXITCO_DefaultLanguage);
+		ixit.put("IXITL_LampServiceVersion", iXITL_LampServiceVersion);
+		ixit.put("IXITL_LampParametersVersion", iXITL_LampParametersVersion);
+		ixit.put("IXITL_LampDetailsVersion", iXITL_LampDetailsVersion);
+		ixit.put("IXITL_LampStateVersion", iXITL_LampStateVersion);
 		
 		ANNOUCEMENT_TIMEOUT_IN_SECONDS = Integer.parseInt(gPCO_AnnouncementTimeout);
 		SESSION_CLOSE_TIMEOUT_IN_SECONDS = Integer.parseInt(gPL_SessionClose);
 
-
-		try{
-
+		try
+		{
 			runTestCase(testCase);
-
-
-		}catch(Exception e){
-			if(e!=null){
-				if(e.getMessage().equals("Timed out waiting for About announcement")){
+		}
+		catch (Exception e)
+		{
+			if (e != null)
+			{
+				if (e.getMessage().equals("Timed out waiting for About announcement"))
+				{
 					fail("Timed out waiting for About announcement");
-				}else{
+				}
+				else
+				{
 					inconc = true;
 					fail("Exception: "+e.toString());
 				}
@@ -301,141 +181,194 @@ public class LightingService {
 		}
 	}
 
-	/**
-	 * Run test case.
-	 *
-	 * @param testCase the test case
-	 * @throws Exception the exception
-	 */
-	public  void runTestCase(String testCase) throws Exception{
-		//setUp(IXITCO_DeviceId,IXITCO_AppId);
+	public void runTestCase(String testCase) throws Exception
+	{
 		setUp();
 		logger.info("Running testcase: "+testCase);
-		if(testCase.equals("LSF_Lamp-v1-01")){
+		
+		if (testCase.equals("LSF_Lamp-v1-01"))
+		{
 			testLSF_Lamp_v1_01_InterfaceVersion();			
-		}else if(testCase.equals("LSF_Lamp-v1-02")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-02"))
+		{
 			testLSF_Lamp_v1_02_ServiceVersion();
-		}else if(testCase.equals("LSF_Lamp-v1-03")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-03"))
+		{
 			testLSF_Lamp_v1_03_ClearLampFault();
-		}else if(testCase.equals("LSF_Lamp-v1-04")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-04"))
+		{
 			testLSF_Lamp_v1_04_SetOnOff();
-		}else if(testCase.equals("LSF_Lamp-v1-05")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-05"))
+		{
 			testLSF_Lamp_v1_05_SetHue();
-		}else if(testCase.equals("LSF_Lamp-v1-06")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-06"))
+		{
 			testLSF_Lamp_v1_06_SetSaturation();
-		}else if(testCase.equals("LSF_Lamp-v1-07")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-07"))
+		{
 			testLSF_Lamp_v1_07_SetColorTemp();
-		}else if(testCase.equals("LSF_Lamp-v1-08")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-08"))
+		{
 			testLSF_Lamp_v1_08_SetBrightness();
-		}else if(testCase.equals("LSF_Lamp-v1-09")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-09"))
+		{
 			testLSF_Lamp_v1_09_TransitionLampState();
-		}else if(testCase.equals("LSF_Lamp-v1-10")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-10"))
+		{
 			testLSF_Lamp_v1_10_ApplyPulseEffect();
-		}else if(testCase.equals("LSF_Lamp-v1-11")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-11"))
+		{
 			testLSF_Lamp_v1_11_StandardizedInterfacesMatchDefinitions();
-		}else if(testCase.equals("LSF_Lamp-v1-12")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-12"))
+		{
 			testLSF_Lamp_v1_12_ParametersInterfaceVersion();
-		}else if(testCase.equals("LSF_Lamp-v1-13")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-13"))
+		{
 			testLSF_Lamp_v1_13_GetEnergy_Usage_Milliwatts();
-		}else if(testCase.equals("LSF_Lamp-v1-14")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-14"))
+		{
 			testLSF_Lamp_v1_14_GetBrightness_Lumens();
-		}else if(testCase.equals("LSF_Lamp-v1-15")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-15"))
+		{
 			testLSF_Lamp_v1_15_GetInterfaceVersion();
-		}else if(testCase.equals("LSF_Lamp-v1-16")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-16"))
+		{
 			testLSF_Lamp_v1_16_GetMake();
-		}else if(testCase.equals("LSF_Lamp-v1-17")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-17"))
+		{
 			testLSF_Lamp_v1_17_GetModel();
-		}else if(testCase.equals("LSF_Lamp-v1-18")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-18"))
+		{
 			testLSF_Lamp_v1_18_GetType();
-		}else if(testCase.equals("LSF_Lamp-v1-19")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-19"))
+		{
 			testLSF_Lamp_v1_19_GetLampType();
-		}else if(testCase.equals("LSF_Lamp-v1-20")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-20"))
+		{
 			testLSF_Lamp_v1_20_GetLampBaseType();
-		}else if(testCase.equals("LSF_Lamp-v1-21")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-21"))
+		{
 			testLSF_Lamp_v1_21_GetLampBeamAngle();
-		}else if(testCase.equals("LSF_Lamp-v1-22")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-22"))
+		{
 			testLSF_Lamp_v1_22_GetDimmable();
-		}else if(testCase.equals("LSF_Lamp-v1-23")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-23"))
+		{
 			testLSF_Lamp_v1_23_GetColor();
-		}else if(testCase.equals("LSF_Lamp-v1-24")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-24"))
+		{
 			testLSF_Lamp_v1_24_GetVariableColorTemp();
-		}else if(testCase.equals("LSF_Lamp-v1-25")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-25"))
+		{
 			testLSF_Lamp_v1_25_GetLampID();
-		}else if(testCase.equals("LSF_Lamp-v1-26")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-26"))
+		{
 			testLSF_Lamp_v1_26_GetHasEffects();
-		}else if(testCase.equals("LSF_Lamp-v1-27")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-27"))
+		{
 			testLSF_Lamp_v1_27_GetMinVoltage();
-		}else if(testCase.equals("LSF_Lamp-v1-28")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-28"))
+		{
 			testLSF_Lamp_v1_28_GetMaxVoltage();
-		}else if(testCase.equals("LSF_Lamp-v1-29")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-29"))
+		{
 			testLSF_Lamp_v1_29_GetWattage();
-		}else if(testCase.equals("LSF_Lamp-v1-30")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-30"))
+		{
 			testLSF_Lamp_v1_30_GetIncandescentEquivalent();
-		}else if(testCase.equals("LSF_Lamp-v1-31")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-31"))
+		{
 			testLSF_Lamp_v1_31_GetMaxLumens();
-		}else if(testCase.equals("LSF_Lamp-v1-32")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-32"))
+		{
 			testLSF_Lamp_v1_32_GetMinTemperature();
-		}else if(testCase.equals("LSF_Lamp-v1-33")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-33"))
+		{
 			testLSF_Lamp_v1_33_GetMaxTemperature();
-		}else if(testCase.equals("LSF_Lamp-v1-34")){
+		}
+		else if (testCase.equals("LSF_Lamp-v1-34"))
+		{
 			testLSF_Lamp_v1_34_GetColorRenderingIndex();
-		}else {
-			fail("TestCase not valid");
+		}
+		else
+		{
+			fail("Test Case not valid");
 		}
 
 		tearDown();
 	}
 
-	//private  void setUp(String iXITCO_DeviceId, String iXITCO_AppId) throws Exception {
-	/**
-	 * Sets the up.
-	 *
-	 * @throws Exception the exception
-	 */
-	private void setUp() throws Exception {
-
-		System.out.println("====================================================");
+	private void setUp() throws Exception
+	{
+		//super.setUp();
+		logger.noTag("====================================================");
 		logger.info("test setUp started");
 
 		try
 		{
-
-			dutDeviceId = IXITCO_DeviceId;
+			//appUnderTestDetails = getValidationTestContext().getAppUnderTestDetails();
+			//dutDeviceId = appUnderTestDetails.getDeviceId();
+			dutDeviceId = ixit.get("IXITCO_DeviceId");
 			logger.info(String.format("Running LSF_Lamp test case against Device ID: %s", dutDeviceId));
-			dutAppId = UUID.fromString(IXITCO_AppId);
+			//dutAppId = appUnderTestDetails.getAppId();
+			dutAppId = UUID.fromString(ixit.get("IXITCO_AppId"));
 			logger.info(String.format("Running LSF_Lamp test case against App ID: %s", dutAppId));
+			
+			//lampObjectPath = getValidationTestContext().getTestObjectPath();
 			lampObjectPath = getTestObjectPath();
 			logger.info(String.format("Executing lamp test against Stream object found at %s", lampObjectPath));
+			
 			signalReceived = false;
+			
 			initServiceHelper();
+			
 			logger.info("test setUp done");
 		}
 		catch (Exception e)
 		{
-			inconc=true;
+			inconc = true;
 			logger.info("test setUp thrown an exception: "+ e.getMessage());
-			releaseResources();
+			//releaseResources();
+			tearDown(); //[AT4]
 			throw e;
 		}
-		System.out.println("====================================================");
-	}
-
-	/**
-	 * Gets the test object path.
-	 *
-	 * @return the test object path
-	 */
-	private  String getTestObjectPath() {
-		return BUS_OBJECT_PATH;
+		logger.noTag("====================================================");
 	}
 
 
-	/**
-	 * Inits the service helper.
-	 *
-	 * @throws BusException the bus exception
-	 * @throws Exception the exception
-	 */
+
 	protected void initServiceHelper() throws BusException, Exception
 	{
 		releaseServiceHelper();
@@ -444,76 +377,29 @@ public class LightingService {
 		serviceHelper.initialize(BUS_APPLICATION_NAME, dutDeviceId, dutAppId);
 
 		lampStateBusObject = new LampStateBusObject();
-
-		serviceHelper.registerBusObject(lampStateBusObject, BUS_OBJECT_PATH+"/LampStateBusObject");
 		//serviceHelper.registerBusObject(lampStateBusObject, BUS_OBJECT_PATH); 
+		serviceHelper.registerBusObject(lampStateBusObject, BUS_OBJECT_PATH+"/LampStateBusObject");
 
 		lampServiceBusObject = new LampServiceBusObject();
-		serviceHelper.registerBusObject(lampServiceBusObject, BUS_OBJECT_PATH+"/LampServiceBusObject");
 		//serviceHelper.registerBusObject(lampServiceBusObject, BUS_OBJECT_PATH);
+		serviceHelper.registerBusObject(lampServiceBusObject, BUS_OBJECT_PATH+"/LampServiceBusObject");
+		
 		lampParametersBusObject = new LampParametersBusObject();
-		serviceHelper.registerBusObject(lampParametersBusObject, BUS_OBJECT_PATH+"/LampParametersBusObject");
 		//serviceHelper.registerBusObject(lampParametersBusObject, BUS_OBJECT_PATH);
+		serviceHelper.registerBusObject(lampParametersBusObject, BUS_OBJECT_PATH+"/LampParametersBusObject");
+		
 		lampDetailsBusObject = new LampDetailsBusObject();
-		serviceHelper.registerBusObject(lampDetailsBusObject, BUS_OBJECT_PATH+"/LampDetailsBusObject");
 		//serviceHelper.registerBusObject(lampDetailsBusObject, BUS_OBJECT_PATH);
+		serviceHelper.registerBusObject(lampDetailsBusObject, BUS_OBJECT_PATH+"/LampDetailsBusObject");
+		
 		deviceAboutAnnouncement = waitForNextDeviceAnnouncement();
 		logger.info("Partial Verdict: PASS");
+		
 		connectAboutClient(deviceAboutAnnouncement);
 		logger.info("Partial Verdict: PASS");
 	}
-
-	/**
-	 * Wait for next device announcement.
-	 *
-	 * @return the about announcement details
-	 * @throws Exception the exception
-	 */
-	private  AboutAnnouncementDetails waitForNextDeviceAnnouncement() throws Exception
-	{
-		logger.info("Waiting for About announcement");
-		return serviceHelper.waitForNextDeviceAnnouncement(ANNOUCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS, true);
-	}
-
-
-	/**
-	 * Connect about client.
-	 *
-	 * @param aboutAnnouncement the about announcement
-	 * @throws Exception the exception
-	 */
-	private void connectAboutClient(AboutAnnouncementDetails aboutAnnouncement) throws Exception
-	{
-		serviceAvailabilityHandler = createServiceAvailabilityHandler();
-		aboutClient = serviceHelper.connectAboutClient(aboutAnnouncement, serviceAvailabilityHandler);
-	}
-
-	/**
-	 * Creates the service availability handler.
-	 *
-	 * @return the service availability handler
-	 */
-	protected  ServiceAvailabilityHandler createServiceAvailabilityHandler()
-	{
-		return new ServiceAvailabilityHandler();
-	}
-
-
-	/**
-	 * Creates the service helper.
-	 *
-	 * @return the service helper
-	 */
-	protected  ServiceHelper createServiceHelper()
-	{
-		return new ServiceHelper(logger);
-	}
-
-
-	/**
-	 * Release service helper.
-	 */
-	private  void releaseServiceHelper()
+	
+	private void releaseServiceHelper()
 	{
 		try
 		{
@@ -540,28 +426,68 @@ public class LightingService {
 			logger.info("Exception releasing resources", ex);
 		}
 	}
+	
+	private void reconnectClients() throws Exception
+    {
+        releaseServiceHelper();
+        initServiceHelper();
+    }
+	
+	private void connectAboutClient(AboutAnnouncementDetails aboutAnnouncement) throws Exception
+	{
+		serviceAvailabilityHandler = createServiceAvailabilityHandler();
+		aboutClient = serviceHelper.connectAboutClient(aboutAnnouncement, serviceAvailabilityHandler);
+	}
 
-
-
-	/**
-	 * Wait for session to close.
-	 *
-	 * @throws Exception the exception
-	 */
-	private  void waitForSessionToClose() throws Exception
+	private AboutAnnouncementDetails waitForNextDeviceAnnouncement() throws Exception
+	{
+		logger.info("Waiting for About announcement");
+		return serviceHelper.waitForNextDeviceAnnouncement(ANNOUCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS, true);
+	}
+	
+	private void waitForSessionToClose() throws Exception
 	{
 		logger.info("Waiting for session to close");
 		serviceHelper.waitForSessionToClose(SESSION_CLOSE_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
 	}
+	
+	private void tearDown() {
 
-	/**
-	 * Wait for next announcement and check field value.
-	 *
-	 * @param fieldName the field name
-	 * @param fieldValue the field value
-	 * @return the about announcement details
-	 * @throws Exception the exception
-	 */
+		logger.noTag("====================================================");
+		logger.info("test tearDown started");
+		releaseResources();
+		logger.info("test tearDown done");
+		logger.noTag("====================================================");
+	}
+	
+	private String getOriginalDeviceName(Map<String, Object> aboutMap)
+    {
+        return (String) aboutMap.get(AboutKeys.ABOUT_DEVICE_NAME);
+
+    }
+	
+	private void watiForNextAnnouncementAndVerifyFieldValue(String fieldName, String newFieldValue) throws Exception, BusException
+    {
+        deviceAboutAnnouncement = waitForNextAnnouncementAndCheckFieldValue(fieldName, newFieldValue);
+    }
+	
+	//@Override
+    public void connectionLost()
+    {
+        logger.info("The connection with the remote device has lost");
+    }
+
+	protected ServiceHelper createServiceHelper()
+	{
+		//return new ServiceHelper(new AndroidLogger());
+		return new ServiceHelper(logger);
+	}
+
+	protected ServiceAvailabilityHandler createServiceAvailabilityHandler()
+	{
+		return new ServiceAvailabilityHandler();
+	}
+
 	protected AboutAnnouncementDetails waitForNextAnnouncementAndCheckFieldValue(String fieldName, String fieldValue) throws Exception
 	{
 		logger.info("Waiting for updating About announcement");
@@ -577,44 +503,15 @@ public class LightingService {
 		return nextDeviceAnnouncement;
 	}
 
-	/**
-	 * Tear down.
-	 */
-	private  void tearDown() {
-
-		System.out.println("====================================================");
-		logger.info("test tearDown started");
-		releaseResources();
-		logger.info("test tearDown done");
-		System.out.println("====================================================");
-	}
-
-
-	/**
-	 * Release resources.
-	 */
-	private  void releaseResources()
+	private void releaseResources()
 	{
 		releaseServiceHelper();
 	}
 
-
-
-
-
-
-
+	
 	/************************** Test Cases ********************************************/
 
-
-
-
-
-
-
-
-
-
+	
 	public void testLSF_Lamp_v1_01_InterfaceVersion() throws Exception
 	{
 		int interfaceVersion = 0;
@@ -634,27 +531,16 @@ public class LightingService {
 
 			fail("Exception caught while trying to get interface version");
 		}
+		
 		logger.info("Checking if Interface version matches IXIT");
-		assertEquals("LSF_Lamp service interface version does not match", Integer.parseInt(IXITL_LampServiceVersion), interfaceVersion);
-		/*if(pass){
-	   logger.info("LSF_Lamp service interface version matches IXITL_LampServiceVersion: "+IXITL_LampServiceVersion);
-	   logger.info("Partial Verdict: PASS");
-   }*/
+		assertEquals("LSF_Lamp service interface version does not match", Integer.parseInt(ixit.get("IXITL_LampServiceVersion")), interfaceVersion);
 	}
 
-
-	/**
-	 * Test ls f_ lamp_v1_02_ service version.
-	 *
-	 * @throws Exception the exception
-	 */
 	public void testLSF_Lamp_v1_02_ServiceVersion() throws Exception
 	{
 		int lampServiceVersion = 0;
 		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
 				new Class[] { LampServiceBusInterface.class });
-
-
 		try
 		{
 			// get lamp service version
@@ -669,20 +555,12 @@ public class LightingService {
 
 			fail("Exception caught while trying to get service version");
 		}
+		
 		logger.info("Checking LampService version matches IXIT");
-		assertEquals("LSF_Lamp service version does not match", Integer.parseInt(IXITL_LampServiceVersion), lampServiceVersion);
+		assertEquals("LSF_Lamp service version does not match", Integer.parseInt(ixit.get("IXITL_LampServiceVersion")), lampServiceVersion);
 	}
 
-
-
-
-
-	/**
-	 * Test ls f_ lamp_v1_03_ clear lamp fault.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_03_ClearLampFault() throws Exception
+	public void testLSF_Lamp_v1_03_ClearLampFault() throws Exception
 	{
 		int[] lampFaults = {0};
 		int numFaults = 0;
@@ -714,15 +592,6 @@ public class LightingService {
 		}
 	}
 
-
-
-
-
-	/**
-	 * Test ls f_ lamp_v1_04_ set on off.
-	 *
-	 * @throws Exception the exception
-	 */
 	public void testLSF_Lamp_v1_04_SetOnOff() throws Exception
 	{
 		boolean onOff = true;
@@ -750,16 +619,7 @@ public class LightingService {
 		assertEquals("LSF_Lamp setOnOff returns failure", onOff, newOnOff);
 	}
 
-
-
-
-
-	/**
-	 * Test ls f_ lamp_v1_05_ set hue.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_05_SetHue() throws Exception
+	public void testLSF_Lamp_v1_05_SetHue() throws Exception
 	{
 		int hue = 100;
 		int newHue = 0;
@@ -786,17 +646,7 @@ public class LightingService {
 		assertEquals("LSF_Lamp getHue returns failure", hue, newHue);
 	}
 
-
-
-
-
-
-	/**
-	 * Test ls f_ lamp_v1_06_ set saturation.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_06_SetSaturation() throws Exception
+	public void testLSF_Lamp_v1_06_SetSaturation() throws Exception
 	{
 		int saturation = 100;
 		int newSaturation = 0;
@@ -824,15 +674,7 @@ public class LightingService {
 		assertEquals("LSF_Lamp setSaturation returns failure", saturation, newSaturation);
 	}
 
-
-
-
-	/**
-	 * Test ls f_ lamp_v1_07_ set color temp.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_07_SetColorTemp() throws Exception
+	public void testLSF_Lamp_v1_07_SetColorTemp() throws Exception
 	{
 		if (getVariableColorTemp())
 		{
@@ -863,13 +705,7 @@ public class LightingService {
 		}
 	}
 
-	/**
-	 * Gets the variable color temp.
-	 *
-	 * @return the variable color temp
-	 * @throws Exception the exception
-	 */
-	private  boolean getVariableColorTemp() throws Exception
+	private boolean getVariableColorTemp() throws Exception
 	{
 		boolean variableColorTemp = false;
 		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
@@ -892,16 +728,7 @@ public class LightingService {
 		return variableColorTemp;
 	}
 
-
-
-
-
-	/**
-	 * Test ls f_ lamp_v1_08_ set brightness.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_08_SetBrightness() throws Exception
+	public void testLSF_Lamp_v1_08_SetBrightness() throws Exception
 	{
 		if (GetDimmable())
 		{
@@ -932,60 +759,18 @@ public class LightingService {
 		}
 	}
 
-
-
-	/**
-	 * Gets the dimmable.
-	 *
-	 * @return true, if successful
-	 * @throws Exception the exception
-	 */
-	private  boolean GetDimmable() throws Exception
+	public void testLSF_Lamp_v1_09_TransitionLampState() throws Exception
 	{
-		boolean dimmable = false;
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
-				new Class[] { LampDetailsBusInterface.class });
-		try
-		{
-			dimmable = proxy.getInterface(LampDetailsBusInterface.class).getDimmable();
-
-			logger.info("Get lamp details dimmable returned " + dimmable);
-			logger.info("Partial Verdict: PASS");
-		}
-		catch (BusException e)
-		{
-			logger.info("Exception caught while trying to get details dimmable");
-			e.printStackTrace();
-
-			fail("Exception caught while trying to get details dimmable");
-		}
-
-		return dimmable;
-	}
-
-
-
-
-
-
-
-
-
-	/**
-	 * Test ls f_ lamp_v1_09_ transition lamp state.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_09_TransitionLampState() throws Exception
-	{
-
-
+		//AllJoynManager ajMan = new AllJoynManager(null);
+		AllJoynManager ajMan = new AllJoynManager();
+		ajMan.initialize();
+		
 		lampStateSignalHandler = new LampStateSignalHandler();
-
-
-		serviceHelper.registerSignalHandler(lampStateSignalHandler);
+		lampStateSignalHandler.setUpdateListener(this);
+		ajMan.registerSignalHandler(lampStateSignalHandler);
+		//serviceHelper.registerSignalHandler(lampStateSignalHandler);
 		/// See if we are able to recieve that signal
-		///ajMan.createAllJoynSession(aboutClient.getPeerName(), AllJoynManager.LAMP_SERVICE_PORT);
+		ajMan.createAllJoynSession(aboutClient.getPeerName(), AllJoynManager.LAMP_SERVICE_PORT);
 
 		boolean onOffValue = true;
 		int brightnessValue = 10;
@@ -1035,7 +820,7 @@ public class LightingService {
 
 			Thread.sleep(5000);
 			// there should have been enough time for signal to be received
-			assertEquals("LSF_Lamp TransitionLampState await signal returns failure. ", true, lampStateSignalHandler.isSignalReceived());
+			assertEquals("LSF_Lamp TransitionLampState await signal returns failure. ", true, signalReceived);
 		}
 		catch (BusException e)
 		{
@@ -1044,22 +829,16 @@ public class LightingService {
 			fail("Exception caught while trying to transition lamp state");
 		}
 
-
+		ajMan.destroy();
+		ajMan = null;
 	}
 
-
-
-	/**
-	 * Test ls f_ lamp_v1_10_ apply pulse effect.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_10_ApplyPulseEffect() throws Exception
+	public void testLSF_Lamp_v1_10_ApplyPulseEffect() throws Exception
 	{
-		boolean fromOnOffValue 	= true;
+		boolean fromOnOffValue 		= true;
 		int fromBrightnessValue 	= 10;
 		int fromHueValue			= 20;
-		int fromSaturationValue	= 30;
+		int fromSaturationValue		= 30;
 		int fromColorTempValue		= 40;
 
 		boolean toOnOffValue 	= true;
@@ -1096,25 +875,13 @@ public class LightingService {
 		}
 	}
 
-
-
-
-
-
-
 	// This test case uses introspection to determine the interface of the lamp service. It compares that to a known
 	// XML file for the lamp service (Lamp.xml).  Differences are treated as failures of the test.
 	// The lamp service XML file should be kept in the directory
 	// ...\validation-tests\HEAD\validation-tests-suites-lighting\src\main\resources\introspection-xml
 	// If it is not available, do not include this test in the pom.xml file.
-
-	/**
-	 * Test ls f_ lamp_v1_11_ standardized interfaces match definitions.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_11_StandardizedInterfacesMatchDefinitions() throws Exception
-	{//TODO Falla
+	public void testLSF_Lamp_v1_11_StandardizedInterfacesMatchDefinitions() throws Exception
+	{
 		try
 		{
 			checkForUnknownInterfacesFromAboutAnnouncement();
@@ -1128,9 +895,10 @@ public class LightingService {
 					logger.info(String.format("Found object at %s implementing %s", objectDetail.getPath(), intfName.getName()));
 				}
 			}
+			
 			logger.info("Checking that LampParameters interface XML matches");
 			ValidationResult validationResult = getInterfaceValidator().validate(interfacesExposedOnBusBasedOnName);
-			//logger.info("after validate");
+			logger.debug("after validate");
 			assertTrue(validationResult.getFailureReason(), validationResult.isValid());
 
 			interfacesExposedOnBusBasedOnName = getIntrospector().getInterfacesExposedOnBusBasedOnName(LAMPSERVICE_INTERFACE_NAME);
@@ -1141,10 +909,10 @@ public class LightingService {
 					logger.info(String.format("Found object at %s implementing %s", objectDetail.getPath(), intfName.getName()));
 				}
 			}
-			//logger.info("before validate");
+			logger.debug("before validate");
 			logger.info("Checking that LampService interface XML matches");
 			validationResult = getInterfaceValidator().validate(interfacesExposedOnBusBasedOnName);
-			//logger.info("after validate");
+			logger.debug("after validate");
 			assertTrue(validationResult.getFailureReason(), validationResult.isValid());
 
 			interfacesExposedOnBusBasedOnName = getIntrospector().getInterfacesExposedOnBusBasedOnName(LAMPDETAILS_INTERFACE_NAME);
@@ -1155,10 +923,10 @@ public class LightingService {
 					logger.info(String.format("Found object at %s implementing %s", objectDetail.getPath(), intfName.getName()));
 				}
 			}
-			//logger.info("before validate");
+			logger.debug("before validate");
 			logger.info("Checking that LampDetails interface XML matches");
 			validationResult = getInterfaceValidator().validate(interfacesExposedOnBusBasedOnName);
-			//logger.info("after validate");
+			logger.debug("after validate");
 			assertTrue(validationResult.getFailureReason(), validationResult.isValid());
 
 			interfacesExposedOnBusBasedOnName = getIntrospector().getInterfacesExposedOnBusBasedOnName(LAMPSTATE_INTERFACE_NAME);
@@ -1169,10 +937,10 @@ public class LightingService {
 					logger.info(String.format("Found object at %s implementing %s", objectDetail.getPath(), intfName.getName()));
 				}
 			}
-			//logger.info("before validate");
+			logger.debug("before validate");
 			logger.info("Checking that LampState interface XML matches");
 			validationResult = getInterfaceValidator().validate(interfacesExposedOnBusBasedOnName);
-			//logger.info("after validate");
+			logger.debug("after validate");
 			assertTrue(validationResult.getFailureReason(), validationResult.isValid());
 
 		}
@@ -1184,22 +952,7 @@ public class LightingService {
 		}
 	}
 
-
-
-
-
-
-
-
-
-
-
-	/**
-	 * Test ls f_ lamp_v1_12_ parameters interface version.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_12_ParametersInterfaceVersion() throws Exception
+	public void testLSF_Lamp_v1_12_ParametersInterfaceVersion() throws Exception
 	{
 		int interfaceVersion = 0;
 		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
@@ -1218,20 +971,12 @@ public class LightingService {
 
 			fail("Exception caught while trying to get parameters interface version");
 		}
+		
 		logger.info("Checking if LampParameters interface version matches IXIT");
-		assertEquals("LSF_Lamp parameters interface version does not match",Integer.parseInt(IXITL_LampParametersVersion) , interfaceVersion);
+		assertEquals("LSF_Lamp parameters interface version does not match",Integer.parseInt(ixit.get("IXITL_LampParametersVersion")) , interfaceVersion);
 	}
 
-
-
-
-
-	/**
-	 * Test ls f_ lamp_v1_13_ get energy_ usage_ milliwatts.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_13_GetEnergy_Usage_Milliwatts() throws Exception
+	public void testLSF_Lamp_v1_13_GetEnergy_Usage_Milliwatts() throws Exception
 	{
 		int energy_Usage_Milliwatts = 0;
 		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
@@ -1252,12 +997,7 @@ public class LightingService {
 		}
 	}
 
-	/**
-	 * Test ls f_ lamp_v1_14_ get brightness_ lumens.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_14_GetBrightness_Lumens() throws Exception
+	public void testLSF_Lamp_v1_14_GetBrightness_Lumens() throws Exception
 	{
 		int brightness_Lumens = 0;
 		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
@@ -1278,16 +1018,7 @@ public class LightingService {
 		}
 	}
 
-
-
-
-
-	/**
-	 * Test ls f_ lamp_v1_15_ get interface version.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Lamp_v1_15_GetInterfaceVersion() throws Exception
+	public void testLSF_Lamp_v1_15_GetInterfaceVersion() throws Exception
 	{
 		int interfaceVersion = 0;
 		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
@@ -1306,19 +1037,10 @@ public class LightingService {
 			fail("Exception caught while trying to get details interface version");
 		}
 		logger.info("Checking if LampDetails interface version matches IXIT");
-		assertEquals("LSF_Lamp details interface version does not match", Integer.parseInt(IXITL_LampDetailsVersion), interfaceVersion);
+		assertEquals("LSF_Lamp details interface version does not match", Integer.parseInt(ixit.get("IXITL_LampDetailsVersion")), interfaceVersion);
 	}
 
-
-
-
-
-	/**
-	 * Test ls f_ lamp_v1_16_ get make.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_16_GetMake() throws Exception
+	public void testLSF_Lamp_v1_16_GetMake() throws Exception
 	{
 		int make = 0;
 		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
@@ -1339,16 +1061,7 @@ public class LightingService {
 		}
 	}
 
-
-
-
-
-	/**
-	 * Test ls f_ lamp_v1_17_ get model.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_17_GetModel() throws Exception
+	public void testLSF_Lamp_v1_17_GetModel() throws Exception
 	{
 		int model = 0;
 		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
@@ -1369,18 +1082,7 @@ public class LightingService {
 		}
 	}
 
-
-
-
-
-
-
-	/**
-	 * Test ls f_ lamp_v1_18_ get type.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_18_GetType() throws Exception
+	public void testLSF_Lamp_v1_18_GetType() throws Exception
 	{
 		int detailsType = 0;
 		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
@@ -1402,17 +1104,7 @@ public class LightingService {
 		}
 	}
 
-
-
-
-
-
-	/**
-	 * Test ls f_ lamp_v1_19_ get lamp type.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_19_GetLampType() throws Exception
+	public void testLSF_Lamp_v1_19_GetLampType() throws Exception
 	{
 		int lampType = 0;
 		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
@@ -1433,16 +1125,7 @@ public class LightingService {
 		}
 	}
 
-
-
-
-
-	/**
-	 * Test ls f_ lamp_v1_20_ get lamp base type.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_20_GetLampBaseType() throws Exception
+	public void testLSF_Lamp_v1_20_GetLampBaseType() throws Exception
 	{
 		int lampBaseType = 0;
 		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
@@ -1463,14 +1146,7 @@ public class LightingService {
 		}
 	}
 
-
-
-	/**
-	 * Test ls f_ lamp_v1_21_ get lamp beam angle.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_21_GetLampBeamAngle() throws Exception
+	public void testLSF_Lamp_v1_21_GetLampBeamAngle() throws Exception
 	{
 		int lampBeamAngle = 0;
 		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
@@ -1491,29 +1167,35 @@ public class LightingService {
 		}
 	}
 
-
-
-
-
-	/**
-	 * Test ls f_ lamp_v1_22_ get dimmable.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_22_GetDimmable() throws Exception
+	public void testLSF_Lamp_v1_22_GetDimmable() throws Exception
 	{
 		GetDimmable();
 	}
+	
+	private boolean GetDimmable() throws Exception
+	{
+		boolean dimmable = false;
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+				new Class[] { LampDetailsBusInterface.class });
+		try
+		{
+			dimmable = proxy.getInterface(LampDetailsBusInterface.class).getDimmable();
 
+			logger.info("Get lamp details dimmable returned " + dimmable);
+			logger.info("Partial Verdict: PASS");
+		}
+		catch (BusException e)
+		{
+			logger.info("Exception caught while trying to get details dimmable");
+			e.printStackTrace();
 
+			fail("Exception caught while trying to get details dimmable");
+		}
 
+		return dimmable;
+	}
 
-	/**
-	 * Test ls f_ lamp_v1_23_ get color.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_23_GetColor() throws Exception
+	public void testLSF_Lamp_v1_23_GetColor() throws Exception
 	{
 		boolean color = false;
 		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
@@ -1534,26 +1216,12 @@ public class LightingService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ lamp_v1_24_ get variable color temp.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_24_GetVariableColorTemp() throws Exception
+	public void testLSF_Lamp_v1_24_GetVariableColorTemp() throws Exception
 	{
 		getVariableColorTemp();
 	}
 
-
-
-
-	/**
-	 * Test ls f_ lamp_v1_25_ get lamp id.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_25_GetLampID() throws Exception
+	public void testLSF_Lamp_v1_25_GetLampID() throws Exception
 	{
 		String lampID = "";
 		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
@@ -1575,13 +1243,7 @@ public class LightingService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ lamp_v1_26_ get has effects.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_26_GetHasEffects() throws Exception
+	public void testLSF_Lamp_v1_26_GetHasEffects() throws Exception
 	{
 		boolean hasEffects = false;
 		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
@@ -1603,16 +1265,7 @@ public class LightingService {
 		}
 	}
 
-
-
-
-
-	/**
-	 * Test ls f_ lamp_v1_27_ get min voltage.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_27_GetMinVoltage() throws Exception
+	public void testLSF_Lamp_v1_27_GetMinVoltage() throws Exception
 	{
 		int minVoltage = 0;
 		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
@@ -1633,13 +1286,7 @@ public class LightingService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ lamp_v1_28_ get max voltage.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_28_GetMaxVoltage() throws Exception
+	public void testLSF_Lamp_v1_28_GetMaxVoltage() throws Exception
 	{
 		int maxVoltage = 0;
 		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
@@ -1660,15 +1307,7 @@ public class LightingService {
 		}
 	}
 
-
-
-
-	/**
-	 * Test ls f_ lamp_v1_29_ get wattage.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_29_GetWattage() throws Exception
+	public void testLSF_Lamp_v1_29_GetWattage() throws Exception
 	{
 		int wattage = 0;
 		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
@@ -1689,17 +1328,7 @@ public class LightingService {
 		}
 	}
 
-
-
-
-
-
-	/**
-	 * Test ls f_ lamp_v1_30_ get incandescent equivalent.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_30_GetIncandescentEquivalent() throws Exception
+	public void testLSF_Lamp_v1_30_GetIncandescentEquivalent() throws Exception
 	{
 		int incandescentEquivalent = 0;
 		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
@@ -1720,13 +1349,7 @@ public class LightingService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ lamp_v1_31_ get max lumens.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_31_GetMaxLumens() throws Exception
+	public void testLSF_Lamp_v1_31_GetMaxLumens() throws Exception
 	{
 		int maxLumens = 0;
 		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
@@ -1747,13 +1370,7 @@ public class LightingService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ lamp_v1_32_ get min temperature.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_32_GetMinTemperature() throws Exception
+	public void testLSF_Lamp_v1_32_GetMinTemperature() throws Exception
 	{
 		int minTemperature = 0;
 		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
@@ -1774,13 +1391,7 @@ public class LightingService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ lamp_v1_33_ get max temperature.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_33_GetMaxTemperature() throws Exception
+	public void testLSF_Lamp_v1_33_GetMaxTemperature() throws Exception
 	{
 		int maxTemperature = 0;
 		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
@@ -1801,13 +1412,7 @@ public class LightingService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ lamp_v1_34_ get color rendering index.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Lamp_v1_34_GetColorRenderingIndex() throws Exception
+	public void testLSF_Lamp_v1_34_GetColorRenderingIndex() throws Exception
 	{
 		int colorRenderingIndex = 0;
 		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
@@ -1828,114 +1433,39 @@ public class LightingService {
 		}
 
 	}
-
-	/**
-	 * Gets the interface validator.
-	 *
-	 * @return the interface validator
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws ParserConfigurationException the parser configuration exception
-	 * @throws SAXException the SAX exception
-	 */
-	protected  LampInterfaceValidator getInterfaceValidator() throws IOException, ParserConfigurationException, SAXException
+	
+	
+	/************************** End Test Cases ********************************************/
+	
+	public void handleLampStateChanged(String LampID)
 	{
-		return new LampInterfaceValidator();
+		logger.info("LSF_Lamp signal LampStateChanged for " + LampID);
+		
+		signalReceived = true;
 	}
-
-
-	// Examine interfaces found at our bus object for any that do NOT appear in our XML file.
-	/**
-	 * Check for unknown interfaces from about announcement.
-	 *
-	 * @throws Exception the exception
-	 */
-	private  void checkForUnknownInterfacesFromAboutAnnouncement() throws Exception
-	{
-		for (AboutObjectDescription busObjectDescription : deviceAboutAnnouncement.getObjectDescriptions())
-		{
-			logger.info("BusObjectDescription: " + busObjectDescription.path + " supports " + Arrays.toString(busObjectDescription.interfaces));
-
-			if (busObjectDescription.path.equals(BUS_OBJECT_PATH))
-			{
-				for (String interfaceName : busObjectDescription.interfaces)
-				{
-					// found an interface on our bus object
-					logger.info(String.format("Found on our object interface  %s", interfaceName));
-
-					// see if we can validate found interface
-					List<InterfaceDetail> interfacesExposedOnBusBasedOnName = getIntrospector().getInterfacesExposedOnBusBasedOnName(interfaceName);
-					for (InterfaceDetail objectDetail : interfacesExposedOnBusBasedOnName)
-					{
-						for (IntrospectionInterface intfName : objectDetail.getIntrospectionInterfaces())
-						{
-							logger.info(String.format("Found (unknown?) object at %s implementing %s", objectDetail.getPath(), intfName.getName()));
-						}
-					}
-
-					try
-					{
-						ValidationResult validationResult = getInterfaceValidator().validate(interfacesExposedOnBusBasedOnName);
-						logger.info("after found interface validate %s", validationResult.isValid());
-						assertTrue(validationResult.getFailureReason(), validationResult.isValid());
-					}
-					catch (Exception e)
-					{
-						logger.info("Exception caught in checkForUnknownInterfacesFromAboutAnnouncement ");
-						e.printStackTrace();
-						fail(String.format("Exception caught in checkForUnknownInterfacesFromAboutAnnouncement"));
-					}
-				}
-			}
-		}
-	} 
-
-	/**
-	 * Gets the introspector.
-	 *
-	 * @return the introspector
-	 */
+	
 	BusIntrospector getIntrospector()
 	{
 		return serviceHelper.getBusIntrospector(aboutClient);
 	}
+	
+	BusIntrospector getIntrospector(BusAttachment busAttachment, AboutClient newAboutClient)
+    {
+        return new XmlBasedBusIntrospector(busAttachment, newAboutClient.getPeerName(), newAboutClient.getSessionId());
+    }
 
-	/**
-	 * Gets the lamp state map.
-	 *
-	 * @param onOffString the on off string
-	 * @param brightnessString the brightness string
-	 * @param hueString the hue string
-	 * @param saturationString the saturation string
-	 * @param colorTempString the color temp string
-	 * @return the lamp state map
-	 */
-	private  Map<String, Variant> getLampStateMap(String onOffString, String brightnessString,  String hueString, String saturationString, String colorTempString)
+    BusIntrospector getIntrospector(ServiceHelper serviceHelper, AboutClient aboutClient)
+    {
+        return serviceHelper.getBusIntrospector(aboutClient);
+    }
+	
+	protected LampInterfaceValidator getInterfaceValidator() throws IOException, ParserConfigurationException, SAXException
 	{
-		Variant onOffVariant = getVariant(onOffString, true);
-		Variant brightnessVariant = getVariant(brightnessString, false);
-		Variant hueVariant = getVariant(hueString, false);
-		Variant saturationVariant = getVariant(saturationString, false);
-		Variant colorTempVariant = getVariant(colorTempString, false);
-
-		final Map<String, Variant> newLampState = new HashMap<String, Variant>();
-		newLampState.put(LAMP_STATE_FIELD_ON_OFF, onOffVariant);
-		newLampState.put(LAMP_STATE_FIELD_BRIGHTNESS, brightnessVariant);
-		newLampState.put(LAMP_STATE_FIELD_HUE, hueVariant);
-		newLampState.put(LAMP_STATE_FIELD_SATURATION, saturationVariant);
-		newLampState.put(LAMP_STATE_FIELD_COLOR_TEMP, colorTempVariant);
-
-		return newLampState;
+		//return new LampInterfaceValidator(getValidationTestContext());
+		return new LampInterfaceValidator();
 	}
-
-
-	/**
-	 * Gets the variant.
-	 *
-	 * @param data the data
-	 * @param isOnOff the is on off
-	 * @return the variant
-	 */
-	private  Variant getVariant(String data, boolean isOnOff)
+	
+	private Variant getVariant(String data, boolean isOnOff)
 	{
 		try
 		{
@@ -1982,102 +1512,154 @@ public class LightingService {
 			}
 		}
 	}
+	
+	private Map<String, Variant> getLampStateMap(String onOffString, String brightnessString,  String hueString, String saturationString, String colorTempString)
+	{
+		Variant onOffVariant = getVariant(onOffString, true);
+		Variant brightnessVariant = getVariant(brightnessString, false);
+		Variant hueVariant = getVariant(hueString, false);
+		Variant saturationVariant = getVariant(saturationString, false);
+		Variant colorTempVariant = getVariant(colorTempString, false);
 
+		final Map<String, Variant> newLampState = new HashMap<String, Variant>();
+		newLampState.put(LAMP_STATE_FIELD_ON_OFF, onOffVariant);
+		newLampState.put(LAMP_STATE_FIELD_BRIGHTNESS, brightnessVariant);
+		newLampState.put(LAMP_STATE_FIELD_HUE, hueVariant);
+		newLampState.put(LAMP_STATE_FIELD_SATURATION, saturationVariant);
+		newLampState.put(LAMP_STATE_FIELD_COLOR_TEMP, colorTempVariant);
 
+		return newLampState;
+	}
 
+	// Examine interfaces found at our bus object for any that do NOT appear in our XML file.
+	private void checkForUnknownInterfacesFromAboutAnnouncement() throws Exception
+	{
+		for (AboutObjectDescription busObjectDescription : deviceAboutAnnouncement.getObjectDescriptions())
+		{
+			logger.info("BusObjectDescription: " + busObjectDescription.path + " supports " + Arrays.toString(busObjectDescription.interfaces));
+
+			if (busObjectDescription.path.equals(BUS_OBJECT_PATH))
+			{
+				for (String interfaceName : busObjectDescription.interfaces)
+				{
+					// found an interface on our bus object
+					logger.info(String.format("Found on our object interface  %s", interfaceName));
+
+					// see if we can validate found interface
+					List<InterfaceDetail> interfacesExposedOnBusBasedOnName = getIntrospector().getInterfacesExposedOnBusBasedOnName(interfaceName);
+					for (InterfaceDetail objectDetail : interfacesExposedOnBusBasedOnName)
+					{
+						for (IntrospectionInterface intfName : objectDetail.getIntrospectionInterfaces())
+						{
+							logger.info(String.format("Found (unknown?) object at %s implementing %s", objectDetail.getPath(), intfName.getName()));
+						}
+					}
+
+					try
+					{
+						ValidationResult validationResult = getInterfaceValidator().validate(interfacesExposedOnBusBasedOnName);
+						logger.info("after found interface validate %s", validationResult.isValid());
+						assertTrue(validationResult.getFailureReason(), validationResult.isValid());
+					}
+					catch (Exception e)
+					{
+						logger.info("Exception caught in checkForUnknownInterfacesFromAboutAnnouncement ");
+						e.printStackTrace();
+						fail(String.format("Exception caught in checkForUnknownInterfacesFromAboutAnnouncement"));
+					}
+				}
+			}
+		}
+	}
+	
+	/** 
+	 * [AT4] Added methods to emulate JUnit behaviour
+	 * 
+	 * assertEquals
+	 * assertTrue
+	 * 
+	 * */
+	private void assertEquals(String errorMessage, int first, int second)
+	{
+		if (first != second)
+		{
+			fail(errorMessage);
+		}
+		else
+		{
+			logger.info("Partial Verdict: PASS");
+		}
+	}
+
+	private void assertEquals(String errorMessage, String first, String second)
+	{
+		if (!first.equals(second))
+		{
+			fail(errorMessage);
+		}
+		else
+		{
+			logger.info("Partial Verdict: PASS");
+		}
+	}
+
+	private void assertEquals(String errorMessage, boolean first, boolean second)
+	{
+		if (first != second)
+		{
+			fail(errorMessage);
+		}
+		else
+		{
+			logger.info("Partial Verdict: PASS");
+		}
+	}
+
+	private void assertTrue(String errorMessage, boolean condition)
+	{
+		if (!condition)
+		{
+			fail(errorMessage);
+		}
+		else
+		{
+			logger.info("Partial Verdict: PASS");
+		}
+	}
+	
 	/**
-	 * Fail.
-	 *
-	 * @param msg the msg
-	 */
-	private  void fail(String msg) {
-		// TODO Auto-generated method stub
-
+	 * [AT4] Added methods to manage the verdict
+	 * 
+	 * fail
+	 * getFinalVerdict
+	 * 
+	 *  */
+	private void fail(String msg)
+	{
 		logger.error(msg);
-		pass=false;
-
+		logger.info("Partial Verdict: FAIL");
+		pass = false;
 	}
 
-	/**
-	 * Assert equals.
-	 *
-	 * @param errorMsg the error msg
-	 * @param i the i
-	 * @param j the j
-	 */
-	private  void assertEquals(String errorMsg, int i, int j) {
-		if(i!=j){
-			fail(errorMsg);
-		} else {
-			logger.info("Partial Verdict: PASS");
+	public String getFinalVerdict()
+	{
+		if (inconc)
+		{
+			return "INCONC";
+		}
+		
+		if (pass)
+		{
+			return "PASS";
+		}
+		else
+		{
+			return "FAIL";
 		}
 	}
-
-	/**
-	 * Assert equals.
-	 *
-	 * @param errorMsg the error msg
-	 * @param string1 the string1
-	 * @param string2 the string2
-	 */
-	private  void assertEquals(String errorMsg,
-			String string1, String string2) {
-		// TODO Auto-generated method stub
-
-		if(!string1.equals(string2)){
-			fail(errorMsg);
-		} else {
-			logger.info("Partial Verdict: PASS");
-		}
-	}
-
-	/**
-	 * Assert equals.
-	 *
-	 * @param errorMsg the error msg
-	 * @param bool the bool
-	 * @param booleanValue the boolean value
-	 */
-	private  void assertEquals(String errorMsg, boolean bool,
-			boolean booleanValue) {
-		if(bool!=booleanValue){
-			fail(errorMsg);
-		} else {
-			logger.info("Partial Verdict: PASS");
-		}
-	}
-
-	/**
-	 * Assert true.
-	 *
-	 * @param errorMsg the error msg
-	 * @param bool the bool
-	 */
-	private  void assertTrue(String errorMsg,
-			boolean bool) {
-		// TODO Auto-generated method stub
-		if(!bool){
-			fail(errorMsg);
-		} else {
-			logger.info("Partial Verdict: PASS");
-		}
-
-	}
-
-	/**
-	 * Gets the verdict.
-	 *
-	 * @return the verdict
-	 */
-	public String getVerdict() {
-		String verdict=null;
-		if(inconc==true){
-			verdict="INCONC";
-		}else if(pass){
-			verdict="PASS";
-		}else if(!pass){
-			verdict="FAIL";
-		}
-		return verdict;
+	
+	private String getTestObjectPath()
+	{
+		return BUS_OBJECT_PATH; //[AT4] Should this be changed to an IXIT?
 	}
 }
