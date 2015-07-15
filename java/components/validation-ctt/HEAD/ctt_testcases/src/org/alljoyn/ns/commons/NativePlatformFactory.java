@@ -13,9 +13,7 @@
  *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  ******************************************************************************/
-
 package org.alljoyn.ns.commons;
-
 
 /**
  * The factory class for the classes extending {@link NativePlatformAbstrImpl} <br>
@@ -26,15 +24,10 @@ public class NativePlatformFactory {
 	/**
 	 * Supported OS platforms 
 	 */
-	private static enum OSPlatform {
-		
-		/** The windows. */
+	private static enum OSPlatform
+	{
 		WINDOWS ("Windows","com.at4wireless.alljoyn.core.notification.NativePlatformWindows"),
-		
-		/** The android. */
 		ANDROID ("Android","org.alljoyn.ns.nativeplatform.NativePlatformAndroid"),
-		
-		/** The linux. */
 		LINUX   ("Linux", "");
 		
 		/**
@@ -100,8 +93,8 @@ public class NativePlatformFactory {
 		synchronized (NativePlatformFactory.class) {
 			if ( nativePlatform == null ) {
 				nativePlatform = getClassInstance(osPlatformType.CLASS_NAME);
-			}//if :: nativePlatform == null
-		}//synchronized
+			} //if :: nativePlatform == null
+		} //synchronized
 		
 		return nativePlatform;
 	}//getPlatformObject
@@ -143,7 +136,7 @@ public class NativePlatformFactory {
 			return OSPlatform.WINDOWS;
 		}//if :: windows
 		if ( osPlatform.indexOf(OSPlatform.LINUX.NAME) > -1 ) {
-			//Check Android
+
 			if ( !vmVendor.isEmpty() && vmVendor.indexOf(OSPlatform.ANDROID.NAME) > -1 ) {
 				return OSPlatform.ANDROID;
 			}
@@ -152,5 +145,4 @@ public class NativePlatformFactory {
 		
 		return null;
 	}//identifyPlatform
-	
 }//NativePlatformFactory

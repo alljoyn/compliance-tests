@@ -88,6 +88,15 @@
         <property name="Version" type="q" access="read"/>
         <property name="Volume" type="n" access="readwrite"/>
         <property name="VolumeRange" type="(nnn)" access="read"/>
+        <!-- [ASACOMP-55] start -->
+        <method name="AdjustVolumePercent">
+        	<arg name="change" type="d" direction="in"/>
+        </method>
+        <property name="Enabled" type="b" access="read"/>
+        <signal name="EnabledChanged">
+        	<arg name="enabled" type="b"/>
+        </signal>
+        <!-- [ASACOMP-55] end -->
     </interface>
 
     <interface name="org.alljoyn.Stream.Clock">
