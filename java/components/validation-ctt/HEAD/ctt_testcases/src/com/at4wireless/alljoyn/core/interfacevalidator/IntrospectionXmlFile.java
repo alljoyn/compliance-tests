@@ -1,34 +1,31 @@
-/*
- * Copyright AllSeen Alliance. All rights reserved.
+/*******************************************************************************
+ *  Copyright AllSeen Alliance. All rights reserved.
  *
- *    Permission to use, copy, modify, and/or distribute this software for any
- *    purpose with or without fee is hereby granted, provided that the above
- *    copyright notice and this permission notice appear in all copies.
+ *     Permission to use, copy, modify, and/or distribute this software for any
+ *     purpose with or without fee is hereby granted, provided that the above
+ *     copyright notice and this permission notice appear in all copies.
  *
- *    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
- *    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
- *    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
- *    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
- *    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
- *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
- *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
+ *     THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *     WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *     MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *     ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *     WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *     ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *******************************************************************************/
 package com.at4wireless.alljoyn.core.interfacevalidator;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Enum IntrospectionXmlFile.
- */
 public enum IntrospectionXmlFile 
 {
     About("introspection-xml/About.xml"), Action("introspection-xml/Action.xml"), Audio("introspection-xml/Audio.xml"), Config("introspection-xml/Config.xml"), Container(
-            "introspection-xml/Container.xml"), ControllerService("introspection-xml/ControllerService.xml"), ControlPanel("introspection-xml/ControlPanel.xml"), DeviceIcon("introspection-xml/DeviceIcon.xml"), Dialog(
-            "introspection-xml/Dialog.xml"),GWAgentCtrlAcl("introspection-xml/GWAgentCtrlAcl.xml"), GWAgentCtrlAclMgmt("introspection-xml/GWAgentCtrlAclMgmt.xml"),
+            "introspection-xml/Container.xml"), ControlPanel("introspection-xml/ControlPanel.xml"), DeviceIcon("introspection-xml/DeviceIcon.xml"), Dialog(
+            "introspection-xml/Dialog.xml"), HTTPControl("introspection-xml/HTTPControl.xml"), LabelProperty("introspection-xml/LabelProperty.xml"), ListProperty(
+            "introspection-xml/ListProperty.xml"), Notification("introspection-xml/Notification.xml"), NotificationAction("introspection-xml/NotificationAction.xml"), Onboarding(
+            "introspection-xml/Onboarding.xml"), Peer("introspection-xml/Peer.xml"), Property("introspection-xml/Property.xml"), Lighting("introspection-xml/Lamp.xml"),
+            GWAgentCtrlAcl("introspection-xml/GWAgentCtrlAcl.xml"), GWAgentCtrlAclMgmt("introspection-xml/GWAgentCtrlAclMgmt.xml"),
             GWAgentCtrlApp("introspection-xml/GWAgentCtrlApp.xml"),GWAgentCtrlAppMgmt("introspection-xml/GWAgentCtrlAppMgmt.xml"),
-            HTTPControl("introspection-xml/HTTPControl.xml"), LabelProperty("introspection-xml/LabelProperty.xml"),
-            Lamp("introspection-xml/Lamp.xml"),LeaderElectionAndStateSync("introspection-xml/LeaderElectionAndStateSync.xml"), 
-            ListProperty("introspection-xml/ListProperty.xml"), Notification("introspection-xml/Notification.xml"), NotificationAction("introspection-xml/NotificationAction.xml"), Onboarding(
-            "introspection-xml/Onboarding.xml"), Peer("introspection-xml/Peer.xml"), Property("introspection-xml/Property.xml");
+            LightingController("introspection-xml/ControllerService.xml"), LeaderElectionAndStateSync("introspection-xml/LeaderElectionAndStateSync.xml"),
+            Introspectable("introspection-xml/Introspectable.xml"), GWAgentConnectorApp("introspection-xml/GWAgentConnectorApp.xml");
 
     private String value;
 
