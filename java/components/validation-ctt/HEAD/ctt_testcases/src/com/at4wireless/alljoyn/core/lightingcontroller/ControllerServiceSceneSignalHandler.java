@@ -17,10 +17,6 @@ package com.at4wireless.alljoyn.core.lightingcontroller;
 
 import org.alljoyn.bus.annotation.BusSignalHandler;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class ControllerServiceSceneSignalHandler.
- */
 public class ControllerServiceSceneSignalHandler
 {
    /* static
@@ -28,24 +24,13 @@ public class ControllerServiceSceneSignalHandler
         System.loadLibrary("alljoyn_java");
     }*/
 
-    /** The signal listener. */
-   private ControllerServiceSignalListener signalListener;
+	private ControllerServiceSignalListener signalListener;
 
-    /**
-     * Sets the update listener.
-     *
-     * @param listener the new update listener
-     */
     public void setUpdateListener(ControllerServiceSignalListener listener)
     {
         signalListener = listener;
     }
 
-    /**
-     * Scenes name changed.
-     *
-     * @param sceneIDs the scene i ds
-     */
     @BusSignalHandler(iface = "org.allseen.LSF.ControllerService.Scene", signal = "ScenesNameChanged")
     public void ScenesNameChanged(String[] sceneIDs)
     {
@@ -55,11 +40,6 @@ public class ControllerServiceSceneSignalHandler
         }
     }
 
-    /**
-     * Scenes created.
-     *
-     * @param sceneIDs the scene i ds
-     */
     @BusSignalHandler(iface = "org.allseen.LSF.ControllerService.Scene", signal = "ScenesCreated")
     public void ScenesCreated(String[] sceneIDs)
     {
@@ -69,11 +49,6 @@ public class ControllerServiceSceneSignalHandler
         }
     }
 
-    /**
-     * Scenes updated.
-     *
-     * @param sceneIDs the scene i ds
-     */
     @BusSignalHandler(iface = "org.allseen.LSF.ControllerService.Scene", signal = "ScenesUpdated")
     public void ScenesUpdated(String[] sceneIDs)
     {
@@ -83,11 +58,6 @@ public class ControllerServiceSceneSignalHandler
         }
     }
 
-    /**
-     * Scenes deleted.
-     *
-     * @param sceneIDs the scene i ds
-     */
     @BusSignalHandler(iface = "org.allseen.LSF.ControllerService.Scene", signal = "ScenesDeleted")
     public void ScenesDeleted(String[] sceneIDs)
     {
@@ -97,11 +67,6 @@ public class ControllerServiceSceneSignalHandler
         }
     }
 
-    /**
-     * Scenes applied.
-     *
-     * @param sceneIDs the scene i ds
-     */
     @BusSignalHandler(iface = "org.allseen.LSF.ControllerService.Scene", signal = "ScenesApplied")
     public void ScenesApplied(String[] sceneIDs)
     {

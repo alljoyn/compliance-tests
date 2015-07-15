@@ -17,10 +17,6 @@ package com.at4wireless.alljoyn.core.lightingcontroller;
 
 import org.alljoyn.bus.annotation.BusSignalHandler;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class ControllerServiceLampGroupSignalHandler.
- */
 public class ControllerServiceLampGroupSignalHandler
 {
     /*static
@@ -28,24 +24,13 @@ public class ControllerServiceLampGroupSignalHandler
         System.loadLibrary("alljoyn_java");
     }*/
 
-    /** The signal listener. */
     private ControllerServiceSignalListener signalListener;
 
-    /**
-     * Sets the update listener.
-     *
-     * @param listener the new update listener
-     */
     public void setUpdateListener(ControllerServiceSignalListener listener)
     {
         signalListener = listener;
     }
 
-    /**
-     * Lamp groups name changed.
-     *
-     * @param lampGroupsIDs the lamp groups i ds
-     */
     @BusSignalHandler(iface = "org.allseen.LSF.ControllerService.LampGroup", signal = "LampGroupsNameChanged")
     public void LampGroupsNameChanged(String[] lampGroupsIDs)
     {
@@ -55,11 +40,6 @@ public class ControllerServiceLampGroupSignalHandler
         }
     }
 
-    /**
-     * Lamp groups created.
-     *
-     * @param lampGroupsIDs the lamp groups i ds
-     */
     @BusSignalHandler(iface = "org.allseen.LSF.ControllerService.LampGroup", signal = "LampGroupsCreated")
     public void LampGroupsCreated(String[] lampGroupsIDs)
     {
@@ -69,11 +49,6 @@ public class ControllerServiceLampGroupSignalHandler
         }
     }
 
-    /**
-     * Lamp groups updated.
-     *
-     * @param lampGroupsIDs the lamp groups i ds
-     */
     @BusSignalHandler(iface = "org.allseen.LSF.ControllerService.LampGroup", signal = "LampGroupsUpdated")
     public void LampGroupsUpdated(String[] lampGroupsIDs)
     {
@@ -83,11 +58,6 @@ public class ControllerServiceLampGroupSignalHandler
         }
     }
 
-    /**
-     * Lamp groups deleted.
-     *
-     * @param lampGroupsIDs the lamp groups i ds
-     */
     @BusSignalHandler(iface = "org.allseen.LSF.ControllerService.LampGroup", signal = "LampGroupsDeleted")
     public void LampGroupsDeleted(String[] lampGroupsIDs)
     {
