@@ -19,16 +19,8 @@ import org.alljoyn.bus.BusException;
 import org.alljoyn.bus.BusObject;
 import org.alljoyn.bus.annotation.BusProperty;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class LampParametersBusObject.
- */
 public class LampParametersBusObject implements BusObject, LampParametersBusInterface
 {
-
-	/* (non-Javadoc)
-	 * @see com.at4wireless.alljoyn.core.lighting.LampParametersBusInterface#getVersion()
-	 */
 	@Override
 	@BusProperty(signature = "u")
 	public int getVersion() throws BusException
@@ -36,9 +28,6 @@ public class LampParametersBusObject implements BusObject, LampParametersBusInte
 		return 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.at4wireless.alljoyn.core.lighting.LampParametersBusInterface#getEnergy_Usage_Milliwatts()
-	 */
 	@Override
 	@BusProperty(signature = "u")
 	public int getEnergy_Usage_Milliwatts() throws BusException
@@ -46,14 +35,10 @@ public class LampParametersBusObject implements BusObject, LampParametersBusInte
 		return 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.at4wireless.alljoyn.core.lighting.LampParametersBusInterface#getBrightness_Lumens()
-	 */
 	@Override
 	@BusProperty(signature = "u")
 	public int getBrightness_Lumens() throws BusException
 	{
 		return 0;
 	}
-
 }

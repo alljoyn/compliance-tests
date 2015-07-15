@@ -25,7 +25,7 @@ public enum IntrospectionXmlFile
             GWAgentCtrlAcl("introspection-xml/GWAgentCtrlAcl.xml"), GWAgentCtrlAclMgmt("introspection-xml/GWAgentCtrlAclMgmt.xml"),
             GWAgentCtrlApp("introspection-xml/GWAgentCtrlApp.xml"),GWAgentCtrlAppMgmt("introspection-xml/GWAgentCtrlAppMgmt.xml"),
             LightingController("introspection-xml/ControllerService.xml"), LeaderElectionAndStateSync("introspection-xml/LeaderElectionAndStateSync.xml"),
-            Introspectable("introspection-xml/Introspectable.xml");
+            Introspectable("introspection-xml/Introspectable.xml"), GWAgentConnectorApp("introspection-xml/GWAgentConnectorApp.xml");
 
     private String value;
 

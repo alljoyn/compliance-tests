@@ -20,16 +20,8 @@ import org.alljoyn.bus.BusObject;
 import org.alljoyn.bus.annotation.BusMethod;
 import org.alljoyn.bus.annotation.BusProperty;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class LampServiceBusObject.
- */
 public class LampServiceBusObject implements BusObject, LampServiceBusInterface
 {
-	
-	/* (non-Javadoc)
-	 * @see com.at4wireless.alljoyn.core.lighting.LampServiceBusInterface#getVersion()
-	 */
 	@Override
 	@BusProperty(signature = "u")
 	public int getVersion() throws BusException
@@ -37,9 +29,6 @@ public class LampServiceBusObject implements BusObject, LampServiceBusInterface
 		return 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.at4wireless.alljoyn.core.lighting.LampServiceBusInterface#getLampServiceVersion()
-	 */
 	@Override
 	@BusProperty(signature = "u")
 	public int getLampServiceVersion() throws BusException
@@ -47,9 +36,6 @@ public class LampServiceBusObject implements BusObject, LampServiceBusInterface
 		return 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.at4wireless.alljoyn.core.lighting.LampServiceBusInterface#ClearLampFault(int)
-	 */
 	@Override
 	@BusMethod(signature = "u", replySignature = "uu")
 	public Values ClearLampFault(int LampFaultCode) throws BusException
@@ -57,9 +43,6 @@ public class LampServiceBusObject implements BusObject, LampServiceBusInterface
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.at4wireless.alljoyn.core.lighting.LampServiceBusInterface#getLampFaults()
-	 */
 	@Override
 	@BusProperty(signature = "au")
 	public int[] getLampFaults() throws BusException

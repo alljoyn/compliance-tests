@@ -18,7 +18,6 @@ package com.at4wireless.alljoyn.wifiapi;
 import java.util.Arrays;
 import java.util.List;
 
-import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 
 /**

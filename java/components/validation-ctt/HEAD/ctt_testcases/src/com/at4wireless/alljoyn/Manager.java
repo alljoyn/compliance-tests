@@ -55,23 +55,23 @@ import org.xml.sax.SAXException;
 import com.at4wireless.alljoyn.core.commons.log.LoggerFactory;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.testcases.conf.about.AboutTestSuite;
-import com.at4wireless.alljoyn.testcases.conf.audio.AudioService;
-import com.at4wireless.alljoyn.testcases.conf.configuration.ConfigurationService;
-import com.at4wireless.alljoyn.testcases.conf.controlpanel.ControlPanelService;
-import com.at4wireless.alljoyn.testcases.conf.gateway.GatewayService;
-import com.at4wireless.alljoyn.testcases.conf.lighting.LightingService;
-import com.at4wireless.alljoyn.testcases.conf.lightingcontroller.LightingControllerService;
-import com.at4wireless.alljoyn.testcases.conf.notification.NotificationService;
+import com.at4wireless.alljoyn.testcases.conf.audio.AudioTestSuite;
+import com.at4wireless.alljoyn.testcases.conf.configuration.ConfigurationTestSuite;
+import com.at4wireless.alljoyn.testcases.conf.controlpanel.ControlPanelTestSuite;
+import com.at4wireless.alljoyn.testcases.conf.gateway.GWAgentTestSuite;
+import com.at4wireless.alljoyn.testcases.conf.lighting.LightingTestSuite;
+import com.at4wireless.alljoyn.testcases.conf.lightingcontroller.LightingControllerTestSuite;
+import com.at4wireless.alljoyn.testcases.conf.notification.NotificationTestSuite;
 import com.at4wireless.alljoyn.testcases.conf.onboarding.OnboardingTestSuite;
-import com.at4wireless.alljoyn.testcases.conf.smarthome.SmartHomeService;
+import com.at4wireless.alljoyn.testcases.conf.smarthome.SmartHomeTestSuite;
 import com.at4wireless.alljoyn.testcases.conf.time.TimeTestSuite;
-import com.at4wireless.alljoyn.testcases.iop.about.AboutIOP;
-import com.at4wireless.alljoyn.testcases.iop.audio.AudioIOP;
-import com.at4wireless.alljoyn.testcases.iop.config.ConfigIOP;
-import com.at4wireless.alljoyn.testcases.iop.controlpanel.ControlPanelIOP;
-import com.at4wireless.alljoyn.testcases.iop.lighting.LightingIOP;
-import com.at4wireless.alljoyn.testcases.iop.notification.NotificationIOP;
-import com.at4wireless.alljoyn.testcases.iop.onboarding.OnboardingIOP;
+import com.at4wireless.alljoyn.testcases.iop.about.AboutIOPTestSuite;
+import com.at4wireless.alljoyn.testcases.iop.audio.AudioIOPTestSuite;
+import com.at4wireless.alljoyn.testcases.iop.config.ConfigIOPTestSuite;
+import com.at4wireless.alljoyn.testcases.iop.controlpanel.ControlPanelIOPTestSuite;
+import com.at4wireless.alljoyn.testcases.iop.lighting.LightingIOPTestSuite;
+import com.at4wireless.alljoyn.testcases.iop.notification.NotificationIOPTestSuite;
+import com.at4wireless.alljoyn.testcases.iop.onboarding.OnboardingIOPTestSuite;
  
 public class Manager extends Thread
 {
@@ -80,11 +80,8 @@ public class Manager extends Thread
 		System.loadLibrary("alljoyn_java");
 	}
 	
-	/** Logs from this class will appear with this tag */
 	protected static final String TAG = "TestRunner";
-	
-	/** CTT Local Agent Certification Release */
-	String versionKey="15.04.00a";
+	private static final String versionKey="15.04.00a";
 	
 	/** Map where Golden Units will be precharged */
 	private Map<String, List<String>> goldenUnits = new HashMap<String,List<String>>();
@@ -977,7 +974,7 @@ public class Manager extends Thread
 
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 
-			NotificationService NotificationTest=new NotificationService(
+			NotificationTestSuite NotificationTest=new NotificationTestSuite(
 					testName,
 					ICSN_NotificationServiceFramework,
 					ICSN_NotificationInterface,
@@ -1043,7 +1040,7 @@ public class Manager extends Thread
 
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 
-			ControlPanelService ControlPanelTest=new ControlPanelService(
+			ControlPanelTestSuite ControlPanelTest=new ControlPanelTestSuite(
 					testName,
 					ICSCP_ControlPanelServiceFramework,
 					ICSCP_ControlPanelInterface,
@@ -1170,7 +1167,7 @@ public class Manager extends Thread
 			System.out.println("GPCF_SessionLost: "+GPCF_SessionLost);
 			System.out.println("GPCF_SessionClose: "+GPCF_SessionClose);
 
-			ConfigurationService ConfigurationTest=new ConfigurationService(
+			ConfigurationTestSuite ConfigurationTest=new ConfigurationTestSuite(
 					testName,
 					ICSCF_ConfigurationServiceFramework,
 					ICSCF_ConfigurationInterface,
@@ -1231,7 +1228,7 @@ public class Manager extends Thread
 			System.out.println("GPAU_Signal: "+GPAU_Signal);
 			System.out.println("GPAU_Link: "+GPAU_Link);
 
-			AudioService AudioTest=new AudioService(
+			AudioTestSuite AudioTest=new AudioTestSuite(
 					testName,
 					ICSAU_AudioServiceFramework,
 					ICSAU_StreamInterface,
@@ -1271,7 +1268,7 @@ public class Manager extends Thread
 					GPAU_Link
 					);
 			existTest = true;
-			String verdict =AudioTest.getVerdict();
+			String verdict = AudioTest.getFinalVerdict();
 			this.Verdict=verdict;
 			verdictKey=verdict;
 
@@ -1299,7 +1296,7 @@ public class Manager extends Thread
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 			System.out.println("GPL_SessionClose: "+GPL_SessionClose);
 
-			LightingService lightingTest=new LightingService(
+			LightingTestSuite lightingTest = new LightingTestSuite(
 					testName,
 					ICSL_LightingServiceFramework,
 					ICSL_LampServiceInterface,
@@ -1321,7 +1318,7 @@ public class Manager extends Thread
 					GPL_SessionClose
 					);
 			existTest = true;
-			String verdict =lightingTest.getVerdict();
+			String verdict = lightingTest.getFinalVerdict();
 
 			this.Verdict=verdict;
 			verdictKey=verdict;
@@ -1351,7 +1348,7 @@ public class Manager extends Thread
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 			System.out.println("GPLC_SessionClose: "+GPLC_SessionClose);
 
-			LightingControllerService lightingControllerService=new LightingControllerService(
+			LightingControllerTestSuite lightingControllerService=new LightingControllerTestSuite(
 					testName,
 					ICSLC_LightingControllerServiceFramework,
 					ICSLC_ControllerServiceInterface,
@@ -1376,7 +1373,7 @@ public class Manager extends Thread
 					GPLC_SessionClose
 					);
 			existTest = true;
-			String verdict =lightingControllerService.getVerdict();
+			String verdict =lightingControllerService.getFinalVerdict();
 
 			this.Verdict=verdict;
 			verdictKey=verdict;
@@ -1459,7 +1456,7 @@ public class Manager extends Thread
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 			System.out.println("GPG_SessionClose: "+GPG_SessionClose);
 
-			GatewayService GatewayTest=new GatewayService(
+			GWAgentTestSuite GatewayTest=new GWAgentTestSuite(
 					testName,
 					ICSG_GatewayServiceFramework,
 					ICSG_ProfileManagementInterface,
@@ -1477,7 +1474,7 @@ public class Manager extends Thread
 					GPCO_AnnouncementTimeout,
 					GPG_SessionClose);
 			existTest = true;
-			String verdict =GatewayTest.getVerdict();
+			String verdict =GatewayTest.getFinalVerdict();
 			this.Verdict=verdict;
 			verdictKey=verdict;
 		}else if(test.equals("SMARTHOME")){
@@ -1497,7 +1494,7 @@ public class Manager extends Thread
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 			System.out.println("GPSH_Signal: "+GPSH_Signal);
 
-			SmartHomeService SmartHomeTest=new SmartHomeService(
+			SmartHomeTestSuite SmartHomeTest=new SmartHomeTestSuite(
 					testName,
 					ICSSH_SmartHomeServiceFramework,
 					ICSSH_CentralizedManagementInterface,							
@@ -1513,7 +1510,7 @@ public class Manager extends Thread
 					GPSH_Signal);
 			existTest = true;
 
-			String verdict =SmartHomeTest.getVerdict();
+			String verdict =SmartHomeTest.getFinalVerdict();
 			this.Verdict=verdict;
 			verdictKey=verdict;
 
@@ -1549,10 +1546,10 @@ public class Manager extends Thread
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 
 
-			AboutIOP aboutIOP=new AboutIOP(testName,goldenUnits,ICSON_OnboardingServiceFramework);
+			AboutIOPTestSuite aboutIOP=new AboutIOPTestSuite(testName,goldenUnits,ICSON_OnboardingServiceFramework);
 			existTest = true;
 
-			String verdict =aboutIOP.getVerdict();
+			String verdict = aboutIOP.getFinalVerdict();
 			this.Verdict=verdict;
 			verdictKey=verdict;
 
@@ -1574,10 +1571,10 @@ public class Manager extends Thread
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 			System.out.println("GPCF_SessionLost: "+GPCF_SessionLost);
 			System.out.println("GPCF_SessionClose: "+GPCF_SessionClose);
-			ConfigIOP configIOP=new ConfigIOP(testName,goldenUnits,ICSON_OnboardingServiceFramework);
+			ConfigIOPTestSuite configIOP=new ConfigIOPTestSuite(testName,goldenUnits,ICSON_OnboardingServiceFramework);
 			existTest = true;
 
-			String verdict =configIOP.getVerdict();
+			String verdict = configIOP.getFinalVerdict();
 			this.Verdict=verdict;
 			verdictKey=verdict;
 
@@ -1611,10 +1608,10 @@ public class Manager extends Thread
 			System.out.println("GPON_Disconnect: "+GPON_Disconnect);
 			System.out.println("GPON_NextAnnouncement: "+GPON_NextAnnouncement);
 
-			OnboardingIOP onboardingIOP=new OnboardingIOP(testName, goldenUnits);
+			OnboardingIOPTestSuite onboardingIOP=new OnboardingIOPTestSuite(testName, goldenUnits);
 			existTest = true;
 
-			String verdict =onboardingIOP.getVerdict();
+			String verdict =onboardingIOP.getFinalVerdict();
 			this.Verdict=verdict;
 			verdictKey=verdict;
 
@@ -1656,10 +1653,10 @@ public class Manager extends Thread
 
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 
-			ControlPanelIOP controlPanelIOP=new ControlPanelIOP(testName,goldenUnits,ICSON_OnboardingServiceFramework);
+			ControlPanelIOPTestSuite controlPanelIOP=new ControlPanelIOPTestSuite(testName,goldenUnits,ICSON_OnboardingServiceFramework);
 			existTest = true;
 
-			String verdict =controlPanelIOP.getVerdict();
+			String verdict =controlPanelIOP.getFinalVerdict();
 			this.Verdict=verdict;
 			verdictKey=verdict;
 
@@ -1687,10 +1684,10 @@ public class Manager extends Thread
 
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 
-			NotificationIOP notificationIOP=new NotificationIOP(testName,goldenUnits,ICSON_OnboardingServiceFramework);
+			NotificationIOPTestSuite notificationIOP=new NotificationIOPTestSuite(testName,goldenUnits,ICSON_OnboardingServiceFramework);
 			existTest = true;
 
-			String verdict =notificationIOP.getVerdict();
+			String verdict =notificationIOP.getFinalVerdict();
 			this.Verdict=verdict;
 			verdictKey=verdict;
 		}else if(test.equals("IOP_AUDIO")){
@@ -1735,10 +1732,10 @@ public class Manager extends Thread
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 			System.out.println("GPAU_Signal: "+GPAU_Signal);
 			System.out.println("GPAU_Link: "+GPAU_Link);
-			AudioIOP audioIOP=new AudioIOP(testName,goldenUnits,ICSON_OnboardingServiceFramework);
+			AudioIOPTestSuite audioIOP=new AudioIOPTestSuite(testName,goldenUnits,ICSON_OnboardingServiceFramework);
 			existTest = true;
 
-			String verdict =audioIOP.getVerdict();
+			String verdict =audioIOP.getFinalVerdict();
 			this.Verdict=verdict;
 			verdictKey=verdict;
 		}else if(test.equals("IOP_LSF")){
@@ -1765,10 +1762,10 @@ public class Manager extends Thread
 
 			System.out.println("GPCO_AnnouncementTimeout: "+GPCO_AnnouncementTimeout);
 			System.out.println("GPL_SessionClose: "+GPL_SessionClose);
-			LightingIOP lightingIOP=new LightingIOP(testName,goldenUnits,ICSON_OnboardingServiceFramework);
+			LightingIOPTestSuite lightingIOP=new LightingIOPTestSuite(testName,goldenUnits,ICSON_OnboardingServiceFramework);
 			existTest = true;
 
-			String verdict =lightingIOP.getVerdict();
+			String verdict =lightingIOP.getFinalVerdict();
 			this.Verdict=verdict;
 			verdictKey=verdict;
 		}else{

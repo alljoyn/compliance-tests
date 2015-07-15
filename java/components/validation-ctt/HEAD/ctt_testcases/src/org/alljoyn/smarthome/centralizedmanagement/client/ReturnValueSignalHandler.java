@@ -18,21 +18,8 @@ package org.alljoyn.smarthome.centralizedmanagement.client;
 import org.alljoyn.bus.Variant;
 import org.alljoyn.bus.annotation.BusSignalHandler;
 
-// TODO: Auto-generated Javadoc
-/**
- *	This class used to receive the ReturnValue signal.
- */
-
-public abstract class ReturnValueSignalHandler {
-	
-	/**
-	 * Return value.
-	 *
-	 * @param methodName the method name
-	 * @param status the status
-	 * @param value the value
-	 */
+public abstract class ReturnValueSignalHandler
+{
 	@BusSignalHandler(iface = "org.alljoyn.SmartHome.CentralizedManagement", signal = "ReturnValue")
 	public abstract void ReturnValue(String methodName, String status, Variant value);
-	
 }
