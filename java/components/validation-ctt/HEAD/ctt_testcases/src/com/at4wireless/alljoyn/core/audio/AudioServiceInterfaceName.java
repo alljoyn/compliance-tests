@@ -17,11 +17,7 @@ package com.at4wireless.alljoyn.core.audio;
 
 public enum AudioServiceInterfaceName
 {
-    Stream("org.alljoyn.Stream"), 
-    Port("org.alljoyn.Stream.Port"), 
-    AudioSink("org.alljoyn.Stream.Port.AudioSink"), 
-    ImageSink("org.alljoyn.Stream.Port.ImageSink"), 
-    ApplicationMetadataSink(
+    Stream("org.alljoyn.Stream"), Port("org.alljoyn.Stream.Port"), AudioSink("org.alljoyn.Stream.Port.AudioSink"), ImageSink("org.alljoyn.Stream.Port.ImageSink"), ApplicationMetadataSink(
             "org.alljoyn.Stream.Port.Application.MetadataSink");
 
     private String value;

@@ -17,33 +17,20 @@ package com.at4wireless.alljoyn.core.lightingcontroller;
 
 import org.alljoyn.bus.annotation.BusSignalHandler;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class ControllerServiceSignalHandler.
- */
 public class ControllerServiceSignalHandler
 {
-  /*  static
+    /*static
     {
        // System.loadLibrary("alljoyn_java");
     }*/
 
-    /** The signal listener. */
-  private ControllerServiceSignalListener signalListener;
+	private ControllerServiceSignalListener signalListener;
 
-    /**
-     * Sets the update listener.
-     *
-     * @param listener the new update listener
-     */
     public void setUpdateListener(ControllerServiceSignalListener listener)
     {
         signalListener = listener;
     }
 
-    /**
-     * Handle controller service lighting reset.
-     */
     @BusSignalHandler(iface = "org.allseen.LSF.ControllerService", signal = "ControllerServiceLightingReset")
     public void handleControllerServiceLightingReset()
     {

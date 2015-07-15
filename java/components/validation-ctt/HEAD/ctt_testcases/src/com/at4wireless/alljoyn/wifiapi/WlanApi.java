@@ -27,10 +27,25 @@ public interface WlanApi extends Library
 {
     WlanApi INSTANCE = (WlanApi) Native.loadLibrary("wlanapi", WlanApi.class);
     
+    /**
+     * Defines the type of notification callback function
+     */
     interface WlanNotificationCallback extends Callback
     {
+    	/**
+    	 * @param pWlanNotificationData
+    	 * 			A pointer to a WLAN_NOTIFICATION_DATA structure that contains the notification information.
+    	 * 
+    	 * 			Windows XP with SP3 and Wireless LAN API for Windows XP with SP2: Only the
+    	 * 			wlan_notification_acm_connection_complete and wlan_notification_acm_disconnected notifications are
+    	 * 			available.
+    	 * @param context
+    	 * 			A pointer to the context information provided by the client when it registered for the notification.
+    	 */
     	void callback(WlanNotificationData.ByReference pWlanNotificationData, Pointer context);
+    	
     	boolean isConnected();
+    	
     	boolean isDisconnected();
     }
 

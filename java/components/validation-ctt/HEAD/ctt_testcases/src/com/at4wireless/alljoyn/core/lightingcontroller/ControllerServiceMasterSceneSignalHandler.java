@@ -17,10 +17,6 @@ package com.at4wireless.alljoyn.core.lightingcontroller;
 
 import org.alljoyn.bus.annotation.BusSignalHandler;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class ControllerServiceMasterSceneSignalHandler.
- */
 public class ControllerServiceMasterSceneSignalHandler
 {
    /* static
@@ -28,24 +24,13 @@ public class ControllerServiceMasterSceneSignalHandler
         System.loadLibrary("alljoyn_java");
     }*/
 
-    /** The signal listener. */
-   private ControllerServiceSignalListener signalListener;
+	private ControllerServiceSignalListener signalListener;
 
-    /**
-     * Sets the update listener.
-     *
-     * @param listener the new update listener
-     */
     public void setUpdateListener(ControllerServiceSignalListener listener)
     {
         signalListener = listener;
     }
 
-    /**
-     * Master scenes name changed.
-     *
-     * @param masterSceneIDs the master scene i ds
-     */
     @BusSignalHandler(iface = "org.allseen.LSF.ControllerService.MasterScene", signal = "MasterScenesNameChanged")
     public void MasterScenesNameChanged(String[] masterSceneIDs)
     {
@@ -55,11 +40,6 @@ public class ControllerServiceMasterSceneSignalHandler
         }
     }
 
-    /**
-     * Master scenes created.
-     *
-     * @param masterSceneIDs the master scene i ds
-     */
     @BusSignalHandler(iface = "org.allseen.LSF.ControllerService.MasterScene", signal = "MasterScenesCreated")
     public void MasterScenesCreated(String[] masterSceneIDs)
     {
@@ -69,11 +49,6 @@ public class ControllerServiceMasterSceneSignalHandler
         }
     }
 
-    /**
-     * Master scenes updated.
-     *
-     * @param masterSceneIDs the master scene i ds
-     */
     @BusSignalHandler(iface = "org.allseen.LSF.ControllerService.MasterScene", signal = "MasterScenesUpdated")
     public void MasterScenesUpdated(String[] masterSceneIDs)
     {
@@ -83,11 +58,6 @@ public class ControllerServiceMasterSceneSignalHandler
         }
     }
 
-    /**
-     * Master scenes deleted.
-     *
-     * @param masterSceneIDs the master scene i ds
-     */
     @BusSignalHandler(iface = "org.allseen.LSF.ControllerService.MasterScene", signal = "MasterScenesDeleted")
     public void MasterScenesDeleted(String[] masterSceneIDs)
     {
@@ -97,11 +67,6 @@ public class ControllerServiceMasterSceneSignalHandler
         }
     }
 
-    /**
-     * Master scenes applied.
-     *
-     * @param masterSceneIDs the master scene i ds
-     */
     @BusSignalHandler(iface = "org.allseen.LSF.ControllerService.MasterScene", signal = "MasterScenesApplied")
     public void MasterScenesApplied(String[] masterSceneIDs)
     {

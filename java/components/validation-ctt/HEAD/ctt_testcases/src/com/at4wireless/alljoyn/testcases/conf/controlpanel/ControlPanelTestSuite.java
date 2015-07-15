@@ -78,7 +78,7 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.introspection.BusIntrospector;
 import com.at4wireless.alljoyn.core.introspection.bean.InterfaceDetail;
 
-public class ControlPanelService
+public class ControlPanelTestSuite
 {
 	private static final String TAG = "ControlPanelTestSuite";
 	//private static final Logger logger = LoggerFactory.getLogger(TAG);
@@ -117,7 +117,7 @@ public class ControlPanelService
 	private Map<String, Boolean> ics;
 	private Map<String, String> ixit;
 
-	public ControlPanelService(String testCase,
+	public ControlPanelTestSuite(String testCase,
 			boolean iCSCP_ControlPanelServiceFramework,
 			boolean iCSCP_ControlPanelInterface,
 			boolean iCSCP_ContainerInterface,

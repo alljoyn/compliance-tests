@@ -17,9 +17,7 @@ package com.at4wireless.alljoyn.core.audio;
 
 public enum AudioSinkPlayState
 {
-    Idle((byte) 0), 
-    Playing((byte) 1), 
-    Paused((byte) 2);
+    Idle((byte) 0), Playing((byte) 1), Paused((byte) 2);
 
     private byte value;
 
