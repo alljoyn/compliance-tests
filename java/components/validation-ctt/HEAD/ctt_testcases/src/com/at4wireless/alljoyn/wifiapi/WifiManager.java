@@ -1,3 +1,18 @@
+/*******************************************************************************
+ *  Copyright AllSeen Alliance. All rights reserved.
+ *
+ *     Permission to use, copy, modify, and/or distribute this software for any
+ *     purpose with or without fee is hereby granted, provided that the above
+ *     copyright notice and this permission notice appear in all copies.
+ *
+ *     THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *     WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *     MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ *     ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *     WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *     ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ *     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *******************************************************************************/
 package com.at4wireless.alljoyn.wifiapi;
 
 import java.util.ArrayList;
@@ -56,7 +71,7 @@ public class WifiManager
 								pConnNotifData = new WlanConnectionNotificationData.ByReference(pNotifData.pData.getValue());
 								if (pConnNotifData.wlanReasonCode == 0)
 								{
-									logger.debug("The connection succeeded.");
+									logger.info("The connection succeeded.");
 									connected = true;
 									disconnected = false;
 									
@@ -64,14 +79,14 @@ public class WifiManager
 											pConnNotifData.wlanConnectionMode == 2)
 									{
 										//the temporary profile generated for discovery
-										logger.debug("The profile used for this connection is as follows");
-										logger.debug(pConnNotifData.strProfileXml);
+										logger.info("The profile used for this connection is as follows");
+										logger.info(pConnNotifData.strProfileXml);
 									}
 								}
 								else
 								{
-									logger.debug("The connection failed.");
-									logger.debug("Reason code: "+pConnNotifData.wlanReasonCode);
+									logger.info("The connection failed.");
+									logger.info("Reason code: "+pConnNotifData.wlanReasonCode);
 								}
 								break;
 							case 9: //wlan_notification_acm_connection_start
@@ -81,10 +96,10 @@ public class WifiManager
 								}
 								pConnNotifData = new WlanConnectionNotificationData.ByReference(pNotifData.pData.getValue());
 								//print out some connection information
-								System.out.print("Currently connecting to "+pConnNotifData.dot11Ssid.ucSSID);
-								System.out.print(" using profile "+pConnNotifData.strProfileName.toString());
-								System.out.print(", connection mode is "+pConnNotifData.wlanConnectionMode);
-								logger.debug(", BSS type is "+pConnNotifData.dot11BssType);
+								logger.info("Currently connecting to "+pConnNotifData.dot11Ssid.ucSSID
+										+" using profile "+pConnNotifData.strProfileName.toString()
+										+", connection mode is "+pConnNotifData.wlanConnectionMode
+										+", BSS type is "+pConnNotifData.dot11BssType);
 								break;
 							case 21: //wlan_notification_acm_disconnected
 								if (pNotifData.dwDataSize < pNotifData.size())
@@ -94,14 +109,14 @@ public class WifiManager
 								pConnNotifData = new WlanConnectionNotificationData.ByReference(pNotifData.pData.getValue());
 								if (pConnNotifData.wlanReasonCode == 0)
 								{
-									logger.debug("The disconnection succeeded.");
+									logger.info("The disconnection succeeded.");
 									disconnected = true;
 									connected = false;
 								}
 								else
 								{
-									logger.debug("The disconnection failed.");
-									logger.debug("Reason code: "+pConnNotifData.wlanReasonCode);
+									logger.info("The disconnection failed.");
+									logger.info("Reason code: "+pConnNotifData.wlanReasonCode);
 								}
 								return;
 							
@@ -109,7 +124,7 @@ public class WifiManager
 					
 						return;
 					case 16: //wlan_notification_source_msm
-						logger.debug("Got notification "+pNotifData.NotificationCode+" from MSM.");
+						logger.info("Got notification "+pNotifData.NotificationCode+" from MSM.");
 						return;
 				}
 			}
@@ -138,7 +153,7 @@ public class WifiManager
 		{
 			return null;
 		}
-		
+
 		return phClientHandle;
 	}
 	
@@ -146,9 +161,8 @@ public class WifiManager
 	{
 		int dwError;
 		PointerByReference p = new PointerByReference();
-		//PWlanInterfaceInfoList.ByReference ppInterfaceInfoList = new PWlanInterfaceInfoList.ByReference();
+		
 		//enumerate wireless interfaces
-
 		if ((dwError = WlanApi.INSTANCE.WlanEnumInterfaces(
 				hClient.getValue(),
 				null,
@@ -159,6 +173,7 @@ public class WifiManager
 		}
 		
 		WlanInterfaceInfoList.ByReference pInterfaceInfoList = new WlanInterfaceInfoList.ByReference(p.getValue());
+		
 		return pInterfaceInfoList;
 	}
 	
@@ -209,7 +224,7 @@ public class WifiManager
 			String bssid = Integer.toString(pAvailableNetworkList.Network[i].uNumberOfBssids);
 			String capabilities = Integer.toString(pAvailableNetworkList.Network[i].dot11DefaultAuthAlgorithm)
 					+", "+Integer.toString(pAvailableNetworkList.Network[i].dot11DefaultCipherAlgorithm);
-			int level = -100 +(pAvailableNetworkList.Network[i].wlanSignalQuality)/2;
+			int level = -100 + (pAvailableNetworkList.Network[i].wlanSignalQuality/2);
 			int frequency = 2400;
 			
 			network = new ScanResult(ssid, bssid, capabilities, level, frequency);
@@ -217,7 +232,6 @@ public class WifiManager
 		}
 		
 		return scanResults;
-
 	}
 	
 	public void connect(String targetNetworkType, String targetNetworkProfile)

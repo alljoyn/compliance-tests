@@ -96,7 +96,8 @@ public class InterfaceValidator
                 IntrospectionXmlFile.Lighting.getValue(),IntrospectionXmlFile.LeaderElectionAndStateSync.getValue(),
                 IntrospectionXmlFile.ListProperty.getValue(), IntrospectionXmlFile.Notification.getValue(),
                 IntrospectionXmlFile.NotificationAction.getValue(), IntrospectionXmlFile.Onboarding.getValue(), IntrospectionXmlFile.Peer.getValue(),
-                IntrospectionXmlFile.Property.getValue(), IntrospectionXmlFile.Introspectable.getValue());
+                IntrospectionXmlFile.Property.getValue(), IntrospectionXmlFile.Introspectable.getValue(),
+                IntrospectionXmlFile.GWAgentConnectorApp.getValue());
     }
 
     private ValidationResult validateInterface(IntrospectionInterface standardizedIntrospectionInterface, String path) throws Exception

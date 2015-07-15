@@ -17,7 +17,5 @@ package com.at4wireless.alljoyn.core.audio;
 
 public enum AudioSinkParameter
 {
-    Channels, 
-    Format, 
-    Rate;
+    Channels, Format, Rate;
 }
