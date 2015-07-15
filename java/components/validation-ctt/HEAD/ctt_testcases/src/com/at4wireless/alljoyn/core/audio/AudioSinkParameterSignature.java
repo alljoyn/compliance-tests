@@ -17,9 +17,7 @@ package com.at4wireless.alljoyn.core.audio;
 
 public enum AudioSinkParameterSignature
 {
-    Channels("ay"), 
-    Format("as"), 
- 	Rate("aq");
+    Channels("ay"), Format("as"), Rate("aq");
 
     private String value;
 

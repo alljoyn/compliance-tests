@@ -21,16 +21,8 @@ import org.alljoyn.bus.annotation.BusMethod;
 import org.alljoyn.bus.annotation.BusProperty;
 import org.alljoyn.bus.annotation.BusSignal;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class ControllerServiceBusObject.
- */
 public class ControllerServiceBusObject implements BusObject, ControllerServiceBusInterface
 {
-    
-    /* (non-Javadoc)
-     * @see com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceBusInterface#getVersion()
-     */
     @Override
     @BusProperty(signature="u")
     public int getVersion() throws BusException
@@ -38,9 +30,6 @@ public class ControllerServiceBusObject implements BusObject, ControllerServiceB
         return 0;
     }
 
-    /* (non-Javadoc)
-     * @see com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceBusInterface#LightingResetControllerService()
-     */
     @Override
     @BusMethod(replySignature = "u")
     public int LightingResetControllerService() throws BusException
@@ -48,9 +37,6 @@ public class ControllerServiceBusObject implements BusObject, ControllerServiceB
         return 0;
     }
 
-    /* (non-Javadoc)
-     * @see com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceBusInterface#GetControllerServiceVersion()
-     */
     @Override
     @BusMethod(replySignature = "u")
     public int GetControllerServiceVersion() throws BusException
@@ -58,9 +44,6 @@ public class ControllerServiceBusObject implements BusObject, ControllerServiceB
         return 0;
     }
 
-    /* (non-Javadoc)
-     * @see com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceBusInterface#ControllerServiceLightingReset()
-     */
     @Override
     @BusSignal
     public void ControllerServiceLightingReset() throws BusException

@@ -28,10 +28,15 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.introspection.BusIntrospector;
 import com.at4wireless.alljoyn.core.introspection.XmlBasedBusIntrospector;
 
+/**
+ * Class to connect to the ControllerService and establish a multi-point
+ * session.
+ */
 public class ControllerServiceHelper extends ServiceHelper
 {
     private static final String TAG   = "ControllerServiceHelper";
 	private static final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	
     private int sessionId;
     private String serviceName;
     private short contactPort;

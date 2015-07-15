@@ -25,92 +25,75 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
 
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
-import javax.swing.UIManager;
 
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
+public class IOPMessage
+{
+	WindowsLoggerImpl logger;
+	public static final int IOP_MESSAGE_POPUP_WIDTH = 500;
+	public static final int IOP_MESSAGE_POPUP_HEIGHT = 200;
+	public static final int IOP_MESSAGE_TEXT_WIDTH = 480;
+	public static final int IOP_MESSAGE_TEXT_HEIGHT = 150;
 
-/**
- * The Class IOPMessage.
- */
-public class IOPMessage {
-
-	/** The logger. */
-	WindowsLoggerImpl logger=null;
-
-	/** The response code 0->Yes, 1->No and -1->No answer selected . */
-	int response=-1;
+	/** The response code 
+	 * 		 0	:	Yes 
+	 * 		 1	:	No
+	 * 		-1	:	No answer selected
+	 * */
+	int response = -1;
 
 	/** The dialog used to show information. */
 	JDialog dialog;
 
-	/**
-	 * Instantiates a new IOP message.
-	 *
-	 * @param logger the logger
-	 */
-	public IOPMessage(WindowsLoggerImpl logger) {
-		this.logger=logger;
+	public IOPMessage(WindowsLoggerImpl logger)
+	{
+		this.logger = logger;
 	}
 
-
-	/**
-	 * Show message.
-	 *
-	 * @param title the title
-	 * @param msg the message
-	 */
-	public  void showMessage(String title,String msg) {
+	public void showMessage(String title, String msg)
+	{
 		logger.debug(msg);
-
-
 
 		JTextPane textPane = new JTextPane();
 		textPane.setText(msg);
 
-		textPane.setSize(new Dimension(480, 150));
-		textPane.setPreferredSize(new Dimension(480, 150));
+		textPane.setSize(new Dimension(IOP_MESSAGE_TEXT_WIDTH, IOP_MESSAGE_TEXT_HEIGHT));
+		textPane.setPreferredSize(new Dimension(IOP_MESSAGE_TEXT_WIDTH, IOP_MESSAGE_TEXT_HEIGHT));
 
 		textPane.setEditable(false);
-		JScrollPane scroll=new JScrollPane(textPane);
+		JScrollPane scroll = new JScrollPane(textPane);
 
-
-		dialog =new JDialog();
+		dialog = new JDialog();
 		Rectangle bounds = null ;
-		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-		int width=500;
-		int height=200;
-		bounds = new Rectangle((int) (dim.width/2)-width/2, 
-				(int) (dim.height/2)-height/2,
-				width, 
-				height);
+		Dimension screenDimensions = Toolkit.getDefaultToolkit().getScreenSize();
+		bounds = new Rectangle((int) (screenDimensions.width/2) - IOP_MESSAGE_POPUP_WIDTH/2, 
+				(int) (screenDimensions.height/2) - IOP_MESSAGE_POPUP_HEIGHT/2,
+				IOP_MESSAGE_POPUP_WIDTH, 
+				IOP_MESSAGE_POPUP_HEIGHT);
 		dialog.setBounds(bounds);
 		dialog.setTitle(title);
-		dialog.add(scroll,BorderLayout.CENTER);
+		dialog.add(scroll, BorderLayout.CENTER);
 		dialog.setResizable(false);
-		JButton buttonNext=new JButton("Next");
+		JButton buttonNext = new JButton("Next");
 		buttonNext.setForeground(new Color(255, 255, 255));
 		buttonNext.setBackground(new Color(68, 140, 178));
-		buttonNext.addActionListener(new ActionListener(){
+		buttonNext.addActionListener(new ActionListener()
+		{
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent arg0)
+			{
 				dialog.dispose();
-			}});
+			}
+		});
 
-		JPanel buttonPanel=new JPanel();
+		JPanel buttonPanel = new JPanel();
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWeights = new double[]{1.0};
 		gridBagLayout.rowWeights = new double[]{1.0};
@@ -119,8 +102,8 @@ public class IOPMessage {
 		gbc_next.gridx = 0;
 		gbc_next.gridy = 0;
 		gbc_next.anchor=GridBagConstraints.CENTER;
-		buttonPanel.add(buttonNext,gbc_next);	
-		dialog.add(buttonPanel,BorderLayout.SOUTH);
+		buttonPanel.add(buttonNext, gbc_next);	
+		dialog.add(buttonPanel, BorderLayout.SOUTH);
 		dialog.setAlwaysOnTop(true); //<-- this line
 		dialog.setModal(true);
 		dialog.setResizable(false);
@@ -128,63 +111,57 @@ public class IOPMessage {
 		dialog.setVisible(true);
 	}
 
-
-	/**
-	 * Show question message.
-	 *
-	 * @param title the title
-	 * @param msg the message
-	 * @return the response: 0->Yes, 1->No, -1-> Not answer selected
-	 */
-	public  int showQuestion(String title, String msg) {
+	public int showQuestion(String title, String msg)
+	{
 		logger.debug(msg);
 
 		JTextPane textPane = new JTextPane();
 		textPane.setText(msg);
 		textPane.setEditable(false);
-		textPane.setSize(new Dimension(480, 150));
-		textPane.setPreferredSize(new Dimension(480, 150));
-		JScrollPane scroll=new JScrollPane(textPane);
-		dialog =new JDialog();
+		textPane.setSize(new Dimension(IOP_MESSAGE_TEXT_WIDTH, IOP_MESSAGE_TEXT_HEIGHT));
+		textPane.setPreferredSize(new Dimension(IOP_MESSAGE_TEXT_WIDTH, IOP_MESSAGE_TEXT_HEIGHT));
+		JScrollPane scroll = new JScrollPane(textPane);
+		dialog = new JDialog();
 		Rectangle bounds = null ;
-		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-		int width=500;
-		int height=200;
-		bounds = new Rectangle((int) (dim.width/2)-width/2, 
-				(int) (dim.height/2)-height/2,
-				width, 
-				height);
+		Dimension screenDimensions = Toolkit.getDefaultToolkit().getScreenSize();
+		bounds = new Rectangle((int) (screenDimensions.width/2) - IOP_MESSAGE_POPUP_WIDTH/2, 
+				(int) (screenDimensions.height/2) - IOP_MESSAGE_POPUP_HEIGHT/2,
+				IOP_MESSAGE_POPUP_WIDTH, 
+				IOP_MESSAGE_POPUP_HEIGHT);
 		dialog.setBounds(bounds);
 		dialog.setTitle(title);
 		dialog.add(scroll,BorderLayout.CENTER);
 		dialog.setResizable(false);
-		JButton buttonYes=new JButton("Yes");
+		JButton buttonYes = new JButton("Yes");
 		buttonYes.setForeground(new Color(255, 255, 255));
 		buttonYes.setBackground(new Color(68, 140, 178));
-		buttonYes.addActionListener(new ActionListener(){
-
+		buttonYes.addActionListener(new ActionListener()
+		{
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent arg0)
+			{
 				logger.info("response:Yes");
-				response=0;
+				response = 0;
 				dialog.dispose();
-			}});
+			}
+		});
 
-
-		JButton buttonNo=new JButton("No");
+		JButton buttonNo = new JButton("No");
 
 		buttonNo.setForeground(new Color(255, 255, 255));
 		buttonNo.setBackground(new Color(68, 140, 178));
-		buttonNo.addActionListener(new ActionListener(){
-
+		buttonNo.addActionListener(new ActionListener()
+		{
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent arg0)
+			{
 				logger.info("response:No");
-				response=1;
+				response = 1;
 				dialog.dispose();
-			}});
+			}
+		});
 
-		JPanel buttonPanel=new JPanel();
+		JPanel buttonPanel = new JPanel();
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWeights = new double[]{0.5, 0.5};
 		gridBagLayout.rowWeights = new double[]{1.0};
@@ -194,21 +171,21 @@ public class IOPMessage {
 		GridBagConstraints gbc_yes = new GridBagConstraints();
 		gbc_yes.gridx = 0;
 		gbc_yes.gridy = 0;
-		gbc_yes.anchor=GridBagConstraints.EAST;
-		buttonPanel.add(buttonYes,gbc_yes);		
-		gbc_yes.insets=new Insets(20,0,20,0);
+		gbc_yes.anchor = GridBagConstraints.EAST;
+		buttonPanel.add(buttonYes, gbc_yes);		
+		gbc_yes.insets = new Insets(20,0,20,0);
 		GridBagConstraints gbc_no = new GridBagConstraints();
 
 		gbc_no.gridx = 1;
 		gbc_no.gridy = 0;
-		gbc_no.anchor=GridBagConstraints.WEST;
-		buttonPanel.add(buttonNo,gbc_no);
-		dialog.add(buttonPanel,BorderLayout.SOUTH);
+		gbc_no.anchor = GridBagConstraints.WEST;
+		buttonPanel.add(buttonNo, gbc_no);
+		dialog.add(buttonPanel, BorderLayout.SOUTH);
 		dialog.setAlwaysOnTop(true); 
 		dialog.setModal(true);
 		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		dialog.setVisible(true);
-		int resp=response;
+		int resp = response;
 
 		return resp;
 	}

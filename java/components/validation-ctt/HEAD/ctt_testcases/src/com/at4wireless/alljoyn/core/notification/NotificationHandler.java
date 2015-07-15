@@ -22,14 +22,14 @@ import java.util.concurrent.TimeUnit;
 import org.alljoyn.ns.Notification;
 import org.alljoyn.ns.NotificationReceiver;
 
-
 import com.at4wireless.alljoyn.core.commons.log.LoggerFactory;
-import com.at4wireless.alljoyn.core.commons.log.Logger;
+import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 public class NotificationHandler implements NotificationReceiver
 {
     private static final String TAG = "NotificationHandler";
-    private static final Logger logger = LoggerFactory.getLogger(TAG);
+    //private static final Logger logger = LoggerFactory.getLogger(TAG);
+    private static final WindowsLoggerImpl logger = LoggerFactory.getLogger(TAG);
     
     private LinkedBlockingDeque<Notification> receivedNotifications = new LinkedBlockingDeque<Notification>();
     

@@ -103,232 +103,88 @@ import com.at4wireless.alljoyn.core.lightingcontroller.LeaderElectionBusInterfac
 import com.at4wireless.alljoyn.core.lightingcontroller.LeaderElectionBusObject;
 import com.at4wireless.alljoyn.core.lightingcontroller.LeaderElectionSignalHandler;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class LightingControllerService.
- */
-public class LightingControllerService {
-
-	/** The pass. */
-	boolean pass=true;
-	
-	/** The inconc. */
-	boolean inconc=false;
+public class LightingControllerTestSuite
+{
 	// Logging constants
-	/** The tag. */
-	private  final String TAG     = "LSF_ControllerTestSuite";
-	
-	/** The logger. */
-	private  final WindowsLoggerImpl logger  = new WindowsLoggerImpl(TAG);
+	private static final String TAG = "LightingControllerTestSuite";
+	//private static final Logger logger = LoggerFactory.getLogger(TAG);
+	private static final WindowsLoggerImpl logger = new WindowsLoggerImpl(TAG);
 
 	// AJ testing constants
-	/** The bus application name. */
-	private  final String BUS_APPLICATION_NAME            = "ControllerTestSuite";
-	
-	/** The announcement timeout in seconds. */
-	private  long ANNOUNCEMENT_TIMEOUT_IN_SECONDS   = 30;
-	
-	/** The session close timeout in seconds. */
-	private  long SESSION_CLOSE_TIMEOUT_IN_SECONDS  = 5;
+	private static final String BUS_APPLICATION_NAME = "ControllerTestSuite";
+	//private static final long ANNOUNCEMENT_TIMEOUT_IN_SECONDS = 30;
+	private long ANNOUNCEMENT_TIMEOUT_IN_SECONDS = 30;
+	//private static final long SESSION_CLOSE_TIMEOUT_IN_SECONDS = 5;
+	private long SESSION_CLOSE_TIMEOUT_IN_SECONDS = 5;
 
 	// Controller service constants
-	/** The controller bus object path. */
-	private  final String CONTROLLER_BUS_OBJECT_PATH          = "/org/allseen/LSF/ControllerService";
+	private static final String CONTROLLER_BUS_OBJECT_PATH          = "/org/allseen/LSF/ControllerService";
+	private static final String LEADER_ELECTION_BUS_OBJECT_PATH     = "/org/allseen/LeaderElectionAndStateSync";
+	private static final String CONTROLLERSERVICE_INTERFACE_NAME    = "org.allseen.LSF.ControllerService";
+	private static final String LAMP_INTERFACE_NAME                 = "org.allseen.LSF.ControllerService.Lamp";
+	private static final String LAMPGROUP_INTERFACE_NAME            = "org.allseen.LSF.ControllerService.LampGroup";
+	private static final String PRESET_INTERFACE_NAME               = "org.allseen.LSF.ControllerService.Preset";
+	private static final String SCENE_INTERFACE_NAME                = "org.allseen.LSF.ControllerService.Scene";
+	private static final String MASTERSCENE_INTERFACE_NAME          = "org.allseen.LSF.ControllerService.MasterScene";
+	private static final String LEADER_ELECTION_INTERFACE_NAME      = "org.allseen.LeaderElectionAndStateSync";
 	
-	/** The leader election bus object path. */
-	private  final String LEADER_ELECTION_BUS_OBJECT_PATH     = "/org/allseen/LeaderElectionAndStateSync";
-	
-	/** The controllerservice interface name. */
-	private  final String CONTROLLERSERVICE_INTERFACE_NAME    = "org.allseen.LSF.ControllerService";
-	
-	/** The lamp interface name. */
-	private  final String LAMP_INTERFACE_NAME                 = "org.allseen.LSF.ControllerService.Lamp";
-	
-	/** The lampgroup interface name. */
-	private  final String LAMPGROUP_INTERFACE_NAME            = "org.allseen.LSF.ControllerService.LampGroup";
-	
-	/** The preset interface name. */
-	private  final String PRESET_INTERFACE_NAME               = "org.allseen.LSF.ControllerService.Preset";
-	
-	/** The scene interface name. */
-	private  final String SCENE_INTERFACE_NAME                = "org.allseen.LSF.ControllerService.Scene";
-	
-	/** The masterscene interface name. */
-	private  final String MASTERSCENE_INTERFACE_NAME          = "org.allseen.LSF.ControllerService.MasterScene";
-	
-	/** The leader election interface name. */
-	private  final String LEADER_ELECTION_INTERFACE_NAME      = "org.allseen.LeaderElectionAndStateSync";
-
-	/** The IXITL c_ controller service version. */
-	String IXITLC_ControllerServiceVersion=null;
-	
-	/** The IXITL c_ controller service lamp version. */
-	String IXITLC_ControllerServiceLampVersion=null;
-	
-	/** The IXITL c_ controller service lamp group version. */
-	String IXITLC_ControllerServiceLampGroupVersion=null;
-	
-	/** The IXITL c_ controller service preset version. */
-	String IXITLC_ControllerServicePresetVersion=null;
-	
-	/** The IXITL c_ controller service scene version. */
-	String IXITLC_ControllerServiceSceneVersion=null;
-	
-	/** The IXITL c_ controller service master scene version. */
-	String IXITLC_ControllerServiceMasterSceneVersion=null;
-	
-	/** The IXITL c_ leader election and state sync version. */
-	String IXITLC_LeaderElectionAndStateSyncVersion=null;
-	//
-	/** The IXITC o_ app id. */
-	String IXITCO_AppId=null;
-	
-	/** The IXITC o_ default language. */
-	String IXITCO_DefaultLanguage=null;
-	
-	/** The IXITC o_ device id. */
-	String IXITCO_DeviceId=null;
-	//
-	/** The ICSL c_ lighting controller service framework. */
-	boolean ICSLC_LightingControllerServiceFramework=false;
-	
-	/** The ICSL c_ controller service interface. */
-	boolean ICSLC_ControllerServiceInterface=false;
-	
-	/** The ICSL c_ controller service lamp interface. */
-	boolean ICSLC_ControllerServiceLampInterface=false;
-	
-	/** The ICSL c_ controller service lamp group interface. */
-	boolean ICSLC_ControllerServiceLampGroupInterface=false;
-	
-	/** The ICSL c_ controller service preset interface. */
-	boolean ICSLC_ControllerServicePresetInterface=false;
-	
-	/** The ICSL c_ controller service scene interface. */
-	boolean ICSLC_ControllerServiceSceneInterface=false;
-	
-	/** The ICSL c_ controller service master scene interface. */
-	boolean ICSLC_ControllerServiceMasterSceneInterface=false;
-	
-	/** The ICSL c_ leader election and state sync interface. */
-	boolean ICSLC_LeaderElectionAndStateSyncInterface=false;
 	// Ivars
-	/** The service helper. */
-	private  ControllerServiceHelper serviceHelper;
-	
-	/** The device about announcement. */
-	private  AboutAnnouncementDetails deviceAboutAnnouncement;
+    private ControllerServiceHelper serviceHelper;
+    private AboutAnnouncementDetails deviceAboutAnnouncement;
+    //private AppUnderTestDetails appUnderTestDetails; //[AT4] Not needed
+    private UUID dutAppId;
+    private String dutDeviceId;
+    private ControllerServiceSignalListener signalListener;
 
-	/** The dut app id. */
-	private  UUID dutAppId;
-	
-	/** The dut device id. */
-	private  String dutDeviceId;
-	
-	/** The signal listener. */
-	private  ControllerServiceSignalListener signalListener;
+    // Objects for org.allseen.LSF.ControllerService
+    private ControllerServiceBusObject controllerServiceBusObject;
+    private ControllerServiceSignalHandler controllerServiceSignalHandler;
+    private ControllerServiceBusInterface controllerIface;
 
-	// Objects for org.allseen.LSF.ControllerService
-	/** The controller service bus object. */
-	private  ControllerServiceBusObject controllerServiceBusObject;
-	
-	/** The controller service signal handler. */
-	private  ControllerServiceSignalHandler controllerServiceSignalHandler;
-	
-	/** The controller iface. */
-	private  ControllerServiceBusInterface controllerIface;
+    // Object for org.allseen.LSF.ControllerService.Lamp
+    private ControllerServiceLampBusObject lampBusObject;
+    private ControllerServiceLampSignalHandler lampSignalHandler;
+    private ControllerServiceLampBusInterface lampIface;
 
-	// Object for org.allseen.LSF.ControllerService.Lamp
-	/** The lamp bus object. */
-	private  ControllerServiceLampBusObject lampBusObject;
-	
-	/** The lamp signal handler. */
-	private  ControllerServiceLampSignalHandler lampSignalHandler;
-	
-	/** The lamp iface. */
-	private  ControllerServiceLampBusInterface lampIface;
+    // Object for org.allseen.LSF.ControllerService.LampGroup
+    private ControllerServiceLampGroupBusObject lampGroupBusObject;
+    private ControllerServiceLampGroupSignalHandler lampGroupSignalHandler;
+    private ControllerServiceLampGroupBusInterface lampGroupIface;
 
-	// Object for org.allseen.LSF.ControllerService.LampGroup
-	/** The lamp group bus object. */
-	private  ControllerServiceLampGroupBusObject lampGroupBusObject;
-	
-	/** The lamp group signal handler. */
-	private  ControllerServiceLampGroupSignalHandler lampGroupSignalHandler;
-	
-	/** The lamp group iface. */
-	private  ControllerServiceLampGroupBusInterface lampGroupIface;
+    // Object for org.allseen.LSF.ControllerService.Preset
+    private ControllerServicePresetBusObject presetBusObject;
+    private ControllerServicePresetSignalHandler presetSignalHandler;
+    private ControllerServicePresetBusInterface presetIface;
 
-	// Object for org.allseen.LSF.ControllerService.Preset
-	/** The preset bus object. */
-	private  ControllerServicePresetBusObject presetBusObject;
-	
-	/** The preset signal handler. */
-	private  ControllerServicePresetSignalHandler presetSignalHandler;
-	
-	/** The preset iface. */
-	private  ControllerServicePresetBusInterface presetIface;
+    // Object for org.allseen.LSF.ControllerService.Scene
+    private ControllerServiceSceneBusObject sceneBusObject;
+    private ControllerServiceSceneSignalHandler sceneSignalHandler;
+    private ControllerServiceSceneBusInterface sceneIface;
 
-	// Object for org.allseen.LSF.ControllerService.Scene
-	/** The scene bus object. */
-	private  ControllerServiceSceneBusObject sceneBusObject;
-	
-	/** The scene signal handler. */
-	private  ControllerServiceSceneSignalHandler sceneSignalHandler;
-	
-	/** The scene iface. */
-	private  ControllerServiceSceneBusInterface sceneIface;
+    // Object for org.allseen.LSF.ControllerService.MasterScene
+    private ControllerServiceMasterSceneBusObject masterSceneBusObject;
+    private ControllerServiceMasterSceneSignalHandler masterSceneSignalHandler;
+    private ControllerServiceMasterSceneBusInterface masterSceneIface;
 
-	// Object for org.allseen.LSF.ControllerService.MasterScene
-	/** The master scene bus object. */
-	private  ControllerServiceMasterSceneBusObject masterSceneBusObject;
-	
-	/** The master scene signal handler. */
-	private  ControllerServiceMasterSceneSignalHandler masterSceneSignalHandler;
-	
-	/** The master scene iface. */
-	private  ControllerServiceMasterSceneBusInterface masterSceneIface;
+    // Object for org.allseen.LeaderElectionAndStateSync
+    private LeaderElectionBusObject leaderElectionBusObject;
+    private LeaderElectionSignalHandler leaderElectionSignalHandler;
+    private LeaderElectionBusInterface leaderElectionIface;
+    
+	/** 
+	 * [AT4] Added attributes to perform the test cases
+	 * 
+	 * pass	stores the final verdict of the test case
+	 * ics	map that stores ICS values	
+	 * ixit	map that stores IXIT values
+	 * 
+	 * */
+	boolean pass = true;
+	boolean inconc = false;
+    Map<String, Boolean> ics;
+    Map<String, String> ixit;
 
-	// Object for org.allseen.LeaderElectionAndStateSync
-	/** The leader election bus object. */
-	private  LeaderElectionBusObject leaderElectionBusObject;
-	
-	/** The leader election signal handler. */
-	private  LeaderElectionSignalHandler leaderElectionSignalHandler;
-	
-	/** The leader election iface. */
-	private  LeaderElectionBusInterface leaderElectionIface;
-
-
-
-
-
-
-	/**
-	 * Instantiates a new lighting controller service.
-	 *
-	 * @param testCase the test case
-	 * @param iCSLC_LightingControllerServiceFramework the i csl c_ lighting controller service framework
-	 * @param iCSLC_ControllerServiceInterface the i csl c_ controller service interface
-	 * @param iCSLC_ControllerServiceLampInterface the i csl c_ controller service lamp interface
-	 * @param iCSLC_ControllerServiceLampGroupInterface the i csl c_ controller service lamp group interface
-	 * @param iCSLC_ControllerServicePresetInterface the i csl c_ controller service preset interface
-	 * @param iCSLC_ControllerServiceSceneInterface the i csl c_ controller service scene interface
-	 * @param iCSLC_ControllerServiceMasterSceneInterface the i csl c_ controller service master scene interface
-	 * @param iCSLC_LeaderElectionAndStateSyncInterface the i csl c_ leader election and state sync interface
-	 * @param iXITCO_AppId the i xitc o_ app id
-	 * @param iXITCO_DeviceId the i xitc o_ device id
-	 * @param iXITCO_DefaultLanguage the i xitc o_ default language
-	 * @param iXITLC_ControllerServiceVersion the i xitl c_ controller service version
-	 * @param iXITLC_ControllerServiceLampVersion the i xitl c_ controller service lamp version
-	 * @param iXITLC_ControllerServiceLampGroupVersion the i xitl c_ controller service lamp group version
-	 * @param iXITLC_ControllerServicePresetVersion the i xitl c_ controller service preset version
-	 * @param iXITLC_ControllerServiceSceneVersion the i xitl c_ controller service scene version
-	 * @param iXITLC_ControllerServiceMasterSceneVersion the i xitl c_ controller service master scene version
-	 * @param iXITLC_LeaderElectionAndStateSyncVersion the i xitl c_ leader election and state sync version
-	 * @param gPCO_AnnouncementTimeout the g pc o_ announcement timeout
-	 * @param gPLC_SessionClose the g pl c_ session close
-	 */
-	public LightingControllerService(String testCase,
+	public LightingControllerTestSuite(String testCase,
 			boolean iCSLC_LightingControllerServiceFramework,
 			boolean iCSLC_ControllerServiceInterface,
 			boolean iCSLC_ControllerServiceLampInterface,
@@ -346,144 +202,213 @@ public class LightingControllerService {
 			String iXITLC_ControllerServiceSceneVersion,
 			String iXITLC_ControllerServiceMasterSceneVersion,
 			String iXITLC_LeaderElectionAndStateSyncVersion,
-			String gPCO_AnnouncementTimeout, String gPLC_SessionClose) {
-
-		IXITLC_ControllerServiceVersion=iXITLC_ControllerServiceVersion;
-		IXITLC_ControllerServiceLampVersion=iXITLC_ControllerServiceLampVersion;
-		IXITLC_ControllerServiceLampGroupVersion=iXITLC_ControllerServiceLampGroupVersion;
-		IXITLC_ControllerServicePresetVersion=iXITLC_ControllerServicePresetVersion;
-		IXITLC_ControllerServiceSceneVersion=iXITLC_ControllerServiceSceneVersion;
-		IXITLC_ControllerServiceMasterSceneVersion=iXITLC_ControllerServiceMasterSceneVersion;
-		IXITLC_LeaderElectionAndStateSyncVersion=iXITLC_LeaderElectionAndStateSyncVersion;
-		//
-		IXITCO_AppId=iXITCO_AppId;
-		IXITCO_DefaultLanguage=iXITCO_DefaultLanguage;
-		IXITCO_DeviceId=iXITCO_DeviceId;
-		//
-		ICSLC_LightingControllerServiceFramework=iCSLC_LightingControllerServiceFramework;
-		ICSLC_ControllerServiceInterface=iCSLC_ControllerServiceInterface;
-		ICSLC_ControllerServiceLampInterface=iCSLC_ControllerServiceLampInterface;
-		ICSLC_ControllerServiceLampGroupInterface=iCSLC_ControllerServiceLampGroupInterface;
-		ICSLC_ControllerServicePresetInterface=iCSLC_ControllerServicePresetInterface;
-		ICSLC_ControllerServiceSceneInterface=iCSLC_ControllerServiceSceneInterface;
-		ICSLC_ControllerServiceMasterSceneInterface=iCSLC_ControllerServiceMasterSceneInterface;
-		ICSLC_LeaderElectionAndStateSyncInterface=iCSLC_LeaderElectionAndStateSyncInterface;
+			String gPCO_AnnouncementTimeout, String gPLC_SessionClose)
+	{
+		ics = new HashMap<String, Boolean>();
+		ixit = new HashMap<String, String>();
 		
+		ics.put("ICSLC_LightingControllerServiceFramework", iCSLC_LightingControllerServiceFramework);
+		ics.put("ICSLC_ControllerServiceInterface", iCSLC_ControllerServiceInterface);
+		ics.put("ICSLC_ControllerServiceLampInterface", iCSLC_ControllerServiceLampInterface);
+		ics.put("ICSLC_ControllerServiceLampGroupInterface", iCSLC_ControllerServiceLampGroupInterface);
+		ics.put("ICSLC_ControllerServicePresetInterface", iCSLC_ControllerServicePresetInterface);
+		ics.put("ICSLC_ControllerServiceSceneInterface", iCSLC_ControllerServiceSceneInterface);
+		ics.put("ICSLC_ControllerServiceMasterSceneInterface", iCSLC_ControllerServiceMasterSceneInterface);
+		ics.put("ICSLC_LeaderElectionAndStateSyncInterface", iCSLC_LeaderElectionAndStateSyncInterface);
+		
+		ixit.put("IXITCO_AppId", iXITCO_AppId);
+		ixit.put("IXITCO_DeviceId", iXITCO_DeviceId);
+		ixit.put("IXITCO_DefaultLanguage", iXITCO_DefaultLanguage);
+		ixit.put("IXITLC_ControllerServiceVersion", iXITLC_ControllerServiceVersion);
+		ixit.put("IXITLC_ControllerServiceLampVersion", iXITLC_ControllerServiceLampVersion);
+		ixit.put("IXITLC_ControllerServiceLampGroupVersion", iXITLC_ControllerServiceLampGroupVersion);
+		ixit.put("IXITLC_ControllerServicePresetVersion", iXITLC_ControllerServicePresetVersion);
+		ixit.put("IXITLC_ControllerServiceSceneVersion", iXITLC_ControllerServiceSceneVersion);
+		ixit.put("IXITLC_ControllerServiceMasterSceneVersion", iXITLC_ControllerServiceMasterSceneVersion);
+		ixit.put("IXITLC_LeaderElectionAndStateSyncVersion", iXITLC_LeaderElectionAndStateSyncVersion);
+
 		ANNOUNCEMENT_TIMEOUT_IN_SECONDS   = Integer.parseInt(gPCO_AnnouncementTimeout);
 		SESSION_CLOSE_TIMEOUT_IN_SECONDS  = Integer.parseInt(gPLC_SessionClose);
 
-		try{
+		try
+		{
 			runTestCase(testCase);
-		}catch(Exception e){
-
-			if(e.getMessage().equals("Timed out waiting for About announcement")){
+		}
+		catch (Exception e)
+		{
+			if (e.getMessage().equals("Timed out waiting for About announcement"))
+			{
 				fail("Timed out waiting for About announcement");
-			}else{
+			}
+			else
+			{
 				inconc = true;
 				fail("Exception: "+e.toString());
 			}
 		}
 	}
 
-
-	/**
-	 * Run test case.
-	 *
-	 * @param testCase the test case
-	 * @throws Exception the exception
-	 */
-	public  void runTestCase(String testCase) throws Exception{
+	public void runTestCase(String testCase) throws Exception
+	{
 		setUp();
 		logger.info("Running testcase: "+testCase);
 
-		if(testCase.equals("LSF_Controller-v1-01")){
+		if (testCase.equals("LSF_Controller-v1-01")){
 			testLSF_Controller_v1_01_StandardizedInterfacesMatchDefinitions();
-		}else if(testCase.equals("LSF_Controller-v1-02")){
-			testLSF_Controller_v1_02_VersionField();
-		}else if(testCase.equals("LSF_Controller-v1-03")){
-			testLSF_Controller_v1_03_LightingReset();
-		}else if(testCase.equals("LSF_Controller-v1-04")){
-			testLSF_Controller_v1_04_LampInfo();
-		}else if(testCase.equals("LSF_Controller-v1-05")){
-			testLSF_Controller_v1_05_LampName();
-		}else if(testCase.equals("LSF_Controller-v1-06")){
-			testLSF_Controller_v1_06_LampDetails();
-		}else if(testCase.equals("LSF_Controller-v1-07")){
-			testLSF_Controller_v1_07_LampParameters();
-		}else if(testCase.equals("LSF_Controller-v1-08")){
-			testLSF_Controller_v1_08_LampStateFields();
-		}else if(testCase.equals("LSF_Controller-v1-09")){
-			testLSF_Controller_v1_09_LampStateTransition();
-		}else if(testCase.equals("LSF_Controller-v1-10")){
-			testLSF_Controller_v1_10_LampStatePulse();
-		}else if(testCase.equals("LSF_Controller-v1-11")){
-			testLSF_Controller_v1_11_LampStatePresets();
-		}else if(testCase.equals("LSF_Controller-v1-12")){
-			testLSF_Controller_v1_12_LampReset();
-		}else if(testCase.equals("LSF_Controller-v1-13")){
-			testLSF_Controller_v1_13_LampFaults();
-		}else if(testCase.equals("LSF_Controller-v1-14")){
-			testLSF_Controller_v1_14_LampGroupCRUD();
-		}else if(testCase.equals("LSF_Controller-v1-15")){
-			testLSF_Controller_v1_15_LampGroupName();
-		}else if(testCase.equals("LSF_Controller-v1-16")){
-			testLSF_Controller_v1_16_LampGroupStateTransition();
-		}else if(testCase.equals("LSF_Controller-v1-17")){
-			testLSF_Controller_v1_17_LampGroupStatePulse();
-		}else if(testCase.equals("LSF_Controller-v1-18")){
-			testLSF_Controller_v1_18_LampGroupReset();
-		}else if(testCase.equals("LSF_Controller-v1-19")){
-			testLSF_Controller_v1_19_LampGroupStatePresets();
-		}else if(testCase.equals("LSF_Controller-v1-20")){
-			testLSF_Controller_v1_20_DefaultLampState();
-		}else if(testCase.equals("LSF_Controller-v1-21")){
-			testLSF_Controller_v1_21_PresetCRUD();
-		}else if(testCase.equals("LSF_Controller-v1-22")){
-			testLSF_Controller_v1_22_PresetNameChange();
-		}else if(testCase.equals("LSF_Controller-v1-23")){
-			testLSF_Controller_v1_23_SceneCreate();
-		}else if(testCase.equals("LSF_Controller-v1-24")){
-			testLSF_Controller_v1_24_SceneUpdateDelete();
-
-		}else if(testCase.equals("LSF_Controller-v1-25")){
-			testLSF_Controller_v1_25_SceneApply();
-		}else if(testCase.equals("LSF_Controller-v1-26")){
-			testLSF_Controller_v1_26_SceneNameChanged();
-		}else if(testCase.equals("LSF_Controller-v1-27")){
-			testLSF_Controller_v1_27_MasterSceneCreate();
-		}else if(testCase.equals("LSF_Controller-v1-28")){
-			testLSF_Controller_v1_28_MasterSceneUpdateDelete();
-		}else if(testCase.equals("LSF_Controller-v1-29")){
-			testLSF_Controller_v1_29_MasterSceneApply();
-		}else if(testCase.equals("LSF_Controller-v1-30")){
-			testLSF_Controller_v1_30_MasterSceneNameChanged();
-		}else if(testCase.equals("LSF_Controller-v1-31")){
-			testLSF_Controller_v1_31_LeaderElectionBlobs();
-		}else if(testCase.equals("LSF_Controller-v1-32")){
-			testLSF_Controller_v1_32_LeaderElectionBlobChanged();
-		}else if(testCase.equals("LSF_Controller-v1-33")){
-			testLSF_Controller_v1_33_LeaderElectionOverthrow();
-		}else {
-			fail("TestCase not valid");
 		}
+		else if (testCase.equals("LSF_Controller-v1-02"))
+		{
+			testLSF_Controller_v1_02_VersionField();
+		}
+		else if (testCase.equals("LSF_Controller-v1-03"))
+		{
+			testLSF_Controller_v1_03_LightingReset();
+		}
+		else if (testCase.equals("LSF_Controller-v1-04"))
+		{
+			testLSF_Controller_v1_04_LampInfo();
+		}
+		else if (testCase.equals("LSF_Controller-v1-05"))
+		{
+			testLSF_Controller_v1_05_LampName();
+		}
+		else if (testCase.equals("LSF_Controller-v1-06"))
+		{
+			testLSF_Controller_v1_06_LampDetails();
+		}
+		else if (testCase.equals("LSF_Controller-v1-07"))
+		{
+			testLSF_Controller_v1_07_LampParameters();
+		}
+		else if (testCase.equals("LSF_Controller-v1-08"))
+		{
+			testLSF_Controller_v1_08_LampStateFields();
+		}
+		else if (testCase.equals("LSF_Controller-v1-09"))
+		{
+			testLSF_Controller_v1_09_LampStateTransition();
+		}
+		else if (testCase.equals("LSF_Controller-v1-10"))
+		{
+			testLSF_Controller_v1_10_LampStatePulse();
+		}
+		else if (testCase.equals("LSF_Controller-v1-11"))
+		{
+			testLSF_Controller_v1_11_LampStatePresets();
+		}
+		else if (testCase.equals("LSF_Controller-v1-12"))
+		{
+			testLSF_Controller_v1_12_LampReset();
+		}
+		else if (testCase.equals("LSF_Controller-v1-13"))
+		{
+			testLSF_Controller_v1_13_LampFaults();
+		}
+		else if (testCase.equals("LSF_Controller-v1-14"))
+		{
+			testLSF_Controller_v1_14_LampGroupCRUD();
+		}
+		else if (testCase.equals("LSF_Controller-v1-15"))
+		{
+			testLSF_Controller_v1_15_LampGroupName();
+		}
+		else if (testCase.equals("LSF_Controller-v1-16"))
+		{
+			testLSF_Controller_v1_16_LampGroupStateTransition();
+		}
+		else if (testCase.equals("LSF_Controller-v1-17"))
+		{
+			testLSF_Controller_v1_17_LampGroupStatePulse();
+		}
+		else if (testCase.equals("LSF_Controller-v1-18"))
+		{
+			testLSF_Controller_v1_18_LampGroupReset();
+		}
+		else if (testCase.equals("LSF_Controller-v1-19"))
+		{
+			testLSF_Controller_v1_19_LampGroupStatePresets();
+		}
+		else if (testCase.equals("LSF_Controller-v1-20"))
+		{
+			testLSF_Controller_v1_20_DefaultLampState();
+		}
+		else if (testCase.equals("LSF_Controller-v1-21"))
+		{
+			testLSF_Controller_v1_21_PresetCRUD();
+		}
+		else if (testCase.equals("LSF_Controller-v1-22"))
+		{
+			testLSF_Controller_v1_22_PresetNameChange();
+		}
+		else if (testCase.equals("LSF_Controller-v1-23"))
+		{
+			testLSF_Controller_v1_23_SceneCreate();
+		}
+		else if (testCase.equals("LSF_Controller-v1-24"))
+		{
+			testLSF_Controller_v1_24_SceneUpdateDelete();
+		}
+		else if (testCase.equals("LSF_Controller-v1-25"))
+		{
+			testLSF_Controller_v1_25_SceneApply();
+		}
+		else if (testCase.equals("LSF_Controller-v1-26"))
+		{
+			testLSF_Controller_v1_26_SceneNameChanged();
+		}
+		else if (testCase.equals("LSF_Controller-v1-27"))
+		{
+			testLSF_Controller_v1_27_MasterSceneCreate();
+		}
+		else if (testCase.equals("LSF_Controller-v1-28"))
+		{
+			testLSF_Controller_v1_28_MasterSceneUpdateDelete();
+		}
+		else if (testCase.equals("LSF_Controller-v1-29"))
+		{
+			testLSF_Controller_v1_29_MasterSceneApply();
+		}
+		else if (testCase.equals("LSF_Controller-v1-30"))
+		{
+			testLSF_Controller_v1_30_MasterSceneNameChanged();
+		}
+		else if (testCase.equals("LSF_Controller-v1-31"))
+		{
+			testLSF_Controller_v1_31_LeaderElectionBlobs();
+		}
+		else if (testCase.equals("LSF_Controller-v1-32"))
+		{
+			testLSF_Controller_v1_32_LeaderElectionBlobChanged();
+		}
+		else if (testCase.equals("LSF_Controller-v1-33"))
+		{
+			testLSF_Controller_v1_33_LeaderElectionOverthrow();
+		}
+		else
+		{
+			fail("Test Case not valid");
+		}
+		
 		tearDown();
 	}
+	
+    /**************************************************************************
+     * Initialization / Deinitialization
+     **************************************************************************/
 
-	/**
-	 * Sets the up.
-	 *
-	 * @throws Exception the exception
-	 */
-	private  void setUp() throws Exception {
-		
-		System.out.println("====================================================");
+	private void setUp() throws Exception
+	{
+		//super.setUp();
+		logger.noTag("====================================================");
 		logger.info("setUp started");
 
 		try
 		{
-
-			dutDeviceId = IXITCO_DeviceId;
-			dutAppId = UUID.fromString(IXITCO_AppId);
+			//appUnderTestDetails = getValidationTestContext().getAppUnderTestDetails();
+			//dutDeviceId = appUnderTestDetails.getDeviceId();
+			dutDeviceId = ixit.get("IXITCO_DeviceId");
+			//dutAppId = appUnderTestDetails.getAppId();
+			dutAppId = UUID.fromString(ixit.get("IXITCO_AppId"));
 
 			logger.info("Running LSF_Controller test case against Device ID: " + dutDeviceId);
 			logger.info("Running LSF_Controller test case against App ID: " + dutAppId);
@@ -497,18 +422,23 @@ public class LightingControllerService {
 		{
 			inconc = true;
 			logger.error("setUp thrown an exception: "+e.getMessage());
-			releaseServiceHelper();
+			//releaseServiceHelper();
+			tearDown();
 			throw e;
 		}
-		System.out.println("====================================================");
+		logger.noTag("====================================================");
 	} 
+	
+	protected void tearDown() throws Exception
+	{
+		logger.noTag("====================================================");
+		logger.info("test tearDown started");
+		controllerIface.LightingResetControllerService(); // clean up Controller
+		releaseServiceHelper();
+		logger.info("test tearDown done");
+		logger.noTag("====================================================");
+	}
 
-	/**
-	 * Inits the service helper.
-	 *
-	 * @throws BusException the bus exception
-	 * @throws Exception the exception
-	 */
 	private void initServiceHelper() throws BusException, Exception
 	{
 		releaseServiceHelper();
@@ -571,9 +501,6 @@ public class LightingControllerService {
 		connectControllerService(deviceAboutAnnouncement);
 	}
 
-	/**
-	 * Inits the proxy bus objects.
-	 */
 	private void initProxyBusObjects()
 	{
 		ProxyBusObject proxy = null;
@@ -614,10 +541,7 @@ public class LightingControllerService {
 		leaderElectionIface = proxy.getInterface(LeaderElectionBusInterface.class);
 	}
 
-	/**
-	 * Release service helper.
-	 */
-	private  void releaseServiceHelper()
+	private void releaseServiceHelper()
 	{
 		try
 		{
@@ -643,36 +567,19 @@ public class LightingControllerService {
 		}
 	}
 
-	/**
-	 * Wait for next device announcement.
-	 *
-	 * @return the about announcement details
-	 * @throws Exception the exception
-	 */
-	private  AboutAnnouncementDetails waitForNextDeviceAnnouncement() throws Exception
+	private AboutAnnouncementDetails waitForNextDeviceAnnouncement() throws Exception
 	{
 		logger.info("Waiting for About annoucement");
 		return serviceHelper.waitForNextDeviceAnnouncement(ANNOUNCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS, true);
 	}
 
-	/**
-	 * Connect controller service.
-	 *
-	 * @param aboutAnnouncement the about announcement
-	 * @throws Exception the exception
-	 */
-	private  void connectControllerService(AboutAnnouncementDetails aboutAnnouncement) throws Exception
+	private void connectControllerService(AboutAnnouncementDetails aboutAnnouncement) throws Exception
 	{
 		ServiceAvailabilityHandler serviceAvailabilityHandler = new ServiceAvailabilityHandler();
 		serviceHelper.connect(aboutAnnouncement);
 	}
 
-	/**
-	 * Wait for session to close.
-	 *
-	 * @throws Exception the exception
-	 */
-	private  void waitForSessionToClose() throws Exception
+	private void waitForSessionToClose() throws Exception
 	{
 		logger.info("Waiting for session to close");
 		serviceHelper.waitForSessionToClose(SESSION_CLOSE_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
@@ -682,20 +589,13 @@ public class LightingControllerService {
 	 *  Test Cases
 	 **************************************************************************/
 
-
-	public  void testLSF_Controller_v1_01_StandardizedInterfacesMatchDefinitions() throws Exception
+	public void testLSF_Controller_v1_01_StandardizedInterfacesMatchDefinitions() throws Exception
 	{
 		verifyInterfacesFromAnnouncement();
 		verifyLeaderElectionAndStateSyncInterface();
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_02_ version field.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Controller_v1_02_VersionField() throws Exception
+	public void testLSF_Controller_v1_02_VersionField() throws Exception
 	{
 		try
 		{
@@ -704,31 +604,39 @@ public class LightingControllerService {
 
 			version = controllerIface.getVersion();
 			logger.info(CONTROLLERSERVICE_INTERFACE_NAME + ", Version:" + version);
-			assertEquals("The controller Service Version does not match",version,Integer.parseInt(IXITLC_ControllerServiceVersion));
+			assertEquals("The controller Service Version does not match IXIT", version,
+					Integer.parseInt(ixit.get("IXITLC_ControllerServiceVersion")));
+			
 			version = lampIface.getVersion();
 			logger.info(LAMP_INTERFACE_NAME + ", Version: " + version);
-			assertEquals("The controller Service Lamp Version does not match",version,Integer.parseInt(IXITLC_ControllerServiceLampVersion));
+			assertEquals("The controller Service Lamp Version does not match IXIT", version,
+					Integer.parseInt(ixit.get("IXITLC_ControllerServiceLampVersion")));
 
 			version = lampGroupIface.getVersion();
 			logger.info(LAMPGROUP_INTERFACE_NAME + " Version: " + version);
-			assertEquals("The controller Service Lamp Group Version does not match",version,Integer.parseInt(IXITLC_ControllerServiceLampGroupVersion));
+			assertEquals("The controller Service Lamp Group Version does not match IXIT", version,
+					Integer.parseInt(ixit.get("IXITLC_ControllerServiceLampGroupVersion")));
 
 			version = presetIface.getVersion();
 			logger.info(PRESET_INTERFACE_NAME + " Version: " + version);
-			assertEquals("The controller Service Preset Version does not match",version,Integer.parseInt(IXITLC_ControllerServicePresetVersion));
+			assertEquals("The controller Service Preset Version does not match IXIT", version,
+					Integer.parseInt(ixit.get("IXITLC_ControllerServicePresetVersion")));
 
 			version = sceneIface.getVersion();
 			logger.info(SCENE_INTERFACE_NAME + " Version: " + version);
-			assertEquals("The controller Service Scene Version does not match",version,Integer.parseInt(IXITLC_ControllerServiceSceneVersion));
+			assertEquals("The controller Service Scene Version does not match IXIT", version,
+					Integer.parseInt(ixit.get("IXITLC_ControllerServiceSceneVersion")));
 
 			version = masterSceneIface.getVersion();
 			logger.info(MASTERSCENE_INTERFACE_NAME + " Version: " + version);
-			assertEquals("The controller Service Master Scene Version does not match",version,Integer.parseInt(IXITLC_ControllerServiceMasterSceneVersion));
+			assertEquals("The controller Service Master Scene Version does not match IXIT", version,
+					Integer.parseInt(ixit.get("IXITLC_ControllerServiceMasterSceneVersion")));
 
 			// verify version from method on ControllerService interface
 			version = controllerIface.GetControllerServiceVersion();
 			logger.info(LEADER_ELECTION_INTERFACE_NAME + " MethodCall-Version: " + version);
-			assertEquals("The controller Service Preset Version does not match",version,Integer.parseInt(IXITLC_LeaderElectionAndStateSyncVersion));
+			assertEquals("The controller Service Preset Version does not match", version,
+					Integer.parseInt(ixit.get("IXITLC_LeaderElectionAndStateSyncVersion")));
 
 		}
 		catch (Exception e)
@@ -739,19 +647,13 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_03_ lighting reset.
-	 *
-	 * @throws Exception the exception
-	 */
-	public  void testLSF_Controller_v1_03_LightingReset() throws Exception
+	public void testLSF_Controller_v1_03_LightingReset() throws Exception
 	{
 		try
 		{
 			int reset = controllerIface.LightingResetControllerService();
 			logger.info("Reset status code: " + reset);
-			Thread.sleep(500); // wait before checking that signal is received
+			Thread.sleep(500); // wait before checking that signal is received //[AT4] Should this 500 be a GP?
 			boolean signalReceived = signalListener.didLightingReset();
 			logger.info("Checking if LightingReset signal was received");
 			assertTrue("Signal for LightingReset was not received", signalReceived);
@@ -764,13 +666,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_04_ lamp info.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_04_LampInfo() throws Exception
+	public void testLSF_Controller_v1_04_LampInfo() throws Exception
 	{
 		try
 		{
@@ -786,7 +682,6 @@ public class LightingControllerService {
 
 			// GetLampManufacturer
 			GetLampManufacturerValues manufacturerValues = lampIface.GetLampManufacturer(lampID, "en");
-			//logger.info("Checking if an error occurred while getting LampManufacturer");
 			assertEquals("Error occurred in getting LampManufacturer", 0, manufacturerValues.responseCode);
 			logger.info("Lamp manufacturer: " + manufacturerValues.manufacturer);
 		}
@@ -798,13 +693,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_05_ lamp name.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_05_LampName() throws Exception
+	public void testLSF_Controller_v1_05_LampName() throws Exception
 	{
 		try
 		{
@@ -820,7 +709,7 @@ public class LightingControllerService {
 			logger.info("Checking if lamp names match");
 			assertEquals("LampNames are not the same",lampName, getNameValues.lampName);
 
-			Thread.sleep(5000); // wait before checking signal is received
+			Thread.sleep(5000); // wait before checking signal is received //[AT4] Should this 5000 be a GP?
 			boolean signalReceived = signalListener.didLampNameChanged();
 			logger.info("Checking if LampNameChanged signal was received");
 			assertTrue("Signal for LampNameChanged was not received", signalReceived);
@@ -833,13 +722,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_06_ lamp details.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_06_LampDetails() throws Exception
+	public void testLSF_Controller_v1_06_LampDetails() throws Exception
 	{
 		try
 		{
@@ -863,13 +746,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_07_ lamp parameters.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_07_LampParameters() throws Exception
+	public void testLSF_Controller_v1_07_LampParameters() throws Exception
 	{
 		try
 		{
@@ -877,7 +754,6 @@ public class LightingControllerService {
 
 			// get all lamp parameters
 			GetLampParametersValues paramValues = lampIface.GetLampParameters(lampID);
-			//logger.info("Checking if an error occurred while getting lamp parameters");
 			assertEquals("Error occurred in getting lamp parameters", 0, paramValues.responseCode);
 			Type type = null;
 			for (String key : paramValues.lampParameters.keySet())
@@ -887,7 +763,6 @@ public class LightingControllerService {
 
 				// get field value
 				GetLampParametersFieldValues paramFieldValues = lampIface.GetLampParametersField(lampID, key);
-				//logger.info("Checking if an error occurred while getting "+key+" lamp parameter");
 				assertEquals("Error occurred in getting " + key + " lamp parameter", 0, paramFieldValues.responseCode);
 				String fieldValue = paramFieldValues.lampParameterFieldValue.getObject(type).toString();
 				// verify against value from map
@@ -903,13 +778,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_08_ lamp state fields.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_08_LampStateFields() throws Exception
+	public void testLSF_Controller_v1_08_LampStateFields() throws Exception
 	{
 		try
 		{
@@ -917,7 +786,6 @@ public class LightingControllerService {
 
 			// get all lamp parameters
 			GetLampStateValues stateValues = lampIface.GetLampState(lampID);
-			//logger.info("Checking if an error occurred while getting lamp state");
 			assertEquals("Error occurred in getting lamp state", 0, stateValues.responseCode);
 			Type type = null;
 			for (String key : stateValues.lampState.keySet())
@@ -927,7 +795,6 @@ public class LightingControllerService {
 				logger.info("Value: " + value);
 				// get field value
 				GetLampStateFieldValues stateFieldValues = lampIface.GetLampStateField(lampID, key);
-				//logger.info("Checking if an error occurred while getting "+key+"lamp detail");
 				assertEquals("Error occurred in getting " + key + " lamp state", 0, stateFieldValues.responseCode);
 				String fieldValue = stateFieldValues.lampStateFieldValue.getObject(type).toString();
 				// verify against value from map
@@ -943,13 +810,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_09_ lamp state transition.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_09_LampStateTransition() throws Exception
+	public void testLSF_Controller_v1_09_LampStateTransition() throws Exception
 	{
 		try
 		{
@@ -961,7 +822,6 @@ public class LightingControllerService {
 
 			// change lamp state
 			TransitionLampStateValues transitionValues = lampIface.TransitionLampState(lampID, lampState, 0);
-			//logger.info("Checking if an error occurred in TransitionLampState");
 			assertEquals("Error occurred in TransitionLampState", 0, transitionValues.responseCode);
 			Thread.sleep(1000); // wait before checking signal is received
 			boolean signalReceived = signalListener.didLampStateChanged();
@@ -998,13 +858,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_10_ lamp state pulse.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_10_LampStatePulse() throws Exception
+	public void testLSF_Controller_v1_10_LampStatePulse() throws Exception
 	{
 		try
 		{
@@ -1027,13 +881,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_11_ lamp state presets.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_11_LampStatePresets() throws Exception
+	public void testLSF_Controller_v1_11_LampStatePresets() throws Exception
 	{
 		try
 		{
@@ -1061,13 +909,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_12_ lamp reset.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_12_LampReset() throws Exception
+	public void testLSF_Controller_v1_12_LampReset() throws Exception
 	{
 		try
 		{
@@ -1099,13 +941,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_13_ lamp faults.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_13_LampFaults() throws Exception
+	public void testLSF_Controller_v1_13_LampFaults() throws Exception
 	{
 		// make sure you can call GetLamp faults and ClearLamp faults without
 		// any bus exceptions
@@ -1129,13 +965,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_14_ lamp group crud.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_14_LampGroupCRUD() throws Exception
+	public void testLSF_Controller_v1_14_LampGroupCRUD() throws Exception
 	{
 		try
 		{
@@ -1192,13 +1022,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_15_ lamp group name.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_15_LampGroupName() throws Exception
+	public void testLSF_Controller_v1_15_LampGroupName() throws Exception
 	{
 		try
 		{
@@ -1226,13 +1050,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_16_ lamp group state transition.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_16_LampGroupStateTransition() throws Exception
+	public void testLSF_Controller_v1_16_LampGroupStateTransition() throws Exception
 	{
 		try
 		{
@@ -1271,13 +1089,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_17_ lamp group state pulse.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_17_LampGroupStatePulse() throws Exception
+	public void testLSF_Controller_v1_17_LampGroupStatePulse() throws Exception
 	{
 		try
 		{
@@ -1300,13 +1112,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_18_ lamp group reset.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_18_LampGroupReset() throws Exception
+	public void testLSF_Controller_v1_18_LampGroupReset() throws Exception
 	{
 		try
 		{
@@ -1340,13 +1146,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_19_ lamp group state presets.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_19_LampGroupStatePresets() throws Exception
+	public void testLSF_Controller_v1_19_LampGroupStatePresets() throws Exception
 	{
 		try
 		{
@@ -1375,13 +1175,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_20_ default lamp state.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_20_DefaultLampState() throws Exception
+	public void testLSF_Controller_v1_20_DefaultLampState() throws Exception
 	{
 		try
 		{
@@ -1413,13 +1207,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_21_ preset crud.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_21_PresetCRUD() throws Exception
+	public void testLSF_Controller_v1_21_PresetCRUD() throws Exception
 	{
 		try
 		{
@@ -1478,13 +1266,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_22_ preset name change.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_22_PresetNameChange() throws Exception
+	public void testLSF_Controller_v1_22_PresetNameChange() throws Exception
 	{
 		try
 		{
@@ -1515,13 +1297,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_23_ scene create.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_23_SceneCreate() throws Exception
+	public void testLSF_Controller_v1_23_SceneCreate() throws Exception
 	{
 		try
 		{
@@ -1541,13 +1317,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_24_ scene update delete.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_24_SceneUpdateDelete() throws Exception
+	public void testLSF_Controller_v1_24_SceneUpdateDelete() throws Exception
 	{
 		try
 		{
@@ -1586,13 +1356,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_25_ scene apply.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_25_SceneApply() throws Exception
+	public void testLSF_Controller_v1_25_SceneApply() throws Exception
 	{
 		try
 		{
@@ -1612,13 +1376,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_26_ scene name changed.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_26_SceneNameChanged() throws Exception
+	public void testLSF_Controller_v1_26_SceneNameChanged() throws Exception
 	{
 		try
 		{
@@ -1644,13 +1402,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_27_ master scene create.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_27_MasterSceneCreate() throws Exception
+	public void testLSF_Controller_v1_27_MasterSceneCreate() throws Exception
 	{
 		try
 		{
@@ -1669,13 +1421,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_28_ master scene update delete.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_28_MasterSceneUpdateDelete() throws Exception
+	public void testLSF_Controller_v1_28_MasterSceneUpdateDelete() throws Exception
 	{
 		try
 		{
@@ -1710,13 +1456,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_29_ master scene apply.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_29_MasterSceneApply() throws Exception
+	public void testLSF_Controller_v1_29_MasterSceneApply() throws Exception
 	{
 		try
 		{
@@ -1736,13 +1476,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_30_ master scene name changed.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_30_MasterSceneNameChanged() throws Exception
+	public void testLSF_Controller_v1_30_MasterSceneNameChanged() throws Exception
 	{
 		try
 		{
@@ -1768,13 +1502,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_31_ leader election blobs.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_31_LeaderElectionBlobs() throws Exception
+	public void testLSF_Controller_v1_31_LeaderElectionBlobs() throws Exception
 	{
 		try
 		{
@@ -1797,13 +1525,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_32_ leader election blob changed.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_32_LeaderElectionBlobChanged() throws Exception
+	public void testLSF_Controller_v1_32_LeaderElectionBlobChanged() throws Exception
 	{
 		try
 		{
@@ -1821,13 +1543,7 @@ public class LightingControllerService {
 		}
 	}
 
-
-	/**
-	 * Test ls f_ controller_v1_33_ leader election overthrow.
-	 *
-	 * @throws Exception the exception
-	 */
-	public   void testLSF_Controller_v1_33_LeaderElectionOverthrow() throws Exception
+	public void testLSF_Controller_v1_33_LeaderElectionOverthrow() throws Exception
 	{
 		try
 		{
@@ -1847,7 +1563,7 @@ public class LightingControllerService {
 	 **************************************************************************/
 
 	// Used in LSF_Controller-v1-01
-	private  void verifyInterfacesFromAnnouncement() throws Exception
+	private void verifyInterfacesFromAnnouncement() throws Exception
 	{
 		Set<String> interfacesSeen = new HashSet<String>();
 		ControllerInterfaceValidator ciValidator = ControllerInterfaceValidator.getValidator();
@@ -1879,8 +1595,8 @@ public class LightingControllerService {
 
 		// Ensure all expected interfaces were found that were supposed to be
 		List<String> expectedInterfaces = Arrays.asList(CONTROLLERSERVICE_INTERFACE_NAME, LAMP_INTERFACE_NAME,
-				LAMPGROUP_INTERFACE_NAME, PRESET_INTERFACE_NAME,
-				SCENE_INTERFACE_NAME, MASTERSCENE_INTERFACE_NAME);
+														LAMPGROUP_INTERFACE_NAME, PRESET_INTERFACE_NAME,
+														SCENE_INTERFACE_NAME, MASTERSCENE_INTERFACE_NAME);
 		for (String iface : expectedInterfaces)
 		{
 			if (!interfacesSeen.contains(iface))
@@ -1892,12 +1608,7 @@ public class LightingControllerService {
 	}
 
 	// Used in LSF_Controller-v1-01
-	/**
-	 * Verify leader election and state sync interface.
-	 *
-	 * @throws Exception the exception
-	 */
-	private  void verifyLeaderElectionAndStateSyncInterface() throws Exception
+	private void verifyLeaderElectionAndStateSyncInterface() throws Exception
 	{
 		// Validate LeaderElection interface which is not announced
 		BusIntrospector introspector = serviceHelper.getBusIntrospector();
@@ -1905,7 +1616,7 @@ public class LightingControllerService {
 
 		if (ifaceDetails.size() == 0)
 		{
-			inconc=true;
+			inconc = true; //[AT4]
 			fail("Could not find the interface " + LEADER_ELECTION_INTERFACE_NAME);
 		}
 
@@ -1918,13 +1629,7 @@ public class LightingControllerService {
 	}
 
 	// Fetch any one lamp that is connected to the controller service
-	/**
-	 * Gets the connected lamp.
-	 *
-	 * @return the connected lamp
-	 * @throws BusException the bus exception
-	 */
-	private  String getConnectedLamp() throws BusException
+	private String getConnectedLamp() throws BusException
 	{
 		GetAllLampIDsValues values = lampIface.GetAllLampIDs();
 		assertTrue("There must be at least 1 lamp connected to controller", values.lampIDs.length > 0);
@@ -1933,17 +1638,7 @@ public class LightingControllerService {
 	}
 
 	// Create a lamp state map based on the input args
-	/**
-	 * New lamp state.
-	 *
-	 * @param onOff the on off
-	 * @param brightness the brightness
-	 * @param hue the hue
-	 * @param saturation the saturation
-	 * @param colorTemp the color temp
-	 * @return the map
-	 */
-	private    Map<String,Variant> newLampState(boolean onOff, long brightness, int hue, int saturation, int colorTemp)
+	private Map<String,Variant> newLampState(boolean onOff, long brightness, int hue, int saturation, int colorTemp)
 	{
 		Map<String, Variant> lampState = new HashMap<String, Variant>();
 		lampState.put("OnOff", new Variant(onOff, "b"));
@@ -1956,13 +1651,7 @@ public class LightingControllerService {
 	}
 
 	// Create a group with the first lamp seen
-	/**
-	 * Creates the group.
-	 *
-	 * @return the string
-	 * @throws Exception the exception
-	 */
-	private   String createGroup() throws Exception
+	private String createGroup() throws Exception
 	{
 		// create group
 		String lampID = getConnectedLamp();
@@ -1975,13 +1664,7 @@ public class LightingControllerService {
 	}
 
 	// Create a scene with a single transition effect element.
-	/**
-	 * Creates the transition scene.
-	 *
-	 * @return the string
-	 * @throws Exception the exception
-	 */
-	private   String createTransitionScene() throws Exception
+	private String createTransitionScene() throws Exception
 	{
 		String lampID = getConnectedLamp();
 		String lampIDs[] = { lampID };
@@ -2007,13 +1690,7 @@ public class LightingControllerService {
 	}
 
 	// Create a scene with a single pulse effect element.
-	/**
-	 * Creates the pulse scene.
-	 *
-	 * @return the string
-	 * @throws Exception the exception
-	 */
-	private   String createPulseScene() throws Exception
+	private String createPulseScene() throws Exception
 	{
 		String lampID = getConnectedLamp();
 		String lampIDs[] = { lampID };
@@ -2041,13 +1718,7 @@ public class LightingControllerService {
 	}
 
 	// Create a master scene which contains a single scene within it
-	/**
-	 * Creates the master scene.
-	 *
-	 * @return the string
-	 * @throws Exception the exception
-	 */
-	private  String createMasterScene() throws Exception
+	private String createMasterScene() throws Exception
 	{
 		String pulseSceneID = createPulseScene();
 		String[] scenes = { pulseSceneID };
@@ -2058,106 +1729,77 @@ public class LightingControllerService {
 		return createResponse.masterSceneID;
 	}
 
-
-	/**
-	 * Tear down.
-	 *
-	 * @throws Exception the exception
-	 */
-	protected  void tearDown() throws Exception
+	/** 
+	 * [AT4] Added methods to emulate JUnit behaviour
+	 * 
+	 * assertEquals
+	 * assertTrue
+	 * 
+	 * */
+	private void assertEquals(String errorMessage, String first, String second)
 	{
-		System.out.println("====================================================");
-		logger.info("test tearDown started");
-		controllerIface.LightingResetControllerService(); // clean up Controller
-		releaseServiceHelper();
-		logger.info("test tearDown done");
-		System.out.println("====================================================");
+		if (!first.equals(second))
+		{
+			fail(errorMessage);
+		}
+		else
+		{
+			logger.info("Partial Verdict: PASS");
+		}
 	}
 
+	private void assertEquals(String errorMessage, int first, int second)
+	{
+		if (first != second)
+		{
+			fail(errorMessage);
+		}
+		else
+		{
+			logger.info("Partial Verdict: PASS");
+		}
+	}
+
+	private void assertTrue(String errorMessage, boolean condition)
+	{
+		if (!condition)
+		{
+			fail(errorMessage);
+		}
+		else
+		{
+			logger.info("Partial Verdict: PASS");
+		}
+	}
 
 	/**
-	 * Fail.
-	 *
-	 * @param msg the msg
-	 */
-	private  void fail(String msg) {
-		// TODO Auto-generated method stub
-
+	 * [AT4] Added methods to manage the verdict
+	 * 
+	 * fail
+	 * getFinalVerdict
+	 * 
+	 *  */
+	private void fail(String msg)
+	{
 		logger.error(msg);
-		pass=false;
-
+		logger.info("Partial Verdict: FAIL");
+		pass = false;
 	}
 
-	/**
-	 * Assert equals.
-	 *
-	 * @param errorMsg the error msg
-	 * @param string1 the string1
-	 * @param string2 the string2
-	 */
-	private  void assertEquals(String errorMsg,
-			String string1, String string2) {
-
-		if(!string1.equals(string2)){
-			fail(errorMsg);
-		} else {
-			logger.info("Partial Verdict: PASS");
+	public String getFinalVerdict()
+	{
+		if (inconc)
+		{
+			return "INCONC";
 		}
-
-	}
-
-
-
-	/**
-	 * Assert equals.
-	 *
-	 * @param errorMsg the error msg
-	 * @param int1 the int1
-	 * @param int2 the int2
-	 */
-	private  void assertEquals(String errorMsg,
-			int  int1, int int2) {
-		if(!(int1==int2)){
-			fail(errorMsg);
-		} else {
-			logger.info("Partial Verdict: PASS");
+		
+		if (pass)
+		{
+			return "PASS";
 		}
-
-	}
-
-	/**
-	 * Assert true.
-	 *
-	 * @param errorMsg the error msg
-	 * @param bool the bool
-	 */
-	private  void assertTrue(String errorMsg,
-			boolean bool) {
-
-		if(!bool){
-			fail(errorMsg);
-		} else {
-			logger.info("Partial Verdict: PASS");
+		else
+		{
+			return "FAIL";
 		}
-
 	}
-
-	/**
-	 * Gets the verdict.
-	 *
-	 * @return the verdict
-	 */
-	public String getVerdict() {
-
-		String verdict=null;
-		if(inconc){
-			verdict="INCONC";
-		}else if(pass){
-			verdict="PASS";
-		}else if(!pass){
-			verdict="FAIL";
-		}
-		return verdict;
-	}
-
 }
