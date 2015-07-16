@@ -1,0 +1,32 @@
+CTT Local Agent Installation Package Version v1.4.0 (CTT_Local_Agent_v1.4.0_Installer.exe) Release Notes
+========================================================================================================
+ 
+Fully Validated Platforms
+-------------------------
+ 1) Windows 7 (64 bit); Java 7 (64 bits)
+
+Features added in v1.4.0
+------------------------
+ 1) CTT Local Agent v1.4.0 works with CTT Web Server v1.2.0.
+
+Issues Addressed in v1.4.0
+--------------------------
+ ASACOMP-77   CTT Local Agent / Desktop icon
+ ASACOMP-79   CTT Local Agent / HTTP instead of HTTPS in the URL address (config file)
+ 
+ For a complete list of fixed issues:
+ https://jira.allseenalliance.org/browse/ASACOMP-63?jql=project%20%3D%20ASACOMP%20AND%20issuetype%20in%20standardIssueTypes()%20AND%20status%20in%20(Resolved%2C%20Closed) 
+ 
+Known Issues in v1.4.0
+----------------------
+ 
+ For a complete list of open issues:
+ https://jira.allseenalliance.org/browse/ASACOMP-66?jql=project%20%3D%20ASACOMP%20AND%20issuetype%20in%20standardIssueTypes()%20AND%20status%20in%20(Open%2C%20%22In%20Progress%22%2C%20New)
+
+Change history
+--------------
+ [20150417] - v1.0.0 - Works with CTT Web Server v1.0.0 - Bug fixes: 
+ [20150515] - v1.1.0 - Works with CTT Web Server v1.1.0 - Bug fixes:
+ [20150602] - v1.2.0 - Works with CTT Web Server v1.1.0 - Bug fixes:
+ [20150702] - v1.3.0 - Works with CTT Web Server v1.2.0 - Bug fixes: ASACOMP-65, ASACOMP-68.
+ [20150715] - v1.4.0 - Works with CTT Web Server v1.2.0 - Bug fixes: ASACOMP-77, ASACOMP-79.
