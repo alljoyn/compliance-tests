@@ -27,6 +27,5 @@
             <annotation name="org.freedesktop.DBus.Method.NoReply"
                 value="true" />
         </method>
-        <annotation name="org.alljoyn.Bus.Secure" value="true" />
     </interface>
 </node>
