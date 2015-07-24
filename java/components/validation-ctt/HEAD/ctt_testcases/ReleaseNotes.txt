@@ -1,35 +1,50 @@
-CTT Test Cases Package Version 15.04.00a_R5 (TestCases_Package_v15.04.00a_R5.jar) Release Notes
+CTT Test Cases Package Version 15.04.00a_R6 (TestCases_Package_v15.04.00a_R6.jar) Release Notes
 ===============================================================================================
  
 Fully Validated Platforms
 -------------------------
  1) Windows 7 (64 bit)
+ 2) Java 7 (64 bits)
 
-Features added in Version 15.04.00a_R5
+Features added in Version 15.04.00a_R6
 --------------------------------------
  1) 
  
-Issues Addressed in Version 15.04.00a_R5
+Issues Addressed in Version 15.04.00a_R6
 ----------------------------------------
- ASACOMP-76   Correct xml definition of org.alljoyn.gwagent.connector.App interface
- ASACOMP-78   CTT Local Agent / Gateway Test Case is not updated
+ ASACOMP-88   CTT Local Agent / Tag for Lighting Controller is too long
+ ASACOMP-85   CTT Local Agent / ControlPanel tearDown error
+ ASACOMP-84   CTT Local Agent / ICS_VolumeControlEnabled new name has not been updated
+ ASACOMP-76   Correct xml definition of org.alljoyn.gwagent.connector.App interface (Reopen)
   
  For a complete list of fixed issues:
  https://jira.allseenalliance.org/browse/ASACOMP-63?jql=project%20%3D%20ASACOMP%20AND%20issuetype%20in%20standardIssueTypes()%20AND%20status%20in%20(Resolved%2C%20Closed) 
  
-Known Issues in Version 15.04.00a_R5
+Known Issues in Version 15.04.00a_R6
 ------------------------------------
- ASACOMP-67   Onboarding: TIME_TO_WAIT_FOR_SCAN_RESULTS_IN_SECONDS needs to be configured
- ASACOMP-69   Onboarding: Onboarding-v1-06 test case is not checking properly the "LastError" property
- ASACOMP-71   CTT Web Server / Change from pre-certification to Development
- ASACOMP-72   CTT Local Agent / IOP About-v1-01. 3 GUs are requested instead 1
+ ASACOMP-89   CTT Web Server / Some DataTablet errors when search strings are introduced in TCCL list
+ ASACOMP-87   CTT Web Server / Testcases management for vXX.YY.ZZ and vXX.YY.ZZt
+ ASACOMP-86   CTT Local Agent / Session duration
+ ASACOMP-83   CTT Web Server / Change from "Lighting" to "LSF Lamp Service"
+ ASACOMP-82   CTT Local Agent / IOP ControlPanle-v1-01. Review the spelling
+ ASACOMP-81   java 7 reached end of life April 2015, ctt should work with java 8
+ ASACOMP-80   About-v1-09 is invalid after ASACORE-1872 fix
  ASACOMP-73   Expected results of Onboarding testcases v1-05 and v1-06 are no longer valid
-
- For a complete list of open issues:baba
+ ASACOMP-72   CTT Local Agent / IOP About-v1-01. 3 GUs are requested instead 1
+ ASACOMP-71   CTT Web Server / Change from pre-certification to Development
+ ASACOMP-69   Onboarding: Onboarding-v1-06 test case is not checking properly the "LastError" property
+ ASACOMP-67   Onboarding: TIME_TO_WAIT_FOR_SCAN_RESULTS_IN_SECONDS needs to be configured
+ 
+ For a complete list of open issues:
  https://jira.allseenalliance.org/browse/ASACOMP-66?jql=project%20%3D%20ASACOMP%20AND%20issuetype%20in%20standardIssueTypes()%20AND%20status%20in%20(Open%2C%20%22In%20Progress%22%2C%20New)
 
 Change history
 --------------
+ [20150724] - 15.04.00a_R6 - Core(15.04a) Base(15.04) Gateway(14.12) - Bug fixes: ASACOMP-88, ASACOMP-85, ASACOMP-84, ASACOMP-76.
+ [20150724] - 15.04.00_R3  - Core(15.04)  Base(15.04) Gateway(14.12) - It includes all possible fixes in 15.04.00a_R6 according to Core(15.04) and Base(15.04). 
+ [20150724] - 14.12.00b_R3 - Core(14.12b) Base(14.12) Gateway(14.12) - It includes all possible fixes in 15.04.00a_R6 according to Core(14.12b) and Base(14.12).
+ [20150724] - 14.12.00a_R3 - Core(14.12a) Base(14.12) Gateway(14.12) - It includes all possible fixes in 15.04.00a_R6 according to Core(14.12a) and Base(14.12). 
+ [20150724] - 14.12.00_R1  - Core(14.12)  Base(14.12) Gateway(14.12) - It includes all possible fixes in 15.04.00a_R6 according to Core(14.12) and Base(14.12).
  [20150715] - 15.04.00a_R5 - Core(15.04a) Base(15.04) Gateway(14.12) - Bug fixes: ASACOMP-76, ASACOMP-78.
  [20150715] - 15.04.00_R2  - Core(15.04)  Base(14.12) Gateway(14.12) - It includes all possible fixes in 15.04.00a_R5 according to Core(15.04) and Base(14.12). 
  [20150715] - 14.12.00b_R2 - Core(14.12b) Base(14.12) Gateway(14.12) - It includes all possible fixes in 15.04.00a_R5 according to Core(14.12b) and Base(14.12).
