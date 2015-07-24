@@ -81,7 +81,7 @@ public class AboutTestSuite
 	private static final String DBUS_ERROR_SERVICE_UNKNOWN = "org.freedesktop.DBus.Error.ServiceUnknown";
 	private String defaultLanguage;
 	//private AboutClient aboutClient; //[AT4] AboutClient is deprecated
-	private AboutProxy  aboutProxy;
+	private AboutProxy aboutProxy;
 	//private AboutIconClient aboutIconClient; //[AT4] AboutIconClient is deprecated
 	private AboutIconProxy aboutIconProxy;
 	protected AboutAnnouncementDetails deviceAboutAnnouncement;
@@ -97,23 +97,23 @@ public class AboutTestSuite
      * This regular expression is used to replace description tags with the
      * INTROSPECTION_XML_DESC_PLACEHOLDER
      */
-	//private static final String INTROSPECTION_XML_DESC_REGEX = "<description.*?>.*?</description>";
-	private static final String INTROSPECTION_XML_DESC_REGEX = "(<description>).*(</description>.*)";
+	private static final String INTROSPECTION_XML_DESC_REGEX = "<description.*?>.*?</description>";
+	//private static final String INTROSPECTION_XML_DESC_REGEX = "(<description>).*(</description>.*)";
 	
 	/**
      * This placeholder is used to change the description tags in the
      * introspected XML
      */
-    //private static final String INTROSPECTION_XML_DESC_PLACEHOLDER = "<description></description>";
-	private static final String INTROSPECTION_XML_DESC_PLACEHOLDER   = "$1$2";
+    private static final String INTROSPECTION_XML_DESC_PLACEHOLDER = "<description></description>";
+	//private static final String INTROSPECTION_XML_DESC_PLACEHOLDER   = "$1$2";
 	
 	/**
      * The expected result after the introspection XML will be modified as a
      * result of applying the
      * {@link EventsActionsTestSuite#INTROSPECTION_XML_DESC_REGEX}
      */
-    //private static final String INTROSPECTION_XML_DESC_EXPECTED = "<description></description>";
-    private static final String INTROSPECTION_XML_DESC_EXPECTED      = "<description></description>";
+    private static final String INTROSPECTION_XML_DESC_EXPECTED = "<description></description>";
+    //private static final String INTROSPECTION_XML_DESC_EXPECTED      = "<description></description>";
     
     /**
      * Announcement time out
@@ -182,13 +182,13 @@ public class AboutTestSuite
 		try {
 			runTestCase(testCase);
 		} catch(Exception e) {
-			if (e.getMessage().equals("Timed out waiting for About announcement")) {
+			/*if (e.getMessage().equals("Timed out waiting for About announcement")) {
 				//fail("Timed out waiting for About announcement");
-			} else {
+			} else {*/
 				String errorMsg = "Exception: "+e.toString();
 				logger.error(errorMsg);
 				//fail(errorMsg);
-			}
+			//}
 			inconcluse=true;
 		}
 	}
@@ -198,31 +198,56 @@ public class AboutTestSuite
 		setUp();
 		logger.info("Running testcase: "+test);
 		
-		if (test.equals("About-v1-01")) {
+		if (test.equals("About-v1-01"))
+		{
 			testAbout_v1_01_AboutAnnouncement();
-		} else if (test.equals("About-v1-02")) {
+		}
+		else if (test.equals("About-v1-02"))
+		{
 			testAbout_v1_02_AboutVersion();
-		} else if (test.equals("About-v1-03")) {
+		}
+		else if (test.equals("About-v1-03"))
+		{
 			testAbout_v1_03_GetObjectDescription();
-		} else if (test.equals("About-v1-04")) {
+		}
+		else if (test.equals("About-v1-04"))
+		{
 			testAbout_v1_04_AboutAnnouncementConsistentWithBusObjects();
-		} else if (test.equals("About-v1-05")) {
+		}
+		else if (test.equals("About-v1-05"))
+		{
 			testAbout_v1_05_StandardizedInterfacesMatchDefinitions();
-		} else if (test.equals("About-v1-06")) {
+		}
+		else if (test.equals("About-v1-06"))
+		{
 			testAbout_v1_06_GetAboutForDefaultLanguage();
-		} else if (test.equals("About-v1-07")) {
+		}
+		else if (test.equals("About-v1-07"))
+		{
 			testAbout_v1_07_GetAboutForSupportedLanguages();
-		} else if (test.equals("About-v1-08")) {
+		}
+		else if (test.equals("About-v1-08"))
+		{
 			testAbout_v1_08_GetAboutForUnspecifiedLanguage();
-		} else if (test.equals("About-v1-09")) {
+		}
+		else if (test.equals("About-v1-09"))
+		{
 			testAbout_v1_09_GetAboutForUnsupportedLanguage();
-		} else if (test.equals("About-v1-10")) {
+		}
+		else if (test.equals("About-v1-10"))
+		{
 			testAbout_v1_10_GetAboutIcon();
-		} else if (test.equals("About-v1-11")) {
+		}
+		else if (test.equals("About-v1-11"))
+		{
 			testAbout_v1_11_GetAboutIconValidUrl();
-		} else if (test.equals("EventsActions-v1-01")) {
+		}
+		else if (test.equals("EventsActions-v1-01"))
+		{
 			testEventsActions_v1_01();
-		} else {
+		}
+		else
+		{
 			fail("Test Case not valid");
 		}
 		
@@ -1210,6 +1235,7 @@ public class AboutTestSuite
      */
 	public void testEventsActions_v1_01() throws Exception
 	{
+		aboutProxy = serviceHelper.connectAboutProxy(deviceAboutAnnouncement);
 		
 		logger.info("Executing the test");
 		logger.info("Received announcement from device: '%s' app: '%s', bus '%s'", deviceAboutAnnouncement.getDeviceId(), deviceAboutAnnouncement.getAppId(),
@@ -1240,12 +1266,11 @@ public class AboutTestSuite
 	private boolean testObjectValidity(String objectPath) throws Exception
 	{
 		
-		logger.info("Testing Object Path: '%s'", objectPath);
+		logger.info(String.format("Testing Object Path: '%s'", objectPath));
 		/*ProxyBusObject proxyObj = serviceHelper.getProxyBusObject(aboutClient, objectPath, new Class<?>[]
 		        { AllSeenIntrospectable.class });*/
 		ProxyBusObject proxyObj = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, objectPath,
 				new Class<?>[]{AllSeenIntrospectable.class});
-
 		String[] descLangs = getDescriptionLanguages(proxyObj, objectPath);
 		if ( descLangs.length == 0 )
 		{
