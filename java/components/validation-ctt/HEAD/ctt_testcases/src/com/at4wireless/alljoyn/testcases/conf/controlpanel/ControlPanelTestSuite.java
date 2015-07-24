@@ -188,15 +188,15 @@ public class ControlPanelTestSuite
 			runTestCase(testCase);
 		} catch (Exception e) {
 			inconc=true;
-			if (e!=null) {
+			/*if (e!=null) {
 				if (e.getMessage().equals("Timed out waiting for About announcement")) {
 					logger.error("Timed out waiting for About announcement");
 					pass=false;
-				} else {
+				} else {*/
 					logger.error("Exception: "+e.toString());
-					pass=false;
+					/*pass=false;
 				}
-			}
+			}*/
 		}
 	}
 
