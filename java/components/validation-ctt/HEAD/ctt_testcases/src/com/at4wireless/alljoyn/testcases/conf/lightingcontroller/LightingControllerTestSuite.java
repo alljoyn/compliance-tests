@@ -106,7 +106,7 @@ import com.at4wireless.alljoyn.core.lightingcontroller.LeaderElectionSignalHandl
 public class LightingControllerTestSuite
 {
 	// Logging constants
-	private static final String TAG = "LightingControllerTestSuite";
+	private static final String TAG = "LControllerTestSuite";
 	//private static final Logger logger = LoggerFactory.getLogger(TAG);
 	private static final WindowsLoggerImpl logger = new WindowsLoggerImpl(TAG);
 
