@@ -25,6 +25,7 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -99,10 +100,11 @@ public class AboutIOPTestSuite
 	private void IOP_About_v1_01()
 	{
 
-		String testBed = "TBAD1";
+		String testBed;
 		int step = 2;
-		String category = CategoryKeys.THREE;
+		String[] testBedAllowedCategories = {CategoryKeys.TWO, CategoryKeys.FOUR_ONE, CategoryKeys.FIVE_TWO};
 		String getGoldenUnitOnboarding = null;
+
 		int response;
 
 		message.showMessage("Initial Conditions","DUT and Golden Units are switched off.");
@@ -110,69 +112,44 @@ public class AboutIOPTestSuite
 		
 		if (ICSON_OnboardingServiceFramework)
 		{
-			getGoldenUnitOnboarding = getGoldenUnitName(category);
-			
-			if (getGoldenUnitOnboarding == null)
+			if ((getGoldenUnitOnboarding = getGoldenUnitName(new String[] {CategoryKeys.THREE})) == null)
 			{
-				fail(String.format("No %s Golden Unit but ICSON_OnboardingServiceFramework is equals to true.", category));
+				fail(String.format("ICSON_OnboardingServiceFramework is set to true but there is no %s Golden Unit.", CategoryKeys.THREE));
 				inconc = true;
 				return;
 			}
 		}
-		
+				 
 		for (int i = 1; i <= 3; i++)
 		{
-			if (i == 1)
+			if ((testBed = getGoldenUnitName(testBedAllowedCategories)) == null)
 			{
-				category = CategoryKeys.TWO;
-				testBed = getGoldenUnitName(category);
-			}
-			else if (i == 2)
-			{
-				category = CategoryKeys.FOUR_ONE;
-				testBed = getGoldenUnitName(category);
-			}
-			else if (i == 3)
-			{
-				category = CategoryKeys.FIVE_TWO;
-				testBed = getGoldenUnitName(category);
-			}
-			
-			if (testBed == null)
-			{
-				fail(String.format("No %s Golden Unit.", category));
+				fail(String.format("There is no %s, %s nor %s Golden Unit.", testBedAllowedCategories[0], testBedAllowedCategories[1],
+						testBedAllowedCategories[2]));
 				inconc = true;
 				return;
-				
 			}
 
-			message.showMessage("Test Procedure", String.format("Step %d) Switch on %s.", step, testBed));
-			step++;
+			message.showMessage("Test Procedure", String.format("Step %d) Switch on %s.", step++, testBed));
 			
 			if (ICSON_OnboardingServiceFramework)
 			{
 				message.showMessage("Test Procedure", String.format("Step %d) Connect the DUT and %s to the AP network if "
 						+ "they are not connected yet, use %s to onboard the DUT to the personal AP.",
-						step, testBed, getGoldenUnitOnboarding));
+						step++, testBed, getGoldenUnitOnboarding));
 			}
 			else
 			{
 				message.showMessage("Test Procedure", String.format("Step %d) Connect the DUT and %s to the AP network if "
-						+ "they are not connected yet.", step, testBed));
+						+ "they are not connected yet.", step++, testBed));
 			}
-			
-			step++;
-			
-			message.showMessage("Test Procedure", String.format("Step %d) Verify that %s is able to detect the DUT (It"
-					+ " appears in the list of %s Nearby devices).", step, testBed, testBed));
-			
-			step++;
+
 			response = message.showQuestion("Pass/Fail Criteria",
-					String.format("Is DUT response in the list of %s Nearby devices?", testBed));
+					String.format("Does the DUT appear in the list of %s Nearby devices?", testBed));
 			
 			if (response != 0) //1==NO  null==(X)
 			{
-				fail(String.format("DUT response is not in the list of %s Nearby devices.", testBed));
+				fail(String.format("DUT does not appear in the list of %s Nearby devices.", testBed));
 				return;
 			}
 		}
@@ -180,27 +157,22 @@ public class AboutIOPTestSuite
 
 	private void IOP_About_v1_02()
 	{
-		String testBed = "TBAD1";
-		String category = CategoryKeys.ONE;
+		String testBed;
 		String getGoldenUnitOnboarding = null;
 		int response;
 		
-		testBed = getGoldenUnitName(category);
-		if (testBed == null)
+		if ((testBed = getGoldenUnitName(new String[]{CategoryKeys.ONE})) == null)
 		{
-			fail(String.format("No %s Golden Unit.", category));
+			fail(String.format("There is no %s Golden Unit.", CategoryKeys.ONE));
 			inconc = true;
 			return;	
 		}
-		
-		category = CategoryKeys.THREE;
+
 		if (ICSON_OnboardingServiceFramework)
-		{
-			getGoldenUnitOnboarding = getGoldenUnitName(category);
-		 
-			if (getGoldenUnitOnboarding == null)
+		{ 
+			if ((getGoldenUnitOnboarding = getGoldenUnitName(new String[]{CategoryKeys.THREE})) == null)
 			{
-				fail(String.format("No %s Golden Unit but ICSON_OnboardingServiceFramework is equals to true.", category));
+				fail(String.format("ICSON_OnboardingServiceFramework is set to true but there is no %s Golden Unit.", CategoryKeys.THREE));
 				inconc = true;
 				return;
 			}
@@ -223,20 +195,17 @@ public class AboutIOPTestSuite
 		
 		message.showMessage("Test Procedure", String.format("Step 4) Use %s to display the contents of DUT About Announcement.", testBed));
 
-		response = message.showQuestion("Pass/Fail Criteria","Do the About Announcement objects' "
-				+ "Description include the supported interfaces "
-				+ "according to ICS declaration? ");
+		response = message.showQuestion("Pass/Fail Criteria","Does the About Announcement objects "
+				+ "Description include the interfaces supported according to ICS declaration? ");
 
 		if (response != 0) //1==NO
 		{
-			fail("The About Announcement objects Description do not include the supported interfaces "
-					+ "according to ICS declaration.");
+			fail("The About Announcement objects Description does not include the supported interfaces according to ICS declaration.");
 			return;
 		}
 
-		response = message.showQuestion("Pass/Fail Criteria", "Are following parameters values "
-				+ "obtained in the About Announcement (AppId, DefaultLanguage, DeviceName, DeviceId, "
-				+ "AppName, Manufacturer and ModelNumber)?");
+		response = message.showQuestion("Pass/Fail Criteria", "Are AppId, DefaultLanguage, DeviceName, DeviceId, "
+				+ "AppName, Manufacturer and ModelNumber obtained in the About Announcement?");
 
 		if (response!=0) //1==NO
 		{
@@ -247,42 +216,34 @@ public class AboutIOPTestSuite
 		message.showMessage("Test Procedure", String.format("Step 5) Command %s to introspect the DUT "
 				+ "application’s message bus and display the set of bus objects and their interfaces.", testBed));
 
-		response = message.showQuestion("Pass/Fail Criteria", "Verify that the set of bus objects and their "
-				+ "interfaces include at least the set of paths and "
-				+ "interfaces displayed in step 4.");
+		response = message.showQuestion("Pass/Fail Criteria", "Do the set of bus objects and their "
+				+ "interfaces include at least the set of paths and interfaces displayed in step 4?");
 
 		if (response != 0) //1==NO
 		{
-			fail("Verify that the set of bus objects and their interfaces not include at least "
-					+ "the set paths and interfaces displayed in step 4.");
+			fail("The set of bus objects and their interfaces do not include at least the set of paths and interfaces displayed in step 4.");
 			return;
 		}
 	}
 
 	private void IOP_About_v1_03()
 	{
-		String testBed = "TBAD1";
-		String category = CategoryKeys.ONE;
+		String testBed;
 		String getGoldenUnitOnboarding = null;
 		int response;
 		
-		testBed = getGoldenUnitName(category);
-		if (testBed == null)
+		if ((testBed = getGoldenUnitName(new String[]{CategoryKeys.ONE})) == null)
 		{
-			fail(String.format("No %s Golden Unit.", category));
+			fail(String.format("There is no %s Golden Unit.", CategoryKeys.ONE));
 			inconc = true;
 			return;
 		}
 		
-		category = CategoryKeys.THREE;
-		
 		if (ICSON_OnboardingServiceFramework)
 		{
-			getGoldenUnitOnboarding = getGoldenUnitName(category);
-		 
-			if (getGoldenUnitOnboarding == null)
+			if ((getGoldenUnitOnboarding = getGoldenUnitName(new String[]{CategoryKeys.THREE})) == null)
 			{
-				fail(String.format("No %s Golden Unit but ICSON_OnboardingServiceFramework is equals to true.", category));
+				fail(String.format("ICSON_OnboardingServiceFramework is set to true but there is no %s Golden Unit.", CategoryKeys.THREE));
 				inconc = true;
 				return;
 			}
@@ -305,88 +266,67 @@ public class AboutIOPTestSuite
 
 		message.showMessage("Test Procedure", String.format("Step 4) Operate %s to join a session with "
 				+ "the DUT application after receiving an About Announcement. Note "
-				+ "the values obtained in the About Announcement before joining "
-				+ "the session.", testBed));
+				+ "the values obtained in the About Announcement before joining the session.", testBed));
 
 		message.showMessage("Test Procedure", String.format("Step 5) Command %s to get DUT available "
-				+ "metadata fields by using ‘GetAboutData’ method (using default "
-				+ "language as languageTag input parameter).", testBed));
+				+ "metadata fields by using ‘GetAboutData’ method (using default language as languageTag input parameter).", testBed));
 
-		response = message.showQuestion("Pass/Fail Criteria", "Do DUT provide available metadata "
-				+ "fields after invoking ’GetAboutData’ method?");
+		response = message.showQuestion("Pass/Fail Criteria", "Do DUT provide available metadata fields after invoking ’GetAboutData’ method?");
 
 		if (response != 0) //1==NO
 		{
-			fail("DUT not provides available metadata fields after invoking "
-					+ "'GetAboutData' method.");
+			fail("DUT not provides available metadata fields after invoking 'GetAboutData' method.");
 			return;
 		}
 
 		response = message.showQuestion("Pass/Fail Criteria", "Are the values obtained in step 5 "
-				+ "the same than the values obtained in the About Announcement (step 4) "
-				+ "where applicable?");
+				+ "the same than the values obtained in the About Announcement (step 4)?");
 
 		if (response != 0) //1==NO
 		{
-			fail("The values obtained in step 5 are not the same than "
-					+ "the values obtained in the About Announcement "
-					+ "(step 4) where applicable");
+			fail("The values obtained in step 5 are not the same than the values obtained in the About Announcement (step 4).");
 			return;
 		}
 
-		response = message.showQuestion("Pass/Fail Criteria", "Are the values obtained in step 5 "
-				+ "according to DUT "
-				+ "documentation including ICS?");
+		response = message.showQuestion("Pass/Fail Criteria", "Are the values obtained in step 5 according to DUT documentation including ICS?");
 
 		if (response != 0) //1==NO
 		{
-			fail("The values obtained in step 5 "
-					+ "are not according to DUT "
-					+ "documentation including ICS.");
+			fail("The values obtained in step 5 are not according to DUT documentation including ICS.");
 			return;
 		}
 
 		message.showMessage("Test Procedure","Step 6) Repeat step 5 once for each supported "
-				+ "language received in the ‘GetAboutData’, using each supported "
-				+ "language as languageTag parameter");
+				+ "language received in the ‘GetAboutData’, using each supported language as languageTag parameter");
 
 		response = message.showQuestion("Pass/Fail Criteria","Are the values obtained in step 6 for "
-				+ "any language the same that the values obtained in step 5 "
-				+ "(only differences related to language texts)?");
+				+ "any language the same that the values obtained in step 5 (only differences related to language texts)?");
 
 		if (response != 0) //1==NO
 		{
-			fail("The values obtained in step 6 for "
-					+ "any language are not the same that the values obtained in step 5.");
+			fail("The values obtained in step 6 for any language are not the same that the values obtained in step 5.");
 			return;
 		}
 	}
 
 	private void IOP_About_v1_04()
 	{
-		String testBed = "TBAD1";
-		String category = CategoryKeys.ONE;
+		String testBed;
 		String getGoldenUnitOnboarding = null;
 		int response;
 		
-		testBed = getGoldenUnitName(category);
-		if (testBed == null)
+		if ((testBed = getGoldenUnitName(new String[]{CategoryKeys.ONE})) == null)
 		{
-			fail(String.format("No %s Golden Unit.", category));
+			fail(String.format("There is no %s Golden Unit.", CategoryKeys.ONE));
 			inconc = true;
 			return;
 		}
 		
-		category = CategoryKeys.THREE;
-		
 		if (ICSON_OnboardingServiceFramework)
-		{
-			getGoldenUnitOnboarding = getGoldenUnitName(category);
-			
-			if (getGoldenUnitOnboarding == null)
+		{	
+			if ((getGoldenUnitOnboarding = getGoldenUnitName(new String[]{CategoryKeys.THREE})) == null)
 			{
-				fail(String.format("No %s Golden Unit but "
-						+ "ICSON_OnboardingServiceFramework is equals to true.", category));
+				fail(String.format("ICSON_OnboardingServiceFramework is set to true but there is no %s Golden Unit.", CategoryKeys.THREE));
 				inconc = true;
 				return;	
 			}
@@ -410,8 +350,7 @@ public class AboutIOPTestSuite
 		message.showMessage("Test Procedure", String.format("Step 4) Operate %s to join a session with "
 				+ "the DUT application after receiving an About Announcement.", testBed));
 
-		message.showMessage("Test Procedure", "Step 5) Verify that DeviceIcon object was "
-				+ "received in the About Announcement.");
+		message.showMessage("Test Procedure", "Step 5) Verify that DeviceIcon object was received in the About Announcement.");
 		message.showMessage("Test Procedure", String.format("Step 6) Command %s to get DUT DeviceIcon.", testBed));
 
 		response = message.showQuestion("Pass/Fail Criteria","Is DeviceIcon Object received?");
@@ -423,19 +362,35 @@ public class AboutIOPTestSuite
 		}
 	}
 
-	private String getGoldenUnitName(final String Category)
+	private String getGoldenUnitName(final String[] categories)
 	{
 		name = null;
-
-		final List<String> goldenUnitsList = goldenUnits.get(Category);
+		
+		List<String> temporaryCategoriesList = new ArrayList<String>();
+		List<String> temporaryGoldenUnitsList = new ArrayList<String>();
+		
+		for (int i = 0; i < categories.length; i++)
+		{
+			if (goldenUnits.get(categories[i]) != null)
+			{
+				temporaryGoldenUnitsList.addAll(goldenUnits.get(categories[i]));
+				
+				for (int j = 0; j < goldenUnits.get(categories[i]).size(); j++)
+				{
+					temporaryCategoriesList.add(categories[i]);
+				}
+			}
+		}
+		
+		final List<String> goldenUnitsList = temporaryGoldenUnitsList;
+		final List<String> categoriesList = temporaryCategoriesList;
 		
 		if (goldenUnitsList != null)
 		{
-			//if ((goldenUnitsList != null) && (goldenUnitsList.size() > 1))
 			if (goldenUnitsList.size() > 1)
 			{
 				Object col[] = {"Golden Unit Name", "Category"};
-				TableModel model = new DefaultTableModel(col, goldenUnits.size());
+				TableModel model = new DefaultTableModel(col, goldenUnitsList.size());
 
 				final JTable tableSample = new JTable(model)
 				{
@@ -455,7 +410,7 @@ public class AboutIOPTestSuite
 				for (int i = 0; i < goldenUnitsList.size(); i++)
 				{
 					tableSample.setValueAt(goldenUnitsList.get(i), i, 0);
-					tableSample.setValueAt(Category, i, 1);
+					tableSample.setValueAt(categoriesList.get(i), i, 1);
 				}
 
 				JScrollPane scroll = new JScrollPane(tableSample);
@@ -479,11 +434,12 @@ public class AboutIOPTestSuite
 					public void actionPerformed(ActionEvent arg0)
 					{
 						int selectedGU = tableSample.getSelectedRow();
+						System.out.println(selectedGU+" : "+categoriesList.get(selectedGU));
 						if (selectedGU != -1)
 						{
 							dialog.dispose();
-							name = "GU: " + goldenUnitsList.remove(selectedGU);
-							//goldenUnits.put(Category, gu);
+							int positionInGeneralList = goldenUnits.get(categoriesList.get(selectedGU)).indexOf(goldenUnitsList.get(selectedGU));
+							name = goldenUnits.get(categoriesList.get(selectedGU)).remove(positionInGeneralList);
 						}		
 					}});
 
@@ -506,7 +462,8 @@ public class AboutIOPTestSuite
 			}
 			else if (goldenUnitsList.size() == 1)
 			{
-				name = "GU: " + goldenUnitsList.remove(0);
+				int positionInGeneralList = goldenUnits.get(categoriesList.get(0)).indexOf(goldenUnitsList.get(0));
+				name = goldenUnits.get(categoriesList.get(0)).remove(positionInGeneralList);
 			}
 		}
 
@@ -544,7 +501,8 @@ public class AboutIOPTestSuite
 		{
 			return "PASS";
 		}
-		else {
+		else
+		{
 			return "FAIL";
 		}
 	}
