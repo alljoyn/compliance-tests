@@ -88,28 +88,24 @@ public class ControlPanelIOPTestSuite
 		}
 		else
 		{
-			fail("TestCase not valid");
+			fail("Test Case not valid");
 		}
 	}
 
 	private void IOP_ControlPanel_v1_01()
 	{
 		String testBed = "";
+		String getGoldenUnitOnboarding = null;
 		
 		message.showMessage("Initial Conditions", "DUT and Golden Units are switched off.");
 		message.showMessage("Test Procedure", "Step 1) Switch on DUT.");
 		message.showMessage("Test Procedure", "Step 2) Switch on all Golden Units of the Test Bed.");
-		
-		
-		String category = CategoryKeys.THREE;
-		String getGoldenUnitOnboarding = null;
-		
+
 		if (ICSON_OnboardingServiceFramework)
 		{
-			getGoldenUnitOnboarding = getGoldenUnitName(category);
-			if(getGoldenUnitOnboarding == null)
+			if((getGoldenUnitOnboarding = getGoldenUnitName(CategoryKeys.THREE)) == null)
 			{
-				fail(String.format("No %s Golden Unit but ICSON_OnboardingServiceFramework is equals to true.", category));
+				fail(String.format("ICSON_OnboardingServiceFramework is set to true but there is no %s Golden Unit.", CategoryKeys.THREE));
 				inconc = true;
 				return;		
 			}
@@ -117,25 +113,21 @@ public class ControlPanelIOPTestSuite
 		
 		if (ICSON_OnboardingServiceFramework)
 		{
-			message.showMessage("Test Procedure", String.format("Step 3) Connect the DUT and %s to the AP network if "
-					+ "they are not connected yet, use %s to onboard the DUT to the personal AP.", testBed, getGoldenUnitOnboarding));
+			message.showMessage("Test Procedure", String.format("Step 3) Connect the Golden Units and/or DUT to the AP network if "
+					+ "they are not connected yet, use %s to onboard the DUT to the personal AP.", getGoldenUnitOnboarding));
 		}
 		else
 		{
-			message.showMessage("Test Procedure", String.format("Step 3) Connect the DUT and %s to the AP network if "
-					+ "they are not connected yet.", testBed));
+			message.showMessage("Test Procedure", "Step 3) Connect the Golden Units and/or DUT to the AP network if "
+					+ "they are not connected yet.");
 		}
 		
 		int step = 4;
 		for (int i = 1; i <= 2; i++)
 		{
-				testBed = "TBAD"+i;
-				category = CategoryKeys.FOUR_ONE;
-				testBed = getGoldenUnitName(category);
-				
-				if (testBed == null)
+				if ((testBed = getGoldenUnitName(CategoryKeys.FOUR_ONE)) == null)
 				{
-					fail(String.format("No %s Golden Unit.", category));
+					fail(String.format("There is no %s Golden Unit.", CategoryKeys.FOUR_ONE));
 					inconc = true;
 					return;
 				}
@@ -151,7 +143,7 @@ public class ControlPanelIOPTestSuite
 						+ "the different menus available.", step, testBed));
 				step++;
 				
-				int included = message.showQuestion("Pass/Fail Criteria", String.format("Verify that using %s' "
+				int included = message.showQuestion("Pass/Fail Criteria", String.format("Verify that using %s "
 						+ "virtual control panel it is possible to navigate through all "
 						+ "menus specified by DUT manufacturer.", testBed));
 
@@ -166,52 +158,47 @@ public class ControlPanelIOPTestSuite
 
 	private void IOP_ControlPanel_v1_02()
 	{
-		String testBed = "TBAD1";
+		String testBed;
 		String getGoldenUnitOnboarding = null;
+		String TBAD1 = "";
 		
 		message.showMessage("Initial Conditions", "DUT and Golden Units are switched off.");
 		message.showMessage("Test Procedure", "Step 1) Switch on DUT.");
 		
 		if (ICSON_OnboardingServiceFramework)
 		{
-			 String category = CategoryKeys.THREE;
-				
-			 getGoldenUnitOnboarding = getGoldenUnitName(category);
-			 if (getGoldenUnitOnboarding == null)
+			 if ((getGoldenUnitOnboarding = getGoldenUnitName(CategoryKeys.THREE)) == null)
 			 {
-					fail(String.format("No %s Golden Unit but ICSON_OnboardingServiceFramework is equals to true.", category));
+					fail(String.format("ICSON_OnboardingServiceFramework is set to true but there is no %s Golden Unit.", CategoryKeys.THREE));
 					inconc = true;
 					return;
 			 }
 		}
 		
-		String category = CategoryKeys.FOUR_ONE;
-		testBed = getGoldenUnitName(category);
-		
-		if (testBed == null)
+		int step = 2;
+		for (int i = 1; i <= 3; i++)
 		{
-			fail(String.format("No %s Golden Unit.", category));
-			inconc = true;
-			return;
-		}
-		
-		String TBAD1 = testBed;
-		
-		message.showMessage("Test Procedure", String.format("Step 2) Switch on %s.", testBed));
-		
-		int step = 3;
-		for (int i = 1; i < 3; i++)
-		{
+			if ((testBed = getGoldenUnitName(CategoryKeys.FOUR_ONE)) == null)
+			{
+				fail(String.format("There is no %s Golden Unit.", CategoryKeys.FOUR_ONE));
+				inconc = true;
+				return;
+			}
+			
+			if (i == 1) TBAD1 = testBed;
+			
+			message.showMessage("Test Procedure", String.format("Step %d) Switch on %s.", step, testBed));
+			
 			step++;			
 				
 			if (ICSON_OnboardingServiceFramework)
 			{
-				message.showMessage("Test Procedure", String.format("Step %d) Connect the DUT and %s to the AP network if "
+				message.showMessage("Test Procedure", String.format("Step %d) Connect %s and/or DUT to the AP network if "
 						+ "they are not connected yet, use %s to onboard the DUT to the personal AP.", step, testBed, getGoldenUnitOnboarding));
 			}
 			else
 			{
-				message.showMessage("Test Procedure", String.format("Step %d) Connect the DUT and %s to the AP network if "
+				message.showMessage("Test Procedure", String.format("Step %d) Connect %s and/or DUT to the AP network if "
 						+ "they are not connected yet.", step, testBed));
 			}
 			
@@ -229,36 +216,22 @@ public class ControlPanelIOPTestSuite
 				
 			int resp = message.showQuestion("Pass/Fail Criteria", "Verify that the values of "
 						+ "the different parameters shown in the virtual control panel "
-						+ "menu windows are the same that the real DUT device parameter "
-						+ "values.");
+						+ "menu windows are the same that the real DUT device parameter values.");
 
 			if (resp != 0) //1==NO
 			{
-				fail("The values of the different parameters shown in the "
-						+ "virtual control panel menu windows are not the same that the "
+				fail("The values of the different parameters shown in the virtual control panel menu windows are not the same that the "
 						+ "real DUT device parameter values.");						
 				return;
 			}
-				
-			category = CategoryKeys.FOUR_ONE;
-			testBed = getGoldenUnitName(category);
-			
-			if (testBed == null)
-			{
-				fail(String.format("No %s Golden Unit.", category));
-				inconc = true;
-				return;	
-			}	
 		}
 		
 		int resp = message.showQuestion("Pass/Fail Criteria", String.format("Verify that the values of the parameters "
-				+ "obtained with the rest of the Golden Units are the same "
-				+ "than the results obtained with %s.", TBAD1));
+				+ "obtained with the rest of the Golden Units are the same than the results obtained with %s.", TBAD1));
 
 		if (resp != 0) //1==NO
 		{
-			fail(String.format("The values of the parameters "
-				+ "obtained with the rest of the Golden Units are not the same "
+			fail(String.format("The values of the parameters obtained with the rest of the Golden Units are not the same "
 				+ "than the results obtained with %s.", TBAD1));						
 			return;
 		}	
@@ -266,42 +239,39 @@ public class ControlPanelIOPTestSuite
 	
 	private void IOP_ControlPanel_v1_03()
 	{
-		String testBed = "TBAD1";
+		String testBed;
 		String getGoldenUnitOnboarding = null;
+		String TBAD1 = "";
 		
 		message.showMessage("Initial Conditions", "DUT and Golden Units are switched off.");
 		message.showMessage("Test Procedure", "Step 1) Switch on DUT.");
 		
 		if (ICSON_OnboardingServiceFramework)
 		{
-			 String category = CategoryKeys.THREE;
-				
-			 getGoldenUnitOnboarding = getGoldenUnitName(category);
-			 if (getGoldenUnitOnboarding == null)
-			 {
-					fail(String.format("No %s Golden Unit but ICSON_OnboardingServiceFramework is equals to true.", category));
-					inconc = true;
-					return;
-			 }
+			if ((getGoldenUnitOnboarding = getGoldenUnitName(CategoryKeys.THREE)) == null)
+			{
+				fail(String.format("ICSON_OnboardingServiceFramework is set to true but there is no %s Golden Unit.", CategoryKeys.THREE));
+				inconc = true;
+				return;
+			}
 		}
 		
-		String category = CategoryKeys.FOUR_ONE;
-		testBed = getGoldenUnitName(category);
-		
-		if (testBed == null)
+		int step = 2;
+		for (int i = 1; i <= 3; i++)
 		{
-			fail(String.format("No %s Golden Unit.", category));
-			inconc = true;
-			return;
-		}
-		
-		String TBAD1 = testBed;
-		message.showMessage("Test Procedure", String.format("Step 2) Switch on %s.", testBed));
-		
-		int step = 3;
-		for (int i = 1; i < 3; i++)
-		{
+			if ((testBed = getGoldenUnitName(CategoryKeys.FOUR_ONE)) == null)
+			{
+				fail(String.format("There is no %s Golden Unit.", CategoryKeys.FOUR_ONE));
+				inconc = true;
+				return;
+			}
+			
+			if (i == 1) TBAD1 = testBed;
+			
+			message.showMessage("Test Procedure", String.format("Step %d) Switch on %s.", step, testBed));
+			
 			step++;
+			
 			if (ICSON_OnboardingServiceFramework)
 			{
 				message.showMessage("Test Procedure", String.format("Step %d) Connect the DUT and %s to the AP network if "
@@ -332,31 +302,20 @@ public class ControlPanelIOPTestSuite
 			message.showMessage("Test Procedure", String.format("Step %d c) Verify at DUT that the "
 					+ "value of the element is modified (by means provided by DUT "
 					+ "user interface).", step));
+			
 			step++;
+			
 			int included = message.showQuestion("Pass/Fail Criteria", String.format("For every Control Panel "
-					+ "DUT element, are the parameters modified in DUT using virtual "
-					+ "Control Panel interface at %s updated in DUT and in "
+					+ "DUT element, are the parameters modified in DUT using virtual Control Panel interface at %s updated in DUT and in "
 					+ "the Control Panel Interface at %s.", testBed, testBed));
 
 			if (included != 0) //1==NO
 			{
-				fail(String.format("For every Control Panel "
-					+ "DUT element, the parameters modified in DUT using virtual "
-					+ "Control Panel interface at %s are not updated in "
-					+ "DUT and in the Control Panel Interface at %s.", testBed, testBed));						
-				return;
-			}
-				
-			category = CategoryKeys.FOUR_ONE;
-			testBed = getGoldenUnitName(category);
-			if (testBed == null)
-			{
-				fail(String.format("No %s Golden Unit.", category));
-				inconc = true;
+				fail(String.format("For every Control Panel DUT element, the parameters modified in DUT using virtual "
+					+ "Control Panel interface at %s are not updated in DUT and in the Control Panel Interface at %s.", testBed, testBed));						
 				return;
 			}
 		}
-		
 		
 		int included = message.showQuestion("Pass/Fail Criteria", 
 				String.format("Verify that the results obtained with the rest of the Golden Units "
@@ -385,7 +344,7 @@ public class ControlPanelIOPTestSuite
 
 	private void fail(String msg)
 	{
-		message.showMessage("Verdict",msg);
+		message.showMessage("Verdict", msg);
 		logger.error(msg);
 		pass = false;
 	}
@@ -415,7 +374,6 @@ public class ControlPanelIOPTestSuite
 		
 		if (goldenUnitsList != null)
 		{
-			//if(goldenUnitsList != null && goldenUnitsList.size() > 1)
 			if (goldenUnitsList.size() > 1)
 			{
 				Object col[] = {"Golden Unit Name", "Category"};
@@ -467,7 +425,7 @@ public class ControlPanelIOPTestSuite
 						if (selectedGU != -1)
 						{
 							dialog.dispose();
-							name = "GU: " + goldenUnitsList.remove(selectedGU);
+							name = goldenUnitsList.remove(selectedGU);
 							//goldenUnits.put(Category, gu);
 						}		
 					}
@@ -492,7 +450,7 @@ public class ControlPanelIOPTestSuite
 			}
 			else if (goldenUnitsList.size() == 1)
 			{
-				name = "GU: " + goldenUnitsList.remove(0);
+				name = goldenUnitsList.remove(0);
 			}
 		}
 		return name;
