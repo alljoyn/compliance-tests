@@ -1,4 +1,4 @@
-CTT Test Cases Package Version 15.04.00a_R6 (TestCases_Package_v15.04.00a_R6.jar) Release Notes
+CTT Test Cases Package Version 15.04.00b_R1 (TestCases_Package_v15.04.00b_R1.jar) Release Notes
 ===============================================================================================
  
 Fully Validated Platforms
@@ -6,22 +6,26 @@ Fully Validated Platforms
  1) Windows 7 (64 bit)
  2) Java 7 (64 bits)
 
-Features added in Version 15.04.00a_R6
---------------------------------------
+Features added in Version v15.04.00b_R1
+---------------------------------------
  1) 
  
-Issues Addressed in Version 15.04.00a_R6
-----------------------------------------
- ASACOMP-88   CTT Local Agent / Tag for Lighting Controller is too long
- ASACOMP-85   CTT Local Agent / ControlPanel tearDown error
- ASACOMP-84   CTT Local Agent / ICS_VolumeControlEnabled new name has not been updated
- ASACOMP-76   Correct xml definition of org.alljoyn.gwagent.connector.App interface (Reopen)
-  
+Issues Addressed in Version v15.04.00b_R1
+-----------------------------------------
+ ASACOMP-95   CTT Test Cases Package. Update ServiceHelper according to ASACORE-1168
+ ASACOMP-72   CTT Local Agent / IOP About-v1-01. 3 GUs are requested instead 1
+ ASACORE-2270 Add a unit test to allow a little endian CTR block counter to go past 511.
+ ASACORE-2247 AES CTR mode size limitation on little endian processors
+ 
  For a complete list of fixed issues:
  https://jira.allseenalliance.org/browse/ASACOMP-63?jql=project%20%3D%20ASACOMP%20AND%20issuetype%20in%20standardIssueTypes()%20AND%20status%20in%20(Resolved%2C%20Closed) 
  
-Known Issues in Version 15.04.00a_R6
-------------------------------------
+Known Issues in Version v15.04.00b_R1
+-------------------------------------
+ ASACOMP-96   Ability to run CTT using Java 8
+ ASACOMP-92   CTT Local Agent / To put an user notification during automatic updates 
+ ASACOMP-91   CTT Web Server / TCCL filter won't be applied to "pre-certification" type of projects 
+ ASACOMP-90   CTT Web Server / Date format inconsistency in IXITCO_DateOfManufacture
  ASACOMP-89   CTT Web Server / Some DataTablet errors when search strings are introduced in TCCL list
  ASACOMP-87   CTT Web Server / Testcases management for vXX.YY.ZZ and vXX.YY.ZZt
  ASACOMP-86   CTT Local Agent / Session duration
@@ -30,7 +34,6 @@ Known Issues in Version 15.04.00a_R6
  ASACOMP-81   java 7 reached end of life April 2015, ctt should work with java 8
  ASACOMP-80   About-v1-09 is invalid after ASACORE-1872 fix
  ASACOMP-73   Expected results of Onboarding testcases v1-05 and v1-06 are no longer valid
- ASACOMP-72   CTT Local Agent / IOP About-v1-01. 3 GUs are requested instead 1
  ASACOMP-71   CTT Web Server / Change from pre-certification to Development
  ASACOMP-69   Onboarding: Onboarding-v1-06 test case is not checking properly the "LastError" property
  ASACOMP-67   Onboarding: TIME_TO_WAIT_FOR_SCAN_RESULTS_IN_SECONDS needs to be configured
@@ -40,6 +43,13 @@ Known Issues in Version 15.04.00a_R6
 
 Change history
 --------------
+ [20150804] - 15.04.00b_R1 - Core(15.04b) Base(15.04) Gateway(14.12) - Bug fixes: ASACOMP-95, ASACOMP-72, ASACORE-2270, ASACORE-2247.
+ [20150804] - 15.04.00a_R7 - Core(15.04a) Base(15.04) Gateway(14.12) - It includes all possible fixes in 15.04.00b_R1 according to Core(15.04a) and Base(15.04).
+ [20150804] - 15.04.00_R4  - Core(15.04)  Base(15.04) Gateway(14.12) - It includes all possible fixes in 15.04.00b_R1 according to Core(15.04) and Base(15.04). 
+ [20150804] - 14.12.00b_R4 - Core(14.12b) Base(14.12) Gateway(14.12) - It includes all possible fixes in 15.04.00b_R1 according to Core(14.12b) and Base(14.12).
+ [20150804] - 14.12.00a_R4 - Core(14.12a) Base(14.12) Gateway(14.12) - It includes all possible fixes in 15.04.00b_R1 according to Core(14.12a) and Base(14.12). 
+ [20150804] - 14.12.00_R2  - Core(14.12)  Base(14.12) Gateway(14.12) - It includes all possible fixes in 15.04.00b_R1 according to Core(14.12) and Base(14.12).
+ [20150729] - 15.09.00_D1  - Core(15.09-Master) Base(15.09-Master)   - Debug 1
  [20150724] - 15.04.00a_R6 - Core(15.04a) Base(15.04) Gateway(14.12) - Bug fixes: ASACOMP-88, ASACOMP-85, ASACOMP-84, ASACOMP-76.
  [20150724] - 15.04.00_R3  - Core(15.04)  Base(15.04) Gateway(14.12) - It includes all possible fixes in 15.04.00a_R6 according to Core(15.04) and Base(15.04). 
  [20150724] - 14.12.00b_R3 - Core(14.12b) Base(14.12) Gateway(14.12) - It includes all possible fixes in 15.04.00a_R6 according to Core(14.12b) and Base(14.12).
