@@ -121,8 +121,9 @@ public class ServiceHelper
 	        deviceAnnouncementHandler = getDeviceAnnouncementHandler(deviceId, appId);
 	        busAttachmentMgr.getBusAttachment().registerAboutListener(deviceAnnouncementHandler);
 	       
-	        String ifaces[] = {About.INTERFACE_NAME};
-	        busAttachmentMgr.getBusAttachment().whoImplements(ifaces);      
+	        /*String ifaces[] = {About.INTERFACE_NAME};
+	        busAttachmentMgr.getBusAttachment().whoImplements(ifaces);*/ //[AT4] Since v14.12, all interfaces must be scanned
+	        busAttachmentMgr.getBusAttachment().whoImplements(null);    
 	    }
         
         busAttachmentMgr.advertise();  

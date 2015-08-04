@@ -39,7 +39,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.alljoyn.bus.AboutIconProxy;
 import org.alljoyn.about.AboutKeys;
-//import org.alljoyn.about.transport.AboutTransport;
+import org.alljoyn.about.transport.AboutTransport;
 import org.alljoyn.bus.AboutObjectDescription;
 import org.alljoyn.bus.AboutProxy;
 import org.alljoyn.bus.AnnotationBusException;
@@ -49,7 +49,6 @@ import org.alljoyn.bus.ErrorReplyBusException;
 import org.alljoyn.bus.ProxyBusObject;
 import org.alljoyn.bus.Variant;
 import org.alljoyn.bus.annotation.BusInterface;
-import org.alljoyn.bus.ifaces.About;
 import org.alljoyn.bus.ifaces.AllSeenIntrospectable;
 import org.alljoyn.bus.ifaces.Icon;
 import org.xml.sax.SAXException;
@@ -772,13 +771,12 @@ public class AboutTestSuite
 
         if (aboutPath != null)
         {
-            //assertEquals("About interface present at the wrong path", AboutTransport.OBJ_PATH, aboutPath);
-            assertEquals("About interface present at the wrong path", About.OBJ_PATH, aboutPath); //[AT4] AboutTransport is deprecated
+            assertEquals("About interface present at the wrong path", AboutTransport.OBJ_PATH, aboutPath);
         }
         else
         {
-            //logger.info("About interface not present in announcement");
-        	fail("About interface not present in announcement");
+        	logger.info("About interface not present in announcement");
+        	//fail("About interface not present in announcement");
         }
     }
 	
@@ -819,7 +817,7 @@ public class AboutTestSuite
 		{
 			for (String interfaceName : busObjectDescription.interfaces)
 			{
-				if (interfaceName.equals(About.INTERFACE_NAME))
+				if (interfaceName.equals(AboutTransport.INTERFACE_NAME))
 				{
 					aboutPath = busObjectDescription.path;
 				}
