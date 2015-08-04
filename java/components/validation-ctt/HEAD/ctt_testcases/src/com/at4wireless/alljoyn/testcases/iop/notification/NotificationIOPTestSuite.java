@@ -98,32 +98,26 @@ public class NotificationIOPTestSuite
 
 	private void IOP_Notification_v1_01()
 	{
-		String testBed = "TBAD";
+		String testBed;
+		String getGoldenUnitOnboarding = null;
 
 		message.showMessage("Initial Conditions", "DUT and Golden Units are switched off.");
 		message.showMessage("Test Procedure", "Step 1) Switch on DUT.");
 
-		String category = CategoryKeys.FIVE_ONE;
-		testBed = getGoldenUnitName(category);
-
-		if (testBed == null)
+		if ((testBed = getGoldenUnitName(CategoryKeys.FIVE_ONE)) == null)
 		{
-			fail(String.format("No %s Golden Unit.", category));
+			fail(String.format("There is no %s Golden Unit.", CategoryKeys.FIVE_ONE));
 			inconc = true;
 			return;
 		}
 
 		message.showMessage("Test Procedure", String.format("Step 2) Switch on %s.", testBed));
 		
-		category = CategoryKeys.THREE;
-		String getGoldenUnitOnboarding = null;
-		
 		if (ICSON_OnboardingServiceFramework)
 		{
-			getGoldenUnitOnboarding=getGoldenUnitName(category);
-			if (getGoldenUnitOnboarding == null)
+			if ((getGoldenUnitOnboarding = getGoldenUnitName(CategoryKeys.THREE)) == null)
 			{
-				fail(String.format("No %s Golden Unit but ICSON_OnboardingServiceFramework is equals to true.", category));
+				fail(String.format("ICSON_OnboardingServiceFramework is set to true but there is no %s Golden Unit.", CategoryKeys.THREE));
 				inconc = true;
 				return;		
 			}
@@ -131,8 +125,8 @@ public class NotificationIOPTestSuite
 			
 		if (ICSON_OnboardingServiceFramework)
 		{
-			message.showMessage("Test Procedure", String.format("Step 3) Connect the DUT and %s to the AP network if "
-					+ "they are not connected yet, use %s to onboard the DUT to the personal AP.", testBed, getGoldenUnitOnboarding));
+			message.showMessage("Test Procedure", String.format("Step 3) Connect the Golden Units and/or DUT to the AP network if "
+					+ "they are not connected yet, use %s to onboard the DUT to the personal AP.", getGoldenUnitOnboarding));
 		}
 		else
 		{
@@ -143,43 +137,43 @@ public class NotificationIOPTestSuite
 		int step = 4;
 		for (int i = 1; i <= 3; i++)
 		{
-			message.showMessage("Test Procedure", String.format("Step %d) Establish an AllJoyn "
-					+ "connection between the DUT and %s.", step, testBed));
-			step++;
-			message.showMessage("Test Procedure", String.format("Step %d) Configure %s to display "
-					+ "Notifications received from DUT, indicating type of "
-					+ "Notification.", step, testBed));
-			step++;
+			if (i != 1)
+			{
+				if ((testBed = getGoldenUnitName(CategoryKeys.FIVE_ONE)) == null)
+				{
+					fail(String.format("There is no %s Golden Unit.", CategoryKeys.FIVE_ONE));
+					inconc = true;
+					return;
+				}
+			}
+			
+			message.showMessage("Test Procedure", String.format("Step %d) Establish an AllJoyn connection between the DUT and %s.", step++, testBed));
+			message.showMessage("Test Procedure", String.format("Step %d) Configure %s to display Notifications received from DUT, indicating type of "
+					+ "Notification.", step++, testBed));
 			message.showMessage("Test Procedure", String.format("Step %d) If supported by DUT and "
-					+ "feasible, handle DUT to generate a Notification of information "
-					+ "type.", step));
-			step++;
-			int response = message.showQuestion("Pass/Fail Criteria", String.format("Does %s receive an "
-					+ "information Notification from the DUT?", testBed));
+					+ "feasible, handle DUT to generate a Notification of information type.", step++));
+
+			int response = message.showQuestion("Pass/Fail Criteria", String.format("Does %s receive an information Notification from the DUT?", testBed));
 
 			if (response != 0) //1==NO
 			{
-				fail(String.format("%s does not receive an "
-						+ "information Notification from the DUT.", testBed));
+				fail(String.format("%s does not receive an information Notification from the DUT.", testBed));
 				return;
 			}
 
 			message.showMessage("Test Procedure", String.format("Step %d) If supported by DUT and "
-					+ "feasible, handle DUT to generate a Notification of warning type.", step));
-			step++;
+					+ "feasible, handle DUT to generate a Notification of warning type.", step++));
 
-			response = message.showQuestion("Pass/Fail Criteria", String.format("Does %s receive a warning "
-					+ "Notification from the DUT?", testBed));
+			response = message.showQuestion("Pass/Fail Criteria", String.format("Does %s receive a warning Notification from the DUT?", testBed));
 
 			if (response != 0) //1==NO
 			{
-				fail(String.format("%s does not receive a warning "
-						+ "Notification from the DUT.", testBed));	
+				fail(String.format("%s does not receive a warning Notification from the DUT.", testBed));	
 				return;
 			}
 			message.showMessage("Test Procedure", String.format("Step %d) If supported by DUT and feasible, "
-					+ "handle DUT to generate a Notification of emergency type.", step));
-			step++;
+					+ "handle DUT to generate a Notification of emergency type.", step++));
+
 			response = message.showQuestion("Pass/Fail Criteria", String.format("Does %s receive an emergency "
 					+ "Notification from the DUT?", testBed));
 
@@ -191,8 +185,8 @@ public class NotificationIOPTestSuite
 
 			message.showMessage("Test Procedure", String.format("Step %d) If supported by DUT (support of "
 					+ "ICS ICSN_RichIconUrl) and feasible, handle DUT to generate a "
-					+ "‘Notification’ message with ‘richIconUrl’ field.", step));
-			step++;
+					+ "‘Notification’ message with ‘richIconUrl’ field.", step++));
+
 			response = message.showQuestion("Pass/Fail Criteria", String.format("Does %s receive a Notification "
 					+ "where richIconUrl attribute (attrName = 0) is present and a "
 					+ "valid URL is response in the iconUrl in the attrValue?", testBed));
@@ -207,8 +201,8 @@ public class NotificationIOPTestSuite
 
 			message.showMessage("Test Procedure", String.format("Step %d) If supported by DUT (support of "
 					+ "ICS ICSN_RichAudioUrl) and feasible, handle DUT to generate a "
-					+ "‘Notification’ message with ‘richAudioUrl’ field.", step));
-			step++;
+					+ "‘Notification’ message with ‘richAudioUrl’ field.", step++));
+
 			response = message.showQuestion("Pass/Fail Criteria", String.format("Does %s receive a "
 					+ "Notification where richAudioUrl attribute (attrName = 1) is present "
 					+ "and a valid URL is response in the audioUrl in the attrValue?", testBed));
@@ -220,22 +214,13 @@ public class NotificationIOPTestSuite
 						+ "response in the audioUrl in the attrValue.", testBed));						
 				return;
 			}
-
-			category = CategoryKeys.FIVE_ONE;
-			testBed = getGoldenUnitName(category);
-
-			if (testBed == null)
-			{
-				fail(String.format("No %s Golden Unit.", category));
-				inconc = true;
-				return;
-			}
 		}
 	}
 
 	private void IOP_Notification_Consumer_v1_01()
 	{
 		String getGoldenUnitOnboarding = null;
+		String TBAD1, TBAD2, TBAD3;
 		
 		message.showMessage("Initial Conditions", "DUT and Golden Units are switched off.");
 		message.showMessage("Test Procedure", "Step 1) Switch on DUT.");
@@ -243,42 +228,31 @@ public class NotificationIOPTestSuite
 		
 		if (ICSON_OnboardingServiceFramework)
 		{
-			String category = CategoryKeys.THREE;
-			getGoldenUnitOnboarding = getGoldenUnitName(category);
-			if (getGoldenUnitOnboarding == null)
+			if ((getGoldenUnitOnboarding = getGoldenUnitName(CategoryKeys.THREE)) == null)
 			{
-				fail(String.format("No "+category+" Golden Unit but ICSON_OnboardingServiceFramework is equals to true.", category));
+				fail(String.format("ICSON_OnboardingServiceFramework is set to true but there is no %s Golden Unit.", CategoryKeys.THREE));
 				inconc = true;
 				return;	
 			}
 		}
-		
-		String category = CategoryKeys.FIVE_TWO;
-		String TBAD1 = getGoldenUnitName(category);
 
-		if (TBAD1 == null)
+		if ((TBAD1 = getGoldenUnitName(CategoryKeys.FIVE_TWO)) == null)
 		{
-			fail(String.format("No %s Golden Unit.", category));
+			fail(String.format("There is no %s Golden Unit.", CategoryKeys.FIVE_TWO));
 			inconc = true;
 			return;
 		}
 		
-		category = CategoryKeys.FIVE_TWO;
-		String TBAD2 = getGoldenUnitName(category);
-
-		if (TBAD2 == null)
+		if ((TBAD2 = getGoldenUnitName(CategoryKeys.FIVE_TWO)) == null)
 		{
-			fail(String.format("No %s Golden Unit.", category));
+			fail(String.format("There is no %s Golden Unit.", CategoryKeys.FIVE_TWO));
 			inconc = true;
 			return;
 		}
 		
-		category = CategoryKeys.FIVE_TWO;
-		String TBAD3 = getGoldenUnitName(category);
-
-		if (TBAD3 == null)
+		if ((TBAD3 = getGoldenUnitName(CategoryKeys.FIVE_TWO)) == null)
 		{
-			fail(String.format("No %s Golden Unit.", category));
+			fail(String.format("There is no %s Golden Unit.", CategoryKeys.FIVE_TWO));
 			inconc = true;
 			return;
 		}
@@ -290,17 +264,14 @@ public class NotificationIOPTestSuite
 		}
 		else
 		{
-			message.showMessage("Test Procedure", "Step 3) Connect the DUT and Golden Units to the AP network if "
-					+ "they are not connected yet.");
+			message.showMessage("Test Procedure", "Step 3) Connect the DUT and Golden Units to the AP network if they are not connected yet.");
 		}
 
-		message.showMessage("Test Procedure", String.format("Step 4) Establish an AllJoyn connection among the "
-				+ "DUT %s and %s.", TBAD1, TBAD2));
+		message.showMessage("Test Procedure", String.format("Step 4) Establish an AllJoyn connection among the DUT, %s and %s.", TBAD1, TBAD2));
 		message.showMessage("Test Procedure", String.format("Step 5) Command %s to send an information "
 				+ "Notification message with TTL configured for 2 minutes.", TBAD1));
 		
-		int response = message.showQuestion("Pass/Fail Criteria", String.format("Does DUT receive an information "
-				+ "Notification message from %s?", TBAD1));
+		int response = message.showQuestion("Pass/Fail Criteria", String.format("Does DUT receive an information Notification message from %s?", TBAD1));
 		
 		if (response != 0) //1==NO
 		{
@@ -311,8 +282,7 @@ public class NotificationIOPTestSuite
 		message.showMessage("Test Procedure", String.format("Step 6) Command %s to send a warning "
 				+ "Notification message with TTL configured for 15 minutes.", TBAD2));
 		
-		response = message.showQuestion("Pass/Fail Criteria", String.format("Does DUT receive a warning Notification "
-				+ "message from %s?", TBAD2));
+		response = message.showQuestion("Pass/Fail Criteria", String.format("Does DUT receive a warning Notification message from %s?", TBAD2));
 		
 		if (response != 0) //1==NO
 		{
@@ -321,11 +291,9 @@ public class NotificationIOPTestSuite
 		}
 
 		message.showMessage("Test Procedure", String.format("Step 7) Operate %s User Interface to perform "
-				+ "an action that would generate a Notification message (with TTL "
-				+ "configured to two minutes).", TBAD3));
+				+ "an action that would generate a Notification message (with TTL configured to two minutes).", TBAD3));
 		
-		response = message.showQuestion("Pass/Fail Criteria", String.format("Is notification message received "
-				+ "from %s?", TBAD3));
+		response = message.showQuestion("Pass/Fail Criteria", String.format("Is notification message received from %s?", TBAD3));
 		
 		if (response != 1) //1==NO
 		{
@@ -334,11 +302,9 @@ public class NotificationIOPTestSuite
 		}
 
 		message.showMessage("Test Procedure", "Step 8) Wait for 3 minutes.");
-		message.showMessage("Test Procedure", String.format("Step 9) Establish an AllJoyn connection between "
-				+ "the DUT and %s.", TBAD3));
+		message.showMessage("Test Procedure", String.format("Step 9) Establish an AllJoyn connection between the DUT and %s.", TBAD3));
 		
-		response = message.showQuestion("Pass/Fail Criteria", String.format("Is notification message  received "
-				+ "from %s?", TBAD3));
+		response = message.showQuestion("Pass/Fail Criteria", String.format("Is notification message  received from %s?", TBAD3));
 		
 		if (response != 1) //1==NO
 		{
@@ -349,12 +315,10 @@ public class NotificationIOPTestSuite
 		message.showMessage("Test Procedure", "Step 10) Wait for 1 minute");
 		message.showMessage("Test Procedure", "Step 11) Switch off and on the DUT.");
 		message.showMessage("Test Procedure", "Step 12) Wait for 1 minute");
-		message.showMessage("Test Procedure", "Step 13) Verify that the DUT is connected to the "
-				+ "AP network.");
-		message.showMessage("Test Procedure", "Step 14) Establish an AllJoyn connection between "
-				+ "the DUT and each of the Golden Units of the Test Bed.");
+		message.showMessage("Test Procedure", "Step 13) Verify that the DUT is connected to the AP network.");
+		message.showMessage("Test Procedure", "Step 14) Establish an AllJoyn connection between the DUT and each of the Golden Units of the Test Bed.");
 		
-		response = message.showQuestion("Pass/Fail Criteria", String.format("Is notification message from %s only displayed in the DUT?", TBAD2));
+		response = message.showQuestion("Pass/Fail Criteria", String.format("Is only notification message from %s displayed in the DUT?", TBAD2));
 		
 		if (response != 0) //1==NO
 		{
@@ -365,35 +329,38 @@ public class NotificationIOPTestSuite
 
 	private void IOP_Notification_Consumer_v1_02()
 	{
-		String category = CategoryKeys.FIVE_TWO;
-		String TBAD1 = getGoldenUnitName(category);
+		String TBAD1, TBAD2, TBAD3, TBAD_O = null;
 		
 		message.showMessage("Initial Conditions","DUT and Golden Units are switched off.");
+		
+		if (ICSON_OnboardingServiceFramework)
+		{
+			if ((TBAD_O = getGoldenUnitName(CategoryKeys.THREE)) == null)
+			{
+				fail(String.format("ICSON_OnboardingServiceFramework is set to true but there is no %s Golden Unit.", CategoryKeys.THREE));
+				inconc = true;
+				return;	
+			}
+		}
 	
-		if (TBAD1 == null)
+		if ((TBAD1 = getGoldenUnitName(CategoryKeys.FIVE_ONE)) == null)
 		{
-			fail(String.format("No %s Golden Unit.", category));
+			fail(String.format("There is no %s Golden Unit.", CategoryKeys.FIVE_ONE));
 			inconc = true;
 			return;
 		}
-		
-		category = CategoryKeys.FIVE_TWO;
-		String TBAD2 = getGoldenUnitName(category);
 
-		if (TBAD2 == null)
+		if ((TBAD2 = getGoldenUnitName(CategoryKeys.FIVE_TWO)) == null)
 		{
-			fail(String.format("No %s Golden Unit.", category));
+			fail(String.format("There is no %s Golden Unit.", CategoryKeys.FIVE_TWO));
 			inconc = true;
 			return;
 
 		}
-		
-		category = CategoryKeys.FIVE_TWO;
-		String TBAD3 = getGoldenUnitName(category);
 
-		if (TBAD3 == null)
+		if ((TBAD3 = getGoldenUnitName(CategoryKeys.FIVE_ONE)) == null)
 		{
-			fail(String.format("No %s Golden Unit.", category));
+			fail(String.format("There is no %s Golden Unit.", CategoryKeys.FIVE_ONE));
 			inconc = true;
 			return;
 		}
@@ -415,14 +382,20 @@ public class NotificationIOPTestSuite
 				+ "Notification message (Notification 3) with TTL configured for "
 				+ "10 minutes.", TBAD1));
 		message.showMessage("Test Procedure", "Step 9) Switch on DUT.");
-		message.showMessage("Test Procedure", "Step 10) Connect the DUT to the AP network "
-				+ "if it is not connected yet. If required, use TBAD_O to onboard "
-				+ "the DUT to the personal AP");
+		
+		if (ICSON_OnboardingServiceFramework)
+		{
+			message.showMessage("Test Procedure", String.format("Step 10) Connect the DUT to the AP network "
+					+ "if it is not connected yet. If required, use %s to onboard the DUT to the personal AP", TBAD_O));
+		}
+		else
+		{
+			message.showMessage("Test Procedure", "Step 10) Connect the DUT to the AP network if it is not connected yet.");
+		}
+		
 		message.showMessage("Test Procedure", String.format("Step 11) Switch on %s.", TBAD3));
-		message.showMessage("Test Procedure", String.format("Step 12) Connect %s to the AP network if "
-				+ "they are not connected yet.", TBAD3));
-		message.showMessage("Test Procedure", String.format("Step 13) Establish an AllJoyn connection "
-				+ "between the DUT and %s.", TBAD3));
+		message.showMessage("Test Procedure", String.format("Step 12) Connect %s to the AP network if they are not connected yet.", TBAD3));
+		message.showMessage("Test Procedure", String.format("Step 13) Establish an AllJoyn connection between the DUT and %s.", TBAD3));
 		
 		int response = message.showQuestion("Pass/Fail Criteria", String.format("Does DUT receive an emergency "
 				+ "Notification message (Notification 2) from %s and a warning "
@@ -431,8 +404,7 @@ public class NotificationIOPTestSuite
 		if (response != 0) //1==NO
 		{
 			fail(String.format("DUT not receives an emergency Notification message (Notification 2) "
-					+ "from %s and a warning Notification message (Notification 3) "
-					+ "from %s.", TBAD1, TBAD1));						
+					+ "from %s and a warning Notification message (Notification 3) from %s.", TBAD1, TBAD1));						
 			return;
 		}
 
@@ -450,27 +422,23 @@ public class NotificationIOPTestSuite
 
 		message.showMessage("Test Procedure", "Step 15) Wait for 1 minute.");
 		message.showMessage("Test Procedure", String.format("Step 16) Command %s to send an emergency "
-				+ "Notification message (Notification 5) with TTL configured for "
-				+ "10 minutes.", TBAD1));
+				+ "Notification message (Notification 5) with TTL configured for 10 minutes.", TBAD1));
 		
 		response = message.showQuestion("Pass/Fail Criteria", String.format("Does DUT receive an emergency "
 				+ "Notification message (Notification 5) from %s?", TBAD3));
 		
 		if (response != 0) //1==NO
 		{
-			fail(String.format("DUT not receives a warning Notification message (Notification 4) "
-					+ "from %s.", TBAD3));						
+			fail(String.format("DUT not receives a warning Notification message (Notification 4) from %s.", TBAD3));						
 			return;
 		}
 
 		message.showMessage("Test Procedure", "Step 17) Wait for 1 minute.");
 		message.showMessage("Test Procedure", String.format("Step 18) Command %s to send a warning "
-				+ "Notification message (Notification 6) with TTL configured for "
-				+ "10 minutes.", TBAD1));
+				+ "Notification message (Notification 6) with TTL configured for 10 minutes.", TBAD1));
 		
 		response = message.showQuestion("Pass/Fail Criteria", String.format("Does DUT receive a warning "
-				+ "Notification message (Notification 6) from %s? Is Notification 4 "
-				+ "no longer displayed?", TBAD3));
+				+ "Notification message (Notification 6) from %s? Is Notification 4 no longer displayed?", TBAD3));
 		
 		if (response != 0) //1==NO
 		{
@@ -482,8 +450,7 @@ public class NotificationIOPTestSuite
 
 	private void IOP_Notification_Consumer_v1_03()
 	{
-		String category = CategoryKeys.THREE;
-		String getGoldenUnitOnboarding = null;
+		String TBAD1, TBAD2, TBAD3, TBAD_O = null;
 		
 		message.showMessage("Initial Conditions", "DUT and Golden Units are switched off.");
 		message.showMessage("Test Procedure", "Step 1) Switch on DUT.");
@@ -491,41 +458,31 @@ public class NotificationIOPTestSuite
 
 		if (ICSON_OnboardingServiceFramework)
 		{
-			getGoldenUnitOnboarding = getGoldenUnitName(category);
-			if (getGoldenUnitOnboarding == null)
+			if ((TBAD_O = getGoldenUnitName(CategoryKeys.THREE)) == null)
 			{
-				fail(String.format("No %s Golden Unit but ICSON_OnboardingServiceFramework is equals to true.", category));
+				fail(String.format("ICSON_OnboardingServiceFramework is set to true but there is no %s Golden Unit.", CategoryKeys.THREE));
 				inconc = true;
 				return;
 			}
 		}
-		
-		category = CategoryKeys.FIVE_TWO;
-		String TBAD1 = getGoldenUnitName(category);
 
-		if (TBAD1 == null)
+		if ((TBAD1 = getGoldenUnitName(CategoryKeys.FIVE_TWO)) == null)
 		{
-			fail(String.format("No %s Golden Unit.", category));
+			fail(String.format("There is no %s Golden Unit.", CategoryKeys.FIVE_TWO));
 			inconc = true;
 			return;
 		}
 		
-		category = CategoryKeys.FIVE_TWO;
-		String TBAD2 = getGoldenUnitName(category);
-
-		if (TBAD2 == null)
+		if ((TBAD2 = getGoldenUnitName(CategoryKeys.FIVE_TWO)) == null)
 		{
-			fail(String.format("No %s Golden Unit.", category));
+			fail(String.format("There is no %s Golden Unit.", CategoryKeys.FIVE_TWO));
 			inconc = true;
 			return;
 		}
 		
-		category = CategoryKeys.FIVE_TWO;
-		String TBAD3 = getGoldenUnitName(category);
-
-		if (TBAD3 == null)
+		if ((TBAD3 = getGoldenUnitName(CategoryKeys.FIVE_TWO)) == null)
 		{
-			fail(String.format("No %s Golden Unit.", category));
+			fail(String.format("There is no %s Golden Unit.", CategoryKeys.FIVE_TWO));
 			inconc = true;
 			return;
 		}
@@ -533,7 +490,7 @@ public class NotificationIOPTestSuite
 		if (ICSON_OnboardingServiceFramework)
 		{
 			message.showMessage("Test Procedure", String.format("Step 3) Connect the DUT and the Golden Units to the AP network if"
-					+ " they are not connected yet, use %s to onboard the DUT to the personal AP.", getGoldenUnitOnboarding));
+					+ " they are not connected yet, use %s to onboard the DUT to the personal AP.", TBAD_O));
 		}
 		else
 		{
@@ -543,44 +500,38 @@ public class NotificationIOPTestSuite
 		
 		message.showMessage("Test Procedure", String.format("Step 4) Establish an AllJoyn connection between "
 				+ "the DUT %s, %s and %s.", TBAD1, TBAD2, TBAD3));
-		message.showMessage("Test Procedure", String.format("Step 5) Command %s to send an emergency "
-				+ "‘Notification’ message.", TBAD1));
+		message.showMessage("Test Procedure", String.format("Step 5) Command %s to send an emergency ‘Notification’ message.", TBAD1));
 		
 		int response = message.showQuestion("Pass/Fail Criteria", String.format("Does DUT receive Notification "
 				+ "message from %s with the correct language?", TBAD1));
 		
 		if (response != 0) //1==NO
 		{
-			fail(String.format("DUT not receives Notification message from %s with the "
-					+ "correct language.", TBAD1));						
+			fail(String.format("DUT not receives Notification message from %s with the correct language.", TBAD1));						
 			return;
 		}
 
 		message.showMessage("Test Procedure", "Step 6) Wait for 1 minute.");
-		message.showMessage("Test Procedure", String.format("Step 7) Command %s to send an information "
-				+ "‘Notification’ message.", TBAD2));
+		message.showMessage("Test Procedure", String.format("Step 7) Command %s to send an information ‘Notification’ message.", TBAD2));
 		
 		response = message.showQuestion("Pass/Fail Criteria", String.format("Does DUT DUT receive Notification "
 				+ "message from %s with the correct language?", TBAD2));
 		
 		if (response != 0) //1==NO
 		{
-			fail(String.format("DUT not receives Notification message from %s with the correct "
-					+ "language.", TBAD2));						
+			fail(String.format("DUT not receives Notification message from %s with the correct language.", TBAD2));						
 			return;
 		}
 
 		message.showMessage("Test Procedure", "Step 8) Wait for 1 minute.");
-		message.showMessage("Test Procedure", String.format("Step 9) Command %s to send a warning "
-				+ "‘Notification’ message.", TBAD3));
+		message.showMessage("Test Procedure", String.format("Step 9) Command %s to send a warning ‘Notification’ message.", TBAD3));
 		
 		response = message.showQuestion("Pass/Fail Criteria", String.format("Does DUT receives Notification "
 				+ "message from %s with the correct language?", TBAD3));
 		
 		if (response != 0) //1==NO
 		{
-			fail(String.format("DUT not receives Notification "
-					+ "message from %s with the correct language.", TBAD3));						
+			fail(String.format("DUT not receives Notification message from %s with the correct language.", TBAD3));						
 			return;
 		}
 	}
@@ -613,7 +564,6 @@ public class NotificationIOPTestSuite
 		
 		if (goldenUnitsList != null)
 		{
-			//if(goldenUnitsList != null && goldenUnitsList.size() > 1)
 			if (goldenUnitsList.size() > 1)
 			{
 				Object col[] = {"Golden Unit Name", "Category"};
@@ -666,8 +616,7 @@ public class NotificationIOPTestSuite
 						if (selectedGU != -1)
 						{
 							dialog.dispose();
-							name = "GU: " + goldenUnitsList.remove(selectedGU);
-							//goldenUnits.put(Category, gu);
+							name = goldenUnitsList.remove(selectedGU);
 						}		
 					}
 				});
@@ -691,7 +640,7 @@ public class NotificationIOPTestSuite
 			}
 			else if (goldenUnitsList.size() == 1)
 			{
-				name = "GU: " + goldenUnitsList.remove(0);
+				name = goldenUnitsList.remove(0);
 			}
 		}
 		return name;
