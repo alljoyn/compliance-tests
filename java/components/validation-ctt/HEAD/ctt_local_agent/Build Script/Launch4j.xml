@@ -8,7 +8,7 @@
   <cmdLine></cmdLine>
   <chdir>.</chdir>
   <priority>normal</priority>
-  <downloadUrl>http://www.oracle.com/technetwork/es/java/javase/downloads/jre7-downloads-1880261.html</downloadUrl>
+  <downloadUrl>http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html</downloadUrl>
   <supportUrl></supportUrl>
   <stayAlive>true</stayAlive>
   <restartOnCrash>false</restartOnCrash>
@@ -22,8 +22,8 @@
     <path></path>
     <bundledJre64Bit>false</bundledJre64Bit>
     <bundledJreAsFallback>false</bundledJreAsFallback>
-    <minVersion>1.7.0</minVersion>
-    <maxVersion>1.7.9</maxVersion>
+    <minVersion>1.8.0</minVersion>
+    <maxVersion>1.8.0_51</maxVersion>
     <jdkPreference>preferJre</jdkPreference>
     <runtimeBits>64</runtimeBits>
   </jre>

@@ -56,9 +56,6 @@ import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import javax.crypto.SecretKey;
 import javax.imageio.ImageIO;
@@ -72,9 +69,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -96,6 +93,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -114,215 +112,192 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-/**
- * The Class TestCasesWindow.
- */
 public class TestCasesWindow extends JPanel
 { 
-	/** The test cases window. */
-	TestCasesWindow testCasesWindow;
-
-	/** The test to execute. */
-	private String test;
-
-	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 7430591674214212172L;
-
-	/** The table that shows the testcases. */
-	private JTable table;
-
-	/** If true the program is running all test cases. */
-	private Boolean runAllTestCases=false;
-
-	/** If true the results had been sent. */
-	private Boolean sendedResults=false;
-
-	/** The send button used to stop execution or send results. */
-	private JButton sendButton;
-
-	/** The Test cases Array. */
-	private String[] TestCases;
-
-	/** The test case process. */
-	private Process testCaseProcess;
-
-	/** The doc obtained from the web. */
-	static Document doc;
-
-	/** The version. */
-	private String version;
-
-	/** The dialog used to select the sample. */
-	private JDialog selectSample;
-
-	/** The dialog that shows the end run all testcases message. */
-	private JDialog dialogEndRunAll;
-
-	/** The table sample. */
-	JTable tableSample;
-
-	/** The software version of the sample. */
-	String[] swVer;
-
-	/** The Device id of the sample . */
-	String[] DeviceId;
-
-	/** The hardware version of the sample. */
-	String[] hwVer;
-
-	/** The App id of the sample. */
-	String[] AppId;
-
-	/** The id. */
-	int id; 
-
-	/** The selected sample. */
-	int selectedSample=-1;
-
-	/** The user used to authenticate. */
-	String user;
-
-	/** The token obtained when authenticate. */
-	String token;
-
-	/** The table size. */
-	int tableSize;
-
-	/** If true the testCase is executing . */
-	Boolean running=false;
-
-	/** The log frame that shows the execution log. */
-	JDialog logFrame;
-
-	/** The capture pane. */
-	CapturePane capturePane;
-
-	/** The execution thread. */
-	Thread executionThread;
-
-	/** Class logger */
-	private  Logger logger;
-
-	/** The main window class. */
-	MainWindow mainWindow=null;
+	private static final String TAG = "TestCasesWindow";
+	private static final Logger logger = Logger.getLogger(TAG);
+	private static final Object testCasesTableColumns[] = {"Test Case", "Description", "Certification Release", "Action",
+		"Result", "Date & Time"};
+	private final static String TEXT_FONT = "Arial";
+	private final static int TEXT_FONT_SIZE = 12;
+	private final static int TEXT_FONT_STYLE= Font.BOLD;
+	private static final int runButtonColumn = 3;
+	private static final int verdictColumn = 4;
+	private final static String passVerdict = "PASS";
+	private final static String failVerdict = "FAIL";
+	private final static String inconcluseVerdict = "INCONC";
+	private final static String configurationFileName = "config.xml";
+	private final static String resultsFileName = "Results.xml";
+	private final static String hashAlgorithm = "MD5";
 	
+	private String test;
+	private JTable table;
+	private Boolean runAllTestCases=false;
+	private Boolean sendedResults=false;
+	private JButton sendButton;
+	private String[] TestCases;
+	private Process testCaseProcess;
+	static Document doc;
+	private String version;
+	private JDialog selectSample;
+	private JDialog dialogEndRunAll;
+	JTable tableSample;
+	String[] swVer;
+	String[] DeviceId;
+	String[] hwVer;
+	String[] AppId;
+	int projectId; 
+	int selectedSample=-1;
+	String user;
+	String token;
+	int tableSize;
+	boolean testCaseIsRunning = false;
+	JDialog logFrame;
+	Thread executionThread;
+	//private Logger logger;
+	MainWindow mainWindow=null;
 	SecretKey cipherKey;
-
+	CapturePane capturePane;
 
 	/**
 	 * Instantiates a new test cases window.
 	 *
-	 * @param 	mainWindow 						main window to associate with "back" click
-	 * @param 	id 								project ID
-	 * @param 	version 						certification release
-	 * @param 	user 							authenticated user
-	 * @param 	token 							authentication token
-	 * @throws 	SAXException 					the SAX exception
-	 * @throws 	ParserConfigurationException 	the parser configuration exception
-	 * @throws 	IOException 					Signals that an I/O exception has occurred.
+	 * @param mainWindow
+	 * 			main window to associate with "back" click
+	 * @param id
+	 * 			project ID
+	 * @param version
+	 * 			certification release
+	 * @param user
+	 * 			authenticated user
+	 * @param token
+	 * 			authentication token
+	 * 
+	 * @throws SAXException
+	 * 			the SAX exception
+	 * @throws ParserConfigurationException
+	 * 			the parser configuration exception
+	 * @throws IOException
+	 * 			Signals that an I/O exception has occurred.
 	 */
-	public TestCasesWindow(MainWindow mainWindow,int id, String version, String user,String token, Level logLevel,
+	public TestCasesWindow(MainWindow mainWindow, int projectId, String version, String user,String token, Level logLevel,
 			SecretKey cipherKey) throws SAXException, ParserConfigurationException, IOException
 	{
-		this.logger = Logger.getLogger(this.getClass().getName());
-		this.logger.setLevel(logLevel);
-		this.mainWindow= mainWindow;
-		this.version=version;
-		testCasesWindow=this;	
-		this.id=id;
-		this.user=user;
-		this.token=token;
+		//this.logger = Logger.getLogger(this.getClass().getName());
+		TestCasesWindow.logger.setLevel(logLevel);
+		this.mainWindow = mainWindow;
+		this.version = version;
+		this.projectId = projectId;
+		this.user = user;
+		this.token = token;
 		this.cipherKey = cipherKey;
 		
-		Object col[] = {"Test Case","Description",
-				"Certification Release","Action", "Result",
-				"Date & Time"};
-		
-		doc=getXML(id, user,token);
+		doc = getTestCasesInfoFromServer(projectId, user, token);
 		tableSize = doc.getElementsByTagName("TestCase").getLength();
-		TestCases=new String[tableSize];
+		TestCases = new String[tableSize];
 		
-		TableModel model = new DefaultTableModel(col,tableSize){
-
+		TableModel noEditableCellsExceptRunModel = new DefaultTableModel(testCasesTableColumns, doc.getElementsByTagName("TestCase").getLength())
+		{
 			private static final long serialVersionUID = -5114222498322422255L;
 
 			public boolean isCellEditable(int row, int column)
 			{
-				if(column==3){
-					return true;
-				}else{
-					return false;
-				}
+				return (column == runButtonColumn);
 			}
 		};
 		
-		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWeights = new double[]{0.5};
-		gridBagLayout.rowWeights = new double[]{0.5, 0.9};
-		setLayout(gridBagLayout);
-		
-		GridBagConstraints gbc_header = new GridBagConstraints();
-		gbc_header.gridx = 0;
-		gbc_header.gridy = 0;
-		gbc_header.fill=GridBagConstraints.BOTH;
-		add(mainWindow.getHeaderPanel(),gbc_header);
-		
-		table=new JTable(model){
-			
+		table = new JTable(noEditableCellsExceptRunModel)
+		{
 			private static final long serialVersionUID = -8369977836878349660L;
 			
-			public Component prepareRenderer(
-					TableCellRenderer renderer, int row, int column)
+			public Component prepareRenderer(TableCellRenderer renderer, int row, int column)
 			{
-				//Change colors depending on test result
-				int viewIdx = row;
-				int modelIdx = convertRowIndexToModel(viewIdx);
 				Component comp = super.prepareRenderer(renderer, row, column);
 				comp.setForeground(Color.black);
-				Font font=new Font("Arial", Font.BOLD, 12);
+				Font font = new Font(TEXT_FONT, TEXT_FONT_STYLE, TEXT_FONT_SIZE);
 				comp.setFont(font);
-				if(column==4||column==6){
-					if("INCONC".equals(table.getModel().getValueAt(modelIdx, column))){
-						comp.setForeground(new Color(168,161,0));
-					}else if("PASS".equals(table.getModel().getValueAt(modelIdx, column))){
-						comp.setForeground(new Color(103,154,0));
-					}else if("FAIL".equals(table.getModel().getValueAt(modelIdx, column))){
-						comp.setForeground(new Color(217,61,26));
+				
+				if (column == verdictColumn)
+				{
+					if (inconcluseVerdict.equals(table.getModel().getValueAt(row, column)))
+					{
+						comp.setForeground(new Color(168, 161, 0));
 					}
-				}else{
+					else if (passVerdict.equals(table.getModel().getValueAt(row, column)))
+					{
+						comp.setForeground(new Color(103, 154, 0));
+					}
+					else if (failVerdict.equals(table.getModel().getValueAt(row, column)))
+					{
+						comp.setForeground(new Color(217, 61, 26));
+					}
+				}
+				else
+				{
 					comp = super.prepareRenderer(renderer, row, column);
 				}
 				return comp;
 			}
 		};
+		
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		table.setBorder(null);
 		TableRowSorter<TableModel> sorter = new TableRowSorter<>(table.getModel());
-		sorter.setSortable(3, false);
+		sorter.setSortable(runButtonColumn, false);
 		table.setRowSorter(sorter);
-		table.getSelectionModel().addListSelectionListener(
-				new ListSelectionListener() {
-					@Override
-					public void valueChanged(ListSelectionEvent arg0) {
-						table.repaint();
-					}
-				}
-		);
+		
+		table.getSelectionModel().addListSelectionListener(new ListSelectionListener()
+		{
+			@Override
+			public void valueChanged(ListSelectionEvent arg0)
+			{
+				table.repaint();
+			}
+		});
+		
+		setPanelLayout();
+		setPanelHeader();
+		setPanelTable();
+	}
+	
+	private void setPanelLayout()
+	{
+		GridBagLayout gridBagLayout = new GridBagLayout();
+		
+		gridBagLayout.columnWeights = new double[]{0.5};
+		gridBagLayout.rowWeights = new double[]{0.5, 0.9};
+		
+		setLayout(gridBagLayout);
+	}
+	
+	private void setPanelHeader()
+	{
+		GridBagConstraints gbc_header = new GridBagConstraints();
+		
+		gbc_header.gridx = 0;
+		gbc_header.gridy = 0;
+		gbc_header.fill = GridBagConstraints.BOTH;
+		
+		add(mainWindow.getHeaderPanel(), gbc_header);
+	}
+	
+	private void setPanelTable()
+	{
+		fillTestCasesTable(table, doc);
 		
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setViewportBorder(null);
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 		gbc_scrollPane.gridx = 0;
 		gbc_scrollPane.gridy = 1;
-		gbc_scrollPane.anchor=GridBagConstraints.NORTH;
-		gbc_scrollPane.fill=GridBagConstraints.BOTH;
-		add(scrollPane,gbc_scrollPane);
-		drawTestCases(table,doc);
+		gbc_scrollPane.anchor = GridBagConstraints.NORTH;
+		gbc_scrollPane.fill = GridBagConstraints.BOTH;
+		add(scrollPane, gbc_scrollPane);
+		
 		table.getColumn("Action").setMaxWidth(80);
 		table.getColumn("Action").setMinWidth(80);
 		table.getColumn("Action").setCellRenderer(new ButtonRenderer());
-		table.getColumn("Action").setCellEditor(
-				new ButtonEditor(new JCheckBox()));
+		table.getColumn("Action").setCellEditor(new ButtonEditor(new JCheckBox()));
 	}
 
 	/**
@@ -332,158 +307,392 @@ public class TestCasesWindow extends JPanel
 	 * @param 	doc 	the document that contains the Test Cases values
 	 * @return 			the test cases
 	 */
-	private void drawTestCases(JTable table,Document doc)
+	private void fillTestCasesTable(JTable table, Document doc)
 	{
 		NodeList testCases = doc.getElementsByTagName("TestCase");
-		for (int i = 0; i < testCases.getLength(); i++) {
+		
+		for (int i = 0; i < testCases.getLength(); i++)
+		{
 			Node node = testCases.item(i);
 			Element element = (Element) node;
 			
-			String name=getValue("Name", element);
-			table.setValueAt(name,i,0);
-			TestCases[i]=name;
-			
-			String description=getValue("Description", element);
-			table.setValueAt(description,i,1);
-			
-			table.setValueAt(version,i,2);
-
-			String LastVerdict=getValue("LastVerdict", element);
-			table.setValueAt(LastVerdict,i,4);
-			
-			String LastExec=getValue("LastExec", element);
-			if(LastExec.equals("Not executed")){
-				table.setValueAt("",i,5); 
-			}else{
-				table.setValueAt(LastExec,i,5); 
-			}
+			TestCases[i] = fillColumn("Name", i, 0, element, table);			
+			fillColumn("Description", i, 1, element, table);		
+			table.setValueAt(version, i, 2);
+			fillColumn("LastVerdict", i, 4, element, table);		
+			fillColumn("LastExec", i, 5, element, table);
 		}
 	}
-	/**
-	 * Save results in web server.
-	 */
-	protected void saveResults()
+	
+	private String fillColumn(String xmlDataName, int row, int column, Element xmlElement, JTable tableToFill)
 	{
-		getResults();
-		saveLog(capturePane.getLog());
+		String dataValue = getValue(xmlDataName, xmlElement);
+		
+		if (xmlDataName.equals("LastExec"))
+		{
+			if (dataValue.equals("Not executed"))
+			{
+				tableToFill.setValueAt("", row, column);
+			}
+			else
+			{
+				tableToFill.setValueAt(dataValue, row, column);
+			}
+		}
+		else
+		{
+			tableToFill.setValueAt(dataValue, row, column);
+		}
+		
+		return dataValue;
+	}
+	
+	/**
+	 * Gets the log generated by the Test Case and sends it to the Web Server.
+	 */
+	protected void updateResultsInAgentAndServer()
+	{
+		displayLastExecutionResults();
+		generateLastExecutionLogFile(capturePane.getLog());
 		
 		logFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		//capturePane.deleteLog();
 		capturePane.clear();
-		running=false;
+		testCaseIsRunning = false;
 		capturePane.removeAll();
 		logFrame.dispose();
 		
-		sendResults();
+		sendResultsAndLogFilesToServer();
 		
 		System.out.close();
 		System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 	}
+	
+	/**
+	 * Gets the results of the last executed Test Cases and refresh the table with the values obtained.
+	 *
+	 */
+	protected void displayLastExecutionResults()
+	{
+		Document resultsXmlDocument = parseResultsFromFile();
+		
+		if (resultsXmlDocument != null)
+		{	
+			NodeList resultsNodeList = resultsXmlDocument.getElementsByTagName("TestCase");
+	
+			for (int i = 0; i < resultsNodeList.getLength(); i++)
+			{
+				Node node = resultsNodeList.item(i);
+				Element element = (Element) node;
+				
+				for (int j = 0; j < tableSize ; j++)
+				{
+					if(getValue("Name", element).equals(table.getValueAt(j, 0)))
+					{
+						table.setValueAt(getValue("Verdict", element), j, 4);
+						table.setValueAt(getValue("DateTime", element), j, 5);
+					}
+				}
+			}
+		}
+		/*else
+		{
+			for (int j = 0; j < tableSize ; j++)
+			{
+				if (inconcluseVerdict.equals(table.getValueAt(j, 4)))
+				{
+					JTextField res = new JTextField(inconcluseVerdict);
+					res.setForeground(Color.YELLOW);
+					table.setValueAt(res, j, 4);
+					Date utilDate = new java.util.Date(); 
+					long lnMilisec = utilDate.getTime();
+					Timestamp sqlTimestamp = new java.sql.Timestamp(lnMilisec);
+					String timeStamp= new SimpleDateFormat("YYYY-MM-dd HH:mm:ss").format(sqlTimestamp);
+					table.setValueAt(timeStamp, j, 5);
+				}
+			}
+		}*/
+	}
+	
+	/**
+	 * Reads the Test Cases last execution information from file
+	 *
+	 * @return last execution of each Test Case of the project
+	 */
+	private Document parseResultsFromFile()
+	{
+		Document resultsXmlDocument = null;
+		
+		try
+		{
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			resultsXmlDocument = dbFactory.newDocumentBuilder().parse(new File(resultsFileName));
+			resultsXmlDocument.getDocumentElement().normalize();
+		}
+		catch (ParserConfigurationException e)
+		{
+			logger.error("DocumentBuilder configuration problem");
+		}
+		catch (SAXException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			logger.error(String.format("It is not possible to read %s.", resultsFileName));
+		}
+
+		return resultsXmlDocument;
+	}
+	
+	/**
+	 * Generates the log file of the execution of a Test Case if the Verdict
+	 * has been properly set.
+	 *
+	 * @param logText
+	 * 			log generated during the execution of the Test Case. It will be stored
+	 * 			into a log file if the Final Verdict of the Test Case was properly set
+	 * 			before. 
+	 */
+	protected void generateLastExecutionLogFile(String logText)
+	{
+		Document resultsXmlDocument = parseResultsFromFile();
+		
+		if (resultsXmlDocument != null)
+		{
+			NodeList resultsNodeList = resultsXmlDocument.getElementsByTagName("TestCase");
+			Node node = resultsNodeList.item(resultsNodeList.getLength() - 1);
+			Element element = (Element) node;
+			String logName = getValue("LogFile", element);
+			String logPath = getConfigValue("LogPath");
+			PrintWriter out = null;
+			
+			try
+			{
+				File dir = new File(logPath);
+				
+				if(!dir.exists())
+				{
+					dir.mkdirs();
+				}
+				out = new PrintWriter(logPath + logName, "UTF-8");
+			}
+			catch (UnsupportedEncodingException e)
+			{
+				logger.error("Encoding format not supported");
+			}
+			catch (FileNotFoundException e)
+			{
+				logger.error("Output file not found");
+			}
+			out.println(logText);
+			out.close();
+		}
+		else
+		{
+			JOptionPane.showMessageDialog(null, "It was not possible to generate the log file");
+			logger.debug(String.format("%s file was not correctly generated", resultsFileName));
+		}
+	}
 
 	/**
-	 * Sends results to the web server.
+	 * First, this method sends an XML with Test Case execution data (verdict, date and time, generated log name). 
+	 * If server response is OK, log file is sent. Again, if server response is OK, local files are deleted.
 	 */
-	protected void sendResults()
+	protected void sendResultsAndLogFilesToServer()
 	{
-		sendedResults=true; 
+		sendedResults = true; //[AT4] This should not be assumed before send
 
-		if(sendResultsXML().getStatusLine().getStatusCode()==200){
-			if(sendLog().getStatusLine().getStatusCode()==200){
-				File log = getLog(getLogName());
-				log.delete();
-				File res = new File("Results.xml");
-				res.delete();
+		if(sendResultsXmlToServer().getStatusLine().getStatusCode() == HttpStatus.SC_OK)
+		{
+			if(sendLogFileToServer().getStatusLine().getStatusCode() == HttpStatus.SC_OK)
+			{
+				File logFile = getLogFromFile();
+				logFile.delete();
+				File resultsFile = new File(resultsFileName);
+				resultsFile.delete();
 			}	
 		}
+	}
+	
+	/**
+	 * Retrieves as file the log to be sent to the Web Server.
+	 *
+	 * @return log file of the recently executed Test Case.
+	 */
+	private File getLogFromFile()
+	{
+		String logFileName = "";
+
+		try
+		{
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			Document doc = dbFactory.newDocumentBuilder().parse(new File(resultsFileName));
+			Element element = (Element) doc.getElementsByTagName("Results").item(0);
+			
+			logFileName = getValue("LogFile", element);
+		}
+		catch (ParserConfigurationException e)
+		{
+			logger.error("DocumentBuilder configuration problem");
+		}
+		catch (SAXException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			logger.error(String.format("It is not possible to read %s", resultsFileName));
+		}
+		return new File(getConfigValue("LogPath") + logFileName);
+	}
+	
+	/**
+	 * Sends the XML with the verdict of the Test Case to the Web Server.
+	 *
+	 * @return HTTP response from the server
+	 */
+	private HttpResponse sendResultsXmlToServer()
+	{
+		String url = getConfigValue("TestToolWebAppUrl") + getConfigValue("SendResultsUrl") + user + "/" + projectId;
+
+		HttpPost postRequest = new HttpPost(url);
+		HttpResponse response = null;
+		
+		try
+		{
+			StringEntity input = new StringEntity(getResult());
+			input.setContentType("application/xml");
+			postRequest.setEntity(input);
+			postRequest.addHeader("Authorization", "bearer " + token);
+			response = HttpClientBuilder.create().build().execute(postRequest);
+		}
+		catch (UnsupportedEncodingException e2)
+		{
+			logger.error(String.format("Unsupported encoding for %s", resultsFileName));
+			e2.printStackTrace();
+		}
+		catch (ClientProtocolException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			logger.error("Error while sending results to the Web Server");
+		}
+		
+		return response;
 	}
 
 	/**
 	 * Sends log to the Web Server.
 	 *
-	 * @return	HTTP response of the server
+	 * @return HTTP response from the server
 	 */
-	private HttpResponse sendLog()
+	private HttpResponse sendLogFileToServer()
 	{
-		String sendLogUrl=getConfigValue("TestToolWebAppUrl")+getConfigValue("UploadLogFile")+user+"/"+id;
-		String logName=getLogName();
-		File log=getLog(logName);
-		//String hash=hashFile(log);
-		
+		String sendLogUrl = getConfigValue("TestToolWebAppUrl") + getConfigValue("UploadLogFile") + user + "/" + projectId;
+		File logFile = getLogFromFile();
 		FileEncryption fE;
 		String encryptedLog = "";
-		try {
+		
+		try
+		{
 			fE = new FileEncryption();
 			fE.setAesSecretKey(cipherKey);
-			encryptedLog = fE.encrypt(Files.readAllBytes(Paths.get(getConfigValue("LogPath")+logName)));
-		} catch (GeneralSecurityException e1) {
+			encryptedLog = fE.encrypt(Files.readAllBytes(Paths.get(getConfigValue("LogPath") + logFile.getName())));
+		}
+		catch (GeneralSecurityException e1)
+		{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		String hash = hashFile(encryptedLog);
-		
+		String hash = hashLogText(encryptedLog);
 		HttpPost post = new HttpPost(sendLogUrl);
 		HttpResponse resp = null;
 		HttpEntity httpEntity = MultipartEntityBuilder.create()
 				.addTextBody("file", encryptedLog)
-				.addTextBody("name", logName)
+				.addTextBody("name", logFile.getName())
 				.addTextBody("hash", hash)
 				.build();
 		
-		post.addHeader("Authorization", "bearer "+token);
+		post.addHeader("Authorization", "bearer " + token);
 		post.setEntity(httpEntity);
 		
-		try {
+		try
+		{
 			resp = HttpClientBuilder.create().build().execute(post);
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			logger.warn("Error while sending log");
 			e.printStackTrace();
 		}
 
-		log.delete();
+		logFile.delete();
 
 		return resp;
 	}
 
 	/**
-	 * Hashes a file.
+	 * Generates an MD5 hash code of the content of a log
 	 *
-	 * @param 	file 						file to be hashed
-	 * @return 								hash
+	 * @param logText
+	 * 			file to be hashed
+	 * 
+	 * @return hash
 	 */
-	//private String hashFile(File file)
-	private String hashFile(String str)
+	private String hashLogText(String logText)
 	{
-		String algorithm="MD5";
-		//FileInputStream inputStream = null;
 		ByteArrayInputStream inputStream = null;
 		byte[] hashedBytes = null;
-		try {
-			//inputStream = new FileInputStream(file);
-			inputStream = new ByteArrayInputStream(str.getBytes());
-			MessageDigest digest = MessageDigest.getInstance(algorithm);
+		MessageDigest digest = null;
+		
+		try
+		{
+			inputStream = new ByteArrayInputStream(logText.getBytes());
+			digest = MessageDigest.getInstance(hashAlgorithm);
 			
 			byte[] bytesBuffer = new byte[1024];
 			int bytesRead = -1;
-			while((bytesRead = inputStream.read(bytesBuffer)) != -1) {
+			
+			while ((bytesRead = inputStream.read(bytesBuffer)) != -1)
+			{
 				digest.update(bytesBuffer, 0, bytesRead);
 			}
 			
 			hashedBytes = digest.digest();
-		} catch (FileNotFoundException e) {
+		}
+		catch (FileNotFoundException e)
+		{
 			logger.error("File does not exist");
-		} catch (NoSuchAlgorithmException e) {
-			logger.error("Algorithm "+algorithm+" not supported");
-		} catch (IOException e) {
+		}
+		catch (NoSuchAlgorithmException e)
+		{
+			logger.error(String.format("Algorithm %s not supported.", hashAlgorithm));
+		}
+		catch (IOException e)
+		{
 			logger.error("Cannot read file");
-		} finally {
-			if(inputStream != null) {
-				try {
+		}
+		finally
+		{
+			if (inputStream != null)
+			{
+				try
+				{
 					inputStream.close();
-				} catch (IOException e) {
+				}
+				catch (IOException e)
+				{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -507,80 +716,6 @@ public class TestCasesWindow extends JPanel
 					.substring(1));
 		}
 		return stringBuffer.toString();
-	}
-	
-	/**
-	 * Sends results XML to Web Server.
-	 *
-	 * @return 	HTTP response from the server
-	 */
-	private HttpResponse sendResultsXML()
-	{
-		String url=getConfigValue("TestToolWebAppUrl")+getConfigValue("SendResultsUrl")+user+"/"+id;
-
-		HttpPost postRequest = new HttpPost(url);
-		HttpResponse response = null;
-		
-		try {
-			StringEntity input = new StringEntity(getResult());
-			input.setContentType("application/xml");
-			postRequest.setEntity(input);
-			postRequest.addHeader("Authorization", "bearer "+token);
-			response = HttpClientBuilder.create().build().execute(postRequest);
-		} catch (UnsupportedEncodingException e2) {
-			logger.error("Unsupported encoding for results.xml");
-			e2.printStackTrace();
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			logger.error("Error while sending results to the Web Server");
-		}
-		
-		return response;
-	}
-
-
-	/**
-	 * Gets the log of the last executed Test Case.
-	 *
-	 * @param 	logName 	name of the log to be obtained
-	 * @return 				log contents
-	 */
-	private File getLog(String logName)
-	{
-		/*String logPath=getConfigValue("LogPath");
-		File log = new File(logPath+logName);
-
-		return log;*/
-		return new File(getConfigValue("LogPath")+logName);
-	}
-
-	/**
-	 * Gets the log name of the last executed Test Case.
-	 *
-	 * @return 		log name
-	 */
-	private String getLogName()
-	{
-		String logName="";
-
-		try {
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			Document doc = dbFactory.newDocumentBuilder().parse(new File("Results.xml"));
-			Element element = (Element) doc.getElementsByTagName("Results").item(0);
-			
-			logName = getValue("LogFile", element);
-		} catch (ParserConfigurationException e) {
-			logger.error("DocumentBuilder configuration problem");
-		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			logger.error("Not possible to read Results.xml");
-		}
-
-		return logName;
 	}
 
 	/**
@@ -614,96 +749,23 @@ public class TestCasesWindow extends JPanel
 		return new String(encoded, encoding);
 	}
 
-	/**
-	 * Gets the results of the last executed Test and refresh the table with these values.
-	 *
-	 */
-	protected void getResults()
-	{
-		Document docu=getResultDoc();
-		
-		if(docu != null) {	
-			NodeList result = docu.getElementsByTagName("TestCase");
-	
-			for (int i = 0; i < result.getLength(); i++) {
-				Node node = result.item(i);
-				Element element = (Element) node;
-				String name=getValue("Name", element);
-				String dateTime=getValue("DateTime", element);
-				String verdict=getValue("Verdict", element);
-				
-				for (int j = 0; j < tableSize ; j++) {
-					if(name.equals(table.getValueAt(j, 0))) {
-						table.setValueAt(verdict,j,4);
-						table.setValueAt(dateTime,j,5);
-					}
-				}
-			}
-		} else {
-			
-			for (int j = 0; j < tableSize ; j++) {
-				
-				if("INCONC".equals(table.getValueAt(j, 4))){
-					JTextField res=new JTextField("INCONC");
-					res.setForeground(Color.YELLOW);
-					table.setValueAt(res,j,4);
-					Date utilDate = new java.util.Date(); 
-					long lnMilisec = utilDate.getTime();
-					Timestamp sqlTimestamp = new java.sql.Timestamp(lnMilisec);
-					String timeStamp= new SimpleDateFormat("YYYY-MM-dd HH:mm:ss").format(sqlTimestamp);
-					table.setValueAt(timeStamp,j,5);
-				}
-			}
-		}
-	}
 
-	/**
-	 * Gets the results doc of the last executed Test.
-	 *
-	 * @return 		results Document
-	 */
-	private Document getResultDoc()
-	{
-		/*File test = new File("Results.xml");
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder dBuilder = null;*/
-		Document doc = null;
-		try {
-			//dBuilder = dbFactory.newDocumentBuilder();
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			doc = dbFactory.newDocumentBuilder().parse(new File("Results.xml"));
-			doc.getDocumentElement().normalize();
-		} catch (ParserConfigurationException e) {
-			logger.error("DocumentBuilder configuration problem");
-		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			logger.error("Not possible to read Results.xml");
-		}
-		/*Document docu = null;
-		try {
-			docu = dBuilder.parse(test);
-			docu.getDocumentElement().normalize();
-		} catch (SAXException e) {
-			logger.error("Not posible to parse Results.xml");
-			e.printStackTrace();
-		} catch (IOException e) {
-			logger.error("Not posible to parse Results.xml");
-			e.printStackTrace();
-		}*/
-		return doc;
-	}
+
+
 
 	/**
 	 * Gets the JSON string from the web server and converts it to an XML document.
 	 *
-	 * @param 	id 		project ID
-	 * @param 	user 	authenticated user
-	 * @param 	token 	authentication token
-	 * @return 			XML data
+	 * @param id
+	 * 			project ID
+	 * @param user
+	 * 			authenticated user
+	 * @param token
+	 * 			authentication token
+	 * 
+	 * @return XML data
 	 */
-	private Document getXML(int id,String user,String token)
+	private Document getTestCasesInfoFromServer(int id,String user,String token)
 	{
 		Document doc = null;
 		String testCases = "";
@@ -786,17 +848,10 @@ public class TestCasesWindow extends JPanel
 		return node.getNodeValue();
 	}
 
-	/**
-	 * The Class ButtonRenderer.
-	 */
 	class ButtonRenderer extends JButton implements TableCellRenderer
 	{
-		/** Serializable version number */
 		private static final long serialVersionUID = 1657789990766718498L;
 
-		/**
-		 * Instantiates a new button renderer.
-		 */
 		public ButtonRenderer()
 		{
 			setOpaque(true);
@@ -812,26 +867,21 @@ public class TestCasesWindow extends JPanel
 			setIcon(new ImageIcon(img));
 		}
 
-		/* (non-Javadoc)
-		 * @see javax.swing.table.TableCellRenderer#getTableCellRendererComponent(javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
-		 */
 		public Component getTableCellRendererComponent(JTable table, Object value,
 				boolean isSelected, boolean hasFocus, int row, int column)
 		{
-			JButton button=new JButton("");
-			button.setOpaque(true);
-			button.setBorderPainted(false); 
-			button.setContentAreaFilled(false); 
-
-			Image img = null;
-			try {
-				img = ImageIO.read(new File("res\\drawable\\run.jpg"));
-			} catch (IOException e) {
-				logger.error("Resource not found");
+			if (isSelected)
+			{
+				setForeground(table.getSelectionForeground());
+				setBackground(table.getSelectionBackground());
 			}
-			button.setIcon(new ImageIcon(img));
-
-			return button;
+			else
+			{
+				setForeground( new Color(255, 255, 255));
+				setBackground(UIManager.getColor("Button.background"));
+			}
+			setText((value == null) ? "" : value.toString());
+			return this;
 		}
 	}
 
@@ -900,7 +950,7 @@ public class TestCasesWindow extends JPanel
 		 */
 		public Object getCellEditorValue()
 		{
-			if (isPushed&&!running) {
+			if (isPushed&&!testCaseIsRunning) {
 				selectSample(doc);
 			} else{
 				JOptionPane.showMessageDialog(button, "Wait until the end of the execution");
@@ -918,7 +968,7 @@ public class TestCasesWindow extends JPanel
 	 */
 	private String getConfigValue(String key)
 	{
-		File cfFile = new File("config.xml");
+		File cfFile = new File(configurationFileName);
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = null;
 		Document doc = null;
@@ -953,15 +1003,7 @@ public class TestCasesWindow extends JPanel
 		String releaseVersion=mainWindow.getTestcasesPackageVersion(version);
 		ProcessBuilder pb = null;
 		
-		capturePane = new CapturePane(testCasesWindow);
-		
-		/*String fonts[] = 
-			      GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-
-			    for ( int i = 0; i < fonts.length; i++ )
-			    {
-			      System.out.println(fonts[i]);
-			    }*/
+		capturePane = new CapturePane(this);
 		
 		System.setOut(new PrintStream(new StreamCapturer(capturePane, System.out)));
 		
@@ -972,7 +1014,7 @@ public class TestCasesWindow extends JPanel
 				+"_"+releaseVersion+".jar", test, "\\cfg.xml");
 		pb.directory(new File(path));
 		
-		running=true;
+		testCaseIsRunning=true;
 		sendedResults=false;
 		try {
 			testCaseProcess = pb.start();
@@ -1046,8 +1088,8 @@ public class TestCasesWindow extends JPanel
 		logFrame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e)
 			{
-				if(!running){
-					saveResults();
+				if(!testCaseIsRunning){
+					updateResultsInAgentAndServer();
 				}else{
 					JOptionPane.showMessageDialog(null, "Wait for verdict");
 				}
@@ -1068,8 +1110,8 @@ public class TestCasesWindow extends JPanel
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
-				if(!running){
-					saveResults();
+				if(!testCaseIsRunning){
+					updateResultsInAgentAndServer();
 				}else{
 					stopTestCaseExecution();
 				}
@@ -1195,9 +1237,11 @@ public class TestCasesWindow extends JPanel
 					selectedSample=tableSample.getSelectedRow();
 					if(selectedSample!=-1){
 						selectSample.dispose();
-						testCasesWindow.setSampleIxit(selectedSample);
+						//testCasesWindow.setSampleIxit(selectedSample);
+						setSampleIxit(selectedSample);
 						if(!runAllTestCases){
-							testCasesWindow.runTestCase(test);
+							//testCasesWindow.runTestCase(test);
+							runTestCase(test);
 						}else{
 							runAll();
 						}
@@ -1210,7 +1254,8 @@ public class TestCasesWindow extends JPanel
 			selectSample.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		}else{//Only 1 Sample
 			if(!runAllTestCases){
-				testCasesWindow.runTestCase(test);
+				//testCasesWindow.runTestCase(test);
+				this.runTestCase(test);
 			}else{
 				runAll();
 			}
@@ -1306,49 +1351,15 @@ public class TestCasesWindow extends JPanel
 		}
 	}
 
-	/**
-	 * Saves the log.
-	 *
-	 * @param 	log 	log contents
-	 */
-	protected void saveLog(String log)
-	{
-		Document docu=getResultDoc();
-		if(docu!=null) {
-			NodeList result = docu.getElementsByTagName("TestCase");
-			int lastResult=result.getLength()-1;
 
-			Node node = result.item(lastResult);
-			Element element = (Element) node;
-
-			String logName=getValue("LogFile", element);
-			PrintWriter out = null;
-			String logPath=getConfigValue("LogPath");
-			try {
-				File dir = new File(logPath);
-				if(!dir.exists()){
-					dir.mkdirs();
-				}
-				out = new PrintWriter(logPath+logName, "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				logger.error("Encoding format not supported");
-			} catch (FileNotFoundException e) {
-				logger.error("Output file not found");
-			}
-			out.println(log);
-			out.close();
-		} else {
-			JOptionPane.showMessageDialog(null, "Log not generated");
-		}
-	}
 
 	/**
 	 * Enables send results button or if it�s running all the Test Cases sends them automatically.
 	 */
 	public void enableSendResults()
 	{
-		if(running){
-			running=false;
+		if(testCaseIsRunning){
+			testCaseIsRunning=false;
 			Image img = null;
 			try {
 				img = ImageIO.read(new File("res\\drawable\\save.jpg"));
@@ -1368,7 +1379,7 @@ public class TestCasesWindow extends JPanel
 				} catch (InterruptedException e) {
 					logger.warn("Waiting time was interrupted");
 				}
-				saveResults();			
+				updateResultsInAgentAndServer();			
 			}
 		}
 	}
@@ -1406,7 +1417,7 @@ public class TestCasesWindow extends JPanel
 			public void actionPerformed(ActionEvent arg0) {
 				logger.info("Stopped Testcase Execution");
 
-				running=false;
+				testCaseIsRunning=false;
 				runAllTestCases=false;
 				testCaseProcess.destroy();
 				//capturePane.deleteLog();

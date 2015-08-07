@@ -6,7 +6,7 @@
 
 !define APP_NAME "Certification Test Tool - Local Agent"
 !define COMP_NAME "AT4 wireless"
-!define VERSION "1.04.00.00"
+!define VERSION "1.05.00.00"
 !define COPYRIGHT "AllSeen Alliance 2015"
 !define DESCRIPTION "Installer for CTT-Local Agent"
 !define MAIN_APP_EXE "CTT_Local_Agent.exe"
@@ -18,7 +18,7 @@
 !define REG_START_MENU "Start Menu Folder"
 ######################################################################
 ;Modify values to fit your project
-!define INSTALLER_NAME "C:\Users\Administrador\Desktop\CTT_Local_Agent_v1.4.0_Installer.exe"
+!define INSTALLER_NAME "C:\Users\Administrador\Desktop\CTT_Local_Agent_v1.5.0_Installer.exe"
 !define LOCAL_AGENT_PATH "C:\Users\Administrador\Desktop\ctt_local_agent"
 !define MSVS2012_PATH "C:\Users\Administrador\Desktop\MSVS2012"
 !define MSVS2013_PATH "C:\Users\Administrador\Desktop\MSVS2013"
@@ -51,16 +51,16 @@ InstallDir "C:\Program Files\CTTLocalAgent"
 ;Visual 2012
 !define ICON_PATH "${LOCAL_AGENT_PATH}\res\drawable"
 !define MSVS2012_DIR "${MSVS2012_PATH}"
- !define MSVS2013_DIR "${MSVS2013_PATH}"
+!define MSVS2013_DIR "${MSVS2013_PATH}"
 ;Request application privileges for Windows Vista, 7, 8
 RequestExecutionLevel admin 
  
 
 
 ; Definitions for Java 7.0
-!define JRE_VERSION "7.0"
-!define JRE_URL "http://download.oracle.com/otn-pub/java/jdk/7u2-b13/jre-7u2-windows-i586.exe"
-!define JRE64_URL "http://download.oracle.com/otn-pub/java/jdk/7u2-b13/jre-7u2-windows-x64.exe"
+!define JRE_VERSION "8.0"
+!define JRE_URL "http://download.oracle.com/otn-pub/java/jdk/8u51-b16/jre-8u51-windows-i586.exe"
+!define JRE64_URL "http://download.oracle.com/otn-pub/java/jdk/8u51-b16/jre-8u51-windows-x64.exe"
 
 ; use javaw.exe to avoid dosbox.
 ; use java.exe to keep stdout/stderr
@@ -127,10 +127,12 @@ File "${LOCAL_AGENT_PATH}\CTT_Local_Agent.exe"
 
 SetOutPath "$INSTDIR\TestCases"
 File "${LOCAL_AGENT_PATH}\TestCases\TestCases_Package_v14.06.00a_R1.jar"
-File "${LOCAL_AGENT_PATH}\TestCases\TestCases_Package_v14.12.00a_R2.jar"
-File "${LOCAL_AGENT_PATH}\TestCases\TestCases_Package_v14.12.00b_R2.jar"
-File "${LOCAL_AGENT_PATH}\TestCases\TestCases_Package_v15.04.00_R2.jar"
-File "${LOCAL_AGENT_PATH}\TestCases\TestCases_Package_v15.04.00a_R5.jar"
+File "${LOCAL_AGENT_PATH}\TestCases\TestCases_Package_v14.12.00_R2.jar"
+File "${LOCAL_AGENT_PATH}\TestCases\TestCases_Package_v14.12.00a_R4.jar"
+File "${LOCAL_AGENT_PATH}\TestCases\TestCases_Package_v14.12.00b_R4.jar"
+File "${LOCAL_AGENT_PATH}\TestCases\TestCases_Package_v15.04.00_R4.jar"
+File "${LOCAL_AGENT_PATH}\TestCases\TestCases_Package_v15.04.00a_R7.jar"
+File "${LOCAL_AGENT_PATH}\TestCases\TestCases_Package_v15.04.00b_R1.jar"
 SetOutPath "$INSTDIR\res\drawable"
 File "${LOCAL_AGENT_PATH}\res\drawable\back.jpg"
 File "${LOCAL_AGENT_PATH}\res\drawable\footer.jpg"
@@ -151,6 +153,10 @@ File "${LOCAL_AGENT_PATH}\res\drawable\ic_AllSeen.png"
 File "${LOCAL_AGENT_PATH}\res\drawable\run_all.jpg"
 File "${LOCAL_AGENT_PATH}\res\drawable\save.jpg"
 File "${LOCAL_AGENT_PATH}\res\drawable\short_footer.jpg"
+
+SetOutPath "$INSTDIR\lib\v14.12.00"
+File "${LOCAL_AGENT_PATH}\lib\v14.12.00\alljoyn_java.dll"
+
 SetOutPath "$INSTDIR\lib\v14.12.00a"
 File "${LOCAL_AGENT_PATH}\lib\v14.12.00a\alljoyn_java.dll"
 
@@ -160,11 +166,14 @@ File "${LOCAL_AGENT_PATH}\lib\v14.06.00a\alljoyn_java.dll"
 SetOutPath "$INSTDIR\lib\v14.12.00b"
 File "${LOCAL_AGENT_PATH}\lib\v14.12.00b\alljoyn_java.dll"
 
-
 SetOutPath "$INSTDIR\lib\v15.04.00"
 File "${LOCAL_AGENT_PATH}\lib\v15.04.00\alljoyn_java.dll"
+
 SetOutPath "$INSTDIR\lib\v15.04.00a"
 File "${LOCAL_AGENT_PATH}\lib\v15.04.00a\alljoyn_java.dll"
+
+SetOutPath "$INSTDIR\lib\v15.04.00b"
+File "${LOCAL_AGENT_PATH}\lib\v15.04.00b\alljoyn_java.dll"
 SectionEnd
 
 ######################################################################
@@ -218,10 +227,12 @@ Delete "$INSTDIR\config.xml"
 Delete "$INSTDIR\icon.ico"
 Delete "$INSTDIR\CTT_Local_Agent.exe"
 Delete "$INSTDIR\TestCases\TestCases_Package_v14.06.00a_R1.jar"
-Delete "$INSTDIR\TestCases\TestCases_Package_v14.12.00a_R2.jar"
-Delete "$INSTDIR\TestCases\TestCases_Package_v14.12.00b_R2.jar"
-Delete "$INSTDIR\TestCases\TestCases_Package_v15.04.00_R2.jar"
-Delete "$INSTDIR\TestCases\TestCases_Package_v15.04.00a_R5.jar"
+Delete "$INSTDIR\TestCases\TestCases_Package_v14.12.00_R2.jar"
+Delete "$INSTDIR\TestCases\TestCases_Package_v14.12.00a_R4.jar"
+Delete "$INSTDIR\TestCases\TestCases_Package_v14.12.00b_R4.jar"
+Delete "$INSTDIR\TestCases\TestCases_Package_v15.04.00_R4.jar"
+Delete "$INSTDIR\TestCases\TestCases_Package_v15.04.00a_R7.jar"
+Delete "$INSTDIR\TestCases\TestCases_Package_v15.04.00b_R1.jar"
 Delete "$INSTDIR\res\drawable\back.jpg"
 Delete "$INSTDIR\res\drawable\footer.jpg"
 Delete "$INSTDIR\res\drawable\header.jpg"
@@ -242,16 +253,20 @@ Delete "$INSTDIR\res\drawable\run.jpg"
 Delete "$INSTDIR\res\drawable\run_all.jpg"
 Delete "$INSTDIR\res\drawable\save.jpg"
 Delete "$INSTDIR\res\drawable\short_footer.jpg"
+Delete "$INSTDIR\lib\v14.06.00a\alljoyn_java.dll"
+Delete "$INSTDIR\lib\v14.12.00\alljoyn_java.dll"
 Delete "$INSTDIR\lib\v14.12.00a\alljoyn_java.dll"
 Delete "$INSTDIR\lib\v14.12.00b\alljoyn_java.dll"
 Delete "$INSTDIR\lib\v15.04.00\alljoyn_java.dll"
 Delete "$INSTDIR\lib\v15.04.00a\alljoyn_java.dll"
-Delete "$INSTDIR\lib\v14.06.00a\alljoyn_java.dll"
+Delete "$INSTDIR\lib\v15.04.00b\alljoyn_java.dll"
+RmDir "$INSTDIR\lib\v14.06.00a"
+RmDir "$INSTDIR\lib\v14.12.00"
 RmDir "$INSTDIR\lib\v14.12.00a"
+RmDir "$INSTDIR\lib\v14.12.00b"
 RmDir "$INSTDIR\lib\v15.04.00"
 RmDir "$INSTDIR\lib\v15.04.00a"
-RmDir "$INSTDIR\lib\v14.12.00b"
-RmDir "$INSTDIR\lib\v14.06.00a"
+RmDir "$INSTDIR\lib\v15.04.00b"
 RmDir "$INSTDIR\lib\"
 RmDir "$INSTDIR\res\drawable"
 RmDir "$INSTDIR\res"
@@ -370,8 +385,8 @@ Function GetJRE
 
   DownloadJRE:
     
-    MessageBox MB_ICONINFORMATION "Certification Test Tool-Local Agent needs to install Java 7 (64 bits). Press OK to continue"
-	ExecShell "open" "http://www.oracle.com/technetwork/es/java/javase/downloads/jre7-downloads-1880261.html"
+    MessageBox MB_ICONINFORMATION "Certification Test Tool-Local Agent needs to install Java 8 (64 bits). Press OK to continue"
+	ExecShell "open" "http://www.oracle.com/technetwork/es/java/javase/downloads/jre8-downloads-2133155.html"
   
 
     ReadRegStr $R1 HKLM "SOFTWARE\JavaSoft\Java Runtime Environment" "CurrentVersion"
@@ -417,8 +432,9 @@ Call  CheckRedistributable2012Installed
 Pop $R0
  
 ${If} $R0 == "Error"
+  SetOutPath "$INSTDIR\msvs2012"
   File "${MSVS2012_DIR}\vcredist_x64.exe" 	
-  ExecWait '"$INSTDIR\vcredist_x64.exe"  /passive /norestart'	
+  ExecWait '"$INSTDIR\msvs2012\vcredist_x64.exe"  /passive /norestart'
 ${EndIf}
 
 
@@ -427,14 +443,13 @@ Call  CheckRedistributable2013Installed
 Pop $R0
  
 ${If} $R0 == "Error"
+  SetOutPath "$INSTDIR\msvs2013"
   File "${MSVS2013_DIR}\vcredist_x64.exe" 	
-  ExecWait '"$INSTDIR\vcredist_x64.exe"  /passive /norestart'	
+  ExecWait '"$INSTDIR\msvs2013\vcredist_x64.exe"  /passive /norestart'
 ${EndIf}
 
+SetOutPath "$INSTDIR"
 
-
-
- 
 ;do other stuff
  
 SectionEnd
