@@ -51,7 +51,7 @@ public class CapturePane extends JPanel implements Consumer
 	 */
 	public CapturePane(TestCasesWindow testCasesWin)
 	{
-		this.testCasesWindow=testCasesWin;
+		this.testCasesWindow = testCasesWin;
 		this.output = new JTextPane();
 		
 		setLayout(new BorderLayout());

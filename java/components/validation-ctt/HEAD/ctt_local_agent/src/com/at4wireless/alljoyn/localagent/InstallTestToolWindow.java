@@ -65,18 +65,21 @@ import org.xml.sax.SAXException;
 public class InstallTestToolWindow extends JDialog
 {
 	private static final long serialVersionUID = 7573195888353975145L;
-	private final JPanel contentPanel = new JPanel();
-	String version = null;
-	String token = "";
-	MainWindow mainWindow;
-	Logger logger;
-	
+	private static final String TAG = "InstallTestToolWindow";
+	private static final Logger logger = Logger.getLogger(TAG);
 	private static final int INSTALL_TEST_TOOL_PANEL_HEIGHT = 300;
 	private static final int INSTALL_TEST_TOOL_PANEL_WIDTH = 650;
 	private final static String RESOURCES_PATH = "res"+File.separator+"drawable";
 	private final static String INSTALL_BUTTON = "install.jpg";
 	private final static String BACK_BUTTON = "back.jpg";
 	private final static String SHORT_FOOTER = "short_footer.jpg";
+	private static final String configurationFileName = "config.xml";
+	
+	//private final JPanel contentPanel = new JPanel();
+	//String version = null;
+	//String token = "";
+	//MainWindow mainWindow;
+	//Logger logger;
 	
 	/**
 	 * Creates the dialog.
@@ -89,12 +92,12 @@ public class InstallTestToolWindow extends JDialog
 	public InstallTestToolWindow(final MainWindow mainWindow, String token, final String version, 
 			final int projectId, Level logLevel, boolean isDebugAndReleaseExists)
 	{
-		logger = Logger.getLogger(this.getClass().getName());
-		logger.setLevel(logLevel);
+		//logger = Logger.getLogger(this.getClass().getName());
+		InstallTestToolWindow.logger.setLevel(logLevel);
 
-		this.version = version;
-		this.mainWindow = mainWindow;		
-		this.token = token;
+		//this.version = version;
+		//this.mainWindow = mainWindow;		
+		//this.token = token;
 		
 		Dimension screenDimensions = Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds(screenDimensions.width/2 - INSTALL_TEST_TOOL_PANEL_WIDTH/2,
@@ -118,37 +121,34 @@ public class InstallTestToolWindow extends JDialog
 		textPane.setFont(new Font("Arial", Font.PLAIN, 15));
 		textPane.setEditable(false);
 
-		String text = "";
+		//String text = "";
 		
 		if (isDebugAndReleaseExists)
 		{
-			text+="\nA release version of Test Cases Package "+version+" is available to download.\n";
-			text+="Please click on Install to upgrade from debug to release.";
+			/*text+="\nA release version of Test Cases Package "+version+" is available to download.\n";
+			text+="Please click on Install to upgrade from debug to release.";*/
+			textPane.setText(String.format("\nA release version of Test Cases Package %s is available to download."
+					+ "\nPlease click on Install to upgrade from debug to release.", version));
 		}
 		else
 		{
-			text+="\nThe installation of the Test Cases Package "+version+" is needed.\n";
-			text+="Please click on Install to continue";
+			/*text+="\nThe installation of the Test Cases Package "+version+" is needed.\n";
+			text+="Please click on Install to continue";*/
+			textPane.setText(String.format("\nThe installation of the Test Cases Package %s is needed."
+					+ "\nPlease click on Install to continue", version));
 		}
 	
-		textPane.setText(text);
+		//textPane.setText(text);
+		JPanel contentPanel = new JPanel();
 		contentPanel.add(textPane);
 
 		ImagePanel buttonPane = new ImagePanel(RESOURCES_PATH+File.separator+SHORT_FOOTER);
 		buttonPane.setLayout(new FlowLayout(FlowLayout.CENTER));
 		JButton backButton = new JButton("");
-		
-		Image img = null;
-		try {
-			img = ImageIO.read(new File(RESOURCES_PATH+File.separator+BACK_BUTTON));
-		} catch (IOException e) {
-			logger.error("Resource not found");
-		}
-		backButton.setIcon(new ImageIcon(img));
+		backButton.setIcon(new ImageIcon(readImageFromFile(RESOURCES_PATH, BACK_BUTTON)));
 		
 		Dimension preferredSize = new Dimension(83,23);
 		backButton.setPreferredSize(preferredSize);
-		
 		backButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -156,23 +156,16 @@ public class InstallTestToolWindow extends JDialog
 				mainWindow.getProjectWindow();
 			}
 		});
-		JButton installButton = new JButton("");
-	
-		Image img2 = null;
-		try {
-			img2 = ImageIO.read(new File(RESOURCES_PATH+File.separator+INSTALL_BUTTON));
-		} catch (IOException e2) {
-			logger.error("Resource not found");
-		}
 		
-		installButton.setIcon(new ImageIcon(img2));
+		JButton installButton = new JButton("");
+		installButton.setIcon(new ImageIcon(readImageFromFile(RESOURCES_PATH, INSTALL_BUTTON)));
 		installButton.setPreferredSize(preferredSize);
 		installButton.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				installTestToolPackage();
+				installTestToolPackage(mainWindow, version, token);
 				dispose();
 				mainWindow.getTestCasesWindow(projectId, version);
 			}
@@ -187,17 +180,29 @@ public class InstallTestToolWindow extends JDialog
 		getContentPane().add(buttonPane, BorderLayout.SOUTH);
 	}
 	
+	private Image readImageFromFile(String imagePath, String imageName)
+	{
+		Image image = null;
+		
+		try
+		{
+			image = ImageIO.read(new File(imagePath + File.separator + imageName));
+		}
+		catch (IOException e)
+		{
+			logger.error("Resource '" + imageName + "' not found");
+		}
+		
+		return image;
+	}
+	
 	/**
 	 * Install test tool package from the web server.
 	 */
-	protected void installTestToolPackage()
+	protected void installTestToolPackage(MainWindow mainWindow, String version, String token)
 	{
 		String releaseVersion = mainWindow.getLastReleaseVersion(version);
-
-		String url = getConfigValue("TestToolWebAppUrl")+
-				getConfigValue("GetTechnology")
-				+version.replace(".", "_")
-				+"_"+releaseVersion;
+		String url = getConfigValue("TestToolWebAppUrl") + getConfigValue("GetTechnology") + version.replace(".", "_") + "_" + releaseVersion;
 
 		logger.debug(url);
 
@@ -210,27 +215,22 @@ public class InstallTestToolWindow extends JDialog
 			HttpEntity entity = null;
 			BufferedHttpEntity buf = null;
 			
-			postRequest.addHeader("Authorization", "bearer "+token);
-			/*HttpResponse response = httpClient.execute(postRequest);
-			HttpEntity entity = response.getEntity();*/
+			postRequest.addHeader("Authorization", "bearer " + token);
 			entity = httpClient.execute(postRequest).getEntity();
 			buf = new BufferedHttpEntity(entity);
 			
 			logger.debug("Entity:"+entity);
 
-			//BufferedHttpEntity buf = new BufferedHttpEntity(entity);
-
-			//String output;
 			try
 			{
-				fos = new FileOutputStream(getConfigValue("TestCasesPackagePath")+"TestCases_Package_"+version+"_"+releaseVersion+".jar");
+				fos = new FileOutputStream(getConfigValue("TestCasesPackagePath") + "TestCases_Package_" + version + "_" + releaseVersion + ".jar");
 			}
 			catch (FileNotFoundException e)
 			{
 				File dir = new File(getConfigValue("TestCasesPackagePath"));
 				if (dir.mkdirs())
 				{
-					fos = new FileOutputStream(getConfigValue("TestCasesPackagePath")+"TestCases_Package_"+version+"_"+releaseVersion+".jar");
+					fos = new FileOutputStream(getConfigValue("TestCasesPackagePath") + "TestCases_Package_" + version + "_" + releaseVersion + ".jar");
 				}
 			}
 			buf.writeTo(fos);
@@ -246,11 +246,12 @@ public class InstallTestToolWindow extends JDialog
 
 		InputStream inputStream = null;
 		String path = (new File("")).getAbsolutePath();
-		String inputFile = "jar:file:/"+path+"/"+getConfigValue("TestCasesPackagePath")+"TestCases_Package_"+version+"_"+releaseVersion+".jar!/alljoyn_java.dll";
+		String inputFile = "jar:file:/" + path + "/" + getConfigValue("TestCasesPackagePath") + "TestCases_Package_" + version
+				+ "_" + releaseVersion + ".jar!/alljoyn_java.dll";
 		
 		logger.debug(inputFile);
 		
-		String libPath = path+File.separator+"lib"+File.separator+version+File.separator;
+		String libPath = path + File.separator + "lib" + File.separator + version + File.separator;
 		
 		logger.debug(libPath);
 		
@@ -267,7 +268,7 @@ public class InstallTestToolWindow extends JDialog
 		catch (MalformedURLException e1)
 		{
 			e1.printStackTrace();
-			System.err.println("Malformed URL: "+inputURL);
+			System.err.println(String.format("Malformed URL: %s",inputURL));
 			return;
 		}
 		catch (IOException e1)
@@ -281,7 +282,7 @@ public class InstallTestToolWindow extends JDialog
 		FileOutputStream outputStream = null;
 		try
 		{
-			outputStream = new FileOutputStream(new File(path+File.separator+"lib"+File.separator+version+File.separator+"alljoyn_java.dll"));
+			outputStream = new FileOutputStream(new File(path + File.separator + "lib" + File.separator + version + File.separator + "alljoyn_java.dll"));
 		}
 		catch (FileNotFoundException e)
 		{
@@ -316,20 +317,22 @@ public class InstallTestToolWindow extends JDialog
 	}
 	
 	/**
-	 * Gets the configuration value from config.xml.
+	 * Gets a configuration value from config.xml.
 	 *
-	 * @param 	key 	the key whose value is going to be obtained
-	 * @return 			value
+	 * @param dataToRetrieve
+	 * 			the key whose value is going to be searched
+	 * 
+	 * @return value associated with the input key
 	 */
-	private String getConfigValue(String key)
+	private String getConfigValue(String dataToRetrieve)
 	{
-		File cfFile = new File("config.xml");
+		File cfFile = new File(configurationFileName);
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = null;
 		Document doc = null;
 		Element element = null;
 		
-		logger.debug("Retrieving: "+key);
+		logger.debug("Retrieving: " + dataToRetrieve);
 		try
 		{
 			dBuilder = dbFactory.newDocumentBuilder();
@@ -350,15 +353,18 @@ public class InstallTestToolWindow extends JDialog
 		{
 			logger.error("Configuration file not found");
 		}
-		return getValue(key, element);
+		return getValue(dataToRetrieve, element);
 	}
 	
 	/**
 	 * Gets the value of the selected tag from config.xml. 
 	 *
-	 * @param 	tag 		desired value to recover
-	 * @param 	element 	element with the xml string
-	 * @return 				value
+	 * @param xmlSelectedTag
+	 * 			desired field to recover its value
+	 * @param xmlElement
+	 * 			XML element that contains the tag
+	 * 
+	 * @return value associated with the input tag
 	 */
 	private static String getValue(String tag, Element element)
 	{

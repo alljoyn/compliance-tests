@@ -67,33 +67,34 @@ import org.xml.sax.SAXException;
 public class InstallLastVersionWindow extends JDialog
 {
 	private static final long serialVersionUID = 7573195888353975145L;
-	private final JPanel contentPanel = new JPanel();
-	String token = "";
-	MainWindow mainWindow;
-	private JLabel downloadingLabel;
-	Logger logger;
-	
+	private static final String TAG = "InstallLastVersionWindow";
+	private static final Logger logger = Logger.getLogger(TAG);
 	private static final int INSTALL_LAST_VERSION_PANEL_HEIGHT = 300;
 	private static final int INSTALL_LAST_VERSION_PANEL_WIDTH = 650;
-	private final static String RESOURCES_PATH = "res"+File.separator+"drawable";
-	private final static String INSTALL_BUTTON = "install.jpg";
-	private final static String BACK_BUTTON = "back.jpg";
-	private final static String SHORT_FOOTER = "short_footer.jpg";
+	private static final String RESOURCES_PATH = "res"+File.separator+"drawable";
+	private static final String INSTALL_BUTTON = "install.jpg";
+	private static final String BACK_BUTTON = "back.jpg";
+	private static final String SHORT_FOOTER = "short_footer.jpg";
+	private static final String configurationFileName = "config.xml";
+	
+	//String token = "";
+	//MainWindow mainWindow;
+	//private JLabel downloadingLabel;
+	//Logger logger;
 	
 	public InstallLastVersionWindow(final MainWindow mainWindow, String token, 
 			String version, String newestVersion, Level logLevel)
 	{	
-		this.logger = Logger.getLogger(this.getClass().getName());
-		this.logger.setLevel(logLevel);
+		//this.logger = Logger.getLogger(this.getClass().getName());
+		InstallLastVersionWindow.logger.setLevel(logLevel);
 		
-		this.mainWindow = mainWindow;		
-		this.token = token;
+		//this.mainWindow = mainWindow;		
+		//this.token = token;
 		
 		Dimension screenDimensions = Toolkit.getDefaultToolkit().getScreenSize();
-		setBounds(screenDimensions.width/2 - INSTALL_LAST_VERSION_PANEL_WIDTH/2,
-				screenDimensions.height/2 - INSTALL_LAST_VERSION_PANEL_HEIGHT/2,
-				INSTALL_LAST_VERSION_PANEL_WIDTH,
-				INSTALL_LAST_VERSION_PANEL_HEIGHT);
+		setBounds((screenDimensions.width - INSTALL_LAST_VERSION_PANEL_WIDTH)/2,
+				(screenDimensions.height - INSTALL_LAST_VERSION_PANEL_HEIGHT)/2,
+				INSTALL_LAST_VERSION_PANEL_WIDTH, INSTALL_LAST_VERSION_PANEL_HEIGHT);
 		
 		setResizable(false);
 		setLayout(new GridLayout(0, 1, 0, 0));
@@ -108,17 +109,13 @@ public class InstallLastVersionWindow extends JDialog
 			}
 		});
 
+		JPanel contentPanel = new JPanel();
 		add(mainWindow.getHeaderPanel(), BorderLayout.NORTH);
 		add(contentPanel, BorderLayout.CENTER);
 		JTextPane textPane = new JTextPane();
 		textPane.setFont(new Font("Arial", Font.PLAIN, 15));
 		textPane.setEditable(false);
-		
-		String text = "You need to upgrade the CTT Local Agent."
-				+ "\nVersion installed: " + version
-				+ "\nNew version: " + newestVersion;
-		
-		textPane.setText(text);
+		textPane.setText(String.format("You need to upgrade the CTT Local Agent. \nVersion installed: %s \nNew version: %s", version, newestVersion));
 		contentPanel.add(textPane);
 
 		ImagePanel buttonPane = new ImagePanel(RESOURCES_PATH+File.separator+SHORT_FOOTER);
@@ -126,17 +123,7 @@ public class InstallLastVersionWindow extends JDialog
 		buttonPane.setLayout(new GridBagLayout());
 		
 		JButton backButton = new JButton("");
-		Image img = null;
-		try
-		{
-			img = ImageIO.read(new File(RESOURCES_PATH+File.separator+BACK_BUTTON));
-		}
-		catch (IOException e2)
-		{
-			logger.error("Resource not found");
-			e2.printStackTrace();
-		}
-		backButton.setIcon(new ImageIcon(img));
+		backButton.setIcon(new ImageIcon(readImageFromFile(RESOURCES_PATH, BACK_BUTTON)));
 		
 		GridBagConstraints backConstraints = new GridBagConstraints();
 		//backConstraints.anchor = GridBagConstraints.NORTHEAST;
@@ -165,18 +152,7 @@ public class InstallLastVersionWindow extends JDialog
 		buttonPane.add(backButton, backConstraints);
 		
 		JButton installButton = new JButton("");
-		Image img2 = null;
-		try
-		{
-			img2 = ImageIO.read(new File(RESOURCES_PATH+File.separator+INSTALL_BUTTON));
-		}
-		catch (IOException e2)
-		{
-			logger.error("Resource not found");
-			e2.printStackTrace();
-		}
-		
-		installButton.setIcon(new ImageIcon(img2));
+		installButton.setIcon(new ImageIcon(readImageFromFile(RESOURCES_PATH, INSTALL_BUTTON)));
 		
 		GridBagConstraints installConstraints = new GridBagConstraints();
 		installConstraints.gridx = 1;
@@ -189,6 +165,8 @@ public class InstallLastVersionWindow extends JDialog
 		installConstraints.insets = new Insets(0, 10, 0, 0);
 		
 		installButton.setPreferredSize(preferredSize);
+		
+		final JLabel downloadingLabel = new JLabel();
 		
 		installButton.addFocusListener(new FocusListener()
 		{
@@ -210,7 +188,7 @@ public class InstallLastVersionWindow extends JDialog
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				installLastVersion();
+				installLastVersion(token);
 				dispose();
 				mainWindow.initialize();	
 			}
@@ -219,7 +197,7 @@ public class InstallLastVersionWindow extends JDialog
 		buttonPane.add(installButton, installConstraints);
 		
 		
-		downloadingLabel = new JLabel();
+		//downloadingLabel = new JLabel();
 		downloadingLabel.setText(" ");
 		downloadingLabel.setVisible(true);
 		GridBagConstraints downloadingConstraints = new GridBagConstraints();
@@ -234,11 +212,27 @@ public class InstallLastVersionWindow extends JDialog
 		getContentPane().add(buttonPane, BorderLayout.SOUTH);
 	}
 	
-	protected void installLastVersion()
+	private Image readImageFromFile(String imagePath, String imageName)
+	{
+		Image image = null;
+		
+		try
+		{
+			image = ImageIO.read(new File(imagePath + File.separator + imageName));
+		}
+		catch (IOException e)
+		{
+			logger.error("Resource '" + imageName + "' not found");
+		}
+		
+		return image;
+	}
+	
+	protected void installLastVersion(String sessionToken)
 	{
 		String path = (new File("")).getAbsolutePath();
 		
-		String url = getConfigValue("TestToolWebAppUrl")+getConfigValue("getLastVersion");
+		String url = getConfigValue("TestToolWebAppUrl") + getConfigValue("getLastVersion");
 		
 		logger.debug(url);
 
@@ -251,26 +245,24 @@ public class InstallLastVersionWindow extends JDialog
 			HttpEntity entity = null;
 			BufferedHttpEntity buf = null;
 			
-			postRequest.addHeader("Authorization", "bearer "+token);
+			postRequest.addHeader("Authorization", "bearer " + sessionToken);
 			HttpResponse response = httpClient.execute(postRequest);
 			
 			String filename = response.getFirstHeader("Content-disposition").getValue().split("=")[1];
 			entity = response.getEntity();
-			//entity = httpClient.execute(postRequest).getEntity();
-			//BufferedHttpEntity buf = new BufferedHttpEntity(entity);
 			buf = new BufferedHttpEntity(entity);
 			
 			try
 			{
-				fos = new FileOutputStream(path+File.separator+getConfigValue("DownloadPath")+filename);
+				fos = new FileOutputStream(path + File.separator + getConfigValue("DownloadPath") + filename);
 			}
 			catch (FileNotFoundException e)
 			{
 				e.printStackTrace();
-				File dir = new File(path+File.separator+getConfigValue("DownloadPath"));
+				File dir = new File(path+File.separator + getConfigValue("DownloadPath"));
 				if (dir.mkdirs())
 				{	
-					fos = new FileOutputStream(path+File.separator+getConfigValue("DownloadPath")+filename);
+					fos = new FileOutputStream(path + File.separator + getConfigValue("DownloadPath") + filename);
 				}
 			}
 			buf.writeTo(fos);
@@ -285,21 +277,29 @@ public class InstallLastVersionWindow extends JDialog
 			logger.error("Malformed URL");
 		}
 		
-		JOptionPane.showMessageDialog(null, "CTT Local Agent has been successfully downloaded."
+		JOptionPane.showMessageDialog(null, String.format("CTT Local Agent has been successfully downloaded."
 				+ "\nProgram will be closed now to allow you to install the new version."
-				+ "\nInstaller location: "+ path + "\\" + getConfigValue("DownloadPath").replace("/", "\\")
-				+ "\nRemember to right-click on the installation package icon and press \"Run as Administrator\"");
+				+ "\nInstaller location: %s+\\+%s\nRemember to right-click on the installation package icon and press \"Run as Administrator\"",
+				path, getConfigValue("DownloadPath").replace("/", "\\")));
 	}
 	
-	private String getConfigValue(String key)
+	/**
+	 * Gets a configuration value from config.xml.
+	 *
+	 * @param dataToRetrieve
+	 * 			the key whose value is going to be searched
+	 * 
+	 * @return value associated with the input key
+	 */
+	private String getConfigValue(String dataToRetrieve)
 	{
-		File cfFile = new File("config.xml");
+		File cfFile = new File(configurationFileName);
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = null;
 		Document doc = null;
 		Element element = null;
 		
-		logger.debug("Retrieving: "+key);
+		logger.debug("Retrieving: " + dataToRetrieve);
 		try
 		{
 			dBuilder = dbFactory.newDocumentBuilder();
@@ -321,9 +321,19 @@ public class InstallLastVersionWindow extends JDialog
 			logger.error("Configuration file not found");
 		}
 		
-		return getValue(key, element);
+		return getValue(dataToRetrieve, element);
 	}
 
+	/**
+	 * Gets the value of the selected tag from config.xml. 
+	 *
+	 * @param xmlSelectedTag
+	 * 			desired field to recover its value
+	 * @param xmlElement
+	 * 			XML element that contains the tag
+	 * 
+	 * @return value associated with the input tag
+	 */
 	private static String getValue(String tag, Element element)
 	{
 		NodeList nodes = element.getElementsByTagName(tag).item(0).getChildNodes();
