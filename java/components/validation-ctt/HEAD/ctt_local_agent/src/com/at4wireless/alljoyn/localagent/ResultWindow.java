@@ -49,8 +49,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
@@ -76,101 +74,109 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-
-
-/**
- * The Class ResultWindow.
- */
-public class ResultWindow extends JDialog {
-
-
-	/** Serializable version number*/
+public class ResultWindow extends JDialog
+{
 	private static final long serialVersionUID = -6343745562165783534L;
-
-	/** The log window used to display logs. */
-	LogWindow logWindow;
-
-	/** The table that shows results. */
-	private JTable table = new JTable();
+	private static final String TAG = "ResultWindow";
+	private static final Logger logger = Logger.getLogger(TAG);
+	private static final int RESULT_WINDOW_WIDTH = 900;
+	private static final int RESULT_WINDOW_HEIGHT = 400;
+	private static final String RESOURCES_PATH = "res" + File.separator + "drawable";
+	private static final String SHORT_FOOTER = RESOURCES_PATH + File.separator + "short_footer.jpg";
+	private static final String BACK_BUTTON = RESOURCES_PATH + File.separator + "back.jpg";
+	private static final String LOG_BUTTON = RESOURCES_PATH + File.separator + "log.jpg";
+	private static final Object resultsTableColumns[] = {"Name", "Description", "Date and Time execution", "Certification Release",
+			"Final Verdict", "Full Log"};
+	private static final String TEXT_FONT = "Arial";
+	private static final int TEXT_FONT_SIZE = 12;
+	private static final int TEXT_FONT_STYLE = Font.BOLD;
+	private static final int verdictColumn = 4;
+	private static final int linkToLogColumn = 5;
+	private static final String passVerdict = "PASS";
+	private static final String failVerdict = "FAIL";
+	private static final String inconcluseVerdict = "INCONC";
+	private static final String configurationFileName = "config.xml";
 	
-	/** Used logger*/
-	Logger logger;
-
-	/** The main window. */
-	MainWindow mainWindow;
-	
-	SecretKey cipherKey; 
+	private JTable table;
 
 	/**
-	 * Instantiates a new result window.
+	 * Instantiates a new results window.
 	 *
-	 * @param 	mainwindow 	main window to associate with "back" click
-	 * @param 	projectId 	project ID
-	 * @param 	user 		authenticated user
-	 * @param 	token 		authentication token
-	 * @param	logLevel	
+	 * @param mainwindow 	
+	 * 				window to be associated with BACK button click
+	 * @param projectId
+	 * 				ID of the project whose results are being shown
+	 * @param user
+	 * 				user authenticated into the application
+	 * @param token
+	 * 				session OAuth 2.0 token that allows message exchange with the server
+	 * @param logLevel
+	 * 				level of log set by config.xml file
+	 * @param cipherKey
+	 * 				unique key needed to decode log data	
 	 */
-	public ResultWindow(MainWindow mainwindow, final int projectId, final String user, final String token, 
-			Level logLevel, SecretKey cipherKey) {
+	public ResultWindow(final MainWindow mainWindow, final int projectId, final String user, final String token, 
+			Level logLevel, SecretKey cipherKey)
+	{
+		ResultWindow.logger.setLevel(logLevel);
+		
+		Document doc = getResultsInfoFromServer(user, token, projectId);
 
-		logger = Logger.getLogger(this.getClass().getName());
-		logger.setLevel(logLevel);
-		this.cipherKey = cipherKey;
-
-		this.mainWindow=mainwindow;
-		int width=900;
-		int height=400;
-		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-		setBounds(dim.width/2-width/2,
-				dim.height/2-height/2,
-				width,
-				height);
+		Dimension screenDimensions = Toolkit.getDefaultToolkit().getScreenSize();
+		setBounds((screenDimensions.width - RESULT_WINDOW_WIDTH)/2, (screenDimensions.height - RESULT_WINDOW_HEIGHT)/2,
+				RESULT_WINDOW_WIDTH, RESULT_WINDOW_HEIGHT);
 		getContentPane().setLayout(new BorderLayout());
 		setResizable(false);
 
-		Object col[] = {"Name","Description","Date and Time execution",
-				"Certification Release","Final Verdict","Full Log"};
-
-		Document doc=getXML(user, token, projectId);
-
 		setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-		addWindowListener(new WindowAdapter(){
-			public void windowClosing(WindowEvent e) {
+		
+		addWindowListener(new WindowAdapter()
+		{
+			public void windowClosing(WindowEvent e)
+			{
 				mainWindow.getProjectWindow();
 				dispose();
 			}
 		});
 		
-		int size = doc.getElementsByTagName("TestCase").getLength();
-	
-		TableModel model = new DefaultTableModel(col,size){			
+		TableModel noEditableCellsModel = new DefaultTableModel(resultsTableColumns, doc.getElementsByTagName("TestCase").getLength())
+		{			
 			private static final long serialVersionUID = -2458127522509467589L;
 
 			public boolean isCellEditable(int row, int column)
 			{
-				return false;//This causes all cells to be not editable
+				return false;
 			}
 		};
 
-		table = new JTable(model){
+		table = new JTable(noEditableCellsModel)
+		{
 			private static final long serialVersionUID = -8369977836878349660L;
 			
-			public Component prepareRenderer(
-					TableCellRenderer renderer, int row, int column)
+			public Component prepareRenderer(TableCellRenderer renderer, int row, int column)
 			{
 				Component comp = super.prepareRenderer(renderer, row, column);
 				comp.setForeground(Color.black);
-				Font font=new Font("Arial", Font.BOLD, 12);
+				Font font = new Font(TEXT_FONT, TEXT_FONT_STYLE, TEXT_FONT_SIZE);
 				comp.setFont(font);
-				if(column==4) {
-					if("INCONC".equals(table.getValueAt(row, column))) {
-						comp.setForeground(new Color(168,161,0));
-					} else if("PASS".equals(table.getValueAt(row, column))) {
-						comp.setForeground(new Color(103,154,0));
-					} else if("FAIL".equals(table.getValueAt(row, column))) {
-						comp.setForeground(new Color(217,61,26));
+				
+				if (column == verdictColumn)
+				{
+					if (inconcluseVerdict.equals(table.getValueAt(row, column)))
+					{
+						comp.setForeground(new Color(168, 161, 0));
 					}
-				} else {
+					else if (passVerdict.equals(table.getValueAt(row, column)))
+					{
+						comp.setForeground(new Color(103, 154, 0));
+					}
+					else if (failVerdict.equals(table.getValueAt(row, column)))
+					{
+						comp.setForeground(new Color(217, 61, 26));
+					}
+				}
+				else
+				{
 					comp = super.prepareRenderer(renderer, row, column);
 				}
 				return comp;
@@ -179,86 +185,63 @@ public class ResultWindow extends JDialog {
 		
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		TableRowSorter<TableModel> sorter = new TableRowSorter<>(table.getModel());
-		sorter.setSortable(5, false);
+		sorter.setSortable(linkToLogColumn, false);
 		table.setRowSorter(sorter);
+		
+		setPanelLayout();
+		setPanelHeader(mainWindow);
+		setPanelTable(doc, projectId, user, token, cipherKey);
+		setPanelFooter(mainWindow);
 
-		table.getSelectionModel().addListSelectionListener(
-			new ListSelectionListener() {
-				@Override
-				public void valueChanged(ListSelectionEvent arg0) {
-					table.repaint();
-				}
-			}
-		);
-
-		JScrollPane scrollPane = new JScrollPane(table);
+		setVisible(true);
+	}
+	
+	private void setPanelLayout()
+	{
 		GridBagLayout gridBagLayout = new GridBagLayout();
-
 		gridBagLayout.columnWeights = new double[]{0.9};
 		gridBagLayout.rowWeights = new double[]{0.4, 0.8, 0.2};
 		setLayout(gridBagLayout);
-
-		drawResults(table,doc);
-
+	}
+	
+	private void setPanelHeader(MainWindow mainWindow)
+	{
 		GridBagConstraints gbc_header = new GridBagConstraints();
 		gbc_header.anchor = GridBagConstraints.SOUTHWEST;
 		gbc_header.insets = new Insets(0, 0, 0, 0);
 		gbc_header.gridx = 0;
 		gbc_header.gridy = 0;
-		gbc_header.fill=GridBagConstraints.BOTH;
+		gbc_header.fill = GridBagConstraints.BOTH;
 
-		add(mainWindow.getHeaderPanel(),gbc_header);
-
-		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-
-		gbc_scrollPane.insets = new Insets(0, 0, 0, 0);
-		gbc_scrollPane.gridx = 0;
-		gbc_scrollPane.gridy = 1;
-		gbc_scrollPane.fill=GridBagConstraints.BOTH;
-		add(scrollPane,gbc_scrollPane);
-
-		table.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-
-				JTable target = (JTable)e.getSource();
-				int row = target.getSelectedRow();
-				int column = target.getSelectedColumn();
-				if((column==5)){
-					getLogWindow(projectId,user,token, table.getValueAt(row, 5).toString());
-				}
-			}
-		});
-
-		ImagePanel buttonPanel=new ImagePanel("res\\drawable\\short_footer.jpg");
+		add(mainWindow.getHeaderPanel(), gbc_header);
+	}
+	
+	private void setPanelFooter(MainWindow mainWindow)
+	{
+		ImagePanel buttonPanel = new ImagePanel(SHORT_FOOTER);
 
 		GridBagLayout gridBagLayoutFooter = new GridBagLayout();
 
 		gridBagLayoutFooter.columnWeights = new double[]{1.0};
 		gridBagLayoutFooter.rowWeights = new double[]{1.0};
-		setLayout(gridBagLayout);
 
 		buttonPanel.setLayout(gridBagLayoutFooter);
-		JButton back=new JButton("");
+		JButton back = new JButton("");
 
-		Image img2 = null;
-		try {
-			img2 = ImageIO.read(new File("res\\drawable\\back.jpg"));
-		} catch (IOException e2) {
-			logger.error("Not posible to find image resources");
-			e2.printStackTrace();
-		}
-		back.setIcon(new ImageIcon(img2));
+		back.setIcon(new ImageIcon(readImageFromFile(BACK_BUTTON)));
 
 		table.getColumn("Full Log").setCellRenderer(new ButtonRenderer());
 		table.getColumn("Full Log").setMaxWidth(85);
 		table.getColumn("Full Log").setMinWidth(85);
 		
-		Dimension preferredSize=new Dimension(83,23);
+		Dimension preferredSize = new Dimension(83,23);
 		back.setPreferredSize(preferredSize);
 
-		back.addActionListener(new ActionListener(){
+		back.addActionListener(new ActionListener()
+		{
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent arg0)
+			{
 				dispose();
 				mainWindow.getProjectWindow();
 			}
@@ -271,152 +254,228 @@ public class ResultWindow extends JDialog {
 		gbc_buttonPane.insets = new Insets(0, 0, 0, 0);
 		gbc_buttonPane.gridx = 0;
 		gbc_buttonPane.gridy = 2;
-		gbc_buttonPane.fill=GridBagConstraints.BOTH;
-		gbc_buttonPane.anchor=GridBagConstraints.CENTER;
+		gbc_buttonPane.fill = GridBagConstraints.BOTH;
+		gbc_buttonPane.anchor = GridBagConstraints.CENTER;
 		getContentPane().add(buttonPanel, gbc_buttonPane);
+	}
+	
+	private void setPanelTable(Document documentWithResultsInfo, int projectId, String authenticatedUser, String sessionToken, SecretKey cipherKey)
+	{
+		fillResultsTable(table, documentWithResultsInfo);
+		
+		JScrollPane scrollPane = new JScrollPane(table);
+		
+		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 
-		setVisible(true);
+		gbc_scrollPane.insets = new Insets(0, 0, 0, 0);
+		gbc_scrollPane.gridx = 0;
+		gbc_scrollPane.gridy = 1;
+		gbc_scrollPane.fill = GridBagConstraints.BOTH;
+		add(scrollPane, gbc_scrollPane);
+
+		table.addMouseListener(new MouseAdapter()
+		{
+			public void mouseClicked(MouseEvent e)
+			{
+				JTable target = (JTable)e.getSource();
+				int row = target.getSelectedRow();
+				int column = target.getSelectedColumn();
+				
+				if (column == linkToLogColumn)
+				{
+					getLogWindow(projectId, authenticatedUser, sessionToken, table.getValueAt(row, linkToLogColumn).toString(), cipherKey);
+				}
+			}
+		});
+	}
+	
+	/**
+	 * Gets the log window.
+	 *
+	 * @param projectId
+	 * 			ID of the project whose log is being asked
+	 * @param user
+	 * 			user authenticated into the application
+	 * @param token
+	 * 			session OAuth 2.0 token that allows message exchange with the server
+	 * @param logName
+	 * 			name of the log to be displayed
+	 */
+	private void getLogWindow(int projectId, String user, String token, String logName, SecretKey cipherKey)
+	{
+		LogContentWindow logWindow = new LogContentWindow(this, projectId, user, token, logName, logger.getLevel(), cipherKey);
+		logWindow.setModalityType(ModalityType.APPLICATION_MODAL);
+		logWindow.setAlwaysOnTop(true);
+		setEnabled(false);
 	}
 
-	/**
-	 * The Class ButtonRenderer.
-	 */
-	class ButtonRenderer extends JButton implements TableCellRenderer {
-
-		/** Serializable version number */
+	class ButtonRenderer extends JButton implements TableCellRenderer
+	{
 		private static final long serialVersionUID = -5722198665540400718L;
 
-		/**
-		 * Instantiates a new button renderer.
-		 */
-		public ButtonRenderer() {
-			Image img = null;
-			
+		public ButtonRenderer()
+		{
 			setOpaque(true);
 			setBorderPainted(false); 
 			setContentAreaFilled(false); 
-			
-			try {
-				img = ImageIO.read(new File("res\\drawable\\log.jpg"));
-			} catch (IOException e2) {
-				logger.error("Resource not found");
-			}
-			setIcon(new ImageIcon(img));
+			setIcon(new ImageIcon(readImageFromFile(LOG_BUTTON)));
 		}
 
-		/* (non-Javadoc)
-		 * @see javax.swing.table.TableCellRenderer#getTableCellRendererComponent(javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
-		 */
 		public Component getTableCellRendererComponent(JTable table, Object value,
-				boolean isSelected, boolean hasFocus, int row, int column) {
-			if (isSelected) {
+				boolean isSelected, boolean hasFocus, int row, int column)
+		{
+			if (isSelected)
+			{
 				setForeground(table.getSelectionForeground());
 				setBackground(table.getSelectionBackground());
-			} else {
-				setForeground( new Color(255, 255, 255));//Background);
+			}
+			else
+			{
+				setForeground( new Color(255, 255, 255));
 				setBackground(UIManager.getColor("Button.background"));
 			}
 			setText((value == null) ? "" : value.toString());
 			return this;
 		}
 	}
+	
+	private Image readImageFromFile(String imagePathAndName)
+	{
+		Image image = null;
+		
+		try
+		{
+			image = ImageIO.read(new File(imagePathAndName));
+		}
+		catch (IOException e)
+		{
+			logger.error("Resource '" + imagePathAndName + "' not found");
+		}
+		
+		return image;
+	}
 
 	/**
 	 * Gets the project results from the document and fill the table with its values.
 	 *
-	 * @param 	table 	table to fill with results 
-	 * @param 	doc 	document that contains results
-	 *
+	 * @param table
+	 * 			table to fill with results 
+	 * @param doc
+	 * 			document that contains results
 	 */
-	private void drawResults(JTable table,Document doc)
+	private void fillResultsTable(JTable table, Document doc)
 	{
 		NodeList results = doc.getElementsByTagName("TestCase");
-		for (int i = 0; i < results.getLength(); i++) {
+		
+		for (int i = 0; i < results.getLength(); i++)
+		{
 			Node node = results.item(i);
 			Element element = (Element) node;
-			String name=getValue("Name", element);
-			table.setValueAt(name,i,0);
-
-			String desc=getValue("Description", element);
-			table.setValueAt(desc,i,1);
-			String date=getValue("DateTime", element);
-			table.setValueAt(date,i,2);
-			String version=getValue("Version", element);
-			table.setValueAt(version,i,3);
-
-			String verd=getValue("Verdict", element);
-			table.setValueAt(verd,i,4);
-
-			table.setValueAt(getValue("LogFile", element),i,5);
+			
+			fillColumn("Name", i, 0, element, table);
+			fillColumn("Description", i, 1, element, table);
+			fillColumn("DateTime", i, 2, element, table);
+			fillColumn("Version", i, 3, element, table);
+			fillColumn("Verdict", i, verdictColumn, element, table);
+			fillColumn("LogFile", i, linkToLogColumn, element, table);
 		}
+	}
+	
+	private void fillColumn(String xmlDataName, int row, int column, Element xmlElement, JTable tableToFill)
+	{
+		String dataValue = getValue(xmlDataName, xmlElement);
+		tableToFill.setValueAt(dataValue, row, column);
 	}
 
 	/**
 	 * Gets JSON results data from the Web Server and parses it to XML.
 	 * 
-	 * @param 	user 		authenticated user
-	 * @param 	token 		authentication token
-	 * @param 	projectId 	project ID
-	 * @return 				document with results data
+	 * @param user
+	 * 			user authenticated into the application
+	 * @param token
+	 * 			session OAuth 2.0 token that allows message exchange with the server
+	 * @param projectId
+	 * 			ID of the project whose results are being shown
+	 * 
+	 * @return XML parsed document from server received data
 	 */
-	private Document getXML(String user, String token, int projectId)
+	private Document getResultsInfoFromServer(String user, String token, int projectId)
 	{
 		Document doc = null;
-		String url=getConfigValue("TestToolWebAppUrl")+getConfigValue("GetResults");
+		String url = getConfigValue("TestToolWebAppUrl") + getConfigValue("GetResults");
 		String results = "";
 
-		try {
-			URI URL = new URI(url+user+"/"+projectId);
+		try
+		{
+			URI URL = new URI(url + user + "/" + projectId);
 			HttpClient httpClient = HttpClientBuilder.create().build();
 			HttpGet postRequest = new HttpGet(URL);
 			HttpEntity entity = null;
 			
-			postRequest.addHeader("Authorization", "bearer "+token);
+			postRequest.addHeader("Authorization", "bearer "+ token);
 			entity = httpClient.execute(postRequest).getEntity();
 			
-			BufferedReader br = new BufferedReader(new InputStreamReader(
-					(entity.getContent())));
+			BufferedReader br = new BufferedReader(new InputStreamReader(entity.getContent()));
 			
 			String input;
-			while ((input = br.readLine()) != null) {
-				results+=input;
+			while ((input = br.readLine()) != null)
+			{
+				results += input;
 			}
-		} catch (IOException e1) {
+		}
+		catch (IOException e1)
+		{
 			logger.error("Communication with Web Server failed");
 			JOptionPane.showMessageDialog(null, "Fail in the communication with the Test Tool Web Server. The application will close");
 			System.exit(0);
-		} catch (URISyntaxException e) {
+		}
+		catch (URISyntaxException e)
+		{
 			logger.error("Malformed URL");
 		}
 
-		try {
-			JSONObject js=new JSONObject(results);
-			String xml="<Results>";
-			JSONObject jsonResult=(JSONObject) js.get("Results");
-			try{
-				JSONArray json=(JSONArray) jsonResult.get("TestCase");
+		try
+		{
+			JSONObject js = new JSONObject(results);
+			String xml = "<Results>";
+			JSONObject jsonResult = (JSONObject) js.get("Results");
+			try
+			{
+				JSONArray json = (JSONArray) jsonResult.get("TestCase");
 
-				for(int i=0;i<json.length();i++){
-					xml+=XML.toString(json.get(i),"TestCase");
+				for (int i = 0; i < json.length(); i++)
+				{
+					xml += XML.toString(json.get(i), "TestCase");
 				}
-			}catch(ClassCastException e){
-				JSONObject json=(JSONObject) jsonResult.get("TestCase");
-				xml=xml+XML.toString(json,"TestCase");
 			}
-			xml+="</Results>";
+			catch(ClassCastException e)
+			{
+				JSONObject json = (JSONObject) jsonResult.get("TestCase");
+				xml = xml + XML.toString(json, "TestCase");
+			}
+			
+			xml += "</Results>";
 			
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			doc = dBuilder.parse(new InputSource(new StringReader(xml)));
-		} catch (SAXException e) {
+		}
+		catch (SAXException e)
+		{
 			logger.error("Not posible to parse the results xml from webserver");
 			e.printStackTrace();
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			logger.error("Not posible to parse the results xml from webserver");
 			e.printStackTrace();
-		} catch (JSONException e) {
+		}
+		catch (JSONException e)
+		{
 			dispose();
-		} catch (ParserConfigurationException e) {
+		}
+		catch (ParserConfigurationException e)
+		{
 			logger.error("DB Configuration problem");
 		}
 		
@@ -425,65 +484,60 @@ public class ResultWindow extends JDialog {
 	}
 
 	/**
-	 * Gets the configuration value from config.xml.
+	 * Gets a configuration value from config.xml.
 	 *
-	 * @param 	key 	the key whose value is going to be obtained
-	 * @return 			value
+	 * @param dataToRetrieve
+	 * 			the key whose value is going to be searched
+	 * 
+	 * @return value associated with the input key
 	 */
-	private String getConfigValue(String key)
+	private String getConfigValue(String dataToRetrieve)
 	{
-		File cfFile = new File("config.xml");
+		File cfFile = new File(configurationFileName);
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = null;
 		Document doc = null;
 		Element element = null;
 		
-		logger.debug("Retrieving: "+key);
-		try {
+		logger.debug("Retrieving: " + dataToRetrieve);
+		try
+		{
 			dBuilder = dbFactory.newDocumentBuilder();
 			doc = dBuilder.parse(cfFile);
 			element = (Element) doc.getElementsByTagName("Configuration").item(0);
-		} catch (ParserConfigurationException e) {
+		}
+		catch (ParserConfigurationException e)
+		{
 			logger.error("DB configuration problem");
 			e.printStackTrace();
-		} catch (SAXException e) {
+		}
+		catch (SAXException e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			logger.error("Configuration file not found");
 		}
 		
-		return getValue(key, element);
+		return getValue(dataToRetrieve, element);
 	}
 	
 	/**
 	 * Gets the value of the selected tag from config.xml. 
 	 *
-	 * @param 	tag 		desired value to recover
-	 * @param 	element 	element with the xml string
-	 * @return 				value
+	 * @param xmlSelectedTag
+	 * 			desired field to recover its value
+	 * @param xmlElement
+	 * 			XML element that contains the tag
+	 * 
+	 * @return value associated with the input tag
 	 */
-	private static String getValue(String tag, Element element)
+	private static String getValue(String xmlSelectedTag, Element xmlElement)
 	{
-		NodeList nodes = element.getElementsByTagName(tag).item(0).getChildNodes();
+		NodeList nodes = xmlElement.getElementsByTagName(xmlSelectedTag).item(0).getChildNodes();
 		Node node = (Node) nodes.item(0);
 		return node.getNodeValue();
-	}
-
-	/**
-	 * Gets the log window.
-	 *
-	 * @param 	projectId 	project ID
-	 * @param 	user 		authenticated user
-	 * @param 	token 		authentication token
-	 * @param 	logName 	name of the low to be displayed
-	 * @return 				the log window
-	 */
-	private void getLogWindow(int projectId, String user, String token, String logName)
-	{
-		logWindow = new LogWindow(this,projectId,user,token,logName,logger.getLevel(),cipherKey);
-		logWindow.setModalityType(ModalityType.APPLICATION_MODAL);
-		logWindow.setAlwaysOnTop(true);
-		setEnabled(false);
 	}
 }

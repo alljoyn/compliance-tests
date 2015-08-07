@@ -176,7 +176,7 @@ public class FileEncryption
 	{
 		try
 		{
-			String encrypt = encrypt("hola".getBytes());
+			String encrypt = encrypt("hi".getBytes());
 			String decrypt = decrypt(encrypt);
 			System.out.println(decrypt);
 		}

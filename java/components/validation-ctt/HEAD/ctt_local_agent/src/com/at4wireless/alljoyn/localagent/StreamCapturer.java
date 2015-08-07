@@ -58,9 +58,10 @@ public class StreamCapturer extends OutputStream
     	buffer[i] = (byte) b;
     	i++;
     	
-    	if(Character.toString((char)b).equals("\n")) {
+    	if(Character.toString((char)b).equals("\n"))
+    	{
     		consumer.appendText(new String(Arrays.copyOfRange(buffer, 0, i)));
-    		i=0;
+    		i = 0;
     		buffer = new byte[1024];
     	}
         printStream.write(b);

@@ -31,6 +31,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -41,6 +43,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
+import javax.swing.event.RowSorterEvent;
+import javax.swing.event.RowSorterListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
@@ -64,59 +68,47 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-/**
- * The Class ProjectWindow.
- */
 public class ProjectWindow extends JPanel
 {	
-	/** Serializable version number */
 	private static final long serialVersionUID = -2003933446843668539L;
-
-	/** The table to show. */
-	JTable table;
-
-	/** The user name used to authenticate. */
-	String user;
-
-	/** The authentication token obtained when the application logs in. */
-	String token;
-
-	/** The main window. */
-	MainWindow mainWindow;
-
-	/** The Technology version array. */
-	String TVersion[]=null;
+	private static final String TAG = "ProjectWindow";
+	private static final Logger logger = Logger.getLogger(TAG);
+	private static final String RESOURCES_PATH = "res" + File.separator + "drawable";
+	private static final String RESULTS_BUTTON = RESOURCES_PATH + File.separator + "results.jpg";
+	private static final String projectsTableColumns[] = {"Project Name", "Type", "Created", "Modified",
+			"Certification Release", "Associated DUT", "Associated GU", "Configured", "Results"};
+	private static final int resultsColumn = 8;
+	private static final String configurationFileName = "config.xml";
 	
-	/** The project id array. */
-	int projectId[]=null;
+	private JTable table;
 	
-	/** The number of projects. */
-	int size;
-	
-	/** The project name array. */
-	String projectName[]=null;
-	
-	/** Class logger*/
-	Logger logger;
+	private List<Integer> projectIdList = new ArrayList<Integer>();
+	private List<String> projectNameList = new ArrayList<String>();
+	private List<String> technologyVersionList = new ArrayList<String>();
 
 	/**
 	 * Instantiates a new project window.
 	 *
-	 * @param 	mainWindow 						main window to display the data
-	 * @param 	user 							authenticated user
-	 * @param 	token 							authentication token
-	 * @throws 	SAXException 					the SAX exception
-	 * @throws 	IOException 					Signals that an I/O exception has occurred.
-	 * @throws 	ParserConfigurationException 	the parser configuration exception
+	 * @param mainWindow
+	 * 			main window to display the data
+	 * @param user
+	 * 			authenticated user
+	 * @param token
+	 * 			authentication token
+	 * 
+	 * @throws SAXException
+	 * 			the SAX exception
+	 * @throws IOException
+	 * 			Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException
+	 * 			the parser configuration exception
 	 */
 	public ProjectWindow(final MainWindow mainWindow,final String user,final String token, Level logLevel)
 			throws SAXException, IOException, ParserConfigurationException
 	{ 
-		this.logger = Logger.getLogger(this.getClass().getName());
-		this.logger.setLevel(logLevel);
-		this.mainWindow=mainWindow;
-		this.user=user;
-		this.token=token;
+		ProjectWindow.logger.setLevel(logLevel);
+		
+		Document doc = getProjectsInfoFromServer(user, token);
 		
 		setBorder(null);
 		setForeground(Color.LIGHT_GRAY);
@@ -124,59 +116,101 @@ public class ProjectWindow extends JPanel
 		File file = new File("Results.xml");
 		file.delete();
 
-		Object col[] = {"Project Name","Type","Created","Modified",
-				"Certification Release","Associated DUT","Associated GU",
-				"Configured","Results"};
+		TableModel noEditableCellsModel = new DefaultTableModel(projectsTableColumns, doc.getElementsByTagName("Project").getLength())
+		{
+			private static final long serialVersionUID = -5114222498322422255L;
 
+			public boolean isCellEditable(int row, int column)
+			{
+				return false;
+			}
+		};
+		
+		table = new JTable(noEditableCellsModel);
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		
+		TableRowSorter<TableModel> sorter = new TableRowSorter<>(table.getModel());
+		sorter.setSortable(resultsColumn, false);
+		sorter.addRowSorterListener(new RowSorterListener()
+		{
+			@Override
+			public void sorterChanged(RowSorterEvent e)
+			{
+				String sortedProject;
+				List<Integer> tempProjectIdList = new ArrayList<Integer>();
+				List<String> tempProjectNameList = new ArrayList<String>();
+				List<String> tempTechnologyVersionList = new ArrayList<String>();
+				int oldPosition;
+				
+				for (int i = 0; i < table.getRowCount(); i++)
+				{
+					sortedProject = (String) table.getValueAt(i, 0);
+					oldPosition = -1;
+					
+					for (int j = 0; j < table.getRowCount(); j++)
+					{
+						if (sortedProject.equals(projectNameList.get(j)))
+						{
+							oldPosition = j;
+						}
+					}
+					
+					if (oldPosition != -1)
+					{
+						tempProjectIdList.add(projectIdList.get(oldPosition));
+						tempProjectNameList.add(projectNameList.get(oldPosition));
+						tempTechnologyVersionList.add(technologyVersionList.get(oldPosition));
+					}
+				}
+
+				projectIdList = tempProjectIdList;
+				projectNameList = tempProjectNameList;
+				technologyVersionList = tempTechnologyVersionList;
+			}	
+		});
+		
+		table.setRowSorter(sorter);
+		table.setBorder(null);
+		
+		setPanelLayout();
+		setPanelHeader(mainWindow);
+		setPanelTable(mainWindow, doc);
+	}
+	
+	private void setPanelLayout()
+	{
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWeights = new double[]{0.5};
 		gridBagLayout.rowWeights = new double[]{0.5, 0.9};
 		setLayout(gridBagLayout);
-
+	}
+	
+	public void setPanelHeader(MainWindow mainWindow)
+	{
 		GridBagConstraints gbc_header = new GridBagConstraints();
 		gbc_header.gridx = 0;
 		gbc_header.gridy = 0;
-		gbc_header.fill=GridBagConstraints.BOTH;
-		add(mainWindow.getHeaderPanel(),gbc_header);
+		gbc_header.fill = GridBagConstraints.BOTH;
+		add(mainWindow.getHeaderPanel(), gbc_header);
+	}
+	
+	public void setPanelTable(final MainWindow mainWindow, Document documentWithProjectsInfo)
+	{
+		fillProjectsTable(table, documentWithProjectsInfo);
 		
-		Document doc=getXML(user, token);
-		size = doc.getElementsByTagName("Project").getLength();
-		projectId=new int[size];
-		projectName=new String[size];
-		TVersion=new String[size];
-
-		TableModel model = new DefaultTableModel(col,size)
-		{
-			/** Serializable version number */
-			private static final long serialVersionUID = -5114222498322422255L;
-
-			public boolean isCellEditable(int row, int column) {
-				return false;//This causes all cells to be not editable
-			}
-		};
-		table=new JTable(model);
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		TableRowSorter<TableModel> sorter = new TableRowSorter<>(table.getModel());
-		sorter.setSortable(8, false);
-		table.setRowSorter(sorter);
-		table.setBorder(null);
-
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setViewportBorder(null);
 
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 		gbc_scrollPane.gridx = 0;
 		gbc_scrollPane.gridy = 1;
-		gbc_scrollPane.anchor=GridBagConstraints.NORTH;
-		gbc_scrollPane.fill=GridBagConstraints.BOTH;
-		add(scrollPane,gbc_scrollPane);
+		gbc_scrollPane.anchor = GridBagConstraints.NORTH;
+		gbc_scrollPane.fill = GridBagConstraints.BOTH;
+		add(scrollPane, gbc_scrollPane);
 
 		table.getColumn("Results").setCellRenderer(new ButtonRenderer());
 		table.getColumn("Results").setMaxWidth(80);
 		table.getColumn("Results").setMinWidth(80);
-
-		drawProjects(table,doc);
-
 		table.addMouseListener(new MouseAdapter()
 		{
 			public void mouseClicked(MouseEvent e)
@@ -185,139 +219,236 @@ public class ProjectWindow extends JPanel
 				int row = target.getSelectedRow();
 				int column = target.getSelectedColumn();
 
-				if ((column == 8) && table.getValueAt(row, column).equals("Link to results")) {
-					mainWindow.getResultsWindows(projectId[table.getSelectedRow()]);
+				if ((column == 8) && table.getValueAt(row, column).equals("Link to results"))
+				{
+					mainWindow.getResultsWindows(projectIdList.get(table.getSelectedRow()));
 				}
 			}
 		});
+	}
+	
+	class ButtonRenderer extends JButton implements TableCellRenderer
+	{
+		private static final long serialVersionUID = 7249023283151869493L;
+
+		public ButtonRenderer()
+		{
+			setOpaque(true);
+			setBorderPainted(false); 
+			setContentAreaFilled(false); 
+			setIcon(new ImageIcon(readImageFromFile(RESULTS_BUTTON)));
+		}
+
+		public Component getTableCellRendererComponent(JTable table, Object value,
+				boolean isSelected, boolean hasFocus, int row, int column)
+		{
+			if (isSelected)
+			{
+				setForeground(table.getSelectionForeground());
+				setBackground(table.getSelectionBackground());
+			}
+			else
+			{
+				setForeground( new Color(255, 255, 255));
+				setBackground(UIManager.getColor("Button.background"));
+			}
+			
+			if (table.getValueAt(row, column).equals("Link to results"))
+			{
+				setEnabled(true);
+			}
+			else
+			{
+				setEnabled(false);
+			}
+			
+			setText((value == null) ? "" : value.toString());
+			return this;
+		}
+	}
+	
+	private Image readImageFromFile(String imagePathAndName)
+	{
+		Image image = null;
+		
+		try
+		{
+			image = ImageIO.read(new File(imagePathAndName));
+		}
+		catch (IOException e)
+		{
+			logger.error("Resource '" + imagePathAndName + "' not found");
+		}
+		
+		return image;
 	}
 
 	/**
 	 * Gets the project list from the document and fill the table with its values.
 	 *
-	 * @param 	table 	the table
-	 * @param 	doc 	the document that contains the projects values
-	 * 
+	 * @param projectsTable
+	 * 			table to be filled with projects details
+	 * @param xmlDocument
+	 * 			document that contains all the necessary data to fill the table 
 	 */
-	private void drawProjects(JTable table,Document doc)
+	private void fillProjectsTable(JTable projectsTable, Document xmlDocument)
 	{
-		NodeList projects = doc.getElementsByTagName("Project");
+		NodeList projects = xmlDocument.getElementsByTagName("Project");
 
-		for (int i = 0; i < projects.getLength(); i++) {
+		for (int i = 0; i < projects.getLength(); i++)
+		{
 			Node node = projects.item(i);
 			Element element = (Element) node;
 
-			String id=getValue("idProject", element);
-			projectId[i]=Integer.parseInt(id);
-
-			String name=getValue("name", element);
-			table.setValueAt(name,i,0);
-			projectName[i]=name;
-
-			String type=getValue("type", element);
-			table.setValueAt(type,i,1);
+			String id = getValue("idProject", element);
+			projectIdList.add(Integer.parseInt(id));
 			
-			String created=getValue("createdDate", element);
-			String date=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date(Long.parseLong(created)));
-			table.setValueAt(date,i,2);
-
-			String modified=getValue("modifiedDate", element);
-			date= new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date(Long.parseLong(modified)));
-			table.setValueAt(date,i,3);
-			
-			String TechnologyVersion=getValue("certRel", element);
-			TVersion[i]=TechnologyVersion;
-			table.setValueAt(TechnologyVersion,i,4);
-			
-			String AssociatedDUT=getValue("dut", element);
-			if (AssociatedDUT.equals("null")) {
-				table.setValueAt("Not selected",i,5);
-			} else {
-				table.setValueAt(AssociatedDUT,i,5);
+			projectNameList.add(fillColumn("name", i, 0, element, projectsTable));
+			fillColumn("type", i, 1, element, projectsTable);
+			fillColumn("createdDate", i, 2, element, projectsTable);
+			fillColumn("modifiedDate", i, 3, element, projectsTable);
+			technologyVersionList.add(fillColumn("certRel", i, 4, element, projectsTable));
+			fillColumn("dut", i, 5, element, projectsTable);
+			fillColumn("golden", i, 6, element, projectsTable);
+			fillColumn("isConfigured", i, 7, element, projectsTable);
+			fillColumn("hasResults", i, 8, element, projectsTable);
+		}
+	}
+	
+	private String fillColumn(String xmlDataName, int row, int column, Element xmlElement, JTable tableToFill)
+	{
+		String dataValue = getValue(xmlDataName, xmlElement);
+		
+		if (xmlDataName.equals("createdDate") || xmlDataName.equals("modifiedDate"))
+		{
+			tableToFill.setValueAt(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date(Long.parseLong(dataValue))), row, column);
+		}
+		else if (xmlDataName.equals("dut"))
+		{
+			if (dataValue.equals("null"))
+			{
+				tableToFill.setValueAt("Not selected", row, column);
 			}
-			
-			String golden=getValue("golden", element);
-			if (golden.equals("null")) {
-				table.setValueAt("N/A",i,6);
-			} else {
-				table.setValueAt(golden,i,6);
-			}
-
-			String configured=getValue("isConfigured", element);
-			if (configured.equals("true")) {
-				table.setValueAt("Yes",i,7);
-			} else {
-				table.setValueAt("No",i,7);
-			}
-
-			String hasResult=getValue("hasResults", element);
-			if (hasResult.equals("true")) {
-				table.setValueAt("Link to results",i,8);
-			} else {
-				table.setValueAt("No",i,8);
+			else
+			{
+				tableToFill.setValueAt(dataValue, row, column);
 			}
 		}
+		else if (xmlDataName.equals("golden"))
+		{
+			if (dataValue.equals("null"))
+			{
+				tableToFill.setValueAt("N/A", row, column);
+			}
+			else
+			{
+				tableToFill.setValueAt(dataValue, row, column);
+			}
+		}
+		else if (xmlDataName.equals("isConfigured"))
+		{
+			if (dataValue.equals("true"))
+			{
+				tableToFill.setValueAt("Yes", row, column);
+			}
+			else
+			{
+				tableToFill.setValueAt("No", row, column);
+			}
+		}
+		else if (xmlDataName.equals("hasResults"))
+		{
+			if (dataValue.equals("true"))
+			{
+				tableToFill.setValueAt("Link to results", row, column);
+			}
+			else
+			{
+				tableToFill.setValueAt("No", row, column);
+			}
+		}
+		else
+		{
+			tableToFill.setValueAt(dataValue, row, column);
+		}
+		
+		return dataValue;
 	}
 	
 	/**
 	 * Gets JSON projects data from the Web Server and parses it to XML.
 	 * 
-	 * @param 	user 		authenticated user
-	 * @param 	token 		authentication token
-	 * @return 				document with projects data
+	 * @param user
+	 * 			user authenticated into the application
+	 * @param token
+	 * 			session OAuth 2.0 token that allows message exchange with the server
+	 * 
+	 * @return XML parsed document from server received data
 	 */
-	private Document getXML(String user, String token)
+	private Document getProjectsInfoFromServer(String user, String token)
 	{
 		Document doc = null;
 		String projects = "";
 
-		try {
-			//URI URL = new URI(url+user);
-			URI URL = new URI(getConfigValue("TestToolWebAppUrl")+getConfigValue("GetListOfProjectsUrl")+user);
+		try
+		{
+			URI URL = new URI(getConfigValue("TestToolWebAppUrl") + getConfigValue("GetListOfProjectsUrl") + user);
 			HttpClient httpClient = HttpClientBuilder.create().build();
 			HttpGet postRequest = new HttpGet(URL);
 			HttpEntity entity = null;
 			
-			postRequest.addHeader("Authorization", "bearer "+token);
+			postRequest.addHeader("Authorization", "bearer " + token);
 			entity = httpClient.execute(postRequest).getEntity();
 			
-			BufferedReader br = new BufferedReader(new InputStreamReader(
-					(entity.getContent())));
+			BufferedReader br = new BufferedReader(new InputStreamReader(entity.getContent()));
 			
 			String input;
-			while ((input = br.readLine()) != null) {
-				projects+=input;
+			while ((input = br.readLine()) != null)
+			{
+				projects += input;
 			}
-		} catch (IOException e1) {
+		}
+		catch (IOException e1)
+		{
 			logger.error("Communication with Web Server failed");
 			JOptionPane.showMessageDialog(null, "Fail in the communication with the Test Tool Web Server. The application will close");
 			System.exit(0);
-		} catch (URISyntaxException e) {
+		}
+		catch (URISyntaxException e)
+		{
 			logger.error("Malformed URL");
 		}
 		
-		try {
-			JSONArray json=new JSONArray(projects);
+		try
+		{
+			JSONArray json = new JSONArray(projects);
+			String xml = "<ListOfProjects>";
 
-			String xml="<ListOfProjects>";
-
-			for(int i=0;i<json.length();i++){
-				xml+=XML.toString(json.get(i),"Project");
+			for(int i = 0; i < json.length(); i++)
+			{
+				xml += XML.toString(json.get(i),"Project");
 			}
-			xml+="</ListOfProjects>";
 			
-			logger.debug("XML ListOfProjects from webserver: "+xml);
+			xml += "</ListOfProjects>";
+			
+			logger.debug("XML ListOfProjects from webserver: " + xml);
 
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			doc = dBuilder.parse(new InputSource(new StringReader(xml)));
-		} catch (SAXException e) {
+		}
+		catch (SAXException e)
+		{
 			logger.error("Not posible to parse the projects xml from webserver");
 			e.printStackTrace();
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			logger.error("Not posible to parse the projects xml from webserver");
 			e.printStackTrace();
-		} catch (ParserConfigurationException e) {
+		}
+		catch (ParserConfigurationException e)
+		{
 			logger.error("DocumentBuilder configuration problem");
 		}
 
@@ -326,71 +457,30 @@ public class ProjectWindow extends JPanel
 	}
 
 	/**
-	 * Used to render the results buttons inside the table.
-	 */
-	class ButtonRenderer extends JButton implements TableCellRenderer {
-
-		/** Serializable version number */
-		private static final long serialVersionUID = 7249023283151869493L;
-
-		/**
-		 * Instantiates a new button renderer.
-		 */
-		public ButtonRenderer() {
-			setOpaque(true);
-			setBorderPainted(false); 
-			setContentAreaFilled(false); 
-			Image img = null;
-			try {
-				img = ImageIO.read(new File("res\\drawable\\results.jpg"));
-			} catch (IOException e2) {
-				logger.error("Resource not found");
-			}
-			setIcon(new ImageIcon(img));
-		}
-
-		/* (non-Javadoc)
-		 * @see javax.swing.table.TableCellRenderer#getTableCellRendererComponent(javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
-		 */
-		public Component getTableCellRendererComponent(JTable table, Object value,
-				boolean isSelected, boolean hasFocus, int row, int column) {
-			if (isSelected) {
-				setForeground(table.getSelectionForeground());
-				setBackground(table.getSelectionBackground());
-			} else {
-				setForeground( new Color(255, 255, 255));//Background);
-				setBackground(UIManager.getColor("Button.background"));
-			}
-			if(table.getValueAt(row, column).equals("Link to results")){
-				setEnabled(true);
-			}else{
-				setEnabled(false);
-			}
-			setText((value == null) ? "" : value.toString());
-			return this;
-		}
-	}
-
-	/**
 	 * Gets the project id from the selected row.
 	 *
-	 * @return 	project ID	
+	 * @return project ID	
 	 */
 	public int getProjectId()
 	{
-		int row=-1;
+		int row = -1;
 		String name = null;
 		
-		if(table.getValueAt(table.getSelectedRow(), 7).toString().equals("Yes")){
-			name=table.getValueAt(table.getSelectedRow(), 0).toString();
-			for(int i=0;i<size;i++){
-				if(projectName[i].equals(name)){
-					row=i;	
+		if (table.getValueAt(table.getSelectedRow(), 7).toString().equals("Yes"))
+		{
+			name = table.getValueAt(table.getSelectedRow(), 0).toString();
+			
+			for (int i = 0; i < table.getRowCount(); i++)
+			{
+				if (projectNameList.get(i).equals(name))
+				{
+					row = i;	
 					break;
 				}		
 			}
 		}		
-		return projectId[row];
+
+		return projectIdList.get(row);
 	}
 
 	/**
@@ -400,51 +490,63 @@ public class ProjectWindow extends JPanel
 	 */
 	public String getVersion()
 	{
-		return TVersion[table.getSelectedRow()];
+		return technologyVersionList.get(table.getSelectedRow());
 	}
 
 	/**
-	 * Gets the configuration value from config.xml.
+	 * Gets a configuration value from config.xml.
 	 *
-	 * @param 	key 	the key whose value is going to be obtained
-	 * @return 			value
+	 * @param dataToRetrieve
+	 * 			the key whose value is going to be searched
+	 * 
+	 * @return value associated with the input key
 	 */
-	private String getConfigValue(String key)
+	private String getConfigValue(String dataToRetrieve)
 	{
-		File cfFile = new File("config.xml");
+		File cfFile = new File(configurationFileName);
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = null;
 		Document doc = null;
 		Element element = null;
 		
-		logger.debug("Retrieving: "+key);
-		try {
+		logger.debug("Retrieving: " + dataToRetrieve);
+		try
+		{
 			dBuilder = dbFactory.newDocumentBuilder();
 			doc = dBuilder.parse(cfFile);
 			element = (Element) doc.getElementsByTagName("Configuration").item(0);
-		} catch (ParserConfigurationException e) {
+		}
+		catch (ParserConfigurationException e)
+		{
 			logger.error("DB configuration problem");
 			e.printStackTrace();
-		} catch (SAXException e) {
+		}
+		catch (SAXException e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			logger.error("Configuration file not found");
 		}
 		
-		return getValue(key, element);
+		return getValue(dataToRetrieve, element);
 	}
 	
 	/**
 	 * Gets the value of the selected tag from config.xml. 
 	 *
-	 * @param 	tag 		desired value to recover
-	 * @param 	element 	element with the xml string
-	 * @return 				value
+	 * @param xmlSelectedTag
+	 * 			desired field to recover its value
+	 * @param xmlElement
+	 * 			XML element that contains the tag
+	 * 
+	 * @return value associated with the input tag
 	 */
-	private static String getValue(String tag, Element element)
+	private static String getValue(String xmlSelectedTag, Element xmlElement)
 	{
-		NodeList nodes = element.getElementsByTagName(tag).item(0).getChildNodes();
+		NodeList nodes = xmlElement.getElementsByTagName(xmlSelectedTag).item(0).getChildNodes();
 		Node node = (Node) nodes.item(0);
 		return node.getNodeValue();
 	}
