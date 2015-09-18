@@ -57,17 +57,14 @@ import com.at4wireless.spring.service.UserService;
  */
 @Controller
 @RequestMapping(value="/results")
-public class ResultsController {
-	
+public class ResultsController
+{
 	@Autowired
 	private ProjectService projectService;
-	
 	@Autowired
 	private TestCaseService tcService;
-	
 	@Autowired
 	private ResultService resultService;
-	
 	@Autowired
 	private UserService userService;
 	
@@ -82,13 +79,15 @@ public class ResultsController {
      * @return 				target view
      */
 	@RequestMapping(method = RequestMethod.GET)
-	public String results(Model model, @ModelAttribute("newProject") Project newProject) {
-		
+	public String results(Model model, @ModelAttribute("newProject") Project newProject)
+	{
 		String projectName = "";
 		List<TestCaseResult> listTCResult = new ArrayList<TestCaseResult>();
 		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
 			String username = auth.getName();
 			Project p = projectService.getFormData(username, newProject.getIdProject());
 			
@@ -108,23 +107,30 @@ public class ResultsController {
 	 * @return				full log
 	 */
 	@RequestMapping(value="/fullLog", method=RequestMethod.GET, produces="text/plain; charset=UTF-8")
-	public @ResponseBody String showLog(HttpServletRequest request) {
-		
+	public @ResponseBody String showLog(HttpServletRequest request)
+	{	
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String log = "";
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
 			String username = auth.getName();
 			String path = File.separator+"Allseen"+File.separator+"Users"+File.separator
 					+username+File.separator+request.getParameter("id")
 					+File.separator+request.getParameter("file");
-			try {
+			try
+			{
 				FileEncryption fE = new FileEncryption();
 				fE.setAesSecretKey(userService.getAesSecretKey(username));
 				log = fE.decrypt(RestController.readFile(path, StandardCharsets.UTF_8));
-			} catch (GeneralSecurityException e) {
+			}
+			catch (GeneralSecurityException e)
+			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (IOException e) {
+			}
+			catch (IOException e)
+			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -139,9 +145,12 @@ public class ResultsController {
 	 * @return				true if test report creation succeeded, false otherwise. 
 	 */
 	@RequestMapping(value="/tr/create", method=RequestMethod.POST)
-	public @ResponseBody boolean createTestReport(HttpServletRequest request) {
+	public @ResponseBody boolean createTestReport(HttpServletRequest request)
+	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
 			String username = auth.getName();
 			Project p = projectService.getFormData(username,
 					Integer.parseInt(request.getParameter("idProject")));
@@ -152,7 +161,8 @@ public class ResultsController {
 			
 			System.out.println(outputFileName);
 			
-			if(tcService.ranAll(p.getConfiguration(), p.getResults())) {
+			if(tcService.ranAll(p.getConfiguration(), p.getResults()))
+			{
 				String imgPath = request.getSession().getServletContext().getRealPath("/")+"resources"
 						+File.separator+"img";
 				return resultService.createTestReport(username, p, imgPath);
@@ -170,10 +180,12 @@ public class ResultsController {
 	 */
 	@RequestMapping(value="/tr/view", method = RequestMethod.GET)
 	public void getTestReport(HttpServletRequest request, HttpServletResponse response)
-			throws IOException {
-		
+			throws IOException
+	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
 			Project p = projectService.getFormData(auth.getName(), Integer.parseInt(request.getParameter("idProject")));
 			
 			File downloadFile = new File(p.getTestReport());
@@ -198,7 +210,8 @@ public class ResultsController {
 	        int bytesRead = -1;
 	 
 	        // write bytes read from the input stream into the output stream
-	        while ((bytesRead = inputStream.read(buffer)) != -1) {
+	        while ((bytesRead = inputStream.read(buffer)) != -1)
+	        {
 	            outStream.write(buffer, 0, bytesRead);
 	        }
 	 
@@ -215,9 +228,12 @@ public class ResultsController {
 	 * @throws 	Exception	in something wrong occurred during zip creation
 	 */
 	@RequestMapping(value="tr/send", method = RequestMethod.GET)
-	public void send(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public void send(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
 			Project p = projectService.getFormData(auth.getName(), Integer.parseInt(request.getParameter("idProject")));
 			FileInputStream in = new FileInputStream(p.getTestReport());
 			
@@ -229,11 +245,13 @@ public class ResultsController {
 			byte[] b = new byte[1024];
 			int count;
 			
-			while ((count = in.read(b))>0) {
+			while ((count = in.read(b))>0)
+			{
 				out.write(b,0,count);
 			}
 			
-			for (String str : tcService.zipData(p.getConfiguration(), p.getResults())) {
+			for (String str : tcService.zipData(p.getConfiguration(), p.getResults()))
+			{
 				out.putNextEntry(new ZipEntry(str));
 				ByteArrayInputStream bais = null;
 				/*in = new FileInputStream(File.separator+"Allseen"+File.separator+"Users"
@@ -243,19 +261,26 @@ public class ResultsController {
 				String path = File.separator+"Allseen"+File.separator+"Users"+File.separator
 						+p.getUser()+File.separator+p.getIdProject()
 						+File.separator+str;
-				try {
+				try
+				{
 					FileEncryption fE = new FileEncryption();
 					fE.setAesSecretKey(userService.getAesSecretKey(p.getUser()));
 					String log = fE.decrypt(RestController.readFile(path, StandardCharsets.UTF_8));
 					bais = new ByteArrayInputStream(log.getBytes());
-				} catch (GeneralSecurityException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
+				}
+				catch (GeneralSecurityException e)
+				{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				while ((count = bais.read(b))>0) {
+				catch (IOException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				while ((count = bais.read(b))>0)
+				{
 					out.write(b,0,count);
 				}
 			}
@@ -287,7 +312,8 @@ public class ResultsController {
 	        int bytesRead = -1;
 	 
 	        // write bytes read from the input stream into the output stream
-	        while ((bytesRead = inputStream.read(buffer)) != -1) {
+	        while ((bytesRead = inputStream.read(buffer)) != -1)
+	        {
 	            outStream.write(buffer, 0, bytesRead);
 	        }
 	 
@@ -303,16 +329,25 @@ public class ResultsController {
 	 * @return				true if executed all, false otherwise
 	 */
 	@RequestMapping(value="tr/ranAll", method=RequestMethod.GET)
-	public @ResponseBody boolean ranAll(HttpServletRequest request) {
+	public @ResponseBody boolean ranAll(HttpServletRequest request)
+	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
 			Project p = projectService.getFormData(auth.getName(), Integer.parseInt(request.getParameter("idProject")));
-			if (p.isIsConfigured()) {
+			
+			if (p.isIsConfigured())
+			{
 				return tcService.ranAll(p.getConfiguration(), p.getResults());
-			} else {
+			}
+			else
+			{
 				return false;
 			}
-		} else {
+		}
+		else
+		{
 			return false;
 		}
 	}

@@ -20,7 +20,6 @@
     <filter-name>springSecurityFilterChain</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
-  
   <servlet>
     <servlet-name>appServlet</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -34,23 +33,21 @@
     <servlet-name>appServlet</servlet-name>
     <url-pattern>/</url-pattern>
   </servlet-mapping>
-  
   <listener>
-      <listener-class>org.jasig.cas.client.session.SingleSignOutHttpSessionListener</listener-class>
+    <listener-class>org.jasig.cas.client.session.SingleSignOutHttpSessionListener</listener-class>
   </listener>
   <filter>
-     <filter-name>CAS Single Sign Out Filter</filter-name>
-     <filter-class>org.jasig.cas.client.session.SingleSignOutFilter</filter-class>
-     <init-param>
-     	<param-name>artifactParameterName</param-name>
-     	<param-value>SAMLart</param-value>
-     </init-param>
+    <filter-name>CAS Single Sign Out Filter</filter-name>
+    <filter-class>org.jasig.cas.client.session.SingleSignOutFilter</filter-class>
+    <init-param>
+      <param-name>artifactParameterName</param-name>
+      <param-value>SAMLart</param-value>
+    </init-param>
   </filter>
   <filter-mapping>
-  	 <filter-name>CAS Single Sign Out Filter</filter-name>
-     <url-pattern>/*</url-pattern>
+    <filter-name>CAS Single Sign Out Filter</filter-name>
+    <url-pattern>/*</url-pattern>
   </filter-mapping>
-  
   <session-config>
     <session-timeout>-1</session-timeout>
   </session-config>
