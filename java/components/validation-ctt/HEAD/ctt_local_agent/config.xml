@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Configuration>
-<TestCasesPackagePath>TestCases/</TestCasesPackagePath>
+<TestCasesPackagePath>testcases/</TestCasesPackagePath>
 <ResultPath>results/</ResultPath>
 <LogPath>log/</LogPath>
-<TestToolWebAppUrl>http://certify.allseenalliance.org/TestToolWebApp/</TestToolWebAppUrl>
+<TestToolWebAppUrl>https://certification-tool.allseenalliance.org/TestToolWebApp/</TestToolWebAppUrl>
 <GetListOfProjectsUrl>rest/getList/</GetListOfProjectsUrl>
 <GetTestCases>rest/getProject/</GetTestCases>
 <GetResults>rest/getResults/</GetResults>
-<isLastTechnologyVersionUrl>rest/isLastTechnologyVersion</isLastTechnologyVersionUrl>
+<isLastTechnologyVersionUrl>rest/isLastTechnologyVersion/</isLastTechnologyVersionUrl>
 <GetTechnology>rest/getTechnology/</GetTechnology>
 <GetLog>rest/getFullLog/</GetLog>
 <SendResultsUrl>rest/sendResult/</SendResultsUrl>
@@ -18,6 +18,6 @@
 <DownloadPath>downloads/</DownloadPath>
 <getLastVersion>rest/getLastVersion</getLastVersion>
 <keyExchange>rest/keyExchange/</keyExchange>
-<logLevel>ERROR</logLevel>
+<LogLevel>ERROR</LogLevel>
 <ExistsRelease>rest/existsRelease/</ExistsRelease>
 </Configuration>
