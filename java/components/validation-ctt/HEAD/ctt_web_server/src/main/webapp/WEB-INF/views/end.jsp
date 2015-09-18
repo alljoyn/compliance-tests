@@ -54,7 +54,7 @@
 		    		<p>2) Select your configured Project</p>
 		    		<p>3) Run the Test Cases</p>
 		    		<p>4) Summit the results</p>
-		    		<p><a type="button" class="btn btn-default btn-lg" href="end/download">Download Test Tool Local Agent</a></p> 
+		    		<p><a type="button" class="btn btn-default btn-lg" href="end/download">Download CTT Local Agent</a></p> 
 		    		<p><a type="button" class="btn btn-custom btn-lg" href="project">End</a></p>
 		    	</div>
 	    	</div>

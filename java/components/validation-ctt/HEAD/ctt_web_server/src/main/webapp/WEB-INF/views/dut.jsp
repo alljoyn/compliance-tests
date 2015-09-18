@@ -378,7 +378,6 @@
 				rules: {
 					name: {
 						required: true,
-						minlength: 2,
 						maxlength: 255,
 						remote: {
 							url: "dut/validateName",
@@ -393,39 +392,30 @@
 					},
 					manufacturer: {
 						required: true,
-						minlength: 2,
 						maxlength: 60,
 					},
 					model: {
 						required: true,
-						minlength: 2,
 						maxlength: 60,
 					},
 					description: {
-						//required: true,
-						//minlength: 2,
 						maxlength: 255,
 					},
 					deviceId: {
 						required: true,
-						minlength: 2,
 						maxlength: 60,
 					},
 					appId: {
 						required: true,
-						//minlength: 2,
 						maxlength: 36,
-						//pattern: /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
 						pattern: /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
 					},
 					swVer: {
 						required: true,
-						minlength: 2,
 						maxlength: 60,
 					},
 					hwVer: {
 						required: true,
-						minlength: 2,
 						maxlength: 60,
 					}
 				},
@@ -444,7 +434,6 @@
 						maxlength: "Model must have a max of 60 characters!"
 					},
 					description: {
-						//required: "Please enter description!",
 						maxlength: "Description must have a max of 60 characters!"
 					},
 					deviceId: {
@@ -471,7 +460,6 @@
 				rules: {
 					name: {
 						required: true,
-						minlength: 2,
 						maxlength: 255,
 						remote: {
 							url: "dut/validateName",
@@ -488,17 +476,13 @@
 					},
 					manufacturer: {
 						required: true,
-						minlength: 2,
 						maxlength: 60,
 					},
 					model: {
 						required: true,
-						minlength: 2,
 						maxlength: 60,
 					},
 					description: {
-						//required: true,
-						minlength: 2,
 						maxlength: 255,
 					}
 				},
@@ -517,7 +501,6 @@
 						maxlength: "Model must have a max of 60 characters!"
 					},
 					description: {
-						//required: "Please enter description!",
 						maxlength: "Description must have a max of 60 characters!"
 					}
 				}
@@ -527,24 +510,19 @@
 				rules: {
 					deviceId: {
 						required: true,
-						minlength: 2,
 						maxlength: 60,
 					},
 					appId: {
 						required: true,
-						//minlength: 2,
 						maxlength: 36,
 						pattern: /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
-						//pattern: /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
 					},
 					swVer: {
 						required: true,
-						//minlength: 2,
 						maxlength: 60,
 					},
 					hwVer: {
 						required: true,
-						//minlength: 2,
 						maxlength: 60,
 					}
 				},
@@ -573,24 +551,19 @@
 				rules: {
 					deviceId: {
 						required: true,
-						minlength: 2,
 						maxlength: 60,
 					},
 					appId: {
 						required: true,
-						//minlength: 2,
 						maxlength: 36,
 						pattern: /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
-						//pattern: /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
 					},
 					swVer: {
 						required: true,
-						//minlength: 2,
 						maxlength: 60,
 					},
 					hwVer: {
 						required: true,
-						//minlength: 2,
 						maxlength: 60,
 					}
 				},
@@ -618,11 +591,13 @@
 		
 		<!-- Function scripts -->
 		<script>
-			function formSubmit() {
+			function formSubmit()
+			{
 				$("#logoutForm").submit();
 			}
 			
-			function enableDutButtons(enableNext) {	
+			function enableDutButtons(enableNext)
+			{	
 				$('#deleteButton').removeClass('disabled');
 				$('#deleteButton').prop("disabled", false);
 				$('#editButton').removeClass('disabled');
@@ -631,7 +606,8 @@
 			   	$('#nextButton').prop("disabled", false);
 			}
 			
-			function disableDutButtons() {
+			function disableDutButtons()
+			{
 				$('#nextButton').addClass('disabled');
 			   	$('#nextButton').prop("disabled", true);
 				$('#deleteButton').addClass('disabled');
@@ -640,14 +616,16 @@
 				$('#editButton').prop("disabled", true);
 			}
 			
-			function enableSampleButtons() {
+			function enableSampleButtons()
+			{
 				$('#deleteSample').removeClass('disabled');
 				$('#deleteSample').prop("disabled", false);
 				$('#editSample').removeClass('disabled');
 				$('#editSample').prop("disabled", false);
 			}
 			
-			function disableSampleButtons() {
+			function disableSampleButtons()
+			{
 				$('#deleteSample').addClass('disabled');
 				$('#deleteSample').prop("disabled", true);
 				$('#editSample').addClass('disabled');
@@ -756,9 +734,6 @@
 								if(($(MyRows[i]).find('td:eq(0)').html())==sessionStorage.getItem("idDut")) {
 									var table = $('#dutTable').DataTable();
 									table.row($(MyRows[i])).remove().draw();
-									/*$(MyRows[i]).fadeOut(400, function() {
-										$(MyRows[i]).remove();
-									});*/
 								}
 							}
 							
@@ -861,14 +836,17 @@
 		
 		<!-- Row selector script -->
 		<script>
-			$("#dutTable tbody tr").click(function(){
+			$("#dutTable tbody").on('click', 'tr', function(){
+			//$("#dutTable tbody tr").click(function(){
 				if($(this).hasClass('selected')) {
 					$(this).removeClass('selected');
 					sessionStorage.removeItem("idDut");
 
 					disableDutButtons();
 				} else {
-					$(this).addClass('selected').siblings().removeClass('selected');    
+					$('#dutTable').DataTable().$('tr.selected').removeClass('selected');
+					$(this).addClass('selected');
+					//$(this).addClass('selected').siblings().removeClass('selected');    
 				   	var id=$(this).find('td:first').html();
 				   	var name=$(this).find('td:eq(1)').html();
 				   	sessionStorage.setItem("idDut",id);

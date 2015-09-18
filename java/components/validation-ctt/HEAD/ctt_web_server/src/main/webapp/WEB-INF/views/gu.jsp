@@ -40,16 +40,6 @@
 			       			<tr class="scroll-tr">  -->
 			       		<thead>
 			       			<tr>
-			       				<!-- <th class="hide">GU ID</th>	
-					        	<th width="10%">GU Name</th>
-					        	<th width="8%">Created</th>
-					        	<th width="8%">Modified</th>
-					        	<th width="18%">Category</th>
-					        	<th width="10%">OEM</th>
-					        	<th width="10%">Model</th>
-					        	<th width="8%">SW Ver</th>
-					        	<th width="8%">HW Ver</th>
-					        	<th width="20%">Description</th> -->
 					        	<th class="hide">GU ID</th>	
 					        	<th>GU Name</th>
 					        	<th>Created</th>
@@ -65,25 +55,7 @@
 			        	<!-- <tbody class="scroll-tbody">  -->
 			        	<tbody>
 							<c:forEach var="gu" items="${guList}" varStatus="status">
-								<tr>
-					        	<!-- <tr class="scroll-tr">  -->
-					        		<!-- <td class="hide">${gu.idGolden}</td>
-					        		<td width="10%">${gu.name}</td>
-									<td width="8%"><fmt:formatDate value="${gu.createdDate}"
-										pattern="yyyy-MM-dd HH:mm:ss"/></td>
-									<td width="8%"><fmt:formatDate value="${gu.modifiedDate}"
-										pattern="yyyy-MM-dd HH:mm:ss"/></td>
-									<c:forEach var="category" items="${categoryList}" varStatus="status">
-										<c:if test="${category.idCategory==gu.category}">
-											<td width="18%">${category.name}</td>
-										</c:if>
-									</c:forEach>
-									<td width="10%">${gu.manufacturer}</td>
-									<td width="10%">${gu.model}</td>
-									<td width="8%">${gu.swVer}</td>
-									<td width="8%">${gu.hwVer}</td>
-									<td width="20%">${gu.description}</td> -->
-									
+								<tr>			
 									<td class="hide">${gu.idGolden}</td>
 					        		<td>${gu.name}</td>
 									<td><fmt:formatDate value="${gu.createdDate}"
@@ -114,10 +86,6 @@
 	        	<button id="deleteButton" type="button" disabled class="btn btn-default btn-lg disabled" data-toggle="modal" data-target="#delGu">Delete GU</button>
 	        	<p class="pull-right" id="guSelect">You need to select at least 3 Golden Units</p>
 	        </div>
-	        
-	        <!-- <div class="row" align="right">
-	        	<p id="guSelect">You need to select at least 3 Golden Units</p>
-	        </div> -->
 	        
 	        <!-- Navigation buttons -->
 	        <div class="row" align="left">
@@ -271,32 +239,69 @@
 		<script src="resources/jquery-validation/1.13.1/js/additional-methods.min.js"></script>
 		
 		<script>
-			$(document).ready(function() {
+			function nextButtonEnabled(status)
+			{
+				if (status)
+				{
+					$('#nextButton').removeClass('disabled');	
+				}
+				else
+				{
+					$('#nextButton').addClass('disabled');
+				}
+				
+				$('#nextButton').prop("disabled", !status);
+			   	$('#guSelect').prop("hidden", status);
+			}
+			
+			function optionButtonsEnabled(status)
+			{
+				if (status)
+				{
+					$('#deleteButton').removeClass('disabled');
+					$('#editButton').removeClass('disabled');
+				}
+				else
+				{
+					$('#deleteButton').addClass('disabled');
+					$('#editButton').addClass('disabled');
+				}
+				
+				$('#deleteButton').prop("disabled", !status);
+				$('#editButton').prop("disabled", !status);
+			}
+		</script>
+		
+		<script>
+			$(document).ready(function()
+			{
 				$('#title').text("STEP 3: SELECT/EDIT/CREATE A GOLDEN UNIT (GU)");
 				
 				$('#selectedProject').append("Project: "+sessionStorage.getItem("projectName"));
 				$('#selectedProject').append(" / DUT: "+sessionStorage.getItem("dutName"));
 				
-				/*var w = $('.scroll-tbody').find('.scroll-tr').first().width();
-				$('.scroll-thead').find('.scroll-tr').width(w);*/
-				
 				$('#table').removeClass('hide');
-				
-				$('#table').dataTable({
+				$('#table').dataTable(
+				{
 					autoWidth: false,
 					pagingType: 'full_numbers',
 					scrollY: ($(window).height()/2),
 					order: [0, 'asc']
 				});
+				
+				if (sessionStorage.getItem("type") == "Development")
+				{
+					nextButtonEnabled(true);
+				}
 			});
 		</script>
 		
 		<script>
-			$('#newGuForm').validate({
+			$('#newGuForm').validate(
+			{
 				rules: {
 					name: {
 						required: true,
-						minlength: 2,
 						maxlength: 255,
 						remote: {
 							url: "gu/validateName",
@@ -311,27 +316,22 @@
 					},
 					manufacturer: {
 						required: true,
-						minlength: 2,
 						maxlength: 60,
 					},
 					model: {
 						required: true,
-						minlength: 2,
 						maxlength: 60,
 					},
 					hwVer: {
 						required: true,
-						minlength: 2,
 						maxlength: 60,
 					},
 					swVer: {
 						required: true,
-						minlength: 2,
 						maxlength: 60,
 					},
 					description: {
 						required: true,
-						minlength: 2,
 						maxlength: 255,
 					}
 				},
@@ -368,7 +368,6 @@
 				rules: {
 					name: {
 						required: true,
-						minlength: 2,
 						maxlength: 255,
 						remote: {
 							url: "gu/validateName",
@@ -385,27 +384,22 @@
 					},
 					manufacturer: {
 						required: true,
-						minlength: 2,
 						maxlength: 60,
 					},
 					model: {
 						required: true,
-						minlength: 2,
 						maxlength: 60,
 					},
 					hwVer: {
 						required: true,
-						minlength: 2,
 						maxlength: 60,
 					},
 					swVer: {
 						required: true,
-						minlength: 2,
 						maxlength: 60,
 					},
 					description: {
 						required: true,
-						minlength: 2,
 						maxlength: 255,
 					}
 				},
@@ -440,102 +434,107 @@
 		</script>
 		
 		<script>
-			function formSubmit() {
+			function formSubmit()
+			{
 				$('#logoutForm').submit();
 			}
 		</script>
 		
 		<!-- Button scripts -->
 		<script>
-		
-			$('#nextButton').on('click', function(){
-			
+			$('#nextButton').on('click', function()
+			{
 				$('#idProject').val(sessionStorage.getItem('idProject'));
 				
-				var text="";
-				var textNames="";
+				var text = "";
+				var textNames = "";
 				
-				$("#table tbody tr").each(function(index){
-					if($(this).hasClass("selected")) {
-						text+=$(this).find('td:first').html()+".";
-						textNames+=$(this).find('td:eq(1)').html()+", ";
+				$("#table tbody tr").each(function(index)
+				{
+					if ($(this).hasClass("selected"))
+					{
+						text += $(this).find('td:first').html() + ".";
+						textNames += $(this).find('td:eq(1)').html() + ", ";
 					}
 	    		});
+				
 				$('#gUnits').val(text);
-				sessionStorage.setItem("guNames", textNames.substring(0, textNames.length -2));
-				$('#nextForm').submit();
-					
+				sessionStorage.setItem("guNames", textNames.substring(0, textNames.length - 2));
+				$('#nextForm').submit();	
 			});
 			
-			$('#continueButton').on('click', function() {
+			$('#continueButton').on('click', function()
+			{
 				$('#idProject').val(sessionStorage.getItem('idProject'));
 				$('#idGolden').val(sessionStorage.getItem('idGu'));
-				sessionStorage.setItem("associatedGu",sessionStorage.getItem("idGu"));
+				sessionStorage.setItem("associatedGu", sessionStorage.getItem("idGu"));
 				$('#nextForm').submit();
 			});
 		
-		  	$('#createGu').on('click', function(e){
+		  	$('#createGu').on('click', function(e)
+		  	{
 		    	e.preventDefault();
-		    	
+		  
 		    	$('#newGuForm').submit();
 		  	});
 
-			$('#deleteConfirm').on('click', function(){
-				
+			$('#deleteConfirm').on('click', function()
+			{
 				var token = $("meta[name='_csrf']").attr("content");
 				var header = $("meta[name='_csrf_header']").attr("content");
 			    
 			    $.ajax({
 						type : 'POST',
 						url : 'gu/delete',
-						beforeSend: function(xhr) {
+						beforeSend: function(xhr)
+						{
 				            xhr.setRequestHeader(header, token);
 				        },
-						data : {
+						data :
+						{
 							idGu : sessionStorage.getItem("idGu")
 						},
-						success: function() {
+						success: function()
+						{
 						    var MyRows = $('#table').find('tbody').find('tr');
-							for (var i = 0; i < MyRows.length; i++) {
-								if(($(MyRows[i]).find('td:eq(0)').html())==sessionStorage.getItem("idGu")) {
+							
+						    for (var i = 0; i < MyRows.length; i++)
+						    {
+								if (($(MyRows[i]).find('td:eq(0)').html()) == sessionStorage.getItem("idGu"))
+								{
 									$(MyRows[i]).click();
 									var table = $('#table').DataTable();
 									table.row($(MyRows[i])).remove().draw();
-									/*$(MyRows[i]).removeClass('selected');
-									$(MyRows[i]).fadeOut(400, function() {
-										$(MyRows[i]).remove();
-									});*/
 								}
 							}
 							
 							sessionStorage.removeItem("idGu");
 							
-							$('#nextButton').addClass('disabled');
-							$('#nextButton').prop("disabled", true);
-							$('#deleteButton').addClass('disabled');
-							$('#deleteButton').prop("disabled", true);
-							$('#editButton').addClass('disabled');
-							$('#editButton').prop("disabled", true);
+							nextButtonEnabled(false);
+							optionButtonsEnabled(false);
 						}
 				});
 			});
 			
-			$('#editConfirm').on('click', function(e) {
+			$('#editConfirm').on('click', function(e)
+			{
 				e.preventDefault();
 				
 				$('#editGuForm').submit();
 			});
 			
-			$('#editButton').on('click', function(){
+			$('#editButton').on('click', function()
+			{
 				$.ajax({
 					cache: false,
 					type : 'GET',
 					url : 'gu/edit',
-					data : {
+					data :
+					{
 						idGu : sessionStorage.getItem("idGu")
 					},
-					success: function (data) {
-						
+					success: function (data)
+					{
 						$('#edit-id').val(data.idGolden);
 						$('#edit-name').val(data.name);
 						$('#edit-category').val(data.category);
@@ -552,37 +551,51 @@
 		
 		<!-- Row selector script -->
 		<script>
-			var nSel=0;
-			$("#table tbody tr").click(function(){			
-			   	if($(this).hasClass("selected")) {
+			var numberOfSelectedRows = 0;
+			
+			$("#table tbody tr").click(function()
+			{			
+			   	if ($(this).hasClass("selected"))
+			   	{
 			   		$(this).removeClass("selected");
-			   		nSel--;
-
-			   	} else {
+			   		numberOfSelectedRows--;
+			   	}
+			   	else
+			   	{
 			   		$(this).addClass("selected");
-				   	nSel++;
+			   		numberOfSelectedRows++;
 			   	}
 
-			   	if(nSel>=3) {
-			   		$('#nextButton').removeClass('disabled');
-				   	$('#nextButton').prop("disabled", false);
-				   	$('#guSelect').prop("hidden", true);
-			   	} else if ((nSel==2)||(nSel==0)) {
-					$('#deleteButton').addClass('disabled');
-					$('#deleteButton').prop("disabled", true);
-					$('#editButton').addClass('disabled');
-					$('#editButton').prop("disabled", true);
-					$('#nextButton').addClass('disabled');
-				   	$('#nextButton').prop("disabled", true);
-				   	$('#guSelect').prop("hidden", false);
+			   	if (numberOfSelectedRows >= 3)
+			   	{
+			   		nextButtonEnabled(true);
+			   	}
+			   	else if (numberOfSelectedRows == 2)
+			   	{
+					optionButtonsEnabled(false);
+					nextButtonEnabled(false);
 				   	sessionStorage.removeItem("idGu");
-			   	} else if (nSel==1) {
-			   		$('#deleteButton').removeClass('disabled');
-					$('#deleteButton').prop("disabled", false);
-					$('#editButton').removeClass('disabled');
-					$('#editButton').prop("disabled", false);
-					id=$(this).find('td:first').html();
-				   	sessionStorage.setItem("idGu",id);
+			   	}
+			   	else if (numberOfSelectedRows == 1)
+			   	{
+			   		optionButtonsEnabled(true);
+					
+					if (sessionStorage.getItem("type") == "Development")
+					{
+						nextButtonEnabled(false);
+					}
+					
+				   	sessionStorage.setItem("idGu", $(this).find('td:first').html());
+			   	}
+			   	else if (numberOfSelectedRows == 0)
+			   	{
+			   		if (sessionStorage.getItem("type") == "Development")
+			   		{
+			   			nextButtonEnabled(true);
+			   		}
+			   		
+			   		optionButtonsEnabled(false);
+			   		sessionStorage.removeItem("idGu");
 			   	}
 			});
 		</script>

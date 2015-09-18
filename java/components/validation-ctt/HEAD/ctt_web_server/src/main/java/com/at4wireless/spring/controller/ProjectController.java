@@ -54,22 +54,16 @@ public class ProjectController
 {
 	@Autowired
 	private ProjectService projectService;
-	
 	@Autowired
 	private DutService dutService;
-
 	@Autowired
 	private CertificationReleaseService crService;
-
 	@Autowired
 	private ServiceFrameworkService sfService;
-
 	@Autowired
 	private GoldenUnitService guService;
-	
 	@Autowired
-	private TcclService tcclService;
-	
+	private TcclService tcclService;	
 	@Autowired
 	private UserService userService;
 
@@ -85,9 +79,10 @@ public class ProjectController
 	public String project(Model model,
 			@RequestParam(value = "error", required = false) String error)
 	{
-		Authentication auth = SecurityContextHolder.getContext()
-				.getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
 			String username = auth.getName();
 
 			model.addAttribute("projectList", projectService.getTableData(username));
@@ -97,18 +92,25 @@ public class ProjectController
 			model.addAttribute("serviceList", sfService.list());
 			model.addAttribute("dutList", dutService.getTableData(username));
 			
-			if (error != null) {
-				if (error.equals("empty")) {
+			if (error != null)
+			{
+				if (error.equals("empty"))
+				{
 					model.addAttribute("error", "You have to select a project");
-				} else if (error.equals("exists")) {
-					model.addAttribute("error",
-							"A project with that name already exists");
-				} else if (error.equals("name")) {
+				}
+				else if (error.equals("exists"))
+				{
+					model.addAttribute("error", "A project with that name already exists");
+				}
+				else if (error.equals("name"))
+				{
 					model.addAttribute("error", "Project name cannot be empty");
 				}
 			}
 			return "project";
-		} else {
+		}
+		else
+		{
 			return "redirect:/login";
 		}
 	}
@@ -122,22 +124,30 @@ public class ProjectController
      * @return 				target view
      */
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public String add(@Valid @ModelAttribute("newProject") Project newProject,
-			BindingResult result)
+	public String add(@Valid @ModelAttribute("newProject") Project newProject, BindingResult result)
 	{
-		Authentication auth = SecurityContextHolder.getContext()
-				.getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
-			if (result.hasErrors()) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
+			if (result.hasErrors())
+			{
 				return "redirect:/project?error=name";
-			} else {
-				if(projectService.create(newProject)) {
+			}
+			else
+			{
+				if(projectService.create(newProject))
+				{
 					return "redirect:/project";
-				} else {
+				}
+				else
+				{
 					return "redirect:/project?error=exists";
 				}
 			}
-		} else {
+		}
+		else
+		{
 			return "redirect:/login";
 		}
 	}
@@ -151,9 +161,10 @@ public class ProjectController
 	@RequestMapping(value = "/edit", method = RequestMethod.GET)
 	public @ResponseBody Project edit(HttpServletRequest request)
 	{
-		Authentication auth = SecurityContextHolder.getContext()
-				.getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
 			return projectService.getFormData(auth.getName(), 
 					Integer.parseInt(request.getParameter("idProject")));
 		}
@@ -170,18 +181,24 @@ public class ProjectController
      * @return 				target view
      */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(@Valid @ModelAttribute("newProject") Project newProject,
-			BindingResult result)
+	public String save(@Valid @ModelAttribute("newProject") Project newProject, BindingResult result)
 	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
-			if (result.hasErrors()) {
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
+			if (result.hasErrors())
+			{
 				return "redirect:/project?error=name";
-			} else {
+			}
+			else
+			{
 				projectService.update(newProject);
 				return "redirect:/project";
 			}
-		} else {
+		}
+		else
+		{
 			return "redirect:/login";
 		}
 	}
@@ -196,9 +213,10 @@ public class ProjectController
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	public String delete(HttpServletRequest request)
 	{
-		Authentication auth = SecurityContextHolder.getContext()
-				.getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
 			projectService.delete(auth.getName(), 
 					Integer.parseInt(request.getParameter("idProject")));
 		}
@@ -225,10 +243,12 @@ public class ProjectController
 	 * @return			false if exists, true otherwise
 	 */
 	@RequestMapping(value="/validateName", method = RequestMethod.GET)
-	public @ResponseBody boolean validateName(HttpServletRequest request) {
-		Authentication auth = SecurityContextHolder.getContext()
-				.getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
+	public @ResponseBody boolean validateName(HttpServletRequest request)
+	{
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
 			return (!(projectService.exists(auth.getName(), 
 					request.getParameter("name"), Integer.parseInt(request.getParameter("id")))));
 		}
@@ -241,12 +261,13 @@ public class ProjectController
 	 * @return	generated key
 	 */
 	@RequestMapping(value="/generateKey", method = RequestMethod.POST)
-	public @ResponseBody int generateKey() {
-		
+	public @ResponseBody int generateKey()
+	{
 		int pass = -1;
-		Authentication auth = SecurityContextHolder.getContext()
-				.getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
 			pass = userService.setKey(auth.getName());
 		}
 		return pass;
@@ -261,9 +282,12 @@ public class ProjectController
 	@RequestMapping(value="/loadCertRel", method = RequestMethod.GET)
 	public @ResponseBody List<CertificationRelease> loadCertRel(HttpServletRequest request)
 	{
-		if (request.getParameter("pjType").equals("Pre-certification")) {
+		if (request.getParameter("pjType").equals("Development"))
+		{
 			return crService.list();
-		} else {
+		}
+		else
+		{
 			return crService.listReleaseVersions();
 		}
 	}

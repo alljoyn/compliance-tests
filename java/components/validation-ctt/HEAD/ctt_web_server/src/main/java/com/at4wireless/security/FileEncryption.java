@@ -15,12 +15,6 @@
  *******************************************************************************/
 package com.at4wireless.security;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
@@ -33,7 +27,6 @@ import java.security.PublicKey;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.CipherOutputStream;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -101,25 +94,10 @@ public class FileEncryption {
 		return new String(decryptedVal, StandardCharsets.UTF_8);
 	}
 	
-	public byte[] encryptAESwithRSA() throws IOException, InvalidKeyException {
+	public byte[] encryptAESwithRSA() throws IOException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
 		rsaCipher.init(Cipher.ENCRYPT_MODE, rsaPublicKey);
-
-		CipherOutputStream cos = new CipherOutputStream(new BufferedOutputStream(new FileOutputStream(File.separator+"temp2.log")), rsaCipher);
-		cos.write(aesSecretKey.getEncoded());
-		cos.close();
 		
-		BufferedInputStream bis = new BufferedInputStream(new FileInputStream(File.separator+"temp2.log"));
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		
-		byte[] c = new byte[1024];
-
-		int i=0;
-		while( (i = bis.read(c)) != -1){ 
-		    bos.write(c,0,i);               
-		}
-		bis.close();
-		bos.close();
-		return bos.toByteArray();
+		return rsaCipher.doFinal(aesSecretKey.getEncoded());
 	}
 	
 	public PublicKey getRsaPublicKey() {

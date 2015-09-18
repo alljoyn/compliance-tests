@@ -117,7 +117,7 @@
 				
 				$('#selectedProject').append("Project: "+sessionStorage.getItem("projectName"));
 				$('#selectedProject').append(" / DUT: "+sessionStorage.getItem("dutName"));
-				if(sessionStorage.getItem("type")!="Conformance") {
+				if ((sessionStorage.getItem("type")!="Conformance") && (sessionStorage.getItem("guNames") != null)) {
 					$('#selectedProject').append(" / GUs: "+sessionStorage.getItem("guNames"));
 				}
 				
@@ -158,29 +158,46 @@
 						$('.is_checkbox').prop('checked', true);
 						$("#pleaseWaitDialog").modal('hide');
 						
-						$.ajax({
-							url: "testcase/disabled",
-							type: 'GET',
-							data: {
-								idProject : sessionStorage.getItem("idProject")
-							},
-							success: function(data) {
-								var MyRows = $('#tcBody').find('tr');
-								$.each(data, function(i, disabled) {
-									for (var j = 0; j < MyRows.length; j++) {
-										if($(MyRows[j]).find('td:eq(0)').html()==disabled) {
-											$(MyRows[j]).find('.is_checkbox').prop('checked',false);
-											$(MyRows[j]).find('.is_checkbox').prop('disabled',true);
-											$(MyRows[j]).addClass('text-muted');
+						if(sessionStorage.getItem("type")!="Development")
+						{
+							$.ajax({
+								url: "testcase/disabled",
+								type: 'GET',
+								data: {
+									idProject : sessionStorage.getItem("idProject")
+								},
+								success: function(data) {
+									var MyRows = $('#tcBody').find('tr');
+
+									$.each(data, function(i, disabled) {
+										for (var j = 0; j < MyRows.length; j++) {
+											if ($(MyRows[j]).find('td:eq(0)').html()==disabled)
+											{
+												$(MyRows[j]).find('.is_checkbox').prop('checked',false);
+												$(MyRows[j]).find('.is_checkbox').prop('disabled',true);
+												$(MyRows[j]).addClass('text-muted');
+											}
 										}
-									}
-								});
+									});
+								}
+							});
+						}
+						else
+						{
+							var MyRows = $('#tcBody').find('tr');
+							var noGUs = sessionStorage.getItem("guNames") == "";
+
+							for (var j = 0; j < MyRows.length; j++) {
+								
+								if ((noGUs) && ($(MyRows[j]).find('td:eq(1)').html().indexOf("IOP") >= 0))
+								{
+									$(MyRows[j]).find('.is_checkbox').prop('checked', false);
+									$(MyRows[j]).find('.is_checkbox').prop('disabled', true);
+									$(MyRows[j]).addClass('text-muted');
+								}
 							}
-						});
-						
-						/*var w = $('.scroll-tbody').find('.scroll-tr').first().width();
-						$('.scroll-thead').find('.scroll-tr').width(w);*/
-						
+						}
+							
 						$('tbody').find('tr').dblclick(function() {
 							if(!($(this).hasClass("text-muted"))) {
 								var val = $(this).find('.is_checkbox').is(':checked');

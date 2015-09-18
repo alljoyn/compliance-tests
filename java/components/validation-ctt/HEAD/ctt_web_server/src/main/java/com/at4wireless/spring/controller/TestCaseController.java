@@ -41,11 +41,10 @@ import com.at4wireless.spring.service.TestCaseService;
  */
 @Controller
 @RequestMapping(value="/testcase")
-public class TestCaseController {
-	
+public class TestCaseController
+{
 	@Autowired
 	private TestCaseService tcService;
-	
 	@Autowired
 	private ProjectService projectService;
 	
@@ -57,14 +56,15 @@ public class TestCaseController {
      * @return 				target view
      */
 	@RequestMapping(method = RequestMethod.GET)
-	public String testcase(Model model) {
-		
+	public String testcase(Model model)
+	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
 			model.addAttribute("tcList", new ArrayList<TestCase>());
 			model.addAttribute("newProject", new Project());
 		}
-		
 		return "testcase";
 	}
 	
@@ -75,15 +75,19 @@ public class TestCaseController {
      * @return 				target view
      */
 	@RequestMapping(value="load", method=RequestMethod.GET)
-	public @ResponseBody List<TestCase> load(HttpServletRequest request) {
-
+	public @ResponseBody List<TestCase> load(HttpServletRequest request)
+	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
 			Project p = projectService.getFormData(auth.getName(), Integer.parseInt(request.getParameter("data[idProject]")));
 			
 			return tcService.load(projectService.getServicesData(p.getIdProject()),
 					request.getParameterMap(), p.getType(), p.getIdCertrel());
-		} else {
+		}
+		else
+		{
 			return new ArrayList<TestCase>();
 		}
 	}
@@ -95,13 +99,18 @@ public class TestCaseController {
      * @return 				target view
      */
 	@RequestMapping(value="disabled", method=RequestMethod.GET)
-	public @ResponseBody List<Integer> disabled(HttpServletRequest request) {
+	public @ResponseBody List<Integer> disabled(HttpServletRequest request)
+	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
 			Project p = projectService.getFormData(auth.getName(), Integer.parseInt(request.getParameter("idProject")));
 			
 			return tcService.getDisabled(p.getIdTccl());
-		} else {
+		}
+		else
+		{
 			return new ArrayList<Integer>();
 		}
 	}

@@ -77,7 +77,7 @@ public class TestCaseServiceImpl implements TestCaseService {
 				listIcs.addAll(icsDao.getService(5)); //JTF: Change to a generic way
 			}
 			List<Integer> intList = crDao.getIds(idCertRel);
-			if(type.equals("Pre-certification")||type.equals("Conformance and Interoperability")) {
+			if(type.equals("Development")||type.equals("Conformance and Interoperability")) {
 				listTC.addAll(tcDao.getServiceWithRestriction("Conformance", bi.intValue(), intList));
 				listTC.addAll(tcDao.getServiceWithRestriction("Interoperability", bi.intValue(), intList));
 			} else {
