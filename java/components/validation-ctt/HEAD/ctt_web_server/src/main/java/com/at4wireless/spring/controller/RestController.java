@@ -35,6 +35,7 @@ import java.security.MessageDigest;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.DatatypeConverter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -86,142 +87,164 @@ import com.at4wireless.spring.service.UserService;
  * 
  */
 @Controller
-@RequestMapping(value="/rest")
-public class RestController {
-		
+@RequestMapping(value = "/rest")
+public class RestController
+{
 	@Autowired
 	private ProjectService projectService;
-	
 	@Autowired
 	private CertificationReleaseService crService;
-	
 	@Autowired
 	private DutService dutService;
-	
 	@Autowired
 	private GoldenUnitDAO guDao;
-	
 	@Autowired
 	private TestCaseService tcService;
-	
 	@Autowired
 	private UserService userService;
 	
-	
-	@RequestMapping(value="/keyExchange/{user}", method = RequestMethod.POST,
+	@RequestMapping(value = "/keyExchange", method = RequestMethod.POST,
 			produces = "application/json; charset=utf-8")
-	public @ResponseBody String keyExchange(@PathVariable String user, @RequestParam("publicKey") String publicKey) {
-		return userService.keyExchange(user,publicKey);
+	public @ResponseBody String keyExchange(@RequestParam("user") String user, @RequestParam("publicKey") String publicKey)
+	{
+		return userService.keyExchange(user, publicKey);
 	}
 	
 	/**
 	 * Sends the list of projects of a certain user
 	 * 
-	 * @param 	user	user whose projects are going to be sent
-	 * @return			project list
+	 * @param user
+	 * 			user whose projects are going to be sent
+	 * 
+	 * @return project list
 	 */
-	@RequestMapping(value="/getList/{user}", method = RequestMethod.GET)
-	public @ResponseBody List<RestProject> getList(@PathVariable String user) {
-		return projectService.getRestData(user);
+	@RequestMapping(value = "/getList/{encodedUser}", method = RequestMethod.GET)
+	public @ResponseBody List<RestProject> getList(@PathVariable String encodedUser)
+	{
+		;
+		return projectService.getRestData(new String(DatatypeConverter.parseBase64Binary(encodedUser)));
 	}
 	
 	/**
 	 * Checks if a technology package is updated
-	 * @param 	technology	certification release version
-	 * @return				true if updated, false and release number otherwise
+	 * 
+	 * @param technology
+	 * 			certification release version
+	 * 
+	 * @return true if updated, false and release number otherwise
 	 */
-	@RequestMapping(value="/isLastTechnologyVersion/{technology}", method = RequestMethod.GET)
-	public @ResponseBody String isLastTechnologyVersion(@PathVariable String technology) {
-		
-		if (technology.matches("v[\\d]+_[\\d]+_[\\d]+[a-z]?_[RD][\\d]+")) {
-			String[] str = technology.split("_");
+	@RequestMapping(value = "/isLastTechnologyVersion/{certificationReleaseWithPackageVersion}", method = RequestMethod.GET)
+	public @ResponseBody String isLastTechnologyVersion(@PathVariable String certificationReleaseWithPackageVersion)
+	{
+		if (certificationReleaseWithPackageVersion.matches("v[\\d]+_[\\d]+_[\\d]+[a-z]?_[RD][\\d]+"))
+		{
+			String[] str = certificationReleaseWithPackageVersion.split("_");
+			File releasesFolder = new File(File.separator + "Allseen" + File.separator + "Technology");
+			File[] listOfPackages = releasesFolder.listFiles();
+			String releaseToFind = str[0] + "." + str[1] + "." + str[2];
+			String packageWithHighestVersion = "TestCases_Package_" + releaseToFind + "_" + str[3] + ".jar";
 			
-			String url = File.separator+"Allseen"
-					+File.separator+"Technology";
-			
-			File folder = new File(url);
-			File[] listOfFiles = folder.listFiles();
-			String release = str[0]+"."+str[1]+"."+str[2];
-			String higher="TestCases_Package_"+release+"_"+str[3]+".jar";
-			
-			for (File f : listOfFiles) {
-				if (f.getName().toLowerCase().contains(release.toLowerCase())) {
-					if((f.getName().split("_")[3].charAt(0)=='R') && (higher.split("_")[3].charAt(0)=='D')) {
-						higher=f.getName();
-					} else if (((f.getName().split("_")[3].charAt(0)=='R') && (higher.split("_")[3].charAt(0)=='R')) 
-							||((f.getName().split("_")[3].charAt(0)=='D') && (higher.split("_")[3].charAt(0)=='D'))) {
-						String cmp = compare(higher.split("_")[3],f.getName().split("_")[3]);
-						if (cmp.equals("higher")) {
-							higher=f.getName();
+			for (File currentPackage : listOfPackages)
+			{
+				if (currentPackage.getName().toLowerCase().contains(releaseToFind.toLowerCase() + "_"))
+				{
+					if ((currentPackage.getName().split("_")[3].charAt(0) == 'R') && (packageWithHighestVersion.split("_")[3].charAt(0) == 'D'))
+					{
+						packageWithHighestVersion = currentPackage.getName();
+					}
+					else if (((currentPackage.getName().split("_")[3].charAt(0) == 'R') && (packageWithHighestVersion.split("_")[3].charAt(0) == 'R')) 
+							|| ((currentPackage.getName().split("_")[3].charAt(0) == 'D') && (packageWithHighestVersion.split("_")[3].charAt(0) == 'D')))
+					{
+						String resultOfComparison = compare(packageWithHighestVersion.split("_")[3], currentPackage.getName().split("_")[3]);
+						
+						if (resultOfComparison.equals("higher"))
+						{
+							packageWithHighestVersion = currentPackage.getName();
 						}
 					}
 				}
 			}
 			
-			System.out.println(higher);
-			
-			if(higher.equals("TestCases_Package_"+release+"_"+str[3]+".jar")) {
+			if (packageWithHighestVersion.equals("TestCases_Package_" + releaseToFind + "_" + str[3] + ".jar"))
+			{
 				return "true";
-			} else {
-				return "false, "+higher.replaceAll("\\.", "_").split("_")[5];
+			}
+			else
+			{
+				return "false, " + packageWithHighestVersion.replaceAll("\\.", "_").split("_")[5];
 			}
 		}
+		
 		return "bad request";
 	}
-	
 	
 	/**
 	 * Sends a technology package
 	 * 
-	 * @param 	technology	requested package
-	 * @param 	response	servlet response with the requested file
+	 * @param technology
+	 * 			requested package
+	 * @param response
+	 * 			servlet response with the requested file
 	 */
-	@RequestMapping(value="/getTechnology/{technology}", method = RequestMethod.GET,
+	@RequestMapping(value = "/getTechnology/{certificationReleaseAndPackageVersion}", method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	@ResponseBody
-	public void getTechnology(@PathVariable String technology, HttpServletResponse response) {
-		
-		String[] str = technology.split("_");
-		String n = str[0]+"."+str[1]+"."+str[2]+"_"+str[3];
+	public @ResponseBody void getTechnology(@PathVariable String certificationReleaseAndPackageVersion, HttpServletResponse response)
+	{
+		String[] splitted = certificationReleaseAndPackageVersion.split("_");
+		String formattedCertificationReleaseWithPackageVersion = splitted[0] + "." + splitted[1] + "." + splitted[2] + "_" + splitted[3];
 		String fullPath = File.separator + "Allseen" + File.separator + "Technology" + File.separator +
-				"TestCases_Package_" +n+".jar";
+				"TestCases_Package_" + formattedCertificationReleaseWithPackageVersion + ".jar";
 	
-		try {
-			File f = new File(fullPath);
-		    InputStream is = new FileInputStream(f);
-		    response.setHeader("Content-Disposition", "attachment; filename="+technology+".jar");
+		try
+		{
+			File fileToBeSent = new File(fullPath);
+		    InputStream is = new FileInputStream(fileToBeSent);
+		    response.setHeader("Content-Disposition", "attachment; filename=" + formattedCertificationReleaseWithPackageVersion + ".jar");
 		    org.apache.commons.io.IOUtils.copy(is, response.getOutputStream());
 		    response.flushBuffer();
 		    is.close();
-		} catch (IOException e) {
-			//e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
 		}
 	}
-	
 	
 	/**
 	 * Sends all information related to a project
 	 * 
-	 * @param 	user	user
-	 * @param 	id		project id
-	 * @return			project configuration file
-	 * @throws 			IOException if file does not exist
+	 * @param user
+	 * 			user
+	 * @param id
+	 * 			project id
+	 * 
+	 * @return project configuration file
+	 * @throws IOException if file does not exist
 	 */
-	@RequestMapping(value="/getProject/{user}/{id}", method = RequestMethod.GET)
-	public @ResponseBody String getProject(@PathVariable String user, @PathVariable int id) throws IOException {
-	
+	@RequestMapping(value="/getProject/{encodedUser}/{id}", method = RequestMethod.GET)
+	public @ResponseBody String getProject(@PathVariable String encodedUser, @PathVariable int id) throws IOException
+	{
 		String config = null;
 		JSONObject xmlJSONObj = null;
+		String user = new String(DatatypeConverter.parseBase64Binary(encodedUser));
 		
-		for (Project p : projectService.list(user)) {
-			if(p.getIdProject()==id) {
-				if(p.isHasResults()) {
+		for (Project p : projectService.list(user))
+		{
+			if(p.getIdProject()==id)
+			{
+				if(p.isHasResults())
+				{
 					appendLastExecution(p.getConfiguration(), p.getResults());
 				}
+				
 				config = readFile(p.getConfiguration(), StandardCharsets.UTF_8);
-				try {
+				
+				try
+				{
 					xmlJSONObj = XML.toJSONObject(config);
-				} catch (JSONException e) {
+				}
+				catch (JSONException e)
+				{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -236,10 +259,13 @@ public class RestController {
 	 * @param 	configuration	configuration file path
 	 * @param 	results			results file path
 	 */
-	private void appendLastExecution(String configuration, String results) {
+	private void appendLastExecution(String configuration, String results)
+	{
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder;
-		try {
+		
+		try
+		{
 			docBuilder = docFactory.newDocumentBuilder();
 			Document doc = docBuilder.parse(new FileInputStream(configuration));
 			
@@ -252,49 +278,65 @@ public class RestController {
 			NodeList nodeList2 = (NodeList) xPath.compile(expression2).evaluate(doc, XPathConstants.NODESET);
 			NodeList nodeList3 = (NodeList) xPath.compile(expression3).evaluate(doc, XPathConstants.NODESET);
 			
-			for (int i = 0; i < nodeList.getLength(); i++) {
-
+			for (int i = 0; i < nodeList.getLength(); i++)
+			{
 			    String str = tcService.lastExecution(nodeList.item(i).getFirstChild().getNodeValue(), results);
 			    String str2[] = str.split(", ");
-			    if(str2.length==2) {
+			    
+			    if(str2.length==2)
+			    {
 			    	nodeList2.item(i).getFirstChild().setNodeValue(str2[0]);
 			    	nodeList3.item(i).getFirstChild().setNodeValue(str2[1]);
 			    }
 			}
 			
 			Transformer transformer;
-			try {
+			try
+			{
 				transformer = TransformerFactory.newInstance().newTransformer();
 				Source input = new DOMSource(doc);
 
-				try {
+				try
+				{
 					transformer.transform(input, new StreamResult(new File(configuration)));
-				} catch (TransformerException e) {
+				}
+				catch (TransformerException e)
+				{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			} catch (TransformerConfigurationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (TransformerFactoryConfigurationError e) {
+			}
+			catch (TransformerConfigurationException e)
+			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (XPathExpressionException e) {
+			catch (TransformerFactoryConfigurationError e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		catch (ParserConfigurationException e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		catch (SAXException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (XPathExpressionException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -305,16 +347,21 @@ public class RestController {
 	 * @return				results xml
 	 * @throws 	IOException	if file does not exist
 	 */
-	@RequestMapping(value="/getResults/{user}/{id}", method = RequestMethod.GET)
-	public @ResponseBody String getResults(@PathVariable String user, @PathVariable int id) throws IOException {
-		
+	@RequestMapping(value="/getResults/{encodedUser}/{id}", method = RequestMethod.GET)
+	public @ResponseBody String getResults(@PathVariable String encodedUser, @PathVariable int id) throws IOException
+	{
 		String config = null;
 		JSONObject xmlJSONObj = null;
+		String user = new String(DatatypeConverter.parseBase64Binary(encodedUser));
 		
 		config = readFile(projectService.getFormData(user, id).getResults(), StandardCharsets.UTF_8);
-		try {
+		
+		try
+		{
 			xmlJSONObj = XML.toJSONObject(config);
-		} catch (JSONException e) {
+		}
+		catch (JSONException e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -331,10 +378,11 @@ public class RestController {
 	 * @return				log file content
 	 * @throws IOException	if file does not exist
 	 */
-	@RequestMapping(value="/getFullLog/{user}/{id}/{log}", method = RequestMethod.GET)
-	public @ResponseBody String getFullLog(@PathVariable String user, @PathVariable int id,
-			@PathVariable String log) throws IOException {
-		
+	@RequestMapping(value="/getFullLog/{encodedUser}/{id}/{log}", method = RequestMethod.GET)
+	public @ResponseBody String getFullLog(@PathVariable String encodedUser, @PathVariable int id,
+			@PathVariable String log) throws IOException
+	{
+		String user = new String(DatatypeConverter.parseBase64Binary(encodedUser));
 		String path = File.separator+"Allseen"+File.separator+"Users"+File.separator+
 				user+File.separator+id+File.separator+log+".log";
 
@@ -348,15 +396,19 @@ public class RestController {
 	 * @param 	requestBody	body of the servlet request
 	 * @return				OK if processed, UNAUTHORIZED otherwise
 	 */
-	@RequestMapping(value="/sendResult/{user}/{id}", method = RequestMethod.POST,
+	@RequestMapping(value="/sendResult/{encodedUser}/{id}", method = RequestMethod.POST,
 			consumes = "application/xml")
-	public ResponseEntity<String> sendResult(@PathVariable String user, @PathVariable int id,
-			@RequestBody String requestBody) {
+	public ResponseEntity<String> sendResult(@PathVariable String encodedUser, @PathVariable int id,
+			@RequestBody String requestBody)
+	{
+		String user = new String(DatatypeConverter.parseBase64Binary(encodedUser));
 		
-		if(!requestBody.isEmpty()) {
-			for (Project p : projectService.list(user)) {
-				if (p.getIdProject()==id) {
-					
+		if (!requestBody.isEmpty())
+		{
+			for (Project p : projectService.list(user))
+			{
+				if (p.getIdProject()==id)
+				{
 					Writer writer = null;
 					String url = File.separator+"Allseen"
 							+File.separator+"Users"+File.separator+user+File.separator+id
@@ -364,19 +416,24 @@ public class RestController {
 	
 					File f = new File(url);
 					
-					if(f.exists()&(!f.isDirectory())) {
+					if (f.exists() & (!f.isDirectory()))
+					{
 						DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 						DocumentBuilder builder = null;
 						DocumentBuilder builder2 = null;
 						
-						try {
+						try
+						{
 							builder = builderFactory.newDocumentBuilder();
 							builder2 = builderFactory.newDocumentBuilder();
-						} catch (ParserConfigurationException e) {
+						}
+						catch (ParserConfigurationException e)
+						{
 							e.printStackTrace();
 						}
 						
-						try {
+						try
+						{
 							Document target = builder.parse(new FileInputStream(File.separator+"Allseen"
 									+File.separator+"Users"+File.separator+user+File.separator+id
 									+File.separator+"result.xml"));
@@ -387,7 +444,9 @@ public class RestController {
 							
 							String expression = "/Results/TestCase";
 							NodeList nodeList = (NodeList) xPath.compile(expression).evaluate(source, XPathConstants.NODESET);
-							for (int i = 0; i < nodeList.getLength(); i++) {
+							
+							for (int i = 0; i < nodeList.getLength(); i++)
+							{
 							    //Create a duplicate node and transfer ownership of the
 							    //new node into the destination document
 							    Node newNode = target.importNode(nodeList.item(i),true);
@@ -396,7 +455,8 @@ public class RestController {
 							}
 							
 							Transformer transformer;
-							try {
+							try
+							{
 								transformer = TransformerFactory.newInstance().newTransformer();
 								
 								Result output = new StreamResult(new File(File.separator+"Allseen"
@@ -404,31 +464,45 @@ public class RestController {
 										+File.separator+"result.xml"));
 								Source input = new DOMSource(target);
 	
-								try {
+								try
+								{
 									transformer.transform(input, output);
-								} catch (TransformerException e) {
+								}
+								catch (TransformerException e)
+								{
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
-							} catch (TransformerConfigurationException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							} catch (TransformerFactoryConfigurationError e) {
+							}
+							catch (TransformerConfigurationException e)
+							{
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-							
-						} catch (SAXException e) {
-							e.printStackTrace();
-						} catch (IOException e) {
-							e.printStackTrace();
-						} catch (XPathExpressionException e) {
+							catch (TransformerFactoryConfigurationError e)
+							{
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+						catch (SAXException e)
+						{
 							e.printStackTrace();
 						}
-					} else {
-						try{
-						    writer = new BufferedWriter(new OutputStreamWriter(
-						          new FileOutputStream(url), "utf-8"));
+						catch (IOException e)
+						{
+							e.printStackTrace();
+						}
+						catch (XPathExpressionException e)
+						{
+							e.printStackTrace();
+						}
+					}
+					else
+					{
+						try
+						{
+						    writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(url), "utf-8"));
 						    writer.write(requestBody);
 							
 						    url = File.separator+File.separator+"Allseen"
@@ -437,16 +511,21 @@ public class RestController {
 									+File.separator+File.separator+"result.xml";
 						    projectService.resultProject(id, url);
 						    System.out.println("\nXML DOM Created Successfully..");
-						} catch (IOException ex) {
+						}
+						catch (IOException ex)
+						{
 							  // report
-						} finally {
-						   try {;
+						}
+						finally
+						{
+						   try
+						   {
 						   	   //out.close();
 							   writer.close();
-						   } catch (Exception ex) {}
+						   }
+						   catch (Exception ex) {}
 						}
 					}
-					
 					
 					return new ResponseEntity<String>(
 							"Handled application/xml request. Request body was: "
@@ -456,10 +535,8 @@ public class RestController {
 				}
 			}
 		}
-		return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
-				
+		return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);			
 	}
-	
 	
 	/**
 	 * Receives a log file
@@ -470,27 +547,34 @@ public class RestController {
 	 * @param 	file	file content
 	 * @return			success or fail response
 	 */
-	@RequestMapping(value="/upload/{user}/{id}", method = RequestMethod.POST)
-	public @ResponseBody String handleFileUpload(@PathVariable String user, @PathVariable int id,
+	@RequestMapping(value="/upload/{encodedUser}/{id}", method = RequestMethod.POST)
+	public @ResponseBody String handleFileUpload(@PathVariable String encodedUser, @PathVariable int id,
 			@RequestParam("name") String name, @RequestParam("file") String file,
-			@RequestParam("hash") String hash) {
-
-		for (Project p : projectService.list(user)) {
-			if (p.getIdProject()==id) {
-				
+			@RequestParam("hash") String hash)
+	{
+		String user = new String(DatatypeConverter.parseBase64Binary(encodedUser));
+		
+		for (Project p : projectService.list(user))
+		{
+			if (p.getIdProject()==id)
+			{
 				DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 				DocumentBuilder builder = null;
 				boolean existsOnXML = false;
 				Document xmlDocument = null;
 				Node found = null;
 				
-				try {
+				try
+				{
 					builder = builderFactory.newDocumentBuilder();
-				} catch (ParserConfigurationException e) {
+				}
+				catch (ParserConfigurationException e)
+				{
 					e.printStackTrace();
 				}
 				
-				try {
+				try
+				{
 					xmlDocument = builder.parse(new FileInputStream(File.separator+"Allseen"
 							+File.separator+"Users"+File.separator+user+File.separator+id
 							+File.separator+"result.xml"));
@@ -500,34 +584,48 @@ public class RestController {
 					String expression = "/Results/TestCase/LogFile";
 					NodeList nodeList = (NodeList) xPath.compile(expression).evaluate(xmlDocument, XPathConstants.NODESET);
 
-					for (int i = 0; i < nodeList.getLength(); i++) {
-					    if(nodeList.item(i).getFirstChild().getNodeValue().equalsIgnoreCase(name)) {
+					for (int i = 0; i < nodeList.getLength(); i++)
+					{
+					    if(nodeList.item(i).getFirstChild().getNodeValue().equalsIgnoreCase(name))
+					    {
 					    	existsOnXML=true;
 					    	found = nodeList.item(i);
 					    }
 					}
-				} catch (SAXException e) {
+				}
+				catch (SAXException e)
+				{
 					e.printStackTrace();
-				} catch (IOException e) {
+				}
+				catch (IOException e)
+				{
 					e.printStackTrace();
-				} catch (XPathExpressionException e) {
+				}
+				catch (XPathExpressionException e)
+				{
 					e.printStackTrace();
 				}		
 				
-				if ((!file.isEmpty())&(existsOnXML)) {
-		            try {
+				if ((!file.isEmpty())&(existsOnXML))
+				{		
+		            try
+		            {
 		            	byte[] messageDigest = MessageDigest.getInstance("MD5").digest(file.getBytes());
 		                
 		                StringBuffer hexString = new StringBuffer();
-		                for (int i=0; i<messageDigest.length; i++) {
+		                
+		                for (int i=0; i<messageDigest.length; i++)
+		                {
 		                	String hex = Integer.toHexString(0xFF & messageDigest[i]);
-		                	if(hex.length() == 1) {
+		                	if (hex.length() == 1)
+		                	{
 		                		hexString.append('0');
 		                	}
 		                	hexString.append(hex);
 		                }
 		                
-		                if(hash.equalsIgnoreCase(hexString.toString())) {
+		                if(hash.equalsIgnoreCase(hexString.toString()))
+		                {
 			                BufferedOutputStream stream =
 			                        new BufferedOutputStream(new FileOutputStream(new File(File.separator+"Allseen"
 			    							+File.separator+"Users"+File.separator+user+File.separator+id
@@ -535,10 +633,14 @@ public class RestController {
 			                stream.write(file.getBytes());
 			                stream.close();
 			                return "You successfully uploaded " + name + "!";
-		                } else {
+		                }
+		                else
+		                {
 		                	xmlDocument.getFirstChild().removeChild(found.getParentNode());
 		                	Transformer transformer;
-							try {
+							
+		                	try
+		                	{
 								transformer = TransformerFactory.newInstance().newTransformer();
 								
 								Result output = new StreamResult(new File(File.separator+"Allseen"
@@ -546,25 +648,36 @@ public class RestController {
 										+File.separator+"result.xml"));
 								Source input = new DOMSource(xmlDocument);
 	
-								try {
+								try
+								{
 									transformer.transform(input, output);
-								} catch (TransformerException e) {
+								}
+								catch (TransformerException e)
+								{
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
-							} catch (TransformerConfigurationException e) {
+							}
+		                	catch (TransformerConfigurationException e)
+		                	{
 								// TODO Auto-generated catch block
 								e.printStackTrace();
-							} catch (TransformerFactoryConfigurationError e) {
+							}
+		                	catch (TransformerFactoryConfigurationError e)
+		                	{
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
 		                	return "You failed to upload "+name+". Wrong MD5.";
 		                }
-		            } catch (Exception e) {
+		            }
+		            catch (Exception e)
+		            {
 		                return "You failed to upload " + name + " => " + e.getMessage();
 		            }
-		        } else {
+		        }
+				else
+				{
 		            return "You failed to upload " + name + " because the file was empty.";
 		        }
 			}
@@ -589,30 +702,34 @@ public class RestController {
 	
 	@RequestMapping(value="/existsRelease/{version}", method = RequestMethod.GET)
 	public @ResponseBody String existsRelease(HttpServletResponse response,
-			@PathVariable String version) {
+			@PathVariable String version)
+	{
 		final String v = version.replaceAll("_", "\\.");
 		File folder = new File(File.separator+"Allseen"+File.separator+"Technology");
 		
 		File[] files = folder.listFiles(new FilenameFilter()
 		{
 			@Override
-			public boolean accept(File dir, String name) {
+			public boolean accept(File dir, String name)
+			{
 				return name.contains(v);
 			}
 		});
 
 		if (files.length == 0) 
 			return version+" is not an existing certification release";
-		else {
-			for (File f : files) {
-				if (f.getName().contains("_R")) {
+		else
+		{
+			for (File f : files)
+			{
+				if (f.getName().contains("_R"))
+				{
 					return "true";
 				}
 			}
 			return "false";
 		}
 	}
-	
 	
 	/**
 	 * Sends last version of Local Agent
@@ -621,22 +738,25 @@ public class RestController {
 	 */
 	@RequestMapping(value="/getLastVersion", method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	 public @ResponseBody void getLastVersion(HttpServletResponse response) {
-			
-			String lastVersion = lastUpload();
-			String fullPath = File.separator + "Allseen" + File.separator + "localAgent" + File.separator +
+	 public @ResponseBody void getLastVersion(HttpServletResponse response)
+	{
+		String lastVersion = lastUpload();
+		String fullPath = File.separator + "Allseen" + File.separator + "localAgent" + File.separator +
 					lastVersion;
 			
-			try {
-				File f = new File(fullPath);
-			    InputStream is = new FileInputStream(f);
-			    response.setHeader("Content-Disposition", "attachment; filename="+lastVersion);
-			    org.apache.commons.io.IOUtils.copy(is, response.getOutputStream());
-			    response.flushBuffer();
-			    is.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		try
+		{
+			File f = new File(fullPath);
+		    InputStream is = new FileInputStream(f);
+		    response.setHeader("Content-Disposition", "attachment; filename="+lastVersion);
+		    org.apache.commons.io.IOUtils.copy(is, response.getOutputStream());
+		    response.flushBuffer();
+		    is.close();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -646,18 +766,23 @@ public class RestController {
 	 * @return		string with the result of the checking
 	 */
 	@RequestMapping(value="/isLastVersion/{v}", method=RequestMethod.GET)
-	public @ResponseBody String isLastVersion(@PathVariable String v) {
-		
-		System.out.println(v);
-		if (v.matches("\\d+_\\d+_\\d+")) {
+	public @ResponseBody String isLastVersion(@PathVariable String v)
+	{
+		if (v.matches("\\d+_\\d+_\\d+"))
+		{
 			String highest = lastUpload();
 			String result = compare(highest,"_"+v);
 			
-			if(result.equals("lower")) {
+			if(result.equals("lower"))
+			{
 				return "new version available: "+highest.split("_")[3];
-			} else if (result.equals("equal")) {
+			}
+			else if (result.equals("equal"))
+			{
 				return "version up to date";
-			} else {
+			}
+			else
+			{
 				return "lower version";
 			}
 		}
@@ -668,7 +793,8 @@ public class RestController {
 	 * Returns the highest version stored of the Local Agent
 	 * @return	string with the name of the file
 	 */
-	private String lastUpload() {
+	private String lastUpload()
+	{
 		String url = File.separator+"Allseen"
 				+File.separator+"localAgent";
 		
@@ -676,12 +802,16 @@ public class RestController {
 		File[] listOfFiles = folder.listFiles();
 		String higher=null;
 		
-		if (listOfFiles.length>0) {
+		if (listOfFiles.length>0)
+		{
 			higher = listOfFiles[0].getName();
 			
-			for (int i=1; i<listOfFiles.length; i++) {
+			for (int i=1; i<listOfFiles.length; i++)
+			{
 				String result = compare(higher,listOfFiles[i].getName());
-				if(result.equals("higher")) {
+				
+				if(result.equals("higher"))
+				{
 					higher = listOfFiles[i].getName();
 				}
 			}
@@ -695,16 +825,21 @@ public class RestController {
 	 * @param 	s2	version two of comparison
 	 * @return		higher/lower/equal
 	 */
-	private String compare(String s1, String s2) {
+	private String compare(String s1, String s2)
+	{
 		String aux1 = s1.replaceAll("\\D+", "_");
 		String aux2 = s2.replaceAll("\\D+", "_");
 		String[] aux3 = aux1.split("_");
 		String[] aux4 = aux2.split("_");
 				
-		for (int i=1; i<aux3.length; i++) {
-			if (Integer.parseInt(aux3[i])>Integer.parseInt(aux4[i])) {
+		for (int i=1; i<aux3.length; i++)
+		{
+			if (Integer.parseInt(aux3[i])>Integer.parseInt(aux4[i]))
+			{
 				return "lower";
-			} else if (Integer.parseInt(aux3[i])<Integer.parseInt(aux4[i])) {
+			}
+			else if (Integer.parseInt(aux3[i])<Integer.parseInt(aux4[i]))
+			{
 				return "higher";
 			}
 		}

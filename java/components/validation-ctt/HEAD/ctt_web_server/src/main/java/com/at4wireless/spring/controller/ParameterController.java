@@ -39,11 +39,10 @@ import com.at4wireless.spring.service.ProjectService;
  */
 @Controller
 @RequestMapping(value="/parameter")
-public class ParameterController {
-
+public class ParameterController
+{
 	@Autowired
 	private ParameterService parameterService;
-	
 	@Autowired
 	private ProjectService projectService;
 	
@@ -56,9 +55,12 @@ public class ParameterController {
      * @return 				target view
      */
 	@RequestMapping(method = RequestMethod.GET)
-	public String ixit(Model model, @ModelAttribute("newProject") Project newProject) {		
+	public String ixit(Model model, @ModelAttribute("newProject") Project newProject)
+	{		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
 			List<Parameter> listParameter = new ArrayList<Parameter>();
 			Project p = projectService.getFormData(auth.getName(), newProject.getIdProject());
 			
@@ -67,7 +69,9 @@ public class ParameterController {
 			
 			model.addAttribute("listParameter", listParameter);
 			return "parameter";
-		} else {
+		}
+		else
+		{
 			return "redirect:/login";
 		}
 	}

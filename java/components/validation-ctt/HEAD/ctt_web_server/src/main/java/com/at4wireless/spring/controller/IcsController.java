@@ -46,14 +46,12 @@ import com.at4wireless.spring.service.ServiceFrameworkService;
  */
 @Controller
 @RequestMapping(value="/ics")
-public class IcsController {
-	
+public class IcsController
+{
 	@Autowired
 	private ProjectService projectService;
-	
 	@Autowired
 	private IcsService icsService;
-	
 	@Autowired
 	private ServiceFrameworkService sfService;
 	
@@ -66,17 +64,20 @@ public class IcsController {
      * @return 				target view
      */
 	@RequestMapping(method = RequestMethod.GET)
-	public String ics(Model model, @ModelAttribute("newProject") Project newProject) {
-		
+	public String ics(Model model, @ModelAttribute("newProject") Project newProject)
+	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
 			List<Ics> listIcs = new ArrayList<Ics>();
 			List<ServiceFramework> listService = new ArrayList<ServiceFramework>();
 			Project p = projectService.getFormData(auth.getName(), newProject.getIdProject());
 
 			listIcs = icsService.load(projectService.getServicesData(p.getIdProject()), p.isIsConfigured(),
 					p.getConfiguration());
-			for (BigInteger bi : projectService.getServicesData(newProject.getIdProject())) {
+			for (BigInteger bi : projectService.getServicesData(newProject.getIdProject()))
+			{
 				listService.add(sfService.list().get(bi.intValue()-1));
 			}
 			
@@ -84,11 +85,11 @@ public class IcsController {
 			model.addAttribute("serviceList", listService);
 
 			return "ics";
-		} else {
+		}
+		else
+		{
 			return "redirect:/login";
 		}
-		
-
 	}
 	
 	/**
@@ -98,12 +99,14 @@ public class IcsController {
 	 * @return				SCR result for each ICS
 	 */
 	@RequestMapping(value="/scr", method = RequestMethod.GET, produces="application/json")
-	public @ResponseBody List<Result> SCR(HttpServletRequest request) {
+	public @ResponseBody List<Result> SCR(HttpServletRequest request)
+	{
 		List<Result> scrCheck = new ArrayList<Result>();
 		Map<String, String[]> map = request.getParameterMap();
-		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
 			scrCheck = icsService.check(projectService.getServicesData(Integer.parseInt(
 					request.getParameter("data[idProject]"))),map);
 		}		
@@ -118,16 +121,25 @@ public class IcsController {
 	 * @return				target view
 	 */
 	@RequestMapping(value="/decide", method=RequestMethod.GET)
-	public String decide(@ModelAttribute("newProject") Project newProject) {
+	public String decide(@ModelAttribute("newProject") Project newProject)
+	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
 			String type = projectService.getFormData(auth.getName(), newProject.getIdProject()).getType();
-			if(type.equals("Conformance")) {
+			
+			if(type.equals("Conformance"))
+			{
 				return "redirect:/dut";
-			} else {
+			}
+			else
+			{
 				return "redirect:/gu";
 			}
-		} else {
+		}
+		else
+		{
 			return "redirect:/login";
 		}
 	}

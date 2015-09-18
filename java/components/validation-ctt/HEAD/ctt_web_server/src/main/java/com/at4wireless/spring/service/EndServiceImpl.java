@@ -106,6 +106,7 @@ public class EndServiceImpl implements EndService {
 				ixit = iter2.next();
 				mainRootElement.appendChild(getNode(doc, "Ixit", ixit.getIdIxit(), ixit.getName(), 
 						map.get("data["+ixit.getName()+"]")[0]));
+						//map.get("data["+ixit.getName()+"]")[0].replaceAll("\"", "&quot;")));
 			}
 			
 			mainRootElement.appendChild(getElements(doc, mainRootElement, "ApplyTC", map.get("data[applyTC]")[0]));

@@ -40,11 +40,10 @@ import com.at4wireless.spring.service.ProjectService;
  */
 @Controller
 @RequestMapping(value="/end")
-public class EndController {
-	
+public class EndController
+{
 	@Autowired
 	private ProjectService projectService;
-		
 	@Autowired
 	private EndService endService;
 	
@@ -56,7 +55,8 @@ public class EndController {
      * @return 	target view
      */
 	@RequestMapping(method=RequestMethod.GET)
-	public String end() {
+	public String end()
+	{
 		return "end";
 	}
 	
@@ -66,8 +66,8 @@ public class EndController {
 	 * @throws 	IOException		if file does not exist
 	 */
 	@RequestMapping(value="/download", method=RequestMethod.GET)
-    public void download(HttpServletResponse response) throws IOException {
- 
+    public void download(HttpServletResponse response) throws IOException
+    {
 		String fullPath = File.separator+"Allseen"+File.separator
 				+"localAgent"+File.separator+endService.lastUpload();
         File downloadFile = new File(fullPath);
@@ -92,13 +92,13 @@ public class EndController {
         int bytesRead = -1;
  
         // write bytes read from the input stream into the output stream
-        while ((bytesRead = inputStream.read(buffer)) != -1) {
+        while ((bytesRead = inputStream.read(buffer)) != -1)
+        {
             outStream.write(buffer, 0, bytesRead);
         }
  
         inputStream.close();
         outStream.close();
- 
     }
 	
 	/**
@@ -108,10 +108,12 @@ public class EndController {
 	 * @return				target view
 	 */
 	@RequestMapping(value="/save", method=RequestMethod.POST)
-	public String save(HttpServletRequest request) {
-		
+	public String save(HttpServletRequest request)
+	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
 			System.out.println(auth.getName());
 			String url = endService.createXML(auth.getName(), request.getParameterMap());
 			projectService.configProject(request.getParameter("data[idProject]"), url);

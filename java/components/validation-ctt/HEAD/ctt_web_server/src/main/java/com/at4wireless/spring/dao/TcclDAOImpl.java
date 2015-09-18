@@ -49,7 +49,7 @@ public class TcclDAOImpl implements TcclDAO {
 	public int getNumber(String certRel) {
 		@SuppressWarnings("unchecked")
 		List<Tccl> listTccl = (List<Tccl>) sessionFactory.getCurrentSession()
-				.createSQLQuery("select * from tccl where name like '%"+certRel+"%';").list();
+				.createSQLQuery("select * from tccl where name like '%"+certRel+"_v"+"%';").list();
 		
 		if (listTccl.isEmpty()) {
 			return 0;
