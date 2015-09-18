@@ -6,7 +6,7 @@
 		</Console>
  
 		<RollingFile name="RollingFile" filename="log/CTT_Local_Agent.log"
-			filepattern="log/CTT_Local_Agent_%d{YYYYMMdd}.log"
+			filepattern="log/CTT_Local_Agent_%d{YYYY-MM-dd}.log"
 			immediateFlush="true"
 			append="true">
 			<PatternLayout pattern="%d{YYYY-MM-dd HH:mm:ss} %-5p %c{1}(%L) : %msg%n" />
