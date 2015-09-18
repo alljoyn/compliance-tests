@@ -280,6 +280,7 @@ public class Manager extends Thread
 	static String GPON_ConnectPersonalAP = null;
 	static String GPON_Disconnect = null;
 	static String GPON_NextAnnouncement = null;
+	static String GPON_TimeToWaitForScanResults = null;
 	static String GPCF_SessionLost = null;
 	static String GPCF_SessionClose = null;
 	static String GPL_SessionClose = null;
@@ -711,7 +712,8 @@ public class Manager extends Thread
 					GPON_WaitSoftAPAfterOffboard,
 					GPON_ConnectPersonalAP,
 					GPON_Disconnect,
-					GPON_NextAnnouncement
+					GPON_NextAnnouncement,
+					GPON_TimeToWaitForScanResults
 					);
 
 			existTest = true;
@@ -2378,6 +2380,10 @@ public class Manager extends Thread
 		else if (GpName.equals("GPON_NextAnnouncement"))
 		{
 			GPON_NextAnnouncement = pValue;
+		}
+		else if (GpName.equals("GPON_TimeToWaitForScanResults"))
+		{
+			GPON_TimeToWaitForScanResults = pValue;
 		}
 		else if (GpName.equals("GPCF_SessionLost"))
 		{
