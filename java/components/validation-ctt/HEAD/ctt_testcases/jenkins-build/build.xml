@@ -25,8 +25,7 @@
 	<target name="compile" depends="clean">
 		<javac srcdir="../src" 
 			destdir="../bin"
-			includes="**/*.java" target="1.7"
-			fork="yes" executable="C:\Program Files\Java\jdk1.7.0_55\bin\javac">
+			includes="**/*.java" target="1.7">
 			<classpath refid="classpath.base"/>
 		</javac>
 	</target>
