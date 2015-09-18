@@ -27,7 +27,8 @@
     		<jsp:include page="/WEB-INF/views/header.jsp"/>
 		    
 		    <div class="row" align="right">
-		    	<button id="apiKey" type="button" class="btn btn-default pull-left">Generate CTT Local Agent Password</button>	
+		    	<button id="apiKey" type="button" class="btn btn-default pull-left">Generate CTT Local Agent Password</button>
+		    	<a id="downloadLocalAgent" type="button" class="btn btn-default pull-left" href="end/download">Download CTT Local Agent</a>	
 		    	<c:if test="${pageContext.request.userPrincipal.name != null}">
 					<h4>
 						Welcome : ${pageContext.request.userPrincipal.name} | <a
@@ -91,11 +92,18 @@
 								</c:choose>	
 				        		<td><fmt:formatDate value="${project.createdDate}"
 									pattern="yyyy-MM-dd HH:mm:ss"/></td>
-								<c:forEach var="tccl" items="${tcclList}" varStatus="status">
-									<c:if test="${tccl.idTccl==project.idTccl}">
-										<td>${tccl.name}</td>
-									</c:if>
-								</c:forEach>
+								<c:choose>
+									<c:when test="${project.type == 'Development'}">
+										<td>Not needed</td>
+									</c:when>
+									<c:otherwise>
+										<c:forEach var="tccl" items="${tcclList}" varStatus="status">
+											<c:if test="${tccl.idTccl==project.idTccl}">
+												<td>${tccl.name}</td>
+											</c:if>
+										</c:forEach>
+									</c:otherwise>
+								</c:choose>
 								<c:choose>
 									<c:when test="${project.idDut!=0}">
 										<c:forEach var="dut" items="${dutList}" varStatus="status">
@@ -109,7 +117,14 @@
 									</c:otherwise>
 								</c:choose>
 								<td>${project.gUnits}</td>
-								<td>${project.carId}</td>								
+								<c:choose>
+									<c:when test="${project.type == 'Development'}">
+										<td>Not needed</td>
+									</c:when>
+									<c:otherwise>
+										<td>${project.carId}</td>
+									</c:otherwise>
+								</c:choose>								
 				        	</tr>
 							</c:forEach>
 						</tbody>        	
@@ -170,7 +185,7 @@
 	        							<option value="Conformance">Conformance</option>
 	        							<option value="Interoperability">Interoperability</option>
 	        							<option value="Conformance and Interoperability">Conformance and Interoperability</option>
-	        							<option value="Pre-certification">Pre-certification</option>
+	        							<option value="Development">Development</option>
 	        						</form:select>
 	        					</div>
 	        					<div class="form-group">
@@ -242,7 +257,7 @@
 	        							<option value="Conformance">Conformance</option>
 	        							<option value="Interoperability">Interoperability</option>
 	        							<option value="Conformance and Interoperability">Conformance and Interoperability</option>
-	        							<option value="Pre-certification">Pre-certification</option>
+	        							<option value="Development">Development</option>
 	        						</form:select>
 	        					</div>
 	        					<div class="form-group">
@@ -328,7 +343,7 @@
 		
 		<script src="resources/jquery-validation/1.13.1/js/jquery.validate.min.js"></script>
 		<script src="resources/jquery-validation/1.13.1/js/additional-methods.min.js"></script>
-
+		
 		<!-- Document ready script -->
 		<script>
 			var table;
@@ -361,6 +376,14 @@
 			$(window).resize(function() {
 				table.fnAdjustColumnSizing();
 			});
+			
+			function compare(a,b) {
+				if (a.name < b.name)
+					return -1;
+				if (a.name > b.name)
+					return 1;
+				return 0;
+			}
 		</script>
 		
 		<!-- Logout form script -->
@@ -384,9 +407,12 @@
 					},
 					success: function(data) {
 						var selectedCR;
+						
+						data.sort(compare);
+						
 						$('#project-release').empty();
 						$.each(data, function(i, release) {
-							if (i == data.length -1) {
+							if (i == data.length - 1) {
 								$('#project-release').append("<option selected value=\""+release.idCertrel+"\">"+release.name+": ("+release.description+")</option>");
 								selectedCR = release.idCertrel;
 							} else {
@@ -394,41 +420,57 @@
 							}
 						});
 						
-						$.ajax({
-							cache: false,
-							type: 'GET',
-							url: 'project/loadTccl',
-							data : {
-								idCertRel : selectedCR
-							},
-							success: function(data) {
-								$('#project-tccl').empty();
-								$.each(data, function(i, tccl) {
-									$('#project-tccl').append("<option value=\""+tccl.idTccl+"\">"+tccl.name+"</option>");
-								});
-							}
-						});
+						if (selected != "Development")
+						{
+							$.ajax({
+								cache: false,
+								type: 'GET',
+								url: 'project/loadTccl',
+								data : {
+									idCertRel : selectedCR
+								},
+								success: function(data) {
+									$('#project-tccl').empty();
+									$('#project-tccl').prop('disabled', false);
+									document.getElementById('project-car-id').value="";
+									$('#project-car-id').prop('disabled', false);
+									$.each(data, function(i, tccl) {
+										$('#project-tccl').append("<option value=\""+tccl.idTccl+"\">"+tccl.name+"</option>");
+									});
+								}
+							});
+						} else {
+							$('#project-tccl').empty();
+							$('#project-tccl').prop('disabled', true);
+							document.getElementById('project-car-id').value="";
+							$('#project-car-id').prop('disabled', true);
+						}
 					}
 				});
 			});
 			
 			$('#project-release').change(function() {
-				var selected = $(this).find("option:selected").val();
+				var projectSelected = $('#project-type').find("option:selected").val();
 				
-				$.ajax({
-					cache: false,
-					type: 'GET',
-					url: 'project/loadTccl',
-					data : {
-						idCertRel : selected
-					},
-					success: function(data) {
-						$('#project-tccl').empty();
-						$.each(data, function(i, tccl) {
-							$('#project-tccl').append("<option value=\""+tccl.idTccl+"\">"+tccl.name+"</option>");
-						});
-					}
-				});
+				if (projectSelected != "Development")
+				{
+					var selected = $(this).find("option:selected").val();
+					
+					$.ajax({
+						cache: false,
+						type: 'GET',
+						url: 'project/loadTccl',
+						data : {
+							idCertRel : selected
+						},
+						success: function(data) {
+							$('#project-tccl').empty();
+							$.each(data, function(i, tccl) {
+								$('#project-tccl').append("<option value=\""+tccl.idTccl+"\">"+tccl.name+"</option>");
+							});
+						}
+					});
+				}
 			});
 			
 			$('#edit-type').change(function() {
@@ -443,6 +485,9 @@
 					},
 					success: function(data) {
 						var selectedCR;
+						
+						data.sort(compare);
+						
 						$('#edit-release').empty();
 						$.each(data, function(i, release) {
 							if (i == data.length -1) {
@@ -453,41 +498,59 @@
 							}
 						});
 						
-						$.ajax({
-							cache: false,
-							type: 'GET',
-							url: 'project/loadTccl',
-							data : {
-								idCertRel : selectedCR
-							},
-							success: function(data) {
-								$('#edit-tccl').empty();
-								$.each(data, function(i, tccl) {
-									$('#edit-tccl').append("<option value=\""+tccl.idTccl+"\">"+tccl.name+"</option>");
-								});
-							}
-						});
+						if (selected != "Development")
+						{
+							$.ajax({
+								cache: false,
+								type: 'GET',
+								url: 'project/loadTccl',
+								data : {
+									idCertRel : selectedCR
+								},
+								success: function(data) {
+									$('#edit-tccl').empty();
+									$('#edit-tccl').prop('disabled', false);
+									document.getElementById('edit-car-id').value="";
+									$('#edit-car-id').prop('disabled', false);
+									$.each(data, function(i, tccl) {
+										$('#edit-tccl').append("<option value=\""+tccl.idTccl+"\">"+tccl.name+"</option>");
+									});
+								}
+							});
+						} 
+						else
+						{
+							$('#edit-tccl').empty();
+							$('#edit-tccl').prop('disabled', true);
+							document.getElementById('edit-car-id').value="";
+							$('#edit-car-id').prop('disabled', true);
+						}
 					}
 				});
 			});
 			
 			$('#edit-release').change(function() {
-				var selected = $(this).find("option:selected").val();
+				var projectSelected = $('#edit-type').find("option:selected").val();
 				
-				$.ajax({
-					cache: false,
-					type: 'GET',
-					url: 'project/loadTccl',
-					data : {
-						idCertRel : selected
-					},
-					success: function(data) {
-						$('#edit-tccl').empty();
-						$.each(data, function(i, tccl) {
-							$('#edit-tccl').append("<option value=\""+tccl.idTccl+"\">"+tccl.name+"</option>");
-						});
-					}
-				});
+				if (projectSelected != "Development")
+				{
+					var selected = $(this).find("option:selected").val();
+					
+					$.ajax({
+						cache: false,
+						type: 'GET',
+						url: 'project/loadTccl',
+						data : {
+							idCertRel : selected
+						},
+						success: function(data) {
+							$('#edit-tccl').empty();
+							$.each(data, function(i, tccl) {
+								$('#edit-tccl').append("<option value=\""+tccl.idTccl+"\">"+tccl.name+"</option>");
+							});
+						}
+					});
+				}
 			});
 		</script>
 		
@@ -603,6 +666,9 @@
 					},
 					success: function(data) {
 						var selectedCR;
+						
+						data.sort(compare);
+						
 						$('#project-release').empty();
 						$.each(data, function(i, release) {
 							if (i == data.length -1) {
@@ -654,7 +720,8 @@
 								pjType : data.type
 							},
 							success: function(releases) {
-
+								releases.sort(compare);
+								
 								$('#edit-release').empty();
 								$.each(releases, function(i, release) {
 									$('#edit-release').append("<option value=\""+release.idCertrel+"\">"+release.name+" ("+release.description+")</option>");
@@ -662,20 +729,33 @@
 								
 								$('#edit-release').val(data.idCertrel);
 								
-								$.ajax({
-									cache: false,
-									type: 'GET',
-									url: 'project/loadTccl',
-									data : {
-										idCertRel : data.idCertrel
-									},
-									success: function(tccls) {
-										$('#edit-tccl').empty();
-										$.each(tccls, function(i, tccl) {
-											$('#edit-tccl').append("<option value=\""+tccl.idTccl+"\">"+tccl.name+"</option>");
-										});
-									}
-								});
+								if (data.type != "Development")
+								{
+									$.ajax({
+										cache: false,
+										type: 'GET',
+										url: 'project/loadTccl',
+										data : {
+											idCertRel : data.idCertrel
+										},
+										success: function(tccls) {
+											$('#edit-tccl').empty();
+											$('#edit-tccl').prop('disabled', false);
+											$('#edit-car-id').empty();
+											$('#edit-car-id').prop('disabled', false);
+											$.each(tccls, function(i, tccl) {
+												$('#edit-tccl').append("<option value=\""+tccl.idTccl+"\">"+tccl.name+"</option>");
+											});
+										}
+									});
+								}
+								else
+								{
+									$('#edit-tccl').empty();
+									$('#edit-tccl').prop('disabled', true);
+									$('#edit-car-id').empty();
+									$('#edit-car-id').prop('disabled', true);
+								}
 							}
 						});
 						
@@ -701,7 +781,8 @@
 		
 		<!-- Row selector script -->
 		<script>
-			$("#table tbody tr").click(function(){
+			$("#table tbody").on('click', 'tr', function(){
+			//$("#table tbody tr").click(function(){
 				
 				var table = $('#table').DataTable();
 				var data = table.row(this).data();
@@ -711,11 +792,14 @@
 					sessionStorage.removeItem("idProject");
 					disableButtons();
 				} else {
-					$(this).addClass('selected').siblings().removeClass('selected');    
+					$('#table').DataTable().$('tr.selected').removeClass('selected');
+					$(this).addClass('selected');
+					//$(this).addClass('selected').siblings().removeClass('selected');    
 
 				   	var dut = "N/A";
 				   	var gu = "N/A";
-				   	if(data[7]=="Yes") {
+				   	if(data[7]=="Yes")
+				   	{
 				   		dut = data[11];
 				   		gu = data[12];
 				   	}

@@ -41,7 +41,9 @@
 		        		</h4>
 		        	</div>
 		        	<div id="collapseTccl" class="panel-collapse collapse in">
-						<div class="panel-body">      
+						<div class="panel-body">
+							
+							<!-- TCCLs table -->      
 					       	<table id="table" class="table table-hover">
 					       		<thead>
 					       			<tr>
@@ -70,6 +72,7 @@
 									</c:forEach>
 								</tbody>        	
 					       	</table>
+					       	
 					       	<!-- Action buttons -->
 							<div align="left">
 					        	<button id="newTcclButton" class="btn btn-default btn-lg" data-toggle="modal" data-target="#newTcclModal">New TCCL</button>
@@ -90,7 +93,6 @@
 		        			<a data-toggle="collapse" class="collapsed" data-target="#collapseTCPackages">Test Cases Packages</a>
 		        		</h4>
 		        	</div>
-					<!-- <div class="panel-heading"><strong>Test Cases Packages panel</strong>  </div>  -->
 					<div id="collapseTCPackages" class="panel-collapse collapse">
 						<div class="panel-body">
 							<!-- Available packages -->
@@ -133,7 +135,6 @@
 		        			<a data-toggle="collapse" class="collapsed" data-target="#collapseLAInstallers">CTT Local Agent Installers</a>
 		        		</h4>
 		        	</div>
-					<!-- <div class="panel-heading"><strong>Local Agent Installers panel</strong>  </div>  -->
 					<div id="collapseLAInstallers" class="panel-collapse collapse">
 						<div class="panel-body">
 							<!-- Available packages -->
@@ -322,19 +323,19 @@
         </div>
         
         <jsp:include page="/WEB-INF/views/footer.jsp"/>
-        
-        <!-- <script src="resources/jquery-validation/1.13.1/js/jquery.validate.min.js"></script>
-		<script src="resources/jquery-validation/1.13.1/js/additional-methods.min.js"></script>  -->
 	
 		<!-- Logout form script -->
 		<script>
-			function formSubmit() {
+			function formSubmit()
+			{
 				$('#logoutForm').submit();
 			}
 		</script>
+		
+		<!-- Initialization script -->
 		<script>
-			var table = null;
-			$(document).ready(function() {
+			$(document).ready(function()
+			{
 				$('#title').text("ADMINISTRATION TASKS");
 				
 				$('#table').dataTable({
@@ -351,7 +352,8 @@
 					url: 'admin/availablePackages',
 					success: function (data) {
 						$('#tcPackages').html('');
-						$.each(data, function(i, file) {
+						$.each(data, function(i, file)
+						{
 							var split = file.split(": C");
 							$('#tcPackages').append('<a class=\"list-group-item\"><strong>'+split[0]+"</strong> <small>C"+split[1]+'</small></a>');
 						});
@@ -362,7 +364,8 @@
 					cache: false,
 					type: 'GET',
 					url: 'admin/availableInstallers',
-					success: function (data) {
+					success: function (data)
+					{
 						$('#laInstallers').html('');
 						$.each(data, function(i, file) {
 							$('#laInstallers').append('<a class=\"list-group-item\">'+file+'</a>');
@@ -370,21 +373,29 @@
 					}
 				});
 				
-		        $('#file').on('change', function() {
-	                if ($(this).val()) {
+		        $('#file').on('change', function()
+		        {
+	                if ($(this).val())
+	                {
 	                    $('#tcUploadSubmit').prop('disabled',false);
 	                    $('#tcUploadSubmit').removeClass('disabled');
-	                } else {
+	                }
+	                else
+	                {
 	                	$('#tcUploadSubmit').prop('disabled',true);
 	                    $('#tcUploadSubmit').addClass('disabled');
 	                } 
 		        });
 		        
-		        $('#laFile').on('change', function() {
-	                if ($(this).val()) {
+		        $('#laFile').on('change', function()
+		        {
+	                if ($(this).val())
+	                {
 	                    $('#laUploadSubmit').prop('disabled',false);
 	                    $('#laUploadSubmit').removeClass('disabled');
-	                } else {
+	                }
+	                else
+	                {
 	                	$('#laUploadSubmit').prop('disabled',true);
 	                    $('#laUploadSubmit').addClass('disabled');
 	                } 
@@ -393,6 +404,27 @@
 		        //$('#collapseTccl').collapse('hide');
 			});
 		</script>
+		
+		<!-- Event management scripts -->
+		<script>
+			$('#tcTable').on('draw.dt', function() {
+				$(this).find('.form-control').change(function() {
+					var selected = $(this).find("option:selected").val();
+					var state = ((selected=="A")||(selected=="B"));
+					$(this).closest('tr').find('[type=checkbox]').prop('checked', state);
+				});
+			});
+			
+			$('#editTcTable').on('draw.dt', function() {
+				$(this).find('.form-control').change(function() {
+					var selected = $(this).find("option:selected").val();
+					var state = ((selected=="A")||(selected=="B"));
+					$(this).closest('tr').find('[type=checkbox]').prop('checked', state);
+				});
+			});
+		</script>
+		
+		<!-- Button scripts -->
 		<script>
 			$('#newTcclButton').on('click', function() {
 				$.ajax({
@@ -402,7 +434,7 @@
 					success : function (data) {
 						$('#tccl-certrel').empty();
 						$.each(data, function(i, cr) {
-							if (i != data.length -1) 
+							if (i != data.length - 1) 
 								$('#tccl-certrel').append("<option value=\""+cr.idCertrel+"\">"+cr.name+"</option>");
 							else
 								$('#tccl-certrel').append("<option selected value=\""+cr.idCertrel+"\">"+cr.name+"</option>");
@@ -447,18 +479,24 @@
 								columnDefs: [        
 									{ orderable: false, targets: [3, 4]},
 								],
-								order: [0, 'asc']
+								order: [0, 'asc'],
+								"bStateSave" : false
 							});				
 						}
+						
+						$('#tcTable').DataTable().search('');
 						
 						$('#tcBody').find('.is_checkbox').prop('checked', true);
 						$('#tcBody').find('.is_checkbox').prop('disabled', true);
 						
-						$('.form-control').change(function() {
+						$('#tcTable').on('draw.dt', function() {
+							
+						});
+						/*$('.form-control').change(function() {
 							var selected = $(this).find("option:selected").val();
 							var state = ((selected=="A")||(selected=="B"));
 							$(this).closest('tr').find('[type=checkbox]').prop('checked', state);
-						});
+						});*/
 				   }
 				});
 			});
@@ -635,17 +673,20 @@
 								columnDefs: [        
 									{ orderable: false, targets: [3, 4]},
 								],
-								order: [0, 'asc']
+								order: [0, 'asc'],
+								//"bStateSave" : false
 							});				
 						}
 						
+						$('#editTcTable').DataTable().search('');
+						
 						$('#editTcBody').find('.is_checkbox').prop('disabled', true);
 						
-						$('.form-control').change(function() {
+						/*$('.form-control').change(function() {
 							var selected = $(this).find("option:selected").val();
 							var state = ((selected=="A")||(selected=="B"));
 							$(this).closest('tr').find('[type=checkbox]').prop('checked', state);
-						});
+						});*/
 				   }
 				});
 			});
@@ -744,6 +785,8 @@
 							});				
 						}
 						
+						$('#viewTcTable').DataTable().search('');
+						
 						$('#viewTcBody').find('.is_checkbox').prop('disabled', true);
 				   }
 				});
@@ -758,7 +801,7 @@
 		
 		<!-- Row selector script -->
 		<script>
-			$("#table tbody tr").click(function(){
+			$("#table tbody").on('click', 'tr', function(){
 			   	
 				if($(this).hasClass("selected")) {
 					$(this).removeClass('selected');
@@ -771,7 +814,10 @@
 					$('#editButton').addClass('disabled');
 					$('#editButton').prop("disabled", true);
 				} else { 
-					$(this).addClass('selected').siblings().removeClass('selected');    
+					$('#table').DataTable().$('tr.selected').removeClass('selected');
+					$(this).addClass('selected');
+					//$(this).addClass('selected').siblings().removeClass('selected');
+
 					var id = $('#table').DataTable().row(this).data()[0];
 					
 					//var id=$(this).find('td:first').html();
@@ -893,31 +939,6 @@
 			
 			/*$('#collapseTccl').on('shown.bs.collapse', function() {
 				$('#table').dataTable().fnAdjustColumnSizing();
-			});*/
-		</script>
-		
-		<!-- Validation scripts -->
-		<script>
-			/*$('#tcUploadForm').validate({
-				rules: {
-					file: {
-						required: true,
-						accept: "*.jar"
-					},
-					tcDescription: {
-						required: true,
-						maxlength: 255,
-					}
-				},
-				messages: {
-					file: {
-						required: "Please select a file!",
-					},
-					tcDescription: {
-						required: "Please enter a description!",
-						maxlength: "Description must have a max of 255 characters!"
-					}
-				}
 			});*/
 		</script>
     </body>

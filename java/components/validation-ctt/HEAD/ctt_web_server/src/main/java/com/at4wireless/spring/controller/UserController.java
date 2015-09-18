@@ -31,8 +31,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.at4wireless.spring.service.UserService;
 
 @Controller
-@RequestMapping(value={"/", "/login"})
-public class UserController {
+@RequestMapping(value={"", "/", "/login"})
+public class UserController
+{
 	@Autowired
 	private UserService userService;
 	
@@ -42,25 +43,33 @@ public class UserController {
 		@RequestParam(value = "logout", required = false) String logout,
 		@RequestParam(value = "session_expired", required = false) String session_expired,
 		@RequestParam(value = "field", required = false) String field,
-		HttpServletRequest request) {
- 	
+		HttpServletRequest request)
+	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
-			if(!request.isUserInRole("ROLE_ADMIN")) {
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
+			if(!request.isUserInRole("ROLE_ADMIN"))
+			{
 				return "forward:/project";
-			} else {
+			}
+			else
+			{
 				return "forward:/admin";
 			}
-		} else {
-			if(logout != null) {
+		}
+		else
+		{
+			if(logout != null)
+			{
 				model.addAttribute("msg", "You have logged out of this application, but may still have an active single-sign on session with CAS");
 			}
 			
-			if(session_expired != null) {
+			if(session_expired != null)
+			{
 				model.addAttribute("session_expired", "Your session has expired. Please login again");
 			}
 			return "login";
 		}
- 
 	}
 }
