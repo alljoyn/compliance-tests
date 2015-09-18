@@ -64,7 +64,7 @@ public class CustomCas20ServiceTicketValidator implements TicketValidator {
 			//logger.debug(" *** In validate() method of CustomCas20ServiceTicketValidator *** ");
 
 			String validationUrl = constructValidationUrl(ticket, service);
-
+			System.out.println("The validation URL is:"+validationUrl);
 
 			//logger.debug("#### The  Validation URL is:"+validationUrl);
 			String serverResponse = retrieveResponseFromServer(new URL(validationUrl), ticket);
@@ -262,7 +262,6 @@ public class CustomCas20ServiceTicketValidator implements TicketValidator {
 		return attributes;
 	}
 
-
 	public String getEncoding() {
 		return encoding;
 	}
@@ -282,8 +281,4 @@ public class CustomCas20ServiceTicketValidator implements TicketValidator {
 	public void setHostnameVerifier(HostnameVerifier hostnameVerifier) {
 		this.hostnameVerifier = hostnameVerifier;
 	}
-
-
-
 }
-

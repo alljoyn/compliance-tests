@@ -400,7 +400,7 @@ INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (75,'IXIT
 INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (76,'IXITLC_ControllerServiceMasterSceneVersion','1',11,'ControllerService.MasterScene Interface version number');
 INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (77,'IXITLC_LeaderElectionAndStateSyncVersion','1',11,'LeaderElectionAndStateSync Interface version number');
 INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (78,'IXITCO_Description','',1,'Detailed description expressed in language tags as in RFC 5646');
-INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (79,'IXITCO_DateOfManufacture','',1,'Date of manufacture using format YYYY-MM-DD (known as XML DateTime format)');
+INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (79,'IXITCO_DateOfManufacture','',1,'Date of manufacture (input format depends on web browser used)');
 INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (80,'IXITCO_SupportUrl','',1,'Support URL (populated by the manufacturer)');
 
 INSERT INTO parameters (id_param,name,value,description) VALUES (1,'GPCO_AnnouncementTimeout','30','About announcement timeout in seconds');
@@ -418,20 +418,19 @@ INSERT INTO parameters (id_param,name,value,description) VALUES (12,'GPAU_Link',
 INSERT INTO parameters (id_param,name,value,description) VALUES (13,'GPG_SessionClose','30','Gateway Service Framework session close timeout in seconds');
 INSERT INTO parameters (id_param,name,value,description) VALUES (14,'GPSH_Signal','30','Smart Home Service Framework signal timeout in seconds');
 INSERT INTO parameters (id_param,name,value,description) VALUES (15,'GPLC_SessionClose','30','Lighting Controller Service Framework session close timeout in seconds');
+INSERT INTO parameters (name, value, description) VALUES (16, 'GPON_TimeToWaitForScanResults', '2', 'Onboarding Service Frameework time to wait for scan results in seconds');
 
 INSERT INTO services (id_service,name,enabled) VALUES (1,'Core Interface',1);
 INSERT INTO services (id_service,name,enabled) VALUES (2,'Notification',1);
 INSERT INTO services (id_service,name,enabled) VALUES (3,'Onboarding',1);
 INSERT INTO services (id_service,name,enabled) VALUES (4,'Control Panel',1);
 INSERT INTO services (id_service,name,enabled) VALUES (5,'Configuration',1);
-INSERT INTO services (id_service,name,enabled) VALUES (6,'Lighting',1);
+INSERT INTO services (id_service,name,enabled) VALUES (6,'LSF Lamp Service',1);
 INSERT INTO services (id_service,name,enabled) VALUES (7,'Audio',1);
 INSERT INTO services (id_service,name,enabled) VALUES (8,'Gateway',1);
 INSERT INTO services (id_service,name,enabled) VALUES (9,'Smart Home',1);
 INSERT INTO services (id_service,name,enabled) VALUES (10,'Time',1);
-INSERT INTO services (id_service,name,enabled) VALUES (11,'Lighting Controller',1);
-
-
+INSERT INTO services (id_service,name,enabled) VALUES (11,'LSF Lamp Controller',1);
 
 INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (1,'About-v1-01','Conformance','',1,null,null,null,'About announcement received');
 INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (2,'About-v1-02','Conformance','',1,null,null,null,'Version property consistent with the About announcement');
