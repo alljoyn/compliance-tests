@@ -38,7 +38,8 @@ import com.at4wireless.alljoyn.wifiapi.ScanResult;
 
 public class OnboardingHelper
 {
-    private static final int TIME_TO_WAIT_FOR_SCAN_RESULTS_IN_SECONDS = 2;
+    //private static final int TIME_TO_WAIT_FOR_SCAN_RESULTS_IN_SECONDS = 2;
+	private int TIME_TO_WAIT_FOR_SCAN_RESULTS_IN_SECONDS = 2;
     private static final String TAG = "OnboardingHelper";
 	private static final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
     private OnboardingClient onboardingClient;
@@ -66,9 +67,10 @@ public class OnboardingHelper
     protected static final short OBS_CONFIGURE_WIFI_RETURN_SUPPORTS_CHANNEL_SWITCHING = 2;
 
     //public OnboardingHelper(Context context)
-    public OnboardingHelper()
+    public OnboardingHelper(int GPON_TimeToWaitForScanResults)
     {
         //this.context = context;
+    	TIME_TO_WAIT_FOR_SCAN_RESULTS_IN_SECONDS = GPON_TimeToWaitForScanResults;
     }
 
     public void initialize(String keyStorePath, String deviceId, UUID appId) throws Exception
