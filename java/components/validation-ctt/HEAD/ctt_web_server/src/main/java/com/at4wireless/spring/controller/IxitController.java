@@ -43,17 +43,14 @@ import com.at4wireless.spring.service.ServiceFrameworkService;
  */
 @Controller
 @RequestMapping(value="/ixit")
-public class IxitController {
-
+public class IxitController
+{
 	@Autowired
 	private IxitService ixitService;
-	
 	@Autowired
 	private ProjectService projectService;
-	
 	@Autowired
 	private DutService dutService;
-	
 	@Autowired
 	private ServiceFrameworkService sfService;
 	
@@ -66,9 +63,12 @@ public class IxitController {
      * @return 				target view
      */
 	@RequestMapping(method = RequestMethod.GET)
-	public String ixit(Model model, @ModelAttribute("newProject") Project newProject) {		
+	public String ixit(Model model, @ModelAttribute("newProject") Project newProject)
+	{		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
 			List<Ixit> listIxit = new ArrayList<Ixit>();
 			List<ServiceFramework> listService = new ArrayList<ServiceFramework>();
 			Project p = projectService.getFormData(auth.getName(), newProject.getIdProject());
@@ -76,13 +76,17 @@ public class IxitController {
 			listIxit = ixitService.load(projectService.getServicesData(p.getIdProject()), p.isIsConfigured(),
 					p.getConfiguration());
 			dutService.setValues(auth.getName(),p.getIdDut(),listIxit);
-			for (BigInteger bi : projectService.getServicesData(newProject.getIdProject())) {
+			
+			for (BigInteger bi : projectService.getServicesData(newProject.getIdProject()))
+			{
 				listService.add(sfService.list().get(bi.intValue()-1));
 			}
 			model.addAttribute("ixitList", listIxit);
 			model.addAttribute("serviceList", listService);
 			return "ixit";
-		} else {
+		}
+		else
+		{
 			return "redirect:/login";
 		}
 	}

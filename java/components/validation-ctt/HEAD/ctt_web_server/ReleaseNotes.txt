@@ -1,0 +1,42 @@
+CTT Web Server Version v1.3.0 Release Notes
+===========================================
+ 
+Fully Validated Platforms
+-------------------------
+ 1) Windows 7 (64 bit); Internet Explorer version 11.0.9600.17728
+ 2) Windows 7 (64 bit); Google Chrome version 42.0.2311.90
+ 3) Windows 7 (64 bit); Firefox version 37.0.2
+
+Features added in v1.3.0
+------------------------
+ 1) CTT Web Server v1.3.0 works with CTT Local Agent v1.6.0.
+  
+Issues Addressed in v1.3.0
+--------------------------
+ ASACOMP-106  Requirement of Golden Units for Pre-Certification 
+ ASACOMP-99   CTT Web Server / Button to download CTT Local Agent in Step 1
+ ASACOMP-98   CTT Web Server / Uploading large files in the Admin mode
+ ASACOMP-91   CTT Web Server / TCCL filter won't be applied to "pre-certification" type of projects
+ ASACOMP-90   CTT Web Server / Date format inconsistency in IXITCO_DateOfManufacture
+ ASACOMP-89   CTT Web Server / Some DataTablet errors when search strings are introduced in TCCL list
+ ASACOMP-87   CTT Web Server / Testcases management for vXX.YY.ZZ and vXX.YY.ZZt
+ ASACOMP-83   CTT Web Server / Change from "Lighting" to "LSF Lamp Service"
+ ASACOMP-71   CTT Web Server / Change from pre-certification to Development
+ 
+ For a complete list of fixed issues:
+ https://jira.allseenalliance.org/browse/ASACOMP-63?jql=project%20%3D%20ASACOMP%20AND%20issuetype%20in%20standardIssueTypes()%20AND%20status%20in%20(Resolved%2C%20Closed) 
+ 
+Known Issues in v1.3.0
+----------------------
+ ASACOMP-101  replace the pink AllJoyn meatball logo with the new AllJoyn logo
+ ASACOMP-81   java 7 reached end of life April 2015, ctt should work with java 8
+
+ For a complete list of open issues:
+ https://jira.allseenalliance.org/browse/ASACOMP-66?jql=project%20%3D%20ASACOMP%20AND%20issuetype%20in%20standardIssueTypes()%20AND%20status%20in%20(Open%2C%20%22In%20Progress%22%2C%20New)
+
+Change history
+--------------
+ [20150417] - v1.0.0 - Works with CTT Local Agent v1.0.0 	    - Bug fixes:  
+ [20150515] - v1.1.0 - Works with CTT Local Agent v1.0.0 and v1.2.0 - Bug fixes:
+ [20150702] - v1.2.0 - Works with CTT Local Agent v1.3.0 	    - Bug fixes:
+ [20150917] - v1.3.0 - Works with CTT Local Agent v1.6.0 	    - Bug fixes: ASACOMP-106, ASACOMP-99, ASACOMP-98, ASACOMP-91, ASACOMP-90, ASACOMP-89, ASACOMP-87, ASACOMP-83, ASACOMP-71.

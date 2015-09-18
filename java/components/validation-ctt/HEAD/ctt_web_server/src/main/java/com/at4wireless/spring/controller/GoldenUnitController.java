@@ -42,11 +42,10 @@ import com.at4wireless.spring.service.ProjectService;
  */
 @Controller
 @RequestMapping(value="/gu")
-public class GoldenUnitController {
-	
+public class GoldenUnitController
+{
 	@Autowired
 	private ProjectService projectService;
-	
 	@Autowired
 	private GoldenUnitService guService;
 	
@@ -59,10 +58,12 @@ public class GoldenUnitController {
      * @return 			target view
      */
 	@RequestMapping(method = RequestMethod.GET)
-	public String gu(Model model, @RequestParam(value = "error", required = false) String error) {
-		  
+	public String gu(Model model, @RequestParam(value = "error", required = false) String error)
+	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
 			String username = auth.getName();
 			
 			model.addAttribute("guList", guService.getTableData(username));
@@ -70,18 +71,25 @@ public class GoldenUnitController {
 			model.addAttribute("newProject", new Project());
 			model.addAttribute("newGu", new GoldenUnit());
 
-			
-			if (error != null) {
-				if(error.equals("empty")) {
-				model.addAttribute("error", "You have to select a GU");
-				} else if(error.equals("exists")) {
+			if (error != null)
+			{
+				if(error.equals("empty"))
+				{
+					model.addAttribute("error", "You have to select a GU");
+				}
+				else if(error.equals("exists"))
+				{
 					model.addAttribute("error", "A GU with that name already exists");
-				} else if(error.equals("name")) {
+				}
+				else if(error.equals("name"))
+				{
 					model.addAttribute("error", "GU name cannot be empty");
 				}
 			}
 			return "gu";
-		} else {
+		}
+		else
+		{
 			return "redirect:/login";
 		}
 	}
@@ -96,20 +104,30 @@ public class GoldenUnitController {
      */
 	@RequestMapping(value="/add", method=RequestMethod.POST)
 	public String addGu(@Valid @ModelAttribute("newGu") GoldenUnit newGu,
-			BindingResult result) {
-		
+			BindingResult result)
+	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {		
-			if (result.hasErrors()) {
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{		
+			if (result.hasErrors())
+			{
 				return "redirect:/gu?error=name";
-			} else {
-				if(guService.create(newGu)) {
+			}
+			else
+			{
+				if(guService.create(newGu))
+				{
 					return "redirect:/gu";
-				} else {
+				}
+				else
+				{
 					return "redirect:/gu?error=exists";
 				}
 			}
-		} else {
+		}
+		else
+		{
 			return "redirect:/login";
 		}
 	}
@@ -121,13 +139,14 @@ public class GoldenUnitController {
      * @return 				Golden Unit data
      */
 	@RequestMapping(value="/edit", method=RequestMethod.GET)
-	public @ResponseBody GoldenUnit editDut(HttpServletRequest request) {
-		
+	public @ResponseBody GoldenUnit editDut(HttpServletRequest request)
+	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
 			return guService.getFormData(auth.getName(), Integer.parseInt(request.getParameter("idGu")));
 		}
-		
 		return new GoldenUnit();
 	}
 	
@@ -140,17 +159,24 @@ public class GoldenUnitController {
      * @return 				target view
      */
 	@RequestMapping(value="/edit", method=RequestMethod.POST)
-	public String saveChanges(@Valid @ModelAttribute("newGu") GoldenUnit newGu,
-			BindingResult result) {
+	public String saveChanges(@Valid @ModelAttribute("newGu") GoldenUnit newGu, BindingResult result)
+	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
-			if (result.hasErrors()) {
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
+			if (result.hasErrors())
+			{
 				return "redirect:/gu?error=name";
-			} else {
+			}
+			else
+			{
 				guService.update(newGu);
 				return "redirect:/gu";
 			}
-		} else {
+		}
+		else
+		{
 			return "redirect:/login";
 		}
 	}
@@ -163,13 +189,18 @@ public class GoldenUnitController {
      * @return 				target view
      */
 	@RequestMapping(value="/delete", method=RequestMethod.POST)
-	public String delGu(HttpServletRequest request) {
+	public String delGu(HttpServletRequest request)
+	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
 			String username = auth.getName();
 			guService.delete(username, Integer.parseInt(request.getParameter("idGu")));
 			return "redirect:/gu";
-		} else {
+		}
+		else
+		{
 			return "redirect:/login";
 		}
 	}
@@ -182,12 +213,17 @@ public class GoldenUnitController {
 	 * @return				target view
 	 */
 	@RequestMapping(value="/save", method=RequestMethod.POST)
-	public String save(Model model, @ModelAttribute("newProject") Project newProject) {
+	public String save(Model model, @ModelAttribute("newProject") Project newProject)
+	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
 			projectService.setGu(auth.getName(),newProject);
-			return "redirect:/ics?idProject="+newProject.getIdProject();
-		} else {
+			return "redirect:/ics?idProject=" + newProject.getIdProject();
+		}
+		else
+		{
 			return "redirect:/login";
 		}
 	}
@@ -199,10 +235,12 @@ public class GoldenUnitController {
 	 * @return			false if exists, true otherwise
 	 */
 	@RequestMapping(value="/validateName", method = RequestMethod.GET)
-	public @ResponseBody boolean validateName(HttpServletRequest request) {
-		Authentication auth = SecurityContextHolder.getContext()
-				.getAuthentication();
-		if (!(auth instanceof AnonymousAuthenticationToken)) {
+	public @ResponseBody boolean validateName(HttpServletRequest request)
+	{
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
 			return (!(guService.exists(auth.getName(), 
 					request.getParameter("name"), Integer.parseInt(request.getParameter("id")))));
 		}
