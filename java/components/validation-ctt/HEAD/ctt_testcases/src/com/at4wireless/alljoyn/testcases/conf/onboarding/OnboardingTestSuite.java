@@ -96,11 +96,12 @@ public class OnboardingTestSuite
 	
 	private long ANNOUNCEMENT_TIMEOUT_IN_SECONDS;
 	
-	private Boolean pass=true;
-	private Boolean inconc=false;
+	private Boolean pass = true;
+	private Boolean inconc = false;
 
 	private Map<String, Boolean> ics;
 	private Map<String, String> ixit;
+	private int TIME_TO_WAIT_FOR_SCAN_RESULTS_IN_SECONDS;
 
 	public OnboardingTestSuite(String testCase,
 			boolean iCSON_OnboardingServiceFramework,
@@ -114,7 +115,7 @@ public class OnboardingTestSuite
 			String gPCO_AnnouncementTimeout, String gPON_WaitSoftAP,
 			String gPON_ConnectSoftAP, String gPON_WaitSoftAPAfterOffboard,
 			String gPON_ConnectPersonalAP, String gPON_Disconnect,
-			String gPON_NextAnnouncement)
+			String gPON_NextAnnouncement, String gPON_TimeToWaitForScanResults)
 	{
 		/** 
 		 * [AT4] Attributes initialization
@@ -140,12 +141,13 @@ public class OnboardingTestSuite
 		ixit.put("IXITON_PersonalAPpassphrase", iXITON_PersonalAPpassphrase);
 	
 		ANNOUNCEMENT_TIMEOUT_IN_SECONDS = Integer.parseInt(gPCO_AnnouncementTimeout);
-		TIME_TO_WAIT_FOR_SOFT_AP_IN_MS_SHORT = Integer.parseInt(gPON_WaitSoftAP);;
-		TIME_TO_WAIT_TO_CONNECT_TO_SOFT_AP_IN_MS = Integer.parseInt(gPON_ConnectSoftAP);;
-		TIME_TO_WAIT_FOR_SOFT_AP_AFTER_OFFBOARD = Integer.parseInt(gPON_WaitSoftAPAfterOffboard);;
-		TIME_TO_WAIT_TO_CONNECT_TO_PERSONAL_AP_IN_MS = Integer.parseInt(gPON_ConnectPersonalAP);;
-		TIME_TO_WAIT_FOR_DISCONNECT_IN_MS = Integer.parseInt(gPON_Disconnect);;
-		TIME_TO_WAIT_FOR_NEXT_DEVICE_ANNOUNCEMENT_IN_MS = Integer.parseInt(gPON_NextAnnouncement);;
+		TIME_TO_WAIT_FOR_SOFT_AP_IN_MS_SHORT = Integer.parseInt(gPON_WaitSoftAP);
+		TIME_TO_WAIT_TO_CONNECT_TO_SOFT_AP_IN_MS = Integer.parseInt(gPON_ConnectSoftAP);
+		TIME_TO_WAIT_FOR_SOFT_AP_AFTER_OFFBOARD = Integer.parseInt(gPON_WaitSoftAPAfterOffboard);
+		TIME_TO_WAIT_TO_CONNECT_TO_PERSONAL_AP_IN_MS = Integer.parseInt(gPON_ConnectPersonalAP);
+		TIME_TO_WAIT_FOR_DISCONNECT_IN_MS = Integer.parseInt(gPON_Disconnect);
+		TIME_TO_WAIT_FOR_NEXT_DEVICE_ANNOUNCEMENT_IN_MS = Integer.parseInt(gPON_NextAnnouncement);
+		TIME_TO_WAIT_FOR_SCAN_RESULTS_IN_SECONDS = Integer.parseInt(gPON_TimeToWaitForScanResults);
 
 		try
 		{
@@ -279,7 +281,7 @@ public class OnboardingTestSuite
 	
 	protected OnboardingHelper getOnboardingHelper()
 	{
-		return new OnboardingHelper();
+		return new OnboardingHelper(TIME_TO_WAIT_FOR_SCAN_RESULTS_IN_SECONDS);
 	}
 	
     /*protected ServiceHelper getServiceHelper()
@@ -389,10 +391,13 @@ public class OnboardingTestSuite
 		onboardingHelper.waitForAboutAnnouncementAndThenConnect();
 
 		verifyOnboardingState(OBS_STATE_PERSONAL_AP_CONFIGURED_ERROR);
-		//verifyOnboardingErrorCode(OBS_LASTERROR_UNAUTHORIZED);
+		
 		logger.info("Retrieving error property from Onboarding interface");
-		assertTrue(onboardingHelper.retrieveStateProperty() != OBS_LASTERROR_VALIDATED);
-		//assertTrue(onboardingHelper.retrieveLastErrorProperty().getErrorCode() != OBS_LASTERROR_VALIDATED); //[AT4]
+		
+		//[ASACOMP-69 starts]
+		//assertTrue(onboardingHelper.retrieveStateProperty() != OBS_LASTERROR_VALIDATED);
+		assertTrue(onboardingHelper.retrieveLastErrorProperty().getErrorCode() != OBS_LASTERROR_VALIDATED);
+		//[ASACOMP-69 ends]
 	}
 
 	public void testOnboarding_v1_07_ConfigureWiFiAuthTypeOfAny() throws Exception
