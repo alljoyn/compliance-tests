@@ -148,7 +148,7 @@
 	        						<form:input path="swVer" type="text" class="form-control" id="dut-sw-ver"/>
 	        					</div>
 	        					<div class="form-group">
-	        						<label path="hwVer" for="dut-hw-ver" class="control-label">Hardware Version (*)</label>
+	        						<label path="hwVer" for="dut-hw-ver" class="control-label">Hardware Version</label>
 	        						<form:input path="hwVer" type="text" class="form-control" id="dut-hw-ver"/>
 	        					</div>
 	        					
@@ -277,7 +277,7 @@
 	        						<form:input path="swVer" type="text" class="form-control" id="sample-sw-ver"/>
 	        					</div>
 	        					<div class="form-group">
-	        						<label path="hwVer" for="sample-hw-ver" class="control-label">Hardware Version (*)</label>
+	        						<label path="hwVer" for="sample-hw-ver" class="control-label">Hardware Version</label>
 	        						<form:input path="hwVer" type="text" class="form-control" id="sample-hw-ver"/>
 	        					</div>
 	        					<form:input id="sample-dut" type="hidden" name="associatedDut" path="associatedDut" value=""/>			
@@ -311,7 +311,7 @@
 	        						<form:input path="swVer" type="text" class="form-control" id="edit-sw-ver"/>
 	        					</div>
 	        					<div class="form-group">
-	        						<label path="hwVer" for="edit-hw-ver" class="control-label">Hardware Version (*)</label>
+	        						<label path="hwVer" for="edit-hw-ver" class="control-label">Hardware Version</label>
 	        						<form:input path="hwVer" type="text" class="form-control" id="edit-hw-ver"/>
 	        					</div>
 	        					<form:input id="edit-sample-id" type="hidden" name="idSample" path="idSample" value=""/>			
@@ -415,7 +415,7 @@
 						maxlength: 60,
 					},
 					hwVer: {
-						required: true,
+						//required: true,
 						maxlength: 60,
 					}
 				},
@@ -450,7 +450,7 @@
 						maxlength: "Software version must have a max of 60 characters!"
 					},
 					hwVer: {
-						required: "Please enter hardware version of the sample!",
+						//required: "Please enter hardware version of the sample!",
 						maxlength: "Hardware version must have a max of 60 characters!"
 					}
 				}
@@ -522,7 +522,7 @@
 						maxlength: 60,
 					},
 					hwVer: {
-						required: true,
+						//required: true,
 						maxlength: 60,
 					}
 				},
@@ -541,7 +541,7 @@
 						maxlength: "Software version must have a max of 60 characters!"
 					},
 					hwVer: {
-						required: "Please enter hardware version of the sample!",
+						//required: "Please enter hardware version of the sample!",
 						maxlength: "Hardware version must have a max of 60 characters!"
 					}
 				}
@@ -563,7 +563,7 @@
 						maxlength: 60,
 					},
 					hwVer: {
-						required: true,
+						//required: true,
 						maxlength: 60,
 					}
 				},
@@ -582,7 +582,7 @@
 						maxlength: "Software version must have a max of 60 characters!"
 					},
 					hwVer: {
-						required: "Please enter hardware version of the sample!",
+						//required: "Please enter hardware version of the sample!",
 						maxlength: "Hardware version must have a max of 60 characters!"
 					}
 				}

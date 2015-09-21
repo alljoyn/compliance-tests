@@ -66,7 +66,7 @@
 				        	<!-- <tbody class="scroll-tbody">  -->
 				        	<tbody>
 								<c:forEach var="ixit" items="${ixitList}" varStatus="status">
-									<c:if test="${ixit.serviceGroup==service.idService}">
+									<c:if test="${ixit.serviceGroup == service.idService}">
 										<tr>
 							        	<!-- <tr class="scroll-tr">  -->
 							        		<td width="3%">${ixit.idIxit}</td>
