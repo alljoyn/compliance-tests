@@ -71,9 +71,12 @@ public class ProjectController
 	 * Loads data to be displayed if logged, redirects to login
 	 * otherwise.
 	 * 
-     * @param 	model 	model to add objects needed by the view
-     * @param 	error 	error type, if exists
-     * @return 			target view
+     * @param model
+     * 			model to add objects needed by the view
+     * @param error
+     * 			error type, if exists
+     * 
+     * @return target view
      */
 	@RequestMapping(method = RequestMethod.GET)
 	public String project(Model model,
@@ -85,12 +88,13 @@ public class ProjectController
 		{
 			String username = auth.getName();
 
-			model.addAttribute("projectList", projectService.getTableData(username));
+			model.addAttribute("projectList", 
+					ControllerCommons.dataToHtml(projectService.getTableData(username)));
 			model.addAttribute("newProject", new Project());
 			model.addAttribute("certrelList", crService.list());
 			model.addAttribute("tcclList",tcclService.list());
 			model.addAttribute("serviceList", sfService.list());
-			model.addAttribute("dutList", dutService.getTableData(username));
+			model.addAttribute("dutList", ControllerCommons.dataToHtml(dutService.getTableData(username)));
 			
 			if (error != null)
 			{

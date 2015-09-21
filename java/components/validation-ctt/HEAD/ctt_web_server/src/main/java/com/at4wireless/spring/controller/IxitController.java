@@ -75,13 +75,15 @@ public class IxitController
 			
 			listIxit = ixitService.load(projectService.getServicesData(p.getIdProject()), p.isIsConfigured(),
 					p.getConfiguration());
-			dutService.setValues(auth.getName(),p.getIdDut(),listIxit);
+			
+			dutService.setValues(auth.getName(), p.getIdDut(), listIxit);
 			
 			for (BigInteger bi : projectService.getServicesData(newProject.getIdProject()))
 			{
 				listService.add(sfService.list().get(bi.intValue()-1));
 			}
-			model.addAttribute("ixitList", listIxit);
+			model.addAttribute("ixitList", ControllerCommons.dataToHtml(listIxit));
+			//model.addAttribute("ixitList", listIxit);
 			model.addAttribute("serviceList", listService);
 			return "ixit";
 		}

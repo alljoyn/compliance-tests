@@ -29,8 +29,8 @@ import com.at4wireless.spring.model.Ixit;
 import com.at4wireless.spring.model.Sample;
 
 @Service
-public class DutServiceImpl implements DutService {
-
+public class DutServiceImpl implements DutService
+{
 	@Autowired
 	private DutDAO dutDao;
 	
@@ -39,15 +39,19 @@ public class DutServiceImpl implements DutService {
 	
 	@Override
 	@Transactional
-	public boolean create(Dut d) {
+	public boolean create(Dut d)
+	{
 		java.sql.Timestamp date = new java.sql.Timestamp(new java.util.Date().getTime());
 		
 		d.setCreatedDate(date);
 		d.setModifiedDate(date);
 
-		if(dutDao.getDutByName(d.getUser(), d.getName())!=null) {
+		if (dutDao.getDutByName(d.getUser(), d.getName()) != null)
+		{
 			return false;
-		} else {
+		}
+		else
+		{
 			dutDao.addDut(d);
 			sampleDao.addSample(new Sample(d));
 			return true;
@@ -56,77 +60,94 @@ public class DutServiceImpl implements DutService {
 
 	@Override
 	@Transactional
-	public List<Dut> getTableData(String username) {
+	public List<Dut> getTableData(String username)
+	{
 		return dutDao.list(username);
 	}
 	
 	@Override
 	@Transactional
-	public Dut getFormData(String username, int idDut) {
-		return dutDao.getDut(username,idDut);
+	public Dut getFormData(String username, int idDut)
+	{
+		return dutDao.getDut(username, idDut);
 	}
 	
 	@Override
 	@Transactional
-	public boolean update(Dut d) {
-		if(dutDao.getDut(d.getUser(), d.getIdDut())!=null) {
+	public boolean update(Dut d)
+	{
+		if (dutDao.getDut(d.getUser(), d.getIdDut()) != null)
+		{
 			java.sql.Timestamp date = new java.sql.Timestamp(new java.util.Date().getTime());
 			d.setModifiedDate(date);
 			dutDao.saveChanges(d);
 			return true;
-		} else {
+		}
+		else
+		{
 			return false;
 		}
 	}
 
 	@Override
 	@Transactional
-	public boolean delete(String username, int idDut) {
-		if (dutDao.getDut(username, idDut)!=null) {
-			for(Sample s : sampleDao.list(idDut)) {
+	public boolean delete(String username, int idDut)
+	{
+		if (dutDao.getDut(username, idDut) != null)
+		{
+			for (Sample s : sampleDao.list(idDut))
+			{
 				sampleDao.delSample(s.getIdSample());
 			}
+			
 			dutDao.delDut(idDut);
 			return true;
-		} else {
+		}
+		else
+		{
 			return false;
 		}
 	}
 
 	@Override
 	@Transactional
-	public List<Sample> getSampleData(int idDut) {
+	public List<Sample> getSampleData(int idDut)
+	{
 		return sampleDao.list(idDut);
 	}
 
 	@Override
 	@Transactional
-	public void createSample(Sample s) {
+	public void createSample(Sample s)
+	{
 		sampleDao.addSample(s);	
 	}
 	
 	@Override
 	@Transactional
-	public void deleteSample(int idSample) {
+	public void deleteSample(int idSample)
+	{
 		sampleDao.delSample(idSample);
 	}
 
 	@Override
 	@Transactional
-	public Sample getSampleFormData(int idSample) {
-		// TODO Auto-generated method stub
+	public Sample getSampleFormData(int idSample)
+	{
 		return sampleDao.getSample(idSample);
 	}
 
 	@Override
 	@Transactional
-	public void updateSample(Sample s) {
+	public void updateSample(Sample s)
+	{
 		sampleDao.saveChanges(s);
 	}
 
 	@Override
 	@Transactional
-	public void setValues(String username, int idDut, List<Ixit> listIxit) {
+	public void setValues(String username, int idDut, List<Ixit> listIxit)
+	{
 		Dut d = dutDao.getDut(username, idDut);
 		Sample s = sampleDao.list(idDut).get(0);
 		listIxit.get(1).setValue(s.getAppId());
@@ -141,15 +162,19 @@ public class DutServiceImpl implements DutService {
 	
 	@Override
 	@Transactional
-	public boolean exists(String username, String name, int id) {
-		
+	public boolean exists(String username, String name, int id)
+	{
 		Dut d = dutDao.getDutByName(username, name);
-		if(d==null) {
-			return false;
-		} else if (d.getIdDut()==id) {
+		
+		if (d == null)
+		{
 			return false;
 		}
+		else if (d.getIdDut() == id)
+		{
+			return false;
+		}
+		
 		return true;
 	}
-
 }

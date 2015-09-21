@@ -55,30 +55,42 @@ public class IxitServiceImpl implements IxitService {
 			listIxit.addAll(ixitDao.getService(bi.intValue()));
 		}
 		
-		if(isConfigured) {			
+		if (isConfigured)
+		{			
 			DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = null;
 			
-			try {
+			try
+			{
 				builder = builderFactory.newDocumentBuilder();
 				Document source = builder.parse(new FileInputStream(configuration));
 				
 				XPath xPath = XPathFactory.newInstance().newXPath();	
 				String expression = "/Project/Ixit/Value";
 				NodeList nodeList = (NodeList) xPath.compile(expression).evaluate(source, XPathConstants.NODESET);
-				
-				for (int i = 0; i < nodeList.getLength(); i++) {
-					if(nodeList.item(i).getFirstChild()!=null) {
+
+				for (int i = 0; i < nodeList.getLength(); i++)
+				{
+					if (nodeList.item(i).getFirstChild() != null)
+					{
 						listIxit.get(i).setValue(nodeList.item(i).getFirstChild().getNodeValue());
 					}
 				}
-			} catch (ParserConfigurationException e) {
+			}
+			catch (ParserConfigurationException e)
+			{
 				e.printStackTrace();
-			} catch (SAXException e) {
+			}
+			catch (SAXException e)
+			{
 				e.printStackTrace();
-			} catch (IOException e) {
+			}
+			catch (IOException e)
+			{
 				e.printStackTrace();
-			} catch (XPathExpressionException e) {
+			}
+			catch (XPathExpressionException e)
+			{
 				e.printStackTrace();
 			}	
 		}

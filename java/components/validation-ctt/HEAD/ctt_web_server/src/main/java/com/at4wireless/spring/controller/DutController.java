@@ -69,7 +69,7 @@ public class DutController
 		
 		if (!(auth instanceof AnonymousAuthenticationToken))
 		{
-			model.addAttribute("dutList", dutService.getTableData(auth.getName()));
+			model.addAttribute("dutList", ControllerCommons.dataToHtml(dutService.getTableData(auth.getName())));
 			model.addAttribute("newProject", new Project());
 			model.addAttribute("newDut", new Dut());
 			model.addAttribute("newSample", new Sample());
@@ -273,7 +273,7 @@ public class DutController
 	@RequestMapping(value="/samples", method=RequestMethod.GET)
 	public @ResponseBody List<Sample> samples(HttpServletRequest request)
 	{
-		return dutService.getSampleData(Integer.parseInt(request.getParameter("idDut")));
+		return ControllerCommons.dataToHtml(dutService.getSampleData(Integer.parseInt(request.getParameter("idDut"))));
 	}
 	
 	/**
