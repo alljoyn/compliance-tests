@@ -15,7 +15,7 @@
   <manifest></manifest>
   <icon>C:\Users\Administrador\Desktop\ctt_local_agent\res\drawable\allseen128.ico</icon>
   <classPath>
-    <mainClass>com.at4wireless.allseen.localagent.Main</mainClass>
+    <mainClass>com.at4wireless.alljoyn.localagent.Main</mainClass>
     <cp>.</cp>
   </classPath>
   <jre>
