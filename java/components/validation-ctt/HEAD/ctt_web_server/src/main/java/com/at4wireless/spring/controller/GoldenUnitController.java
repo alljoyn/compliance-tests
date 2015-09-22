@@ -219,7 +219,7 @@ public class GoldenUnitController
 		
 		if (!(auth instanceof AnonymousAuthenticationToken))
 		{
-			projectService.setGu(auth.getName(),newProject);
+			projectService.setGu(auth.getName(), newProject);
 			return "redirect:/ics?idProject=" + newProject.getIdProject();
 		}
 		else

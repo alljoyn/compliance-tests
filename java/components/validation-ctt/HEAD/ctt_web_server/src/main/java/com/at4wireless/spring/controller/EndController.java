@@ -114,7 +114,6 @@ public class EndController
 		
 		if (!(auth instanceof AnonymousAuthenticationToken))
 		{
-			System.out.println(auth.getName());
 			String url = endService.createXML(auth.getName(), request.getParameterMap());
 			projectService.configProject(request.getParameter("data[idProject]"), url);
 		}
