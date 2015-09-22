@@ -139,12 +139,17 @@ public class EndServiceImpl implements EndService {
 						, param.getName(), map.get("data["+param.getName()+"]")[0]));
 			}
 			
-			if(!p.getType().equalsIgnoreCase("Conformance")) {
+			if (!p.getType().equalsIgnoreCase("Conformance")) {
 				GoldenUnit gu;
-				Iterator<GoldenUnit> iter6 = guService.getGuList(p.getIdProject()).iterator();
-				while(iter6.hasNext()) {
-					gu = iter6.next();
-					mainRootElement.appendChild(getGu(doc,gu.getName(),categoryDao.getCategoryById(gu.getCategory()).getName()));
+				List<GoldenUnit> guList = guService.getGuList(p.getIdProject());
+				
+				if (!guList.isEmpty())
+				{
+					Iterator<GoldenUnit> iter6 = guService.getGuList(p.getIdProject()).iterator();
+					while(iter6.hasNext()) {
+						gu = iter6.next();
+						mainRootElement.appendChild(getGu(doc,gu.getName(),categoryDao.getCategoryById(gu.getCategory()).getName()));
+					}
 				}
 			}
 				

@@ -97,10 +97,11 @@ public class GoldenUnitDAOImpl implements GoldenUnitDAO {
 		}
 	}
 
+	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<GoldenUnit> getGuList(int idProject) {
 		
-		@SuppressWarnings("unchecked")
 		List<BigInteger> listIds = (List<BigInteger>) sessionFactory.getCurrentSession()
 				.createSQLQuery("select id_golden from project_golden where id_project="+idProject).list();
 		
@@ -109,11 +110,15 @@ public class GoldenUnitDAOImpl implements GoldenUnitDAO {
 			cast.add(bi.intValue());
 		}
 		
-		@SuppressWarnings("unchecked")
-		List<GoldenUnit> guList = (List<GoldenUnit>) sessionFactory.getCurrentSession()
-				.createCriteria(GoldenUnit.class)
-					.add(Restrictions.in("idGolden", cast))
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
+		List<GoldenUnit> guList = new ArrayList<GoldenUnit>();
+		if (!cast.isEmpty())
+		{
+			guList = (List<GoldenUnit>) sessionFactory.getCurrentSession()
+					.createCriteria(GoldenUnit.class)
+						.add(Restrictions.in("idGolden", cast))
+					.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
+		}
+		
 		return guList;
 	}
 }
