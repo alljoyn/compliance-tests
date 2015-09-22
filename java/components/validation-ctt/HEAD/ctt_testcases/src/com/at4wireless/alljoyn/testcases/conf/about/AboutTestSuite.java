@@ -965,6 +965,7 @@ public class AboutTestSuite
 					if(fieldName==AboutKeys.ABOUT_SUPPORTED_LANGUAGES) {
 						//compareAbout(fieldName,ixit.get("IXITCO_"+fieldName),(String) aboutMap.get(fieldName).getObject(String.class),"");
 					} else {
+						logger.info(String.format("Checking if received %s is equal to IXITCO_%s", fieldName, fieldName));
 						compareAbout(fieldName,ixit.get("IXITCO_"+fieldName),(String) aboutMap.get(fieldName).getObject(String.class),"");
 					}
 				} catch (BusException e) {
@@ -1102,6 +1103,7 @@ public class AboutTestSuite
 	
 	private void compareAboutNonRequired(Map<String, Variant> aboutMapDefaultLanguage, Map<String, Variant> aboutMapSupportedLanguage, String language, String fieldName) throws Exception
 	{
+		logger.info(String.format("Comparing %s of default language: %s and language: %s", fieldName, aboutMapDefaultLanguage, aboutMapSupportedLanguage));
 		if (aboutMapDefaultLanguage.containsKey(fieldName))
 		{
 			if (aboutMapSupportedLanguage.containsKey(fieldName))
@@ -1128,7 +1130,7 @@ public class AboutTestSuite
 		}
 
 		if(expectedAboutFieldValue.equals(aboutFieldValue)) {
-			logger.info(fieldName+" received: "+aboutFieldValue+" is equal to IXITCO_"+fieldName+": "+expectedAboutFieldValue);
+			logger.info("Both fields are equal");
 		}
 		
 		assertEquals(assertionFailureResponse, expectedAboutFieldValue, aboutFieldValue);
