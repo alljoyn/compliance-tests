@@ -15,12 +15,13 @@
  *******************************************************************************/
 package com.at4wireless.alljoyn.core.onboarding;
 
+
+import com.at4wireless.alljoyn.core.commons.log.Logger;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 public class SoftAPValidator
 {
-	private static final String TAG = "SoftAPValidator"; //[AT4] Added logger to emulate JUnit behaviour
-	private static final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	private static final Logger logger = new WindowsLoggerImpl(SoftAPValidator.class.getSimpleName());
 	
     private static final String SOFT_AP_ASSERT_MESSAGE = "Soft AP name must start with AJ_ or end with _AJ string";
     private static final String SOFT_AP_PREFIX = "AJ_";
@@ -35,8 +36,13 @@ public class SoftAPValidator
     
     private static void assertTrue(String errorMessage, boolean condition)
     {
-    	if (!condition) {
+    	if (!condition)
+    	{
     		logger.error(errorMessage);
+    	}
+    	else
+    	{
+    		logger.info("Partial Verdict: PASS");
     	}
     }
 }

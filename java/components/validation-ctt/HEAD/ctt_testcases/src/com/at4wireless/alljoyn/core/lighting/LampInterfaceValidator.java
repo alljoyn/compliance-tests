@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.at4wireless.alljoyn.core.commons.log.Logger;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.interfacevalidator.SetValidator;
 import com.at4wireless.alljoyn.core.interfacevalidator.ValidationResult;
@@ -37,9 +38,7 @@ public class LampInterfaceValidator
     private List<IntrospectionNode> introspectionNodesLoadedFromXmlFiles = new ArrayList<IntrospectionNode>();
     private IntrospectionXmlParser introspectionXmlParser;
     //private ValidationTestContext validationTestContext;
-    private static final String TAG = "InterfaceValidator";
-    //private static final Logger logger = LoggerFactory.getLogger(TAG);
-	private static final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+    private static final Logger logger = new WindowsLoggerImpl(LampInterfaceValidator.class.getSimpleName());
 
     public LampInterfaceValidator()
     //public LampInterfaceValidator(ValidationTestContext validationTestContext)

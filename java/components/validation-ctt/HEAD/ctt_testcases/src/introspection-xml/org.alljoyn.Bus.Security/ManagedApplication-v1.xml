@@ -1,0 +1,235 @@
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://www.alljoyn.org/schemas/introspect.xsd">
+        <!-- Once an application is claimed it becomes a Security 2.0
+            manageable application.
+            The ManagedApplication interface describes the API for the
+            SecurityManager to update the application's security configuration.
+        -->
+        <interface name="org.alljoyn.Bus.Security.ManagedApplication">
+        <annotation name="org.alljoyn.Bus.Secure" value="true"/>
+
+        <!-- A struct providing the details of an Elliptic Curve Cryptography
+            public key.
+        -->
+        <struct name="EccPublicKey">
+            <!-- An enumeration describing the key type. Values:
+                   0: ECDSA with SHA-256
+            -->
+            <field name="algorithm" type="y"/>
+            <!-- An enumeration identifying the curve this key is using. Values:
+                   0: NIST P-256
+            -->
+            <field name="curveIdentifier" type="y"/>
+            <!-- The X coordinate of the public key.-->
+            <field name="xCoordinate" type="ay"/>
+            <!-- The Y coordinate of the public key.-->
+            <field name="yCoordinate" type="ay"/>
+        </struct>
+
+        <struct name="Guid">
+            <!-- The GUID represented as a byte array. -->
+            <field name="guidData" type="ay"/>
+        </struct>
+
+        <struct name="Certificate">
+            <!-- An enumeration representing the encoding of the
+                certificate data. Values:
+                  0: an X.509 DER encoded certificate.
+                  1: an X.509 PEM encoded certificate.
+            -->
+            <field name="encoding" type="y"/>
+            <field name="certificateData" type="ay"/>
+        </struct>
+
+        <!-- A struct containing the identity parameters of a certificate -->
+        <struct name="CertificateId">
+            <!-- The serial number of the certificate. -->
+            <field name="serialNumber" type="ay"/>
+            <!-- The issuer authority key identifier. -->
+            <field name="aki" type="ay"/>
+            <!-- The public key of the issuer of the certificate. -->
+            <field name="issuer" type="[EccPublicKey]"/>
+        </struct>
+
+        <!-- A struct describing a member of an interface
+             and the access rights on it.
+        -->
+        <struct name="Member">
+            <!-- The name of the interface member. The '*' matches
+                all members of the type specified by the type field.
+            -->
+            <field name="name" type="s"/>
+            <!-- An enumeration describing the type of the member. Values:
+                  0: Any type.
+                  1: Method.
+                  2: Signal.
+                  3: Property.
+            -->
+            <field name="type" type="y"/>
+            <!-- A bitmask describing the action on the member. Values:
+                  0x1: Provide. Allows sending signals and/or exposing
+                       methods and properties.
+                  0x2: Observe. Allows receiving signals and reading properties.
+                  0x4: Modify. Allows setting properties and making method
+                       calls.
+            -->
+            <field name="action" type="y"/>
+        </struct>
+
+        <struct name="Rule">
+            <!-- contains the required object path on which the rule applies.
+                The '*' character is allowed at the end of the object path.
+                The object path is then considered a prefix. The rule
+                applies to all object paths starting with the prefix.
+            -->
+            <field name="objectPath" type="s"/>
+            <!-- contains the required interface name on which the rule applies.
+                The '*' character is allowed at the end of the interface name.
+                The interface name is then considered a prefix. The rule
+                applies to all interfaces names starting with the prefix.
+            -->
+            <field name="interfaceName" type="s"/>
+            <!-- The order of the members is not significant.  Duplicates are
+                allowed but not efficient since they will be evaluated multiple
+                times.
+            -->
+            <field name="members" type="a[Member]"/>
+        </struct>
+
+        <struct name="Peer">
+            <!-- An enumeration describing the type of peer. Values:
+                  0: ALL: matches all peers including anonymous peers.
+                  1: ANY_TRUSTED: matches any peer trusted by the application.
+                  2: FROM_CERTIFICATE_AUTHORITY: matches all peers with
+                        certificates issued by the specified certificate
+                        authority.
+                  3: WITH_PUBLIC_KEY: a single peer identified by a public key.
+                  4: WITH_MEMBESHIP: all members of specific security group.
+            -->
+            <field name="type" type="y"/>
+            <!-- zero or one key depending on the peer type.
+                  Anonymous: No key required.
+                  Any: No key required.
+                  Restricted: The public key of certificate authority.
+                  Public key: The public key of the peer.
+                  Security group: The public key of the security group authority.
+            -->
+            <field name="publicKey" type="a[EccPublicKey]"/>
+            <!-- only need for the security group type. Ignored for the other types. -->
+            <field name="groupId" type="[Guid]"/>
+        </struct>
+
+        <struct name="Acl">
+            <!-- The order of the peers is not significant.  Duplicates are
+                allowed but not efficient since they will be evaluated multiple
+                times.
+            -->
+            <field name="peers" type="a[Peer]"/>
+            <!-- The order of the rules is not significant.  Duplicates are
+                allowed but not efficient since they will be evaluated multiple
+                times.
+            -->
+            <field name="rules" type="a[Rule]"/>
+        </struct>
+
+        <struct name="Policy">
+            <field name="specificationVersion" type="q"/>
+            <field name="version" type="u"/>
+            <!-- The order of the ACLs is not significant.  Duplicates are
+                allowed but not efficient since they will be evaluated multiple
+                times.
+            -->
+            <field name="acls" type="a[Acl]"/>
+        </struct>
+
+        <!-- The Interface version.-->
+        <property name="Version" access="read" type="q">
+            <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+        </property>
+
+        <!-- Resets the managed application. All configuration is
+            discarded. The application is no longer claimed.
+        -->
+        <method name="Reset"/>
+
+        <method name="UpdateIdentity">
+            <!-- A certificate chain. The first element is the
+                identity certificate of this application. Followed by
+                certificate of its issuer...
+            -->
+            <arg name="certificateChain" type="a[Certificate]" direction="in"/>
+            <!-- The permission this application can use. These permissions
+                 should match the manifest template of the application.
+                 The order of the rules is not significant.  Duplicates are
+                 allowed but not efficient since they will be evaluated multiple
+                 times.
+            -->
+            <arg name="manifest" type="a[Rule]" direction="in"/>
+        </method>
+
+        <!-- A property holding the identity certificate chain. The first element
+            is the identity certificate of this application. Followed by
+            certificate of its issuer...
+        -->
+        <property name="Identity" access="read" type="a[Certificate]">
+            <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+        </property>
+
+        <property name="Manifest" access="read" type="a[Rule]">
+            <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+        </property>
+
+        <!-- A property containing the serial number and issuer of the identity
+            certificate currently installed.
+        -->
+        <property name="IdentityCertificateId" access="read" type="[CertificateId]">
+            <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+        </property>
+
+        <!-- A property providing the version number of the currently
+            installed policy. This property is not evented.
+        -->
+        <property name="PolicyVersion" access="read" type="u">
+            <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+        </property>
+
+        <method name="UpdatePolicy">
+           <arg name="policy" type="[Policy]" direction="in"/>
+        </method>
+
+        <property name="Policy" access="read" type="[Policy]">
+            <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+        </property>
+
+        <!-- The default policy for this application,
+            regardless of the currently installed policy.
+        -->
+        <property name="DefaultPolicy" access="read" type="[Policy]">
+            <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+        </property>
+
+        <!-- Reset the policy to the default policy generated during
+            the claiming process.
+        -->
+        <method name="ResetPolicy"/>
+
+        <method name="InstallMembership">
+            <!-- A certificate chain. The first element is the
+                identity certificate of this application. Followed by
+                certificate of its issuer...
+            -->
+            <arg name="certificateChain" type="a[Certificate]" direction="in"/>
+        </method>
+
+        <method name="RemoveMembership">
+            <arg name="certificateId" type="[CertificateId]" direction="in"/>
+        </method>
+
+        <!-- A property containing the list of serial numbers
+            and issuers of the currently installed membership certificates.
+        -->
+        <property name="MembershipSummaries" access="read" type="a[CertificateId]">
+            <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+        </property>
+    </interface>
+</node>
+

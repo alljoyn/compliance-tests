@@ -21,11 +21,14 @@ public enum IntrospectionXmlFile
             "introspection-xml/Container.xml"), ControlPanel("introspection-xml/ControlPanel.xml"), DeviceIcon("introspection-xml/DeviceIcon.xml"), Dialog(
             "introspection-xml/Dialog.xml"), HTTPControl("introspection-xml/HTTPControl.xml"), LabelProperty("introspection-xml/LabelProperty.xml"), ListProperty(
             "introspection-xml/ListProperty.xml"), Notification("introspection-xml/Notification.xml"), NotificationAction("introspection-xml/NotificationAction.xml"), Onboarding(
-            "introspection-xml/Onboarding.xml"), Peer("introspection-xml/Peer.xml"), Property("introspection-xml/Property.xml"), Lighting("introspection-xml/Lamp.xml"),
+            "introspection-xml/Onboarding.xml"), Peer("introspection-xml/org.alljoyn.Bus/Peer.xml"), Property("introspection-xml/Property.xml"), Lighting("introspection-xml/Lamp.xml"),
             GWAgentCtrlAcl("introspection-xml/GWAgentCtrlAcl.xml"), GWAgentCtrlAclMgmt("introspection-xml/GWAgentCtrlAclMgmt.xml"),
             GWAgentCtrlApp("introspection-xml/GWAgentCtrlApp.xml"),GWAgentCtrlAppMgmt("introspection-xml/GWAgentCtrlAppMgmt.xml"),
             LightingController("introspection-xml/ControllerService.xml"), LeaderElectionAndStateSync("introspection-xml/LeaderElectionAndStateSync.xml"),
-            Introspectable("introspection-xml/Introspectable.xml"), GWAgentConnectorApp("introspection-xml/GWAgentConnectorApp.xml");
+            Introspectable("introspection-xml/Introspectable.xml"), GWAgentConnectorApp("introspection-xml/GWAgentConnectorApp.xml"),
+            Application("introspection-xml/org.alljoyn.Bus/Application-v1.xml"), SecureApplication("introspection-xml/org.alljoyn.Bus.Security/Application-v1.xml"),
+            ClaimableApplication("introspection-xml/org.alljoyn.Bus.Security/ClaimableApplication-v1.xml"),
+            ManagedApplication("introspection-xml/org.alljoyn.Bus.Security/ManagedApplication-v1.xml");
 
     private String value;
 

@@ -1,0 +1,64 @@
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://www.alljoyn.org/schemas/introspect.xsd">
+        <!-- The interface is provided by all applications (from 15.08 onwards)
+            for discovery purposes. This interface is implemented by the Alljoyn
+            framework and targets core framework features and services like
+            Security v2. Application developers should still use About to allow
+            others to discover their services or to find providers of services
+            they're interested in.
+
+            The interface is not secure.
+        -->
+        <interface name="org.alljoyn.Bus.Application">
+        <annotation name="org.alljoyn.Bus.Secure" value="false"/>
+
+        <!-- A struct providing the details of an Elliptic Curve Cryptography
+            public key.
+        -->
+        <struct name="EccPublicKey">
+            <!-- An enumeration describing the key type. Values:
+                   0: ECDSA with SHA-256
+            -->
+            <field name="algorithm" type="y"/>
+            <!-- An enumeration identifying the curve this key is using. Values:
+                   0: NIST P-256
+            -->
+            <field name="curveIdentifier" type="y"/>
+            <!-- The X coordinate of the public key.-->
+            <field name="xCoordinate" type="ay"/>
+            <!-- The Y coordinate of the public key.-->
+            <field name="yCoordinate" type="ay"/>
+        </struct>
+
+        <!-- The Interface version.-->
+        <property name="Version" access="read" type="q">
+            <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+        </property>
+
+        <!-- The State signal is used to advertise the state of an
+            application.  It is sessionless, because the signal is intended
+            to discover applications. Discovery is not done by
+            using 'About'. Applications must add extra code to provide About.
+            Not all applications will do this as pure consumer applications don't
+            need to be discovered by other applications. Still they need to be
+            discovered by the framework to support certain some core framework
+            features. Furthermore we want to avoid interference between core
+            framework events and application events.
+        -->
+        <signal name="State" sessionless="true">
+            <!-- The public key used by this application to identify itself-->
+            <arg name="publicKey" type="[EccPublicKey]"/>
+            <!-- An enumeration representing the current state of the application.
+                Values:
+                  0: NotClaimable.  The application is not claimed and not
+                     accepting claim requests.
+                  1: Claimable. The application is not claimed, but is
+                     accepting claim requests.
+                  2: Claimed. The application is claimed and can be configured.
+                  3: NeedsUpdate. The application is claimed, but requires a
+                     configuration update (after a software upgrade).
+            -->
+            <arg name="state" type="q"/>
+        </signal>
+    </interface>
+</node>
+

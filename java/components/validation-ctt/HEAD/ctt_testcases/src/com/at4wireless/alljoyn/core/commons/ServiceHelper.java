@@ -19,11 +19,6 @@ import java.util.Arrays;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import org.alljoyn.about.AboutService;
-import org.alljoyn.about.AboutServiceImpl;
-import org.alljoyn.about.client.AboutClient;
-import org.alljoyn.about.client.AboutClientImpl;
-import org.alljoyn.about.icon.AboutIconClient;
 import org.alljoyn.bus.AboutIconProxy;
 import org.alljoyn.bus.AboutProxy;
 import org.alljoyn.bus.BusAttachment;
@@ -36,7 +31,6 @@ import org.alljoyn.bus.ProxyBusObject;
 import org.alljoyn.bus.SessionListener;
 import org.alljoyn.bus.SessionOpts;
 import org.alljoyn.bus.Status;
-import org.alljoyn.bus.ifaces.About;
 import org.alljoyn.config.ConfigService;
 import org.alljoyn.config.ConfigServiceImpl;
 import org.alljoyn.config.client.ConfigClient;
@@ -44,18 +38,11 @@ import org.alljoyn.ns.NotificationReceiver;
 import org.alljoyn.ns.NotificationSender;
 import org.alljoyn.ns.NotificationService;
 import org.alljoyn.ns.NotificationServiceException;
-import org.alljoyn.ns.commons.GenericLogger;
 import org.alljoyn.ns.commons.NativePlatformFactoryException;
 import org.alljoyn.onboarding.client.OnboardingClient;
 import org.alljoyn.onboarding.client.OnboardingClientImpl;
 import org.alljoyn.services.common.ClientBase;
 import org.alljoyn.services.common.PropertyStore;
-import org.alljoyn.services.common.ServiceAvailabilityListener;
-
-
-
-
-
 
 import com.at4wireless.alljoyn.core.about.AboutAnnouncementDetails;
 import com.at4wireless.alljoyn.core.commons.log.Logger;
@@ -65,23 +52,17 @@ import com.at4wireless.alljoyn.core.introspection.XmlBasedBusIntrospector;
 
 public class ServiceHelper
 {
-    protected static final String TAG = "ServiceHelper";
-    //private static final Logger logger = LoggerFactory.getLogger(TAG);
-	private static final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	private static final Logger logger = new WindowsLoggerImpl(ServiceHelper.class.getSimpleName());
     private static final int LINK_TIMEOUT_IN_SECONDS = 120;
     private static final String[] AUTH_MECHANISMS = new String[]
     //{ "ALLJOYN_SRP_KEYX", "ALLJOYN_PIN_KEYX", "ALLJOYN_ECDHE_PSK" }; //[AT4] PIN_KEYX is deprecated
     { "ALLJOYN_SRP_KEYX", "ALLJOYN_ECDHE_PSK" };
-    private AboutService aboutService;
+    //private AboutService aboutService;
     private NotificationService notificationService;
     private DeviceAnnouncementHandler deviceAnnouncementHandler;
-    //private GenericLogger genericLogger;
-    private Logger genericLogger;
-    //private GenericLogger genericLogger=new GenericLoggerImp();
     private SrpAnonymousKeyListener authListener;
     private ConfigService configService;
     private BusAttachmentMgr busAttachmentMgr;
-    private GenericLogger serviceLogger;
     private AuthPasswordHandlerImpl authPasswordHandlerImpl;
     private PasswordStore passwordStore;
     
@@ -93,12 +74,12 @@ public class ServiceHelper
     
     Mutable.IntegerValue sessionId;
    
-	public ServiceHelper(Logger logger)
+	public ServiceHelper()
     {
-        this.genericLogger = logger;
+
     }
 
-    public void initialize(String busApplicationName, String deviceId, UUID appId, Boolean aboutListener) throws Exception //[AT4]
+    public void initialize(String busApplicationName, String deviceId, UUID appId, Boolean isListener) throws Exception
     {
     	busAttachmentMgr = getBusAttachmentMgr();
 
@@ -108,22 +89,17 @@ public class ServiceHelper
         busAttachmentMgr.create(busApplicationName, RemoteMessage.Receive);
         busAttachmentMgr.connect();
 
-        aboutService = getAboutService();
+        //aboutService = getAboutService();
         configService = getConfigService();
-        startAboutClient();
-        
-        /*logger.debug("Adding AnnouncementHandler for About");
-        deviceAnnouncementHandler = getDeviceAnnouncementHandler(deviceId, appId);
-        aboutService.addAnnouncementHandler(deviceAnnouncementHandler, null);*/
+        //startAboutClient();
        
-	    if (aboutListener) {
+	    if (isListener)
+	    {
 	    	logger.info("Adding AboutListener for About announcements");
 	        deviceAnnouncementHandler = getDeviceAnnouncementHandler(deviceId, appId);
 	        busAttachmentMgr.getBusAttachment().registerAboutListener(deviceAnnouncementHandler);
 	       
-	        /*String ifaces[] = {About.INTERFACE_NAME};
-	        busAttachmentMgr.getBusAttachment().whoImplements(ifaces);*/ //[AT4] Since v14.12, all interfaces must be scanned
-	        busAttachmentMgr.getBusAttachment().whoImplements(null);     
+	        busAttachmentMgr.getBusAttachment().whoImplements(null); //[AT4] Since v14.12, all interfaces must be scanned
 	    }
         
         busAttachmentMgr.advertise();  
@@ -131,12 +107,12 @@ public class ServiceHelper
     
     public void initialize(String busApplicationName, String deviceId, UUID appId) throws Exception
     {
-    	initialize(busApplicationName, deviceId, appId ,true); //[AT4]
+    	initialize(busApplicationName, deviceId, appId ,true);
     }
     
     public void initializeSender(String busApplicationName, String deviceId, UUID appId) throws Exception
     {
-    	initialize(busApplicationName, deviceId, appId ,false); //[AT4]
+    	initialize(busApplicationName, deviceId, appId ,false);
     }
     
     public void initNotificationReceiver(NotificationReceiver receiver) throws NotificationServiceException, NativePlatformFactoryException
@@ -153,7 +129,7 @@ public class ServiceHelper
         return notificationService.initSend(busAttachmentMgr.getBusAttachment(), propertyStore);
     }
     
-    public void startAboutServer(short port, PropertyStore propertyStore) throws Exception
+    /*public void startAboutServer(short port, PropertyStore propertyStore) throws Exception
     {
         if (aboutService.isServerRunning())
         {
@@ -163,9 +139,9 @@ public class ServiceHelper
 
         logger.info("Starting AboutServer");
         aboutService.startAboutServer(port, propertyStore, busAttachmentMgr.getBusAttachment());
-    }
+    }*/
     
-    public void startAboutClient() throws Exception
+    /*public void startAboutClient() throws Exception
     {
         if (aboutService.isClientRunning())
         {
@@ -175,7 +151,7 @@ public class ServiceHelper
 
         logger.info("Starting AboutClient");
         aboutService.startAboutClient(busAttachmentMgr.getBusAttachment());
-    }
+    }*/
     
     public void startConfigClient() throws Exception
     {
@@ -217,7 +193,7 @@ public class ServiceHelper
         deviceAnnouncementHandler = null;
     }
 
-    public AboutClient connectAboutClient(AboutAnnouncementDetails aboutAnnouncementDetails) throws Exception
+    /*public AboutClient connectAboutClient(AboutAnnouncementDetails aboutAnnouncementDetails) throws Exception
     {
         return connectAboutClient(aboutAnnouncementDetails, null);
     }
@@ -262,7 +238,7 @@ public class ServiceHelper
         }
 
         return aboutIconClient;
-    }
+    }*/
 
     public ConfigClient connectConfigClient(AboutAnnouncementDetails aboutAnnouncementDetails) throws Exception
     {
@@ -283,7 +259,7 @@ public class ServiceHelper
     {
         logger.info(String.format("Creating OnboardingClient for serviceName: %s; port: %d; deviceName: %s", aboutAnnouncementDetails.getServiceName(),
                 aboutAnnouncementDetails.getPort(), aboutAnnouncementDetails.getDeviceName()));
-        OnboardingClient onboardingClient = getOnboardingClient(aboutAnnouncementDetails.getServiceName(), busAttachmentMgr.getBusAttachment(), null,
+        OnboardingClient onboardingClient = getOnboardingClient(aboutAnnouncementDetails.getServiceName(), busAttachmentMgr.getBusAttachment(),
                 aboutAnnouncementDetails.getPort());
 
         logger.info(String.format("Connecting OnboardingClient for serviceName: %s", aboutAnnouncementDetails.getServiceName()));
@@ -359,7 +335,7 @@ public class ServiceHelper
     public void release()
     {
         shutdownNotificationService();
-        shutdownAboutService();
+        //shutdownAboutService();
         shutdownConfigService();
         disconnectBusAttachment();
     }
@@ -412,7 +388,7 @@ public class ServiceHelper
         }
     }
 
-    public void shutdownAboutService()
+    /*public void shutdownAboutService()
     {
         if (aboutService != null)
         {
@@ -440,7 +416,7 @@ public class ServiceHelper
             }
             aboutService = null;
         }
-    }
+    }*/
 
     public BusAttachment getBusAttachment()
     {
@@ -508,11 +484,11 @@ public class ServiceHelper
         return notificationServiceImpl;
     }
 
-    protected AboutService getAboutService()
+    /*protected AboutService getAboutService()
     {
         AboutService aboutServiceImpl = AboutServiceImpl.getInstance();
         return aboutServiceImpl;
-    }
+    }*/
 
     protected ConfigService getConfigService()
     {
@@ -525,10 +501,10 @@ public class ServiceHelper
         return new DeviceAnnouncementHandler(deviceId, appId);
     }
 
-    public BusIntrospector getBusIntrospector(AboutClient aboutClient)
+    /*public BusIntrospector getBusIntrospector(AboutClient aboutClient)
     {
         return new XmlBasedBusIntrospector(busAttachmentMgr.getBusAttachment(), aboutClient.getPeerName(), aboutClient.getSessionId());
-    }
+    }*/
 
     //protected SrpAnonymousKeyListener getSrpAnonymousListener(AuthPasswordHandler passwordHandler, GenericLogger genericLogger)
     protected SrpAnonymousKeyListener getSrpAnonymousListener(AuthPasswordHandler passwordHandler, Logger genericLogger)
@@ -536,7 +512,7 @@ public class ServiceHelper
         return new SrpAnonymousKeyListener(passwordHandler, genericLogger, AUTH_MECHANISMS);
     }
 
-    protected OnboardingClientImpl getOnboardingClient(String serviceName, BusAttachment bus, ServiceAvailabilityListener serviceAvailabilityListener, short port)
+    protected OnboardingClientImpl getOnboardingClient(String serviceName, BusAttachment bus, short port)
     {
         return new OnboardingClientImpl(serviceName, bus, null, port);
     }
@@ -555,20 +531,12 @@ public class ServiceHelper
     public AboutProxy connectAboutProxy(AboutAnnouncementDetails aboutAnnouncementDetails) throws Exception
     {
 		logger.info(String.format("Creating AboutProxy for serviceName: %s; port: %d; deviceName: %s", 
-			aboutAnnouncementDetails.getServiceName(),
-            aboutAnnouncementDetails.getPort(),
-            aboutAnnouncementDetails.getDeviceName()));
+			aboutAnnouncementDetails.getServiceName(), aboutAnnouncementDetails.getPort(), aboutAnnouncementDetails.getDeviceName()));
     	
-    	joinSession(aboutAnnouncementDetails.getServiceName(),aboutAnnouncementDetails.getPort());
+    	joinSession(aboutAnnouncementDetails.getServiceName(), aboutAnnouncementDetails.getPort());
     	
     	AboutProxy aboutProxy = new AboutProxy(getBusAttachment(), aboutAnnouncementDetails.getServiceName(), sessionId.value);
-    	/*if(aboutProxy!=null){
-    		logger.info("AboutProxy connected");
-    		logger.info("Partial Verdict: PASS");
-    	}else {
-    		logger.error("AboutProxy not connected");
-    		logger.info("Partial Verdict: FAIL");
-    	}*/
+    	
     	logger.info("AboutProxy connected");
 
         return aboutProxy;
@@ -605,7 +573,8 @@ public class ServiceHelper
         getBusAttachment().enableConcurrentCallbacks();
       
         Status status = getBusAttachment().joinSession(busName, port, sessionId, sessionOpts, new SessionListener());
-        if (status != Status.OK) {
+        if (status != Status.OK)
+        {
             return;
         }
         else
@@ -626,5 +595,10 @@ public class ServiceHelper
     public BusIntrospector getBusIntrospector(AboutAnnouncementDetails deviceAboutAnnouncement)
     {
         return new XmlBasedBusIntrospector(busAttachmentMgr.getBusAttachment(), deviceAboutAnnouncement.getServiceName(), sessionId.value);
+    }
+    
+    public int getSessionId()
+    {
+    	return sessionId.value;
     }
 }

@@ -19,12 +19,7 @@ public class LoggerFactory
 {
     private static WindowsLoggerProvider loggerProvider = new LoggerProviderLoader().loadLoggerProvider();
 
-    public static WindowsLoggerImpl getLogger(String tag)
-    {
-        return loggerProvider.getLogger(tag);
-    }
-    
-    public WindowsLoggerImpl getWindowsLoggerLogger(String tag)
+    public static Logger getLogger(String tag)
     {
         return loggerProvider.getLogger(tag);
     }

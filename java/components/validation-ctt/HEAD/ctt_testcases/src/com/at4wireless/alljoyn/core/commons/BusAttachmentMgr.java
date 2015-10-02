@@ -22,13 +22,12 @@ import org.alljoyn.bus.SessionOpts;
 import org.alljoyn.bus.Status;
 
 import com.at4wireless.alljoyn.core.commons.log.Logger;
-import com.at4wireless.alljoyn.core.commons.log.LoggerFactory;
+import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 public class BusAttachmentMgr
 {
     private BusAttachment busAttachment;
-    private static final String TAG = BusAttachmentMgr.class.getSimpleName();
-    private static final Logger logger = LoggerFactory.getLogger(TAG);
+    private static final Logger logger = new WindowsLoggerImpl(BusAttachmentMgr.class.getSimpleName());
     private String daemonName;
     private String advertisedName;
     private static boolean initialized = false;
@@ -37,21 +36,18 @@ public class BusAttachmentMgr
     {
         if (!initialized)
         {
-          
             initialized = true; 
         }
     }
 
     public void create(String busApplicationName, BusAttachment.RemoteMessage policy) throws BusException
     {
-       
     	logger.info("Creating BusAttachment");
         busAttachment = createBusAttachment(busApplicationName, policy);
     }
 
     public void connect() throws BusException
     {
-       
     	logger.info("Connecting BusAttachment");
         Status status = busAttachment.connect();
 
@@ -77,7 +73,8 @@ public class BusAttachmentMgr
         }
 
         advertisedName = "quiet@" + daemonName;
-        status = busAttachment.advertiseName(advertisedName, SessionOpts.TRANSPORT_WLAN);
+        //status = busAttachment.advertiseName(advertisedName, SessionOpts.TRANSPORT_WLAN); //[AT4] Deprecated
+        status = busAttachment.advertiseName(advertisedName, SessionOpts.TRANSPORT_IP);
 
         if (status != Status.OK)
         {
@@ -92,7 +89,8 @@ public class BusAttachmentMgr
     {
         if (advertisedName != null)
         {
-            Status status = busAttachment.cancelAdvertiseName(advertisedName, SessionOpts.TRANSPORT_WLAN);
+        	//Status status = busAttachment.advertiseName(advertisedName, SessionOpts.TRANSPORT_WLAN); //[AT4] Deprecated
+            Status status = busAttachment.cancelAdvertiseName(advertisedName, SessionOpts.TRANSPORT_IP);
             if (status != Status.OK)
             {
                 logger.warn(String.format("cancelAdvertiseName returned: %s", status));

@@ -37,20 +37,20 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
+import com.at4wireless.alljoyn.core.commons.log.Logger;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.iop.CategoryKeys;
 import com.at4wireless.alljoyn.core.iop.IOPMessage;
 
 public class OnboardingIOPTestSuite
 {
-	protected static final String TAG = "OnboardingIOPTestSuite";
-	private static final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	private static final Logger logger = new WindowsLoggerImpl(OnboardingIOPTestSuite.class.getSimpleName());
 	private static final int GOLDEN_UNIT_SELECTOR_WIDTH = 500;
 	private static final int GOLDEN_UNIT_SELECTOR_HEIGHT = 200;
 
 	Boolean pass = true;
 	Boolean inconc = false;
-	IOPMessage message = new IOPMessage(logger);
+	IOPMessage message = new IOPMessage();
 	Map<String, List<String>> goldenUnits;
 	String name = null;
 

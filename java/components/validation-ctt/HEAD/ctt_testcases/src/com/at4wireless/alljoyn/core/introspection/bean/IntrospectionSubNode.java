@@ -15,9 +15,6 @@
  *******************************************************************************/
 package com.at4wireless.alljoyn.core.introspection.bean;
 
-/**
- * The Class IntrospectionSubNode.
- */
 public class IntrospectionSubNode extends IntrospectionBaseTag
 {
 }

@@ -28,15 +28,14 @@ import org.alljoyn.ns.NotificationReceiver;
 import org.alljoyn.ns.RichAudioUrl;
 
 import com.at4wireless.alljoyn.core.about.AboutAnnouncementDetails;
+import com.at4wireless.alljoyn.core.commons.log.Logger;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.introspection.BusIntrospector;
 
 public class NotificationValidator implements NotificationReceiver, Runnable
 {
 	//private static final int NOTIFICATION_SERVICE_VERSION = 2;
-    private static final String TAG = "NotificationValidator";
-    //private static final Logger logger = LoggerFactory.getLogger(TAG);
-	private static final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG); //[AT4] Changed to Windows' Logger implementation
+	private static final Logger logger = new WindowsLoggerImpl(NotificationValidator.class.getSimpleName());
     private AtomicInteger notificationCounter = new AtomicInteger();
     private BusIntrospector busIntrospector;
     private NotificationValidationExceptionHandler notificationValidationExceptionHandler;
@@ -283,12 +282,12 @@ public class NotificationValidator implements NotificationReceiver, Runnable
      * @param iCSN_RespObjectPath
      * @param iXITN_NotificationVersion
      */
-	public void setTestParameters(boolean iCSN_RichIconUrl ,boolean iCSN_RichAudioUrl,boolean iCSN_RespObjectPath, String iXITN_NotificationVersion)
+	public void setTestParameters(boolean iCSN_RichIconUrl ,boolean iCSN_RichAudioUrl,boolean iCSN_RespObjectPath, int iXITN_NotificationVersion)
 	{
-		ICSN_RichIconUrl=iCSN_RichIconUrl;
-		ICSN_RichAudioUrl=iCSN_RichAudioUrl;
-		ICSN_RespObjectPath=iCSN_RespObjectPath;
+		ICSN_RichIconUrl = iCSN_RichIconUrl;
+		ICSN_RichAudioUrl = iCSN_RichAudioUrl;
+		ICSN_RespObjectPath = iCSN_RespObjectPath;
 		
-		IXITN_NotificationVersion=Integer.parseInt(iXITN_NotificationVersion);
+		IXITN_NotificationVersion = iXITN_NotificationVersion;
 	}
 }
