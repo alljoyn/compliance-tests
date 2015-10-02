@@ -18,48 +18,26 @@ package com.at4wireless.alljoyn.core.introspection.bean;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class IntrospectionSignal.
- */
 public class IntrospectionSignal extends IntrospectionBaseTag implements Comparable<IntrospectionSignal>
 {
-    
-    /** The args. */
     private List<IntrospectionArg> args = new ArrayList<IntrospectionArg>();
 
-    /**
-     * Gets the args.
-     *
-     * @return the args
-     */
     public List<IntrospectionArg> getArgs()
     {
         return args;
     }
 
-    /**
-     * Sets the args.
-     *
-     * @param args the new args
-     */
     public void setArgs(List<IntrospectionArg> args)
     {
         this.args = args;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
-     */
     @Override
     public int compareTo(IntrospectionSignal introspectionSignal)
     {
         return getName().compareTo(introspectionSignal.getName());
     }
 
-    /* (non-Javadoc)
-     * @see com.at4wireless.alljoyn.core.introspection.bean.IntrospectionBaseTag#hashCode()
-     */
     @Override
     public int hashCode()
     {
@@ -70,9 +48,6 @@ public class IntrospectionSignal extends IntrospectionBaseTag implements Compara
         return result;
     }
 
-    /* (non-Javadoc)
-     * @see com.at4wireless.alljoyn.core.introspection.bean.IntrospectionBaseTag#equals(java.lang.Object)
-     */
     @Override
     public boolean equals(Object obj)
     {
@@ -104,9 +79,6 @@ public class IntrospectionSignal extends IntrospectionBaseTag implements Compara
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
     @Override
     public String toString()
     {

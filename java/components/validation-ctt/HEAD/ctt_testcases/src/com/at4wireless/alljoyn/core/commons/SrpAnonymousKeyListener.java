@@ -20,9 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.alljoyn.bus.AuthListener;
-import org.alljoyn.bus.BusAttachment;
-import org.alljoyn.services.common.DefaultGenericLogger;
-import org.alljoyn.services.common.utils.GenericLogger;
 
 import com.at4wireless.alljoyn.core.commons.AuthPasswordHandler;
 import com.at4wireless.alljoyn.core.commons.log.Logger;
@@ -30,18 +27,15 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 public class SrpAnonymousKeyListener implements AuthListener
 {
-	private static String TAG = "SrpAnonymousKeyListener";
 	public static String KEY_STORE_FINE_NAME;
 	public static final char [] DEFAULT_PINCODE = new char[]{'0','0','0','0','0','0'};
-	private static final WindowsLoggerImpl m_logger =  new WindowsLoggerImpl(TAG);
+	private static final Logger logger = new WindowsLoggerImpl(SrpAnonymousKeyListener.class.getSimpleName());
 	AuthPasswordHandler m_passwordHandler;
-	private GenericLogger logger;
 
 	private List<String> authMechanisms;
 	
 	public SrpAnonymousKeyListener(AuthPasswordHandler passwordHandler, Logger genericLogger)
 	{
-		logger =  new DefaultGenericLogger();
 		m_passwordHandler = passwordHandler;
 		authMechanisms = new ArrayList<String>(2);
 		authMechanisms.add("ALLJOYN_SRP_KEYX");
@@ -57,13 +51,13 @@ public class SrpAnonymousKeyListener implements AuthListener
 		}
 		
 		this.authMechanisms = Arrays.asList(authMechanisms);
-		m_logger.debug("Supported authentication mechanisms: '" + this.authMechanisms + "'");
+		logger.debug("Supported authentication mechanisms: '" + this.authMechanisms + "'");
 	}
 	
 	@Override
 	public boolean requested(String mechanism, String peer, int count, String userName,  AuthRequest[] requests) 
 	{
-		m_logger.info(" ** " + "requested, mechanism = " + mechanism + " peer = " + peer);
+		logger.info(" ** " + "requested, mechanism = " + mechanism + " peer = " + peer);
 		if ( !this.authMechanisms.contains(mechanism) )
 		{
 			return false;
@@ -90,10 +84,10 @@ public class SrpAnonymousKeyListener implements AuthListener
 	{
 		if (! authenticated)
 		{
-			m_logger.info(" ** " + authPeer + " failed to authenticate");
+			logger.info(" ** " + authPeer + " failed to authenticate");
 			return;
 		}
-		m_logger.info(" ** " + authPeer + " successfully authenticated");
+		logger.info(" ** " + authPeer + " successfully authenticated");
 		
 		m_passwordHandler.completed(mechanism, authPeer, authenticated);
 	}

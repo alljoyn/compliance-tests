@@ -29,7 +29,6 @@ public class AboutAnnouncement
 {
     private String serviceName;
     private short port;
-    //private BusObjectDescription[] objectDescriptions; //[AT4] deprecated
     private AboutObjectDescription[] objectDescriptions;
     private Map<String, Variant> aboutData;
     
@@ -48,10 +47,9 @@ public class AboutAnnouncement
      * @param aboutData
      *            app/device details
      */
-    //public AboutAnnouncement(String serviceName, short port, BusObjectDescription[] objectDescriptions, Map<String, Variant> aboutData)
     public AboutAnnouncement(String serviceName, int version, short port, AboutObjectDescription[] objectDescriptions, Map<String, Variant> aboutData)
     {
-    	this.version=version; //[AT4]
+    	this.version = version; //[AT4]
         this.serviceName = serviceName;
         this.port = port;
         this.objectDescriptions = objectDescriptions;
@@ -78,7 +76,6 @@ public class AboutAnnouncement
      * @return array of {@code BusObjectDescription} which contains object paths
      *         and the list of all interfaces available at the given object path
      */
-    //public BusObjectDescription[] getObjectDescriptions()
     public AboutObjectDescription[] getObjectDescriptions()
     {
         return objectDescriptions;
@@ -100,7 +97,4 @@ public class AboutAnnouncement
     {
         return version;
     }
-
-
-
 }

@@ -19,13 +19,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-
+import com.at4wireless.alljoyn.core.commons.log.Logger;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 public class AuthPasswordHandlerImpl implements AuthPasswordHandler
 {
-    private static final String TAG = "AuthPasswordHandlerImpl";
-	private static final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	private static final Logger logger = new WindowsLoggerImpl(AuthPasswordHandlerImpl.class.getSimpleName());
     private PasswordStore passwordStore = new PasswordStore();
     private Map<String, Boolean> peerAuthenticated = new HashMap<String, Boolean>();
     private Map<String, Boolean> peerAuthenticationSuccessful = new HashMap<String, Boolean>();

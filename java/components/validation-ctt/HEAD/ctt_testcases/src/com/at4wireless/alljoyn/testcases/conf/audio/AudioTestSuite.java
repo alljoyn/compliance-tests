@@ -15,6 +15,20 @@
  *******************************************************************************/
 package com.at4wireless.alljoyn.testcases.conf.audio;
 
+import static com.at4wireless.alljoyn.core.audio.AudioSinkParameterSignature.Channels;
+import static com.at4wireless.alljoyn.core.audio.AudioSinkParameterSignature.Format;
+import  static com.at4wireless.alljoyn.core.audio.AudioSinkParameterSignature.Rate;
+import static com.at4wireless.alljoyn.core.audio.AudioSinkPlayState.Idle;
+import static com.at4wireless.alljoyn.core.audio.AudioSinkPlayState.Paused;
+import static com.at4wireless.alljoyn.core.audio.AudioSinkPlayState.Playing;
+import static com.at4wireless.alljoyn.core.audio.MediaType.ApplicationXMetadata;
+import static com.at4wireless.alljoyn.core.audio.MediaType.AudioPrefix;
+import static com.at4wireless.alljoyn.core.audio.MediaType.AudioXAlac;
+import static com.at4wireless.alljoyn.core.audio.MediaType.AudioXRaw;
+import static com.at4wireless.alljoyn.core.audio.MediaType.AudioXUnknown;
+import static com.at4wireless.alljoyn.core.audio.MediaType.ImageJpeg;
+import static com.at4wireless.alljoyn.core.audio.MediaType.ImagePrefix;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,223 +41,16 @@ import java.util.concurrent.TimeUnit;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.alljoyn.about.client.AboutClient;
-import org.alljoyn.about.client.AboutClientImpl;
+import org.alljoyn.bus.AboutProxy;
 import org.alljoyn.bus.AnnotationBusException;
 import org.alljoyn.bus.BusAttachment;
 import org.alljoyn.bus.BusAttachment.RemoteMessage;
 import org.alljoyn.bus.BusException;
 import org.alljoyn.bus.BusObject;
 import org.alljoyn.bus.ErrorReplyBusException;
-import org.alljoyn.bus.Mutable.IntegerValue;
 import org.alljoyn.bus.SignalEmitter;
-import org.alljoyn.bus.Status;
 import org.alljoyn.bus.Variant;
-import org.alljoyn.services.common.ClientBase;
 import org.xml.sax.SAXException;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-import static com.at4wireless.alljoyn.core.audio.AudioSinkParameterSignature.Channels;
-import static com.at4wireless.alljoyn.core.audio.AudioSinkParameterSignature.Format;
-import  static com.at4wireless.alljoyn.core.audio.AudioSinkParameterSignature.Rate;
-import static com.at4wireless.alljoyn.core.audio.AudioSinkPlayState.Idle;
-import static com.at4wireless.alljoyn.core.audio.AudioSinkPlayState.Paused;
-import static com.at4wireless.alljoyn.core.audio.AudioSinkPlayState.Playing;
-import static com.at4wireless.alljoyn.core.audio.MediaType.ApplicationXMetadata;
-import static com.at4wireless.alljoyn.core.audio.MediaType.AudioPrefix;
-import static com.at4wireless.alljoyn.core.audio.MediaType.AudioXAlac;
-import static com.at4wireless.alljoyn.core.audio.MediaType.AudioXRaw;
-import static com.at4wireless.alljoyn.core.audio.MediaType.AudioXUnknown;
-import static com.at4wireless.alljoyn.core.audio.MediaType.ImagePrefix;
-import static com.at4wireless.alljoyn.core.audio.MediaType.ImageJpeg;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 import com.at4wireless.alljoyn.core.about.AboutAnnouncementDetails;
 import com.at4wireless.alljoyn.core.audio.AudioSinkParameter;
@@ -267,18 +74,18 @@ import com.at4wireless.alljoyn.core.audio.handlers.VolumeControlSignalHandler;
 import com.at4wireless.alljoyn.core.commons.BusAttachmentMgr;
 import com.at4wireless.alljoyn.core.commons.ServiceHelper;
 import com.at4wireless.alljoyn.core.commons.UserInputDetails;
-import com.at4wireless.alljoyn.core.commons.log.LoggerFactory;
+import com.at4wireless.alljoyn.core.commons.log.Logger;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.introspection.BusIntrospector;
-import com.at4wireless.alljoyn.core.introspection.XmlBasedBusIntrospector;
 import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionSubNode;
 import com.at4wireless.alljoyn.core.introspection.bean.NodeDetail;
+import com.at4wireless.alljoyn.testcases.parameter.GeneralParameter;
+import com.at4wireless.alljoyn.testcases.parameter.Ics;
+import com.at4wireless.alljoyn.testcases.parameter.Ixit;
 
 public class AudioTestSuite
 {
-	private static final String TAG = "AudioTestSuite";
-	//private static final Logger logger = LoggerFactory.getLogger(TAG);
-	private static final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	private static final Logger logger = new WindowsLoggerImpl(AudioTestSuite.class.getSimpleName());
 	private static final int DATA_SIZE = 16 * 1024;
 	private static final byte[] DATA = new byte[DATA_SIZE];
 	private static final int INVALID_HIGH_VOLUME = 32767;
@@ -312,7 +119,8 @@ public class AudioTestSuite
 	private int LINK_TIMEOUT_IN_SECONDS = 120;
 	private static final byte PORT_DIRECTION = 1;
 
-	private AboutClient aboutClient;
+	//private AboutClient aboutClient;
+	private AboutProxy aboutProxy;
 	private AboutAnnouncementDetails deviceAboutAnnouncement;
 	private ServiceHelper serviceHelper;
 	private String streamObjectPath;
@@ -330,162 +138,154 @@ public class AudioTestSuite
 	 * ixit	map that stores IXIT values
 	 * 
 	 * */
-	private Map<String, Boolean> ics;
-	private Map<String, String> ixit;
 	boolean pass = true;
 	boolean inconc = false;
 	private long ANNOUNCEMENT_TIMEOUT_IN_SECONDS = 30;
-	//private short port = 91;
+	private Ics icsList;
+	private Ixit ixitList;
 
-	public AudioTestSuite(String testCase, boolean iCSAU_AudioServiceFramework,
-			boolean iCSAU_StreamInterface, boolean iCSAU_StreamPortInterface,
-			boolean iCSAU_PortAudioSinkInterface,
-			boolean iCSAU_PortAudioSourceInterface,
-			boolean iCSAU_PortImageSinkInterface,
-			boolean iCSAU_PortImageSourceInterface,
-			boolean iCSAU_PortApplicationMetadataSinkInterface,
-			boolean iCSAU_PortApplicationMetadataSourceInterface,
-			boolean iCSAU_ControlVolumeInterface,
-			boolean iCSAU_StreamClockInterface, boolean iCSAU_AudioXalac,
-			boolean iCSAU_ImageJpeg, boolean iCSAU_ApplicationXmetadata,
-			boolean iCSAU_VolumeControl, String iXITCO_AppId,
-			String iXITCO_DeviceId, String iXITCO_DefaultLanguage,
-			String iXITAU_StreamVersion, String iXITAU_TestObjectPath,
-			String iXITAU_PortVersion, String iXITAU_AudioSinkVersion,
-			String iXITAU_timeNanos, String iXITAU_AudioSourceVersion,
-			String iXITAU_ImageSinkVersion, String iXITAU_ImageSourceVersion,
-			String iXITAU_MetadataSinkVersion,
-			String iXITAU_MetadataSourceVersion,
-			String iXITAU_ControlVolumeVersion, String iXITAU_delta,
-			String iXITAU_change, String iXITAU_ClockVersion,
-			String iXITAU_adjustNanos, String gPCO_AnnouncementTimeout,
-			String gPAU_Signal, String gPAU_Link)
+	public AudioTestSuite(String testCase, Ics icsList, Ixit ixitList, GeneralParameter gpList)
 	{
 		/** 
 		 * [AT4] Attributes initialization
 		 * */
+		this.icsList = icsList;
+		this.ixitList = ixitList;
 		
-		ics = new HashMap<String,Boolean>();
-		ics.put("ICSAU_AudioServiceFramework", iCSAU_AudioServiceFramework);
-		ics.put("ICSAU_StreamInterface", iCSAU_StreamInterface);
-		ics.put("ICSAU_StreamPortInterface", iCSAU_StreamPortInterface);
-		ics.put("ICSAU_PortAudioSinkInterface", iCSAU_PortAudioSinkInterface);
-		ics.put("ICSAU_PortAudioSourceInterface", iCSAU_PortAudioSourceInterface);
-		ics.put("ICSAU_PortImageSinkInterface", iCSAU_PortImageSinkInterface);
-		ics.put("ICSAU_PortImageSourceInterface", iCSAU_PortImageSourceInterface);
-		ics.put("ICSAU_PortApplicationMetadataSinkInterface", iCSAU_PortApplicationMetadataSinkInterface);
-		ics.put("ICSAU_PortApplicationMetadataSourceInterface", iCSAU_PortApplicationMetadataSourceInterface);
-		ics.put("ICSAU_ControlVolumeInterface", iCSAU_ControlVolumeInterface);
-		ics.put("ICSAU_StreamClockInterface", iCSAU_StreamClockInterface);
-		ics.put("ICSAU_AudioXalac", iCSAU_AudioXalac);
-		ics.put("ICSAU_ImageJpeg", iCSAU_ImageJpeg);
-		ics.put("ICSAU_ApplicationXmetadata", iCSAU_ApplicationXmetadata);
-		ics.put("ICSAU_VolumeControl", iCSAU_VolumeControl);
-		
-		ixit = new HashMap<String,String>();
-		ixit.put("IXITCO_AppId",iXITCO_AppId);
-		ixit.put("IXITCO_DeviceId", iXITCO_DeviceId);
-		ixit.put("IXITAU_StreamVersion", iXITAU_StreamVersion);
-		ixit.put("IXITAU_PortVersion",iXITAU_PortVersion);
-		ixit.put("IXITAU_TestObjectPath", iXITAU_TestObjectPath);
-		ixit.put("IXITAU_AudioSinkVersion", iXITAU_AudioSinkVersion);
-		ixit.put("IXITAU_AudioSourceVersion", iXITAU_AudioSourceVersion);
-		ixit.put("IXITAU_timeNanos", iXITAU_timeNanos);
-		ixit.put("IXITAU_ImageSinkVersion", iXITAU_ImageSinkVersion);
-		ixit.put("IXITAU_ImageSourceVersion", iXITAU_ImageSourceVersion);
-		ixit.put("IXITAU_MetadataSinkVersion", iXITAU_MetadataSinkVersion);
-		ixit.put("IXITAU_MetadataSourceVersion", iXITAU_MetadataSourceVersion);
-		ixit.put("IXITAU_ControlVolumeVersion", iXITAU_ControlVolumeVersion);
-		ixit.put("IXITAU_delta", iXITAU_delta);
-		ixit.put("IXITAU_change", iXITAU_change);
-		ixit.put("IXITAU_ClockVersion", iXITAU_ClockVersion);
-		ixit.put("IXITAU_adjustNanos", iXITAU_adjustNanos);
-		
-		ANNOUNCEMENT_TIMEOUT_IN_SECONDS = Integer.parseInt(gPCO_AnnouncementTimeout);
-		SIGNAL_TIMEOUT_IN_SECONDS = Integer.parseInt(gPAU_Signal);
-		LINK_TIMEOUT_IN_SECONDS = Integer.parseInt(gPAU_Link);
+		ANNOUNCEMENT_TIMEOUT_IN_SECONDS = gpList.GPCO_AnnouncementTimeout;
+		SIGNAL_TIMEOUT_IN_SECONDS = gpList.GPAU_Signal;
+		LINK_TIMEOUT_IN_SECONDS = gpList.GPAU_Link;
 		
 		try
 		{
 			runTestCase(testCase);
 		}
-		catch (Exception e)
+		catch(Exception e)
 		{
+			logger.error(String.format("Exception: %s", e.toString()));
 			inconc = true;
-			
-			if (e.getMessage().equals("Timed out waiting for About announcement"))
-			{
-				fail("Timed out waiting for About announcement");
-			}
-			else
-			{
-				fail("Exception: "+e.getMessage());
-			}
 		}
 	}
 
 	public void runTestCase(String testCase) throws Exception
 	{
 		setUp();
-		logger.info("Running testcase: "+testCase);
+		logger.info("Running testcase: %s", testCase);
 
-		if (testCase.equals("Audio-v1-01")) {
+		if (testCase.equals("Audio-v1-01"))
+		{
 			testAudio_v1_01_ValidateStreamObjects();
-		} else if(testCase.equals("Audio-v1-02")) {
+		}
+		else if(testCase.equals("Audio-v1-02"))
+		{
 			testAudio_v1_02_OpenStreamObject();
-		} else if(testCase.equals("Audio-v1-03")) {
+		}
+		else if(testCase.equals("Audio-v1-03"))
+		{
 			testAudio_v1_03_OpenAndCloseStreamObject();
-		} else if(testCase.equals("Audio-v1-04")) {
+		}
+		else if(testCase.equals("Audio-v1-04"))
+		{
 			testAudio_v1_04_CloseUnopenedStreamObject();
-		} else if(testCase.equals("Audio-v1-05")) {
+		}
+		else if(testCase.equals("Audio-v1-05"))
+		{
 			testAudio_v1_05_VerifyAudioSinkCapabilities();
-		} else if(testCase.equals("Audio-v1-06")) {
+		}
+		else if(testCase.equals("Audio-v1-06"))
+		{
 			testAudio_v1_06_VerifyImageSinkCapabilities();
-		} else if(testCase.equals("Audio-v1-07")) {
+		}
+		else if(testCase.equals("Audio-v1-07"))
+		{
 			testAudio_v1_07_VerifyApplicationMetadataCapabilities();
-		} else if(testCase.equals("Audio-v1-08")) {
+		}
+		else if(testCase.equals("Audio-v1-08"))
+		{
 			testAudio_v1_08_ConfigureAudioSinkPort();
-		} else if(testCase.equals("Audio-v1-09")) {
+		}
+		else if(testCase.equals("Audio-v1-09"))
+		{
 			testAudio_v1_09_ConfigureAudioSinkPortWithInvalidConfiguration();
-		} else if(testCase.equals("Audio-v1-10")) {
+		}
+		else if(testCase.equals("Audio-v1-10"))
+		{
 			testAudio_v1_10_ConfigureAudioSinkPortTwice();
-		} else if(testCase.equals("Audio-v1-11")) {
+		}
+		else if(testCase.equals("Audio-v1-11"))
+		{
 			testAudio_v1_11_CheckOwnershipLostSignal();
-		} else if(testCase.equals("Audio-v1-12")) {
+		}
+		else if(testCase.equals("Audio-v1-12"))
+		{
 			testAudio_v1_12_PlaybackAudioSink();
-		} else if(testCase.equals("Audio-v1-13")) {
+		}
+		else if(testCase.equals("Audio-v1-13"))
+		{
 			testAudio_v1_13_PauseAudioSinkPlayback();
-		} else if(testCase.equals("Audio-v1-14")) {
+		}
+		else if(testCase.equals("Audio-v1-14"))
+		{
 			testAudio_v1_14_FlushPausedAudioSink();
-		} else if(testCase.equals("Audio-v1-15")) {
+		}
+		else if(testCase.equals("Audio-v1-15"))
+		{
 			testAudio_v1_15_FlushPlayingAudioSink();
-		} else if(testCase.equals("Audio-v1-16")) {
+		}
+		else if(testCase.equals("Audio-v1-16"))
+		{
 			testAudio_v1_16_VerifyPausedAudioSinkRemainsPausedAfterSendingData();
-		} else if(testCase.equals("Audio-v1-17")) {
+		}
+		else if(testCase.equals("Audio-v1-17"))
+		{
 			testAudio_v1_17_VerifyPlayingEmptyAudioSinkRemainsIdle();
-		} else if(testCase.equals("Audio-v1-18")) {
+		}
+		else if(testCase.equals("Audio-v1-18"))
+		{
 			testAudio_v1_18_FlushIdleAudioSink();
-		} else if(testCase.equals("Audio-v1-19")) {
+		}
+		else if(testCase.equals("Audio-v1-19"))
+		{
 			testAudio_v1_19_SendDataToImageSink();
-		} else if(testCase.equals("Audio-v1-20")) {
+		}
+		else if(testCase.equals("Audio-v1-20"))
+		{
 			testAudio_v1_20_SendDataToMetadataSink();
-		} else if(testCase.equals("Audio-v1-21")) {
+		}
+		else if(testCase.equals("Audio-v1-21"))
+		{
 			testAudio_v1_21_VerifyAudioSinkCanBeMutedUnmuted();
-		} else if(testCase.equals("Audio-v1-22")) {
+		}
+		else if(testCase.equals("Audio-v1-22"))
+		{
 			testAudio_v1_22_VerifyVolumeCanBeSetOnAudioSink();
-		} else if(testCase.equals("Audio-v1-23")) {
+		}
+		else if(testCase.equals("Audio-v1-23"))
+		{
 			testAudio_v1_23_SetInvalidVolumeOnAudioSink();
-		} else if(testCase.equals("Audio-v1-24")) {
+		}
+		else if(testCase.equals("Audio-v1-24"))
+		{
 			testAudio_v1_24_VerifyIndependenceOfMuteAndVolumeOnAudioSink();
-		} else if(testCase.equals("Audio-v1-25")) {
+		}
+		else if(testCase.equals("Audio-v1-25"))
+		{
 			testAudio_v1_25_SynchronizeClocksOnAudioSink();
-		} else if(testCase.equals("Audio-v1-26")) {
+		}
+		else if(testCase.equals("Audio-v1-26"))
+		{
 			testAudio_v1_26_VerifyVolumeCanBeAdjustedOnAudioSink();
-		} else if(testCase.equals("Audio-v1-27")) {
+		}
+		else if(testCase.equals("Audio-v1-27"))
+		{
 			testAudio_v1_27_VerifyVolumeCanBeAdjustedByPercentOnAudioSink();
-		} else if(testCase.equals("Audio-v1-28")) {
+		}
+		else if(testCase.equals("Audio-v1-28"))
+		{
 			testAudio_v1_28_VerifyVolumeNotAdjustableWhenDisabled();
-		} else {
+		}
+		else
+		{
 			fail("Test Case not valid");
 		}
 
@@ -494,23 +294,21 @@ public class AudioTestSuite
 	
 	private void setUp() throws Exception
 	{
-		//super.setUp();
-		
 		try
 		{
-			logger.noTag("====================================================");
+			System.out.println("====================================================");
 			logger.info("test setUp started");
 
 			//appUnderDetails = getValidationTestContext().getAppUnderTestDetails();
 			//dutDeviceId = appUnderTestDetails.getDeviceId();
-			dutDeviceId = ixit.get("IXITCO_DeviceId");
+			dutDeviceId = ixitList.IXITCO_DeviceId;
 			logger.info(String.format("Running test case against Device ID: %s", dutDeviceId));
 			//dutAppId = appUnderTestDetails.getAppId();
-			dutAppId = UUID.fromString(ixit.get("IXITCO_AppId"));
+			dutAppId = ixitList.IXITCO_AppId;
 			logger.info(String.format("Running test case against App ID: %s", dutAppId));
 
 			//streamObjectPath = getValidationTestContext().getTestObjectPath();
-			streamObjectPath = ixit.get("IXITAU_TestObjectPath");
+			streamObjectPath = ixitList.IXITAU_TestObjectPath;
 
 			if (streamObjectPath == null || streamObjectPath.isEmpty())
 			{
@@ -532,7 +330,8 @@ public class AudioTestSuite
 			}	
 			
 			//serviceHelper.joinSession(BUS_APPLICATION_NAME, port);
-			aboutClient = serviceHelper.connectAboutClient(deviceAboutAnnouncement);
+			//aboutClient = serviceHelper.connectAboutClient(deviceAboutAnnouncement);
+			aboutProxy = serviceHelper.connectAboutProxy(deviceAboutAnnouncement);
 
 			stream = getIntrospector().getInterface(streamObjectPath, Stream.class);
 			logger.info("test setUp done");
@@ -552,17 +351,17 @@ public class AudioTestSuite
 			throw exception;
 		}
 		
-		logger.noTag("====================================================");
+		System.out.println("====================================================");
 	}
 	
 	private void tearDown()
 	{
 		//super.tearDown();
-		logger.noTag("====================================================");
+		System.out.println("====================================================");
 		logger.info("test tearDown started");
 		releaseResources();
 		logger.info("test tearDown done");
-		logger.noTag("====================================================");
+		System.out.println("====================================================");
 	}
 
 	public void testAudio_v1_01_ValidateStreamObjects() throws Exception
@@ -1321,7 +1120,7 @@ public class AudioTestSuite
 		return serviceHelper.getBusIntrospector(deviceAboutAnnouncement);
 	}
 
-	BusIntrospector getIntrospector(BusAttachment busAttachment, AboutClient newAboutClient)
+	/*BusIntrospector getIntrospector(BusAttachment busAttachment, AboutClient newAboutClient)
 	{
 		return new XmlBasedBusIntrospector(busAttachment, newAboutClient.getPeerName(), newAboutClient.getSessionId());
 	}
@@ -1329,17 +1128,17 @@ public class AudioTestSuite
 	BusIntrospector getIntrospector(ServiceHelper serviceHelper, AboutClient aboutClient)
 	{
 		return serviceHelper.getBusIntrospector(deviceAboutAnnouncement);
-	}
+	}*/
 
 	ServiceHelper getServiceHelper()
 	{
-		//return new ServiceHelper(new AndroidLogger());
-		return new ServiceHelper(logger);
+		return new ServiceHelper();
 	}
 	
 	SignalEmitter createSignalEmitter(BusObject busObject)
 	{
-		SignalEmitter signalEmitter = new SignalEmitter(busObject, aboutClient.getSessionId(), SignalEmitter.GlobalBroadcast.Off);
+		//SignalEmitter signalEmitter = new SignalEmitter(busObject, aboutClient.getSessionId(), SignalEmitter.GlobalBroadcast.Off);
+		SignalEmitter signalEmitter = new SignalEmitter(busObject, serviceHelper.getSessionId(), SignalEmitter.GlobalBroadcast.Off);
 		signalEmitter.setSessionlessFlag(false);
 		signalEmitter.setTimeToLive(0);
 
@@ -1360,7 +1159,7 @@ public class AudioTestSuite
 		return busAttachmentManager;
 	}
 	
-	AboutClient createAboutClient(BusAttachment busAttachment) throws Exception
+	/*AboutClient createAboutClient(BusAttachment busAttachment) throws Exception
 	{
 		AboutClient newAboutClient = new AboutClientImpl(deviceAboutAnnouncement.getServiceName(), busAttachment, null, deviceAboutAnnouncement.getPort());
 		logger.info(String.format("Connecting AboutClient for serviceName: %s", deviceAboutAnnouncement.getServiceName()));
@@ -1372,6 +1171,11 @@ public class AudioTestSuite
 		}
 
 		return newAboutClient;
+	}*/
+	
+	AboutProxy createAboutProxy() throws Exception
+	{
+		return serviceHelper.connectAboutProxy(deviceAboutAnnouncement);
 	}
 	
 	short getMidRangeVolumeProperty(VolumeRange volumeRange)
@@ -1475,8 +1279,8 @@ public class AudioTestSuite
 		{
 			clock = getIntrospector().getInterface(path, Clock.class);
 			//assertEquals(1, clock.getVersion());
-			assertEquals(String.format("The clock Version is not: %s", ixit.get("IXITAU_ClockVersion")),
-					Short.parseShort(ixit.get("IXITAU_ClockVersion")), clock.getVersion());
+			assertEquals(String.format("The clock Version is not: %s", ixitList.IXITAU_ClockVersion),
+					ixitList.IXITAU_ClockVersion, clock.getVersion());
 		}
 		catch (Exception e)
 		{
@@ -1491,7 +1295,7 @@ public class AudioTestSuite
 		serviceHelper.registerSignalHandler(ownershipLostSignalHandler);
 	}
 
-	private Status connectClient(ClientBase client, BusAttachment busAttachment) throws BusException, Exception
+	/*private Status connectClient(ClientBase client, BusAttachment busAttachment) throws BusException, Exception
 	{
 		Status status = client.connect();
 
@@ -1516,7 +1320,7 @@ public class AudioTestSuite
 		{
 			throw new BusException(String.format("Failed to set link timeout value on bus attachment for session (%d): %s", clientBase.getSessionId(), linkTimeoutstatus));
 		}
-	}
+	}*/
 
 	public short getNewVolumePropertyValue(short volumeProperty, VolumeRange volumeRange)
 	{
@@ -1765,9 +1569,12 @@ public class AudioTestSuite
 			}
 			else if (mediaType.equals(AudioXAlac.getValue()))
 			{
-				if(ics.get("ICSAU_AudioXalac")) { //[AT4]
+				if (icsList.ICSAU_AudioXalac) //[AT4]
+				{ 
 					validateAudioConfigurationStrictly(configuration);
-				} else {
+				}
+				else
+				{
 					fail("Received mediaType \"audio/x-alac\" and ICSAU_AudioXalac is false");
 				}
 			}
@@ -1947,14 +1754,21 @@ public class AudioTestSuite
 		for (Configuration configuration : configurations)
 		{
 			String mediaType = configuration.mediaType;
-			if(mediaType.equals(ImageJpeg.getValue())) { //[AT4]
-				if(ics.get("ICSAU_ImageJpeg")) {
+			
+			if (mediaType.equals(ImageJpeg.getValue())) //[AT4]
+			{ 
+				if (icsList.ICSAU_ImageJpeg)
+				{
 					logger.info("Received mediaType \"image/jpeg\" and ICSAU_ImageJpeg is true");
 					logger.info("Partial Verdict: PASS");
-				} else {
+				}
+				else
+				{
 					fail("Received mediaType \"image/jpeg\" and ICSAU_ImageJpeg is false");
 				}
-			} else {
+			}
+			else
+			{
 				assertTrue(String.format("%s does not match expected media type pattern %s*", mediaType, ImagePrefix.getValue()), mediaType.startsWith(ImagePrefix.getValue()));
 			}
 		}
@@ -1992,14 +1806,14 @@ public class AudioTestSuite
 	{
 		Stream stream = busIntrospector.getInterface(path, Stream.class);
 		//assertEquals("Stream Interface version does not match", INTERFACE_VERSION, stream.getVersion());
-		assertEquals("Stream Interface version does not match", Short.parseShort(ixit.get("IXITAU_StreamVersion")), stream.getVersion());
+		assertEquals("Stream Interface version does not match", ixitList.IXITAU_StreamVersion, stream.getVersion());
 	}
 	
 	private  void validatePortInterface(String path, BusIntrospector busIntrospector) throws BusException, IOException, ParserConfigurationException, SAXException
 	{
 		Port port = busIntrospector.getInterface(path, Port.class);
 		//assertEquals("Port Interface version does not match", INTERFACE_VERSION, port.getVersion());
-		assertEquals("Port Interface version does not match", Short.parseShort(ixit.get("IXITAU_PortVersion")), port.getVersion());
+		assertEquals("Port Interface version does not match", ixitList.IXITAU_PortVersion, port.getVersion());
 		assertEquals("Port Interface direction does not match", PORT_DIRECTION, port.getDirection());
 		assertMediaTypeSpecificPortInterfaceIsPresent(path, busIntrospector);
 	}
@@ -2030,7 +1844,8 @@ public class AudioTestSuite
 	
 	private void releaseResources()
 	{
-		disconnectFromAboutClient();
+		//disconnectFromAboutClient();
+		disconnectFromAboutProxy();
 
 		if (serviceHelper != null)
 		{
@@ -2039,28 +1854,38 @@ public class AudioTestSuite
 		}
 	}
 	
-	private void disconnectFromAboutClient()
+	/*private void disconnectFromAboutClient()
 	{
 		if (aboutClient != null)
 		{
 			aboutClient.disconnect();
 			aboutClient = null;
 		}
+	}*/
+	
+	private void disconnectFromAboutProxy()
+	{
+		if (aboutProxy != null)
+		{
+			aboutProxy = null;
+		}
 	}
 
 	private void openNewStream(CountDownLatch countDownLatch, OwnershipLostSignalHandler ownershipLostSignalHandler)
 	{
 		BusAttachmentMgr busAttachmentManager = null;
-		AboutClient newAboutClient = null;
+		//AboutClient newAboutClient = null;
+		AboutProxy newAboutProxy = null;
 
 		try
 		{
 			busAttachmentManager = createBusAttachmentManager();
 			BusAttachment busAttachment = busAttachmentManager.getBusAttachment();
 			ownershipLostSignalHandler.setExpectedNewOwner(busAttachment.getUniqueName());
-			newAboutClient = createAboutClient(busAttachment);
+			//newAboutClient = createAboutClient(busAttachment);
+			newAboutProxy = createAboutProxy();
 
-			Stream newStream = getIntrospector(busAttachment, newAboutClient).getInterface(streamObjectPath, Stream.class);
+			Stream newStream = getIntrospector().getInterface(streamObjectPath, Stream.class);
 			newStream.Open();
 			assertTrue("Did not receive expected OwnershipLost signal", countDownLatch.await(getSignalTimeout(), TimeUnit.SECONDS));
 		}
@@ -2070,9 +1895,14 @@ public class AudioTestSuite
 		}
 		finally
 		{
-			if (newAboutClient != null)
+			/*if (newAboutClient != null)
 			{
 				newAboutClient.disconnect();
+			}*/
+			
+			if (newAboutProxy != null)
+			{
+				newAboutProxy = null;
 			}
 
 			if (busAttachmentManager != null)

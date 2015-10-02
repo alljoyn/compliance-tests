@@ -32,11 +32,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
+import com.at4wireless.alljoyn.core.commons.log.Logger;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 public class IOPMessage
 {
-	WindowsLoggerImpl logger;
+	private static final Logger logger = new WindowsLoggerImpl(IOPMessage.class.getSimpleName());
 	public static final int IOP_MESSAGE_POPUP_WIDTH = 500;
 	public static final int IOP_MESSAGE_POPUP_HEIGHT = 200;
 	public static final int IOP_MESSAGE_TEXT_WIDTH = 480;
@@ -52,9 +53,9 @@ public class IOPMessage
 	/** The dialog used to show information. */
 	JDialog dialog;
 
-	public IOPMessage(WindowsLoggerImpl logger)
+	public IOPMessage()
 	{
-		this.logger = logger;
+
 	}
 
 	public void showMessage(String title, String msg)

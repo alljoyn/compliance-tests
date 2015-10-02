@@ -22,8 +22,10 @@ import org.alljoyn.bus.ProxyBusObject;
 import org.alljoyn.bus.SessionListener;
 import org.alljoyn.bus.SessionOpts;
 import org.alljoyn.bus.Status;
+
 import com.at4wireless.alljoyn.core.about.AboutAnnouncementDetails;
 import com.at4wireless.alljoyn.core.commons.ServiceHelper;
+import com.at4wireless.alljoyn.core.commons.log.Logger;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.introspection.BusIntrospector;
 import com.at4wireless.alljoyn.core.introspection.XmlBasedBusIntrospector;
@@ -34,16 +36,14 @@ import com.at4wireless.alljoyn.core.introspection.XmlBasedBusIntrospector;
  */
 public class ControllerServiceHelper extends ServiceHelper
 {
-    private static final String TAG   = "ControllerServiceHelper";
-	private static final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	private static final Logger logger = new WindowsLoggerImpl(ControllerServiceHelper.class.getSimpleName());
 	
     private int sessionId;
     private String serviceName;
     private short contactPort;
 
-    public ControllerServiceHelper(WindowsLoggerImpl logger)
+    public ControllerServiceHelper()
     {
-        super(logger);
         sessionId = -1;
         serviceName = null;
     }

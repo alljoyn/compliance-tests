@@ -27,12 +27,11 @@ import org.alljoyn.bus.Variant;
 
 import com.at4wireless.alljoyn.core.about.AboutAnnouncementDetails;
 import com.at4wireless.alljoyn.core.commons.log.Logger;
-import com.at4wireless.alljoyn.core.commons.log.LoggerFactory;
+import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 public class DeviceAnnouncementHandler implements AboutListener
 {
-    private static final String TAG = "DeviceAnnounceHandler";
-    private static final Logger logger = LoggerFactory.getLogger(TAG);
+	private static final Logger logger = new WindowsLoggerImpl(DeviceAnnouncementHandler.class.getSimpleName());
     private String dutDeviceId;
     private UUID dutAppId;
     private LinkedBlockingDeque<AboutAnnouncementDetails> receivedAnnouncements = new LinkedBlockingDeque<AboutAnnouncementDetails>();
@@ -73,8 +72,8 @@ public class DeviceAnnouncementHandler implements AboutListener
 
     public void announced(String busName, int version, short port, 
     		AboutObjectDescription[] objectDescriptions,
-    		Map<String, Variant> aboutData) {
-
+    		Map<String, Variant> aboutData)
+    {
 		String serviceName = busName;
 		AboutAnnouncementDetails receivedAboutAnnouncement = new AboutAnnouncementDetails(serviceName, version, port, objectDescriptions, aboutData);
 	   
@@ -90,24 +89,24 @@ public class DeviceAnnouncementHandler implements AboutListener
 	    String deviceId = null;
 	    UUID appId = null;
 	    
-		try {
+		try
+		{
 			deviceId = receivedAboutAnnouncement.getDeviceId();
-			
 			appId = receivedAboutAnnouncement.getAppId();
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			logger.error(e.toString());
 		}
 	   
 	    if (deviceIdMatches(dutDeviceId, deviceId) && appIdMatches(dutAppId, appId))
 	    {
 	    	logger.info(String.format("Received About announcement signal from DUT with deviceId: %s, appId; %s ", deviceId, appId));
-	        //logger.info("Partial Verdict: PASS");
 	    	receivedAnnouncements.add(receivedAboutAnnouncement);       
 	    }
 	    else
 	    {
 	    	logger.info(String.format("Ignoring About announcement signal from DUT with deviceId: %s, appId: %s ", deviceId, appId));
 	    }
-		
 	}
 }

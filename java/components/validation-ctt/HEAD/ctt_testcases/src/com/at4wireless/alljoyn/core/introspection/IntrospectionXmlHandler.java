@@ -56,6 +56,7 @@ public class IntrospectionXmlHandler extends DefaultHandler
     private static final String XML_QNAME_TYPE = "type";
     private static final String XML_QNAME_DIRECTION = "direction";
     private static final String XML_QNAME_ACCESS = "access";
+    
     private static final String NODE_TAG = "node";
     private static final String INTERFACE_TAG = "interface";
     private static final String METHOD_TAG = "method";
@@ -63,6 +64,7 @@ public class IntrospectionXmlHandler extends DefaultHandler
     private static final String PROPERTY_TAG = "property";
     private static final String ARG_TAG = "arg";
     private static final String ANNOTATION_TAG = "annotation";
+    
     private boolean sawRootNode = false;
     private boolean processMethodArgs = false;
     private boolean processSignalArgs = false;
@@ -79,6 +81,8 @@ public class IntrospectionXmlHandler extends DefaultHandler
     private IntrospectionSignal signal;
     private List<IntrospectionArg> signalArgs;
     private Set<IntrospectionAnnotation> methodAnnotations;
+    private Set<IntrospectionAnnotation> nodeAnnotations; //[AT4] fix to support annotations on the same level than interfaces
+    private boolean processInterface = false; //[AT4] fix to support annotations on the same level than interfaces
 
     public IntrospectionNode getIntrospectionNode()
     {
@@ -110,6 +114,10 @@ public class IntrospectionXmlHandler extends DefaultHandler
         if (localName.equals(SIGNAL_TAG))
         {
             processSignalArgs = false;
+        }
+        if (localName.equals(INTERFACE_TAG)) //[AT4] fix to support annotations on the same level than interfaces
+        {
+        	processInterface = false;
         }
     }
 
@@ -193,13 +201,24 @@ public class IntrospectionXmlHandler extends DefaultHandler
 
     private void createAnnotation(String localName, Attributes attrs) throws SAXException
     {
-        if (localName.equals(ANNOTATION_TAG) && !processMethodArgs)
+        if (localName.equals(ANNOTATION_TAG))
         {
-            interfaceAnnotations = ifaces.getAnnotations();
-            IntrospectionAnnotation annotation = new IntrospectionAnnotation();
-            annotation.setName(attrs.getValue(XML_QNAME_NAME));
-            annotation.setValue(attrs.getValue(XML_QNAME_VALUE));
-            interfaceAnnotations.add(annotation);
+        	if (!processInterface) //[AT4] fix to support annotations on the same level than interfaces
+        	{
+        		nodeAnnotations = introspectionNode.getAnnotations();
+        		IntrospectionAnnotation annotation = new IntrospectionAnnotation();
+                annotation.setName(attrs.getValue(XML_QNAME_NAME));
+                annotation.setValue(attrs.getValue(XML_QNAME_VALUE));
+                nodeAnnotations.add(annotation);
+        	}
+        	else if (!processMethodArgs)
+        	{
+        		interfaceAnnotations = ifaces.getAnnotations();
+                IntrospectionAnnotation annotation = new IntrospectionAnnotation();
+                annotation.setName(attrs.getValue(XML_QNAME_NAME));
+                annotation.setValue(attrs.getValue(XML_QNAME_VALUE));
+                interfaceAnnotations.add(annotation);
+        	}
         }
     }
 
@@ -223,6 +242,7 @@ public class IntrospectionXmlHandler extends DefaultHandler
             ifaces = new IntrospectionInterface();
             ifaces.setName(attrs.getValue(XML_QNAME_NAME));
             interfaces.add(ifaces);
+            processInterface = true;
         }
     }
 
