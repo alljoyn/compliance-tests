@@ -23,11 +23,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
-import org.alljoyn.about.AboutKeys;
+import org.alljoyn.bus.AboutKeys;
 import org.alljoyn.bus.AboutObjectDescription;
 import org.alljoyn.bus.BusException;
 import org.alljoyn.bus.Variant;
-import org.alljoyn.services.common.utils.TransportUtil;
 
 public class AboutAnnouncementDetails extends AboutAnnouncement
 {
@@ -64,7 +63,8 @@ public class AboutAnnouncementDetails extends AboutAnnouncement
                 {
                     byte[] byteArray = variant.getObject(new byte[]
                     {}.getClass());
-                    value = TransportUtil.byteArrayToUUID(byteArray);
+                    //value = TransportUtil.byteArrayToUUID(byteArray); //[AT4] Deprecated
+                    value = UUID.nameUUIDFromBytes(byteArray);
                 }
                 else if ("as".equals(signature))
                 {

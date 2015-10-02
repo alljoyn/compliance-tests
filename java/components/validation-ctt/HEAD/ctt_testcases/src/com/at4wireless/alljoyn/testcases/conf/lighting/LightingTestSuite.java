@@ -25,10 +25,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.alljoyn.about.AboutKeys;
-import org.alljoyn.about.client.AboutClient;
+import org.alljoyn.bus.AboutKeys;
 import org.alljoyn.bus.AboutObjectDescription;
-import org.alljoyn.bus.BusAttachment;
+import org.alljoyn.bus.AboutProxy;
 import org.alljoyn.bus.BusException;
 import org.alljoyn.bus.ProxyBusObject;
 import org.alljoyn.bus.Variant;
@@ -37,10 +36,10 @@ import org.xml.sax.SAXException;
 import com.at4wireless.alljoyn.core.about.AboutAnnouncementDetails;
 import com.at4wireless.alljoyn.core.commons.ServiceAvailabilityHandler;
 import com.at4wireless.alljoyn.core.commons.ServiceHelper;
+import com.at4wireless.alljoyn.core.commons.log.Logger;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.interfacevalidator.ValidationResult;
 import com.at4wireless.alljoyn.core.introspection.BusIntrospector;
-import com.at4wireless.alljoyn.core.introspection.XmlBasedBusIntrospector;
 import com.at4wireless.alljoyn.core.introspection.bean.InterfaceDetail;
 import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionInterface;
 import com.at4wireless.alljoyn.core.lighting.AllJoynManager;
@@ -55,13 +54,13 @@ import com.at4wireless.alljoyn.core.lighting.LampServiceBusObject;
 import com.at4wireless.alljoyn.core.lighting.LampStateBusInterface;
 import com.at4wireless.alljoyn.core.lighting.LampStateBusObject;
 import com.at4wireless.alljoyn.core.lighting.LampStateSignalHandler;
+import com.at4wireless.alljoyn.testcases.parameter.GeneralParameter;
+import com.at4wireless.alljoyn.testcases.parameter.Ics;
+import com.at4wireless.alljoyn.testcases.parameter.Ixit;
 
 public class LightingTestSuite
 {
-	//private static final String TAG = "LSF_LampTestSuite";
-	private static final String TAG = "LightingTestSuite";
-	//private static final Logger logger = LoggerFactory.getLogger(TAG);
-	private static final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	private static final Logger logger = new WindowsLoggerImpl(LightingTestSuite.class.getSimpleName());
 	private static final String BUS_APPLICATION_NAME = "LSF_LampTestSuite";
 	//public static final long ANNOUCEMENT_TIMEOUT_IN_SECONDS = 30;
 	public long ANNOUCEMENT_TIMEOUT_IN_SECONDS = 30;
@@ -69,7 +68,8 @@ public class LightingTestSuite
 	private long SESSION_CLOSE_TIMEOUT_IN_SECONDS = 5;
 	
 	private ServiceHelper serviceHelper;
-	private AboutClient aboutClient;
+	//private AboutClient aboutClient;
+	private AboutProxy aboutProxy;
 	private LampStateSignalHandler lampStateSignalHandler;
     private LampStateBusObject lampStateBusObject;
     private LampServiceBusObject lampServiceBusObject;
@@ -87,7 +87,7 @@ public class LightingTestSuite
     //private AppUnderTestDetails appUnderTestDetails;
     private UUID dutAppId;
     private String dutDeviceId;
-    private ServiceAvailabilityHandler serviceAvailabilityHandler;
+    //private ServiceAvailabilityHandler serviceAvailabilityHandler;
 
     private static boolean signalReceived = false;
 
@@ -120,45 +120,16 @@ public class LightingTestSuite
 	 * */
 	boolean pass = true;
 	boolean inconc = false;
-	Map<String, Boolean> ics;
-	Map<String, String> ixit;
+	private Ics icsList;
+	private Ixit ixitList;
 
-	public LightingTestSuite(String testCase,
-			boolean iCSL_LightingServiceFramework,
-			boolean iCSL_LampServiceInterface,
-			boolean iCSL_LampParametersInterface,
-			boolean iCSL_LampDetailsInterface, boolean iCSL_Dimmable,
-			boolean iCSL_Color, boolean iCSL_ColorTemperature,
-			boolean iCSL_Effects, boolean iCSL_LampStateInterface,
-			String iXITCO_AppId, String iXITCO_DeviceId,
-			String iXITCO_DefaultLanguage, String iXITL_LampServiceVersion,
-			String iXITL_LampParametersVersion,
-			String iXITL_LampDetailsVersion, String iXITL_LampStateVersion,
-			String gPCO_AnnouncementTimeout, String gPL_SessionClose)
+	public LightingTestSuite(String testCase, Ics icsList, Ixit ixitList, GeneralParameter gpList)
 	{
-		ics = new HashMap<String, Boolean>();
-		ixit = new HashMap<String, String>();
-
-		ics.put("ICSL_LightingServiceFramework", iCSL_LightingServiceFramework);
-		ics.put("ICSL_LampServiceInterface", iCSL_LampServiceInterface);
-		ics.put("ICSL_LampParametersInterface", iCSL_LampParametersInterface);
-		ics.put("ICSL_LampDetailsInterface", iCSL_LampDetailsInterface);
-		ics.put("ICSL_Dimmable", iCSL_Dimmable);
-		ics.put("ICSL_Color", iCSL_Color);
-		ics.put("ICSL_ColorTemperature", iCSL_ColorTemperature);
-		ics.put("ICSL_Effects", iCSL_Effects);
-		ics.put("ICSL_LampStateInterface", iCSL_LampStateInterface);
+		this.icsList = icsList;
+		this.ixitList = ixitList;
 		
-		ixit.put("IXITCO_AppId", iXITCO_AppId);
-		ixit.put("IXITCO_DeviceId", iXITCO_DeviceId);
-		ixit.put("IXITCO_DefaultLanguage", iXITCO_DefaultLanguage);
-		ixit.put("IXITL_LampServiceVersion", iXITL_LampServiceVersion);
-		ixit.put("IXITL_LampParametersVersion", iXITL_LampParametersVersion);
-		ixit.put("IXITL_LampDetailsVersion", iXITL_LampDetailsVersion);
-		ixit.put("IXITL_LampStateVersion", iXITL_LampStateVersion);
-		
-		ANNOUCEMENT_TIMEOUT_IN_SECONDS = Integer.parseInt(gPCO_AnnouncementTimeout);
-		SESSION_CLOSE_TIMEOUT_IN_SECONDS = Integer.parseInt(gPL_SessionClose);
+		ANNOUCEMENT_TIMEOUT_IN_SECONDS = gpList.GPCO_AnnouncementTimeout;
+		SESSION_CLOSE_TIMEOUT_IN_SECONDS = gpList.GPL_SessionClose;
 
 		try
 		{
@@ -166,18 +137,8 @@ public class LightingTestSuite
 		}
 		catch (Exception e)
 		{
-			if (e != null)
-			{
-				if (e.getMessage().equals("Timed out waiting for About announcement"))
-				{
-					fail("Timed out waiting for About announcement");
-				}
-				else
-				{
-					inconc = true;
-					fail("Exception: "+e.toString());
-				}
-			}
+			logger.error(String.format("Exception: %s", e.toString()));
+			inconc = true;
 		}
 	}
 
@@ -333,17 +294,17 @@ public class LightingTestSuite
 	private void setUp() throws Exception
 	{
 		//super.setUp();
-		logger.noTag("====================================================");
+		System.out.println("====================================================");
 		logger.info("test setUp started");
 
 		try
 		{
 			//appUnderTestDetails = getValidationTestContext().getAppUnderTestDetails();
 			//dutDeviceId = appUnderTestDetails.getDeviceId();
-			dutDeviceId = ixit.get("IXITCO_DeviceId");
+			dutDeviceId = ixitList.IXITCO_DeviceId;
 			logger.info(String.format("Running LSF_Lamp test case against Device ID: %s", dutDeviceId));
 			//dutAppId = appUnderTestDetails.getAppId();
-			dutAppId = UUID.fromString(ixit.get("IXITCO_AppId"));
+			dutAppId = ixitList.IXITCO_AppId;
 			logger.info(String.format("Running LSF_Lamp test case against App ID: %s", dutAppId));
 			
 			//lampObjectPath = getValidationTestContext().getTestObjectPath();
@@ -364,7 +325,7 @@ public class LightingTestSuite
 			tearDown(); //[AT4]
 			throw e;
 		}
-		logger.noTag("====================================================");
+		System.out.println("====================================================");
 	}
 
 
@@ -408,10 +369,15 @@ public class LightingTestSuite
 				lampStateSignalHandler = null;
 			}
 
-			if (aboutClient != null)
+			/*if (aboutClient != null)
 			{
 				aboutClient.disconnect();
 				aboutClient = null;
+			}*/
+			
+			if (aboutProxy != null)
+			{
+				aboutProxy = null;
 			}
 
 			if (serviceHelper != null)
@@ -427,16 +393,17 @@ public class LightingTestSuite
 		}
 	}
 	
-	private void reconnectClients() throws Exception
+	/*private void reconnectClients() throws Exception
     {
         releaseServiceHelper();
         initServiceHelper();
-    }
+    }*/
 	
 	private void connectAboutClient(AboutAnnouncementDetails aboutAnnouncement) throws Exception
 	{
-		serviceAvailabilityHandler = createServiceAvailabilityHandler();
-		aboutClient = serviceHelper.connectAboutClient(aboutAnnouncement, serviceAvailabilityHandler);
+		//serviceAvailabilityHandler = createServiceAvailabilityHandler();
+		//aboutClient = serviceHelper.connectAboutClient(aboutAnnouncement, serviceAvailabilityHandler);
+		aboutProxy = serviceHelper.connectAboutProxy(aboutAnnouncement);
 	}
 
 	private AboutAnnouncementDetails waitForNextDeviceAnnouncement() throws Exception
@@ -453,34 +420,34 @@ public class LightingTestSuite
 	
 	private void tearDown() {
 
-		logger.noTag("====================================================");
+		System.out.println("====================================================");
 		logger.info("test tearDown started");
 		releaseResources();
 		logger.info("test tearDown done");
-		logger.noTag("====================================================");
+		System.out.println("====================================================");
 	}
 	
-	private String getOriginalDeviceName(Map<String, Object> aboutMap)
+	/*private String getOriginalDeviceName(Map<String, Object> aboutMap)
     {
         return (String) aboutMap.get(AboutKeys.ABOUT_DEVICE_NAME);
 
-    }
+    }*/
 	
-	private void watiForNextAnnouncementAndVerifyFieldValue(String fieldName, String newFieldValue) throws Exception, BusException
+	/*private void watiForNextAnnouncementAndVerifyFieldValue(String fieldName, String newFieldValue) throws Exception, BusException
     {
         deviceAboutAnnouncement = waitForNextAnnouncementAndCheckFieldValue(fieldName, newFieldValue);
-    }
+    }*/
 	
 	//@Override
     public void connectionLost()
     {
-        logger.info("The connection with the remote device has lost");
+        logger.info("The connection with the remote device has been lost");
     }
 
 	protected ServiceHelper createServiceHelper()
 	{
 		//return new ServiceHelper(new AndroidLogger());
-		return new ServiceHelper(logger);
+		return new ServiceHelper();
 	}
 
 	protected ServiceAvailabilityHandler createServiceAvailabilityHandler()
@@ -515,7 +482,9 @@ public class LightingTestSuite
 	public void testLSF_Lamp_v1_01_InterfaceVersion() throws Exception
 	{
 		int interfaceVersion = 0;
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		/*ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+				new Class[] { LampServiceBusInterface.class });*/
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampServiceBusInterface.class });
 		try
 		{
@@ -533,13 +502,13 @@ public class LightingTestSuite
 		}
 		
 		logger.info("Checking if Interface version matches IXIT");
-		assertEquals("LSF_Lamp service interface version does not match", Integer.parseInt(ixit.get("IXITL_LampServiceVersion")), interfaceVersion);
+		assertEquals("LSF_Lamp service interface version does not match", ixitList.IXITL_LampServiceVersion, interfaceVersion);
 	}
 
 	public void testLSF_Lamp_v1_02_ServiceVersion() throws Exception
 	{
 		int lampServiceVersion = 0;
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampServiceBusInterface.class });
 		try
 		{
@@ -557,14 +526,14 @@ public class LightingTestSuite
 		}
 		
 		logger.info("Checking LampService version matches IXIT");
-		assertEquals("LSF_Lamp service version does not match", Integer.parseInt(ixit.get("IXITL_LampServiceVersion")), lampServiceVersion);
+		assertEquals("LSF_Lamp service version does not match", ixitList.IXITL_LampServiceVersion, lampServiceVersion);
 	}
 
 	public void testLSF_Lamp_v1_03_ClearLampFault() throws Exception
 	{
 		int[] lampFaults = {0};
 		int numFaults = 0;
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampServiceBusInterface.class });
 
 		try
@@ -596,7 +565,7 @@ public class LightingTestSuite
 	{
 		boolean onOff = true;
 		boolean newOnOff = false;
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampStateBusInterface.class });
 
 		try
@@ -623,7 +592,7 @@ public class LightingTestSuite
 	{
 		int hue = 100;
 		int newHue = 0;
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampStateBusInterface.class });
 
 		try
@@ -650,7 +619,7 @@ public class LightingTestSuite
 	{
 		int saturation = 100;
 		int newSaturation = 0;
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampStateBusInterface.class });
 
 		try
@@ -680,7 +649,7 @@ public class LightingTestSuite
 		{
 			int colorTemp = 100;
 			int newColorTemp = 0;
-			ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+			ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 					new Class[] { LampStateBusInterface.class });
 
 			try
@@ -708,7 +677,7 @@ public class LightingTestSuite
 	private boolean getVariableColorTemp() throws Exception
 	{
 		boolean variableColorTemp = false;
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampDetailsBusInterface.class });
 		try
 		{
@@ -734,7 +703,7 @@ public class LightingTestSuite
 		{
 			int brightness = 100;
 			int newBrightness = 0;
-			ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+			ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 					new Class[] { LampStateBusInterface.class });
 
 			try
@@ -770,7 +739,7 @@ public class LightingTestSuite
 		ajMan.registerSignalHandler(lampStateSignalHandler);
 		//serviceHelper.registerSignalHandler(lampStateSignalHandler);
 		/// See if we are able to recieve that signal
-		ajMan.createAllJoynSession(aboutClient.getPeerName(), AllJoynManager.LAMP_SERVICE_PORT);
+		ajMan.createAllJoynSession(deviceAboutAnnouncement.getServiceName(), AllJoynManager.LAMP_SERVICE_PORT);
 
 		boolean onOffValue = true;
 		int brightnessValue = 10;
@@ -781,7 +750,7 @@ public class LightingTestSuite
 		int transitionPeriod = 10;
 		Map<String,Variant> lampState;
 
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampStateBusInterface.class });
 
 		lampState = getLampStateMap(String.valueOf(onOffValue), String.valueOf(brightnessValue), String.valueOf(hueValue), String.valueOf(saturationValue), String.valueOf(colorTempValue));
@@ -813,11 +782,11 @@ public class LightingTestSuite
 
 			boolean newOnOff = proxy.getInterface(LampStateBusInterface.class).getOnOff();
 			logger.info("LSF_Lamp service getOnOff returned " + newOnOff);
-			//TODO what should correct expected behavior be here?
-			//assertEquals("TransitionLampState getOnOff failed ", onOffValue, newOnOff);
+			assertEquals("TransitionLampState getOnOff failed ", onOffValue, newOnOff);
 
 			/******************************************************************************/
 
+			logger.info("Waiting for TransitionLampState signal return");
 			Thread.sleep(5000);
 			// there should have been enough time for signal to be received
 			assertEquals("LSF_Lamp TransitionLampState await signal returns failure. ", true, signalReceived);
@@ -855,7 +824,7 @@ public class LightingTestSuite
 		Map<String,Variant> fromState;
 		Map<String,Variant> toState;
 
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampStateBusInterface.class });
 
 		fromState = getLampStateMap(String.valueOf(fromOnOffValue), String.valueOf(fromBrightnessValue), String.valueOf(fromHueValue), String.valueOf(fromSaturationValue), String.valueOf(fromColorTempValue));
@@ -955,7 +924,7 @@ public class LightingTestSuite
 	public void testLSF_Lamp_v1_12_ParametersInterfaceVersion() throws Exception
 	{
 		int interfaceVersion = 0;
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampParametersBusInterface.class });
 		try
 		{
@@ -973,13 +942,13 @@ public class LightingTestSuite
 		}
 		
 		logger.info("Checking if LampParameters interface version matches IXIT");
-		assertEquals("LSF_Lamp parameters interface version does not match",Integer.parseInt(ixit.get("IXITL_LampParametersVersion")) , interfaceVersion);
+		assertEquals("LSF_Lamp parameters interface version does not match", ixitList.IXITL_LampParametersVersion, interfaceVersion);
 	}
 
 	public void testLSF_Lamp_v1_13_GetEnergy_Usage_Milliwatts() throws Exception
 	{
 		int energy_Usage_Milliwatts = 0;
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampParametersBusInterface.class });
 		try
 		{
@@ -1000,7 +969,7 @@ public class LightingTestSuite
 	public void testLSF_Lamp_v1_14_GetBrightness_Lumens() throws Exception
 	{
 		int brightness_Lumens = 0;
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampParametersBusInterface.class });
 		try
 		{
@@ -1021,7 +990,7 @@ public class LightingTestSuite
 	public void testLSF_Lamp_v1_15_GetInterfaceVersion() throws Exception
 	{
 		int interfaceVersion = 0;
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampDetailsBusInterface.class });
 		try
 		{
@@ -1037,13 +1006,13 @@ public class LightingTestSuite
 			fail("Exception caught while trying to get details interface version");
 		}
 		logger.info("Checking if LampDetails interface version matches IXIT");
-		assertEquals("LSF_Lamp details interface version does not match", Integer.parseInt(ixit.get("IXITL_LampDetailsVersion")), interfaceVersion);
+		assertEquals("LSF_Lamp details interface version does not match", ixitList.IXITL_LampDetailsVersion, interfaceVersion);
 	}
 
 	public void testLSF_Lamp_v1_16_GetMake() throws Exception
 	{
 		int make = 0;
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampDetailsBusInterface.class });
 		try
 		{
@@ -1064,7 +1033,7 @@ public class LightingTestSuite
 	public void testLSF_Lamp_v1_17_GetModel() throws Exception
 	{
 		int model = 0;
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampDetailsBusInterface.class });
 		try
 		{
@@ -1085,7 +1054,7 @@ public class LightingTestSuite
 	public void testLSF_Lamp_v1_18_GetType() throws Exception
 	{
 		int detailsType = 0;
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampDetailsBusInterface.class });
 
 		try
@@ -1107,7 +1076,7 @@ public class LightingTestSuite
 	public void testLSF_Lamp_v1_19_GetLampType() throws Exception
 	{
 		int lampType = 0;
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampDetailsBusInterface.class });
 		try
 		{
@@ -1128,7 +1097,7 @@ public class LightingTestSuite
 	public void testLSF_Lamp_v1_20_GetLampBaseType() throws Exception
 	{
 		int lampBaseType = 0;
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampDetailsBusInterface.class });
 		try
 		{
@@ -1149,7 +1118,7 @@ public class LightingTestSuite
 	public void testLSF_Lamp_v1_21_GetLampBeamAngle() throws Exception
 	{
 		int lampBeamAngle = 0;
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampDetailsBusInterface.class });
 		try
 		{
@@ -1175,7 +1144,7 @@ public class LightingTestSuite
 	private boolean GetDimmable() throws Exception
 	{
 		boolean dimmable = false;
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampDetailsBusInterface.class });
 		try
 		{
@@ -1198,7 +1167,7 @@ public class LightingTestSuite
 	public void testLSF_Lamp_v1_23_GetColor() throws Exception
 	{
 		boolean color = false;
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampDetailsBusInterface.class });
 		try
 		{
@@ -1224,7 +1193,7 @@ public class LightingTestSuite
 	public void testLSF_Lamp_v1_25_GetLampID() throws Exception
 	{
 		String lampID = "";
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampDetailsBusInterface.class });
 		try
 		{
@@ -1246,7 +1215,7 @@ public class LightingTestSuite
 	public void testLSF_Lamp_v1_26_GetHasEffects() throws Exception
 	{
 		boolean hasEffects = false;
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampDetailsBusInterface.class });
 		try
 		{
@@ -1268,7 +1237,7 @@ public class LightingTestSuite
 	public void testLSF_Lamp_v1_27_GetMinVoltage() throws Exception
 	{
 		int minVoltage = 0;
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampDetailsBusInterface.class });
 		try
 		{
@@ -1289,7 +1258,7 @@ public class LightingTestSuite
 	public void testLSF_Lamp_v1_28_GetMaxVoltage() throws Exception
 	{
 		int maxVoltage = 0;
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampDetailsBusInterface.class });
 		try
 		{
@@ -1310,7 +1279,7 @@ public class LightingTestSuite
 	public void testLSF_Lamp_v1_29_GetWattage() throws Exception
 	{
 		int wattage = 0;
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampDetailsBusInterface.class });
 		try
 		{
@@ -1331,7 +1300,7 @@ public class LightingTestSuite
 	public void testLSF_Lamp_v1_30_GetIncandescentEquivalent() throws Exception
 	{
 		int incandescentEquivalent = 0;
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampDetailsBusInterface.class });
 		try
 		{
@@ -1352,7 +1321,7 @@ public class LightingTestSuite
 	public void testLSF_Lamp_v1_31_GetMaxLumens() throws Exception
 	{
 		int maxLumens = 0;
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampDetailsBusInterface.class });
 		try
 		{
@@ -1373,7 +1342,7 @@ public class LightingTestSuite
 	public void testLSF_Lamp_v1_32_GetMinTemperature() throws Exception
 	{
 		int minTemperature = 0;
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampDetailsBusInterface.class });
 		try
 		{
@@ -1394,7 +1363,7 @@ public class LightingTestSuite
 	public void testLSF_Lamp_v1_33_GetMaxTemperature() throws Exception
 	{
 		int maxTemperature = 0;
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampDetailsBusInterface.class });
 		try
 		{
@@ -1415,7 +1384,7 @@ public class LightingTestSuite
 	public void testLSF_Lamp_v1_34_GetColorRenderingIndex() throws Exception
 	{
 		int colorRenderingIndex = 0;
-		ProxyBusObject proxy = serviceHelper.getProxyBusObject(aboutClient, BUS_OBJECT_PATH,
+		ProxyBusObject proxy = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, BUS_OBJECT_PATH,
 				new Class[] { LampDetailsBusInterface.class });
 		try
 		{
@@ -1446,10 +1415,10 @@ public class LightingTestSuite
 	
 	BusIntrospector getIntrospector()
 	{
-		return serviceHelper.getBusIntrospector(aboutClient);
+		return serviceHelper.getBusIntrospector(deviceAboutAnnouncement);
 	}
 	
-	BusIntrospector getIntrospector(BusAttachment busAttachment, AboutClient newAboutClient)
+	/*BusIntrospector getIntrospector(BusAttachment busAttachment, AboutClient newAboutClient)
     {
         return new XmlBasedBusIntrospector(busAttachment, newAboutClient.getPeerName(), newAboutClient.getSessionId());
     }
@@ -1457,7 +1426,7 @@ public class LightingTestSuite
     BusIntrospector getIntrospector(ServiceHelper serviceHelper, AboutClient aboutClient)
     {
         return serviceHelper.getBusIntrospector(aboutClient);
-    }
+    }*/
 	
 	protected LampInterfaceValidator getInterfaceValidator() throws IOException, ParserConfigurationException, SAXException
 	{

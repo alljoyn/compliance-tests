@@ -20,10 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
-
 import com.at4wireless.alljoyn.core.commons.log.Logger;
-import com.at4wireless.alljoyn.core.commons.log.LoggerFactory;
+import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.introspection.IntrospectionXmlParser;
 import com.at4wireless.alljoyn.core.introspection.bean.InterfaceDetail;
 import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionAnnotation;
@@ -37,8 +35,7 @@ public class InterfaceValidator
 {
     private List<IntrospectionNode> introspectionNodesLoadedFromXmlFiles = new ArrayList<IntrospectionNode>();
     private IntrospectionXmlParser introspectionXmlParser;
-    private static final String TAG = "InterfaceValidator";
-    private static final Logger logger = LoggerFactory.getLogger(TAG);
+    private static final Logger logger = new WindowsLoggerImpl(InterfaceValidator.class.getSimpleName());
 
     public InterfaceValidator()
     {
@@ -97,7 +94,8 @@ public class InterfaceValidator
                 IntrospectionXmlFile.ListProperty.getValue(), IntrospectionXmlFile.Notification.getValue(),
                 IntrospectionXmlFile.NotificationAction.getValue(), IntrospectionXmlFile.Onboarding.getValue(), IntrospectionXmlFile.Peer.getValue(),
                 IntrospectionXmlFile.Property.getValue(), IntrospectionXmlFile.Introspectable.getValue(),
-                IntrospectionXmlFile.GWAgentConnectorApp.getValue());
+                IntrospectionXmlFile.GWAgentConnectorApp.getValue(), IntrospectionXmlFile.Application.getValue(), IntrospectionXmlFile.SecureApplication.getValue(),
+                IntrospectionXmlFile.ClaimableApplication.getValue(), IntrospectionXmlFile.ManagedApplication.getValue());
     }
 
     private ValidationResult validateInterface(IntrospectionInterface standardizedIntrospectionInterface, String path) throws Exception
@@ -150,15 +148,15 @@ public class InterfaceValidator
             if (isVersionPropertyMissing(expectedIntrospectionInterface, propertyValidationResult))
             {
                 logger.warn(String.format("Ignoring interface property match comparison: %s", propertyValidationResult.getFailureReason()));
-                logger.addNote(String.format("Interface definition does not match for %s - %s", standardizedIntrospectionInterface.getName(),
-                        propertyValidationResult.getFailureReason()));
+                /*logger.addNote(String.format("Interface definition does not match for %s - %s", standardizedIntrospectionInterface.getName(),
+                        propertyValidationResult.getFailureReason()));*/
                 valid = true;
             }
             if (isUndefinedMethodPresentForConfigInterface(expectedIntrospectionInterface, methodValidationResult))
             {
                 logger.warn(String.format("Ignoring interface method match comparison: %s", methodValidationResult.getFailureReason()));
-                logger.addNote(String.format("Interface definition does not match for %s - %s", standardizedIntrospectionInterface.getName(),
-                        methodValidationResult.getFailureReason()));
+                /*logger.addNote(String.format("Interface definition does not match for %s - %s", standardizedIntrospectionInterface.getName(),
+                        methodValidationResult.getFailureReason()));*/
                 valid = true;
             }
             if (isAnnotationMissingForPeerAuthenticationInterface(expectedIntrospectionInterface, annotationValidationResult))

@@ -21,12 +21,11 @@ import org.alljoyn.bus.Variant;
 import org.alljoyn.smarthome.centralizedmanagement.client.ReturnValueSignalHandler;
 
 import com.at4wireless.alljoyn.core.commons.log.Logger;
-import com.at4wireless.alljoyn.core.commons.log.LoggerFactory;
+import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 public class ReturnValueHandler extends ReturnValueSignalHandler
 {
-	private static final String TAG = "ReturnValueSignalHandler";
-	private static final Logger logger = LoggerFactory.getLogger(TAG);
+	private static final Logger logger = new WindowsLoggerImpl(ReturnValueHandler.class.getSimpleName());
 	CountDownLatch countDownLatch;
 	
 	Boolean pass=true;

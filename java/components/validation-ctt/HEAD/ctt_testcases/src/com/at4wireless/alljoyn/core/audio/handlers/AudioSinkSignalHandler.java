@@ -26,12 +26,11 @@ import com.at4wireless.alljoyn.core.audio.AudioSinkPlayStateChangedSignal;
 import com.at4wireless.alljoyn.core.audio.AudioTransports.AudioSink;
 import com.at4wireless.alljoyn.core.audio.AudioTransports.AudioSinkDelay;
 import com.at4wireless.alljoyn.core.commons.log.Logger;
-import com.at4wireless.alljoyn.core.commons.log.LoggerFactory;
+import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 public class AudioSinkSignalHandler implements AudioSink, BusObject
 {
-    private static final String TAG = "AudioSinkSignalHandler";
-    private static final Logger logger = LoggerFactory.getLogger(TAG);
+	private static final Logger logger = new WindowsLoggerImpl(AudioSinkSignalHandler.class.getSimpleName());
     private LinkedBlockingDeque<AudioSinkPlayStateChangedSignal> playStateChangedSignalQueue = new LinkedBlockingDeque<AudioSinkPlayStateChangedSignal>();
     private LinkedBlockingDeque<Integer> fifoPositionChangedSignalQueue = new LinkedBlockingDeque<Integer>();
 

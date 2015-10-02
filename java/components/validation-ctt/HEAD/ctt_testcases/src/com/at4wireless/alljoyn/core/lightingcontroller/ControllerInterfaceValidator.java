@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.at4wireless.alljoyn.core.commons.log.Logger;
-import com.at4wireless.alljoyn.core.commons.log.LoggerFactory;
+import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.interfacevalidator.SetValidator;
 import com.at4wireless.alljoyn.core.interfacevalidator.ValidationResult;
 import com.at4wireless.alljoyn.core.introspection.IntrospectionXmlParser;
@@ -34,8 +34,7 @@ import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionNode;
 
 public class ControllerInterfaceValidator
 {
-    private static final String TAG = "CIValidator";
-    private static final Logger logger = LoggerFactory.getLogger(TAG);
+	private static final Logger logger = new WindowsLoggerImpl("CIValidator");
 
     private static final String[] INTROSPECT_FILES = {
         "introspection-xml/ControllerService.xml",

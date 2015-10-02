@@ -15,37 +15,18 @@
  *******************************************************************************/
 package com.at4wireless.alljoyn.core.lighting;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.alljoyn.about.AboutKeys;
 import org.alljoyn.bus.BusAttachment;
-import org.alljoyn.bus.BusException;
 import org.alljoyn.bus.Mutable;
-import org.alljoyn.bus.PasswordManager;
 import org.alljoyn.bus.ProxyBusObject;
 import org.alljoyn.bus.SessionListener;
 import org.alljoyn.bus.SessionOpts;
 import org.alljoyn.bus.Status;
-import org.alljoyn.bus.Variant;
-//import org.alljoyn.bus.alljoyn.DaemonInit;
-import org.alljoyn.services.common.BusObjectDescription;
-import org.alljoyn.services.common.utils.TransportUtil;
-
-/*import android.content.Context;
-import android.util.Log;*/
 
 public class AllJoynManager
-{
-	/* Load AllJoyn Library */
-	/*static
-	{
-	    System.loadLibrary("alljoyn_java");
-	}*/
-	
+{	
 	/* Private Variables */
 	private BusAttachment bus;
 	private LampStateSignalHandler sigHandler;

@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import org.alljoyn.about.client.AboutClient;
+import org.alljoyn.bus.AboutProxy;
 import org.alljoyn.bus.BusException;
 import org.alljoyn.config.client.ConfigClient;
 import org.alljoyn.onboarding.OnboardingService;
@@ -33,6 +33,7 @@ import org.alljoyn.onboarding.transport.ScanInfo;
 
 import com.at4wireless.alljoyn.core.about.AboutAnnouncementDetails;
 import com.at4wireless.alljoyn.core.commons.ServiceHelper;
+import com.at4wireless.alljoyn.core.commons.log.Logger;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.wifiapi.ScanResult;
 
@@ -40,8 +41,7 @@ public class OnboardingHelper
 {
     //private static final int TIME_TO_WAIT_FOR_SCAN_RESULTS_IN_SECONDS = 2;
 	private int TIME_TO_WAIT_FOR_SCAN_RESULTS_IN_SECONDS = 2;
-    private static final String TAG = "OnboardingHelper";
-	private static final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	private static final Logger logger = new WindowsLoggerImpl(OnboardingHelper.class.getSimpleName());
     private OnboardingClient onboardingClient;
     private WifiHelper wifiHelper;
     private ServiceHelper serviceHelper;
@@ -194,7 +194,7 @@ public class OnboardingHelper
         AuthType authType = getOnboardingServiceAuthType(networkConfig.getSecurityType());
 
         String convertedPassphrase = convertToHex(passphrase);
-
+        
         logger.info(String.format("Calling Onboarding.configureWiFi() method on DUT with ssid: %s and authType: %d", ssid, authType.getTypeId()));
         ConfigureWifiMode configureWifiMode = onboardingClient.configureWiFi(ssid, convertedPassphrase, authType);
 
@@ -463,9 +463,14 @@ public class OnboardingHelper
         return isDeviceInOnboardedState;
     }
 
-    public AboutClient connectAboutClient(AboutAnnouncementDetails deviceAboutAnnouncement) throws Exception
+    /*public AboutClient connectAboutClient(AboutAnnouncementDetails deviceAboutAnnouncement) throws Exception
     {
         return serviceHelper.connectAboutClient(deviceAboutAnnouncement);
+    }*/
+    
+    public AboutProxy connectAboutProxy(AboutAnnouncementDetails deviceAboutAnnouncement) throws Exception
+    {
+    	return serviceHelper.connectAboutProxy(deviceAboutAnnouncement);
     }
 
     public ConfigClient connectConfigClient(AboutAnnouncementDetails deviceAboutAnnouncement) throws Exception
@@ -492,7 +497,7 @@ public class OnboardingHelper
 
     protected ServiceHelper getServiceHelper()
     {
-    	return new ServiceHelper(logger);
+    	return new ServiceHelper();
     }
 
     protected WifiHelper getWifiHelper()

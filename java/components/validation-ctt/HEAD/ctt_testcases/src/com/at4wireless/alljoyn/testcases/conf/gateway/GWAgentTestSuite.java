@@ -17,33 +17,32 @@ package com.at4wireless.alljoyn.testcases.conf.gateway;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.alljoyn.about.client.AboutClient;
+import org.alljoyn.bus.AboutProxy;
 import org.alljoyn.bus.BusException;
-import org.alljoyn.services.common.ServiceAvailabilityListener;
 import org.xml.sax.SAXException;
 
 import com.at4wireless.alljoyn.core.about.AboutAnnouncementDetails;
 import com.at4wireless.alljoyn.core.commons.ServiceAvailabilityHandler;
 import com.at4wireless.alljoyn.core.commons.ServiceHelper;
+import com.at4wireless.alljoyn.core.commons.log.Logger;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.introspection.BusIntrospector;
 import com.at4wireless.alljoyn.core.introspection.bean.InterfaceDetail;
 import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionInterface;
+import com.at4wireless.alljoyn.testcases.parameter.GeneralParameter;
+import com.at4wireless.alljoyn.testcases.parameter.Ics;
+import com.at4wireless.alljoyn.testcases.parameter.Ixit;
 
-public class GWAgentTestSuite implements ServiceAvailabilityListener
+public class GWAgentTestSuite //implements ServiceAvailabilityListener
 //public class GWAgentTestSuite
 { 
-	private static final String TAG = "GWAgentTestSuite";
-	//private static final Logger logger = LoggerFactory.getLogger(TAG);
-	private static final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	private static final Logger logger = new WindowsLoggerImpl(GWAgentTestSuite.class.getSimpleName());
 	private static final String BUS_APPLICATION_NAME = "GWAgentTestSuite";
 	//public static final long ANNOUCEMENT_TIMEOUT_IN_SECONDS = 30;
 	public long ANNOUNCEMENT_TIMEOUT_IN_SECONDS = 30;
@@ -56,7 +55,8 @@ public class GWAgentTestSuite implements ServiceAvailabilityListener
     static final String GWAGENT_APPMGMT_PATH = "/gw";
     
     private ServiceHelper serviceHelper;
-    private AboutClient aboutClient;
+    //private AboutClient aboutClient;
+    private AboutProxy aboutProxy;
     private BusIntrospector busIntrospector;
 
     private AboutAnnouncementDetails deviceAboutAnnouncement;
@@ -76,55 +76,26 @@ public class GWAgentTestSuite implements ServiceAvailabilityListener
 	 * 
 	 * */
 	boolean pass = true;
-    Map<String, Boolean> ics;
-    Map<String, String> ixit;
+	boolean inconc = false;
+    private Ics icsList;
+    private Ixit ixitList;
 
-	public GWAgentTestSuite(String testCase,
-			boolean iCSG_GatewayServiceFramework,
-			boolean iCSG_ProfileManagementInterface,
-			boolean iCSG_AppAccessInterface,
-			boolean iCSG_AppManagementInterface, String iXITCO_AppId,
-			String iXITCO_DeviceId, String iXITCO_DefaultLanguage,
-			String iXITG_AppMgmtVersion, String iXITG_CtrlAppVersion,
-			String iXITG_CtrlAccessVersion, String iXITG_CtrlAclVersion,
-			String iXITG_ConnAppVersion, String gPCO_AnnouncementTimeout,
-			String gPG_SessionClose)
+	public GWAgentTestSuite(String testCase, Ics icsList, Ixit ixitList, GeneralParameter gpList)
 	{
+		this.icsList = icsList;
+		this.ixitList = ixitList;
 
-		ics = new HashMap<String, Boolean>();
-		ixit = new HashMap<String, String>();
-		
-		ics.put("ICS_GatewayServiceFramework", iCSG_GatewayServiceFramework);
-		ics.put("ICSG_ProfileManagementInterface", iCSG_ProfileManagementInterface);
-		ics.put("ICSG_AppAccessInterface", iCSG_AppAccessInterface);
-		ics.put("ICSG_AppManagementInterface", iCSG_AppManagementInterface);
-
-		ixit.put("IXITCO_AppId", iXITCO_AppId);
-		ixit.put("IXITCO_DeviceId", iXITCO_DeviceId);
-		ixit.put("IXITCO_DefaultLanguage", iXITCO_DefaultLanguage);
-		ixit.put("IXITG_AppMgmtVersion", iXITG_AppMgmtVersion);
-		ixit.put("IXITG_CtrlAppVersion", iXITG_CtrlAppVersion);
-		ixit.put("IXITG_CtrlAccessVersion", iXITG_CtrlAccessVersion);
-		ixit.put("IXITG_CtrlAclVersion", iXITG_CtrlAclVersion);
-		ixit.put("IXITG_ConnAppVersion", iXITG_ConnAppVersion);
-
-		ANNOUNCEMENT_TIMEOUT_IN_SECONDS = Integer.parseInt(gPCO_AnnouncementTimeout);
+		ANNOUNCEMENT_TIMEOUT_IN_SECONDS = gpList.GPCO_AnnouncementTimeout;
 		//SESSION_CLOSE_TIMEOUT_IN_SECONDS = Integer.parseInt(gPG_SessionClose);
 
 		try
 		{
 			runTestCase(testCase);
 		}
-		catch (Exception e)
+		catch(Exception e)
 		{
-			if (e.getMessage().equals("Timed out waiting for About announcement"))
-			{
-				fail("Timed out waiting for About announcement");
-			}
-			else
-			{
-				fail("Exception: "+e.toString());
-			}
+			logger.error(String.format("Exception: %s", e.toString()));
+			inconc = true;
 		}
 	}
 
@@ -149,17 +120,17 @@ public class GWAgentTestSuite implements ServiceAvailabilityListener
 	{
 		//super.setUp();
 		
-		logger.noTag("====================================================");
+		System.out.println("====================================================");
 		logger.debug("test setUp started");
 
 		try
 		{
 			//appUnderTestDetails = getValidationTestContext().getAppUnderTestDetails();
 			//dutDeviceId = appUnderTestDetails.getDeviceId();
-			dutDeviceId = ixit.get("IXITCO_DeviceId");
+			dutDeviceId = ixitList.IXITCO_DeviceId;
 			logger.info(String.format("Running GWAgent test case against Device ID: %s", dutDeviceId));
 			//dutAppId = appUnderTestDetails.getAppId();
-			dutAppId = UUID.fromString(ixit.get("IXITCO_AppId"));
+			dutAppId = ixitList.IXITCO_AppId;
 			logger.info(String.format("Running GWAgent test case against App ID: %s", dutAppId));
 			//keyStorePath = getValidationTestContext().getKeyStorePath();
 			logger.info(String.format("Running GWAgent test case using KeyStorePath: %s", keyStorePath));
@@ -174,7 +145,8 @@ public class GWAgentTestSuite implements ServiceAvailabilityListener
 			{
 				throw new Exception("Timed out waiting for About announcement");
 			}
-			aboutClient = serviceHelper.connectAboutClient(deviceAboutAnnouncement);
+			//aboutClient = serviceHelper.connectAboutClient(deviceAboutAnnouncement);
+			aboutProxy = serviceHelper.connectAboutProxy(deviceAboutAnnouncement);
 			serviceHelper.enableAuthentication(keyStorePath);
 			busIntrospector = getIntrospector();
 			
@@ -195,22 +167,23 @@ public class GWAgentTestSuite implements ServiceAvailabilityListener
 			throw exception;
 		}
 		
-		logger.noTag("====================================================");
+		System.out.println("====================================================");
 	}
 	
 	private void tearDown()
 	{
-		logger.noTag("====================================================");
+		System.out.println("====================================================");
 		logger.info("test tearDown started");
 		releaseResources();
 		logger.info("test tearDown done");
-		logger.noTag("====================================================");
+		System.out.println("====================================================");
 	}
 	
 	private void releaseResources()
 	{
 		//releaseGWAgentHelper();
-		disconnectFromAboutClient();
+		//disconnectFromAboutClient();
+		disconnectFromAboutProxy();
 		
 		if (serviceHelper != null)
 		{
@@ -219,14 +192,22 @@ public class GWAgentTestSuite implements ServiceAvailabilityListener
 		}
 	}
 	
-	private void disconnectFromAboutClient()
+	/*private void disconnectFromAboutClient()
     {
         if (aboutClient != null)
         {
             aboutClient.disconnect();
             aboutClient = null;
         }
-    }
+    }*/
+	
+	private void disconnectFromAboutProxy()
+	{
+		if (aboutProxy != null)
+		{
+			aboutProxy = null;
+		}
+	}
 
 	public void testGWAgent_v1_01_ValiateCtrlAppMgmtInterfaces() throws Exception
     {
@@ -293,11 +274,11 @@ public class GWAgentTestSuite implements ServiceAvailabilityListener
         gwAgentObjects.add(gwAppMgmtInterfaceDetail);
     }
 
-    @Override
+    /*@Override
     public void connectionLost()
     {
         logger.debug("The connection with the remote device has lost");
-    }
+    }*/
 
     protected ServiceAvailabilityHandler createServiceAvailabilityHandler()
     {
@@ -306,13 +287,12 @@ public class GWAgentTestSuite implements ServiceAvailabilityListener
 
     BusIntrospector getIntrospector()
     {
-        return serviceHelper.getBusIntrospector(aboutClient);
+        return serviceHelper.getBusIntrospector(deviceAboutAnnouncement);
     }
 
     ServiceHelper getServiceHelper()
     {
-        //return new ServiceHelper(new AndroidLogger());
-    	return new ServiceHelper(logger);
+    	return new ServiceHelper();
     }
     
 	/** 
@@ -362,6 +342,11 @@ public class GWAgentTestSuite implements ServiceAvailabilityListener
 	
 	public String getFinalVerdict()
 	{
+		if (inconc)
+		{
+			return "INCONC";
+		}
+		
 		if (pass)
 		{
 			return "PASS";

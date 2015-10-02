@@ -21,11 +21,13 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import org.alljoyn.about.AboutKeys;
-import org.alljoyn.about.client.AboutClient;
+import org.alljoyn.bus.AboutKeys;
+import org.alljoyn.bus.AboutProxy;
+//import org.alljoyn.about.client.AboutClient;
 import org.alljoyn.bus.BusException;
 import org.alljoyn.bus.ErrorReplyBusException;
 import org.alljoyn.bus.Mutable.StringValue;
+import org.alljoyn.bus.Variant;
 import org.alljoyn.config.client.ConfigClient;
 import org.alljoyn.onboarding.transport.OnboardingTransport;
 
@@ -36,32 +38,27 @@ import com.at4wireless.alljoyn.core.commons.ServiceHelper;
 import com.at4wireless.alljoyn.core.commons.SrpAnonymousKeyListener;
 import com.at4wireless.alljoyn.core.commons.UserInputDetails;
 import com.at4wireless.alljoyn.core.commons.log.Logger;
-import com.at4wireless.alljoyn.core.commons.log.LoggerFactory;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
-import com.at4wireless.alljoyn.core.introspection.BusIntrospector;
+import com.at4wireless.alljoyn.testcases.parameter.GeneralParameter;
+import com.at4wireless.alljoyn.testcases.parameter.Ics;
+import com.at4wireless.alljoyn.testcases.parameter.Ixit;
 
 public class ConfigurationTestSuite
 {
-	private final String TAG = "ConfigTestSuite";
-	//private final Logger logger = LoggerFactory.getLogger(TAG);
-	private final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	private static final Logger logger = new WindowsLoggerImpl(ConfigurationTestSuite.class.getSimpleName());
 	private  final String NEW_DEVICE_NAME = "newDeviceName";
 	private  final String INVALID_LANGUAGE_CODE = "INVALID";
     private static final int CONFIG_CLIENT_RECONNECT_WAIT_TIME = 10000;
     private static final String BUS_APPLICATION_NAME = "ConfigTestSuite";
-    //public static final long SESSION_LOST_TIMEOUT_IN_SECONDS = 30;
-    //private static final long SESSION_CLOSE_TIMEOUT_IN_SECONDS = 5;
     public static long SESSION_LOST_TIMEOUT_IN_SECONDS = 30; //[AT4] Deleted final state to support customization
     private static long SESSION_CLOSE_TIMEOUT_IN_SECONDS = 5;
     
     private ConfigClient configClient = null;
     private ServiceHelper serviceHelper;
-    private AboutClient aboutClient;
+    private AboutProxy aboutProxy;
     
     private AboutAnnouncementDetails deviceAboutAnnouncement;
 
-    //private AppUnderTestDetails appUnderTestDetails; [AT4] Not needed
-    //private UUID dutAppId; [AT4] Not needed
     private String dutDeviceId;
     private ServiceAvailabilityHandler serviceAvailabilityHandler;
     private String keyStorePath;
@@ -79,62 +76,38 @@ public class ConfigurationTestSuite
     private static final char[] SPECIAL_CHARS_PASSCODE = "!@#$%^".toCharArray();
     private long aboutAnnouncementTimeout;
     
-	/** The pass. */
-	boolean pass=true;
-	
-	/** The inconc. */
-	boolean inconc=false;
-	
-	/** The bus introspector. */
-	private  BusIntrospector busIntrospector;
+	private UUID dutAppId;
+    
+    /** 
+	 * [AT4] Added attributes to perform the test cases
+	 * 
+	 * pass	stores the final verdict of the test case
+	 * ics	map that stores ICS values	
+	 * ixit	map that stores IXIT values
+	 * 
+	 * */
+	boolean pass = true;
+	boolean inconc = false;
+	Ics icsList;
+	Ixit ixitList;
 
-	/** The dut app id. */
-	private  UUID dutAppId;
-
-	/** The ics. */
-	Map<String,Boolean> ics;
-	
-	/** The ixit. */
-	Map<String,String> ixit;
-
-	public ConfigurationTestSuite(String testCase,
-			boolean iCSCF_ConfigurationServiceFramework,
-			boolean iCSCF_ConfigurationInterface,
-			boolean iCSCF_FactoryResetMethod, String iXITCO_AppId,
-			String iXITCO_DeviceId, String iXITCO_DefaultLanguage,
-			String iXITCF_ConfigVersion, String iXITCF_Passcode,
-			String gPCO_AnnouncementTimeout, String gPCF_SessionLost,
-			String gPCF_SessionClose)
+	public ConfigurationTestSuite(String testCase, Ics icsList, Ixit ixitList, GeneralParameter gpList)
 	{
-		ics = new HashMap<String,Boolean>();
-		ixit = new HashMap<String,String>();
-		
-		ics.put("ICSCF_ConfigurationServiceFramework",iCSCF_ConfigurationServiceFramework);
-		ics.put("ICSCF_ConfigurationInterface",iCSCF_ConfigurationInterface);
-		ics.put("ICSCF_FactoryResetMethod",iCSCF_FactoryResetMethod);
-		
-		ixit.put("IXITCO_AppId",iXITCO_AppId);
-		//ixit.put("IXITCO_DefaultLanguage",iXITCO_DefaultLanguage);
-		ixit.put("IXITCO_DeviceId",iXITCO_DeviceId);
-		ixit.put("IXITCF_ConfigVersion",iXITCF_ConfigVersion);
-		ixit.put("IXITCF_Passcode", iXITCF_Passcode);
+		this.icsList = icsList;
+		this.ixitList = ixitList;
 
-		aboutAnnouncementTimeout = Integer.parseInt(gPCO_AnnouncementTimeout);
-		SESSION_LOST_TIMEOUT_IN_SECONDS = Integer.parseInt(gPCF_SessionLost);
-		SESSION_CLOSE_TIMEOUT_IN_SECONDS = Integer.parseInt(gPCF_SessionClose);
+		aboutAnnouncementTimeout = gpList.GPCO_AnnouncementTimeout;
+		SESSION_LOST_TIMEOUT_IN_SECONDS = gpList.GPCF_SessionLost;
+		SESSION_CLOSE_TIMEOUT_IN_SECONDS = gpList.GPCF_SessionClose;
 
-		try {
+		try
+		{
 			runTestCase(testCase);
-		} catch(Exception e) {
-			if(e!=null){				
-				if(e.getMessage().equals("Timed out waiting for About announcement")){
-					fail("Timed out waiting for About announcement");
-					logger.error("Timed out waiting for About announcement");
-				}else{
-					String errorMsg = "Exception: "+e.toString();
-					inconc(errorMsg);
-				}
-			}
+		}
+		catch(Exception e)
+		{
+			logger.error("Exception: ", e);
+			inconc = true;
 		}
 	}
 
@@ -147,73 +120,138 @@ public class ConfigurationTestSuite
 	public void runTestCase(String testCase) throws Exception
 	{
 		setUp();
-		logger.info("Running testcase: "+testCase);
+		logger.info("Running testcase: %s", testCase);
 		
-		if (testCase.equals("Config-v1-01")) {
+		if (testCase.equals("Config-v1-01"))
+		{
 			testConfig_v1_01AppIdEqualsDeviceId();
-		} else if (testCase.equals("Config-v1-02")) {
+		}
+		else if (testCase.equals("Config-v1-02"))
+		{
 			testConfig_v1_02ConnectWithWrongPasscode();
-		/*} else if (testCase.equals("Config-v1-03")) {
+		/*
+		} else if (testCase.equals("Config-v1-03"))
+		{
 			testConfig_v1_03_ValidateVersion();*/
-		} else if (testCase.equals("Config-v1-04")) {
+		}
+		else if (testCase.equals("Config-v1-04"))
+		{
 			testConfig_v1_04GetConfigurationsWithDefaultLanguage();
-		} else if (testCase.equals("Config-v1-05")) {
+		}
+		else if (testCase.equals("Config-v1-05"))
+		{
 			testConfig_v1_05UnspecifiedLanguage();
-		} else if (testCase.equals("Config-v1-06")) {
+		}
+		else if (testCase.equals("Config-v1-06"))
+		{
 			testConfig_v1_06LangConsistence();
-		} else if (testCase.equals("Config-v1-07")) {
+		}
+		else if (testCase.equals("Config-v1-07"))
+		{
 			testConfig_v1_07UnsupportedLanguage();
-		} else if (testCase.equals("Config-v1-08")) {
+		}
+		else if (testCase.equals("Config-v1-08"))
+		{
 			testConfig_v1_08UpdateConfigurationsWithANewDeviceName();
-		/*} else if (testCase.equals("Config-v1-09")) {
+		/*
+		} else if (testCase.equals("Config-v1-09"))
+		{
 			testConfig_v1_09UpdateConfigurationsMaxLengthEqDeviceName();
-		} else if (testCase.equals("Config-v1-10")) {
+		}
+		else if (testCase.equals("Config-v1-10"))
+		{
 			testConfig_v1_10DeviceNameExceedsMaxLength();
-		} else if (testCase.equals("Config-v1-11")) {
+		}
+		else if (testCase.equals("Config-v1-11"))
+		{
 			testConfig_v1_11ChangeDeviceNametoEmpty();*/
-		} else if (testCase.equals("Config-v1-12")) {
+		}
+		else if (testCase.equals("Config-v1-12"))
+		{
 			testConfig_v1_12DeviceNameSpecial();
-		} else if (testCase.equals("Config-v1-13")) {
+		}
+		else if (testCase.equals("Config-v1-13"))
+		{
 			testConfig_v1_13UpdateUnsupportedLanguage();
-		} else if (testCase.equals("Config-v1-14")) {
+		}
+		else if (testCase.equals("Config-v1-14"))
+		{
 			testConfig_v1_14UpdateDefaultLang();
-		} else if (testCase.equals("Config-v1-15")) {
+		}
+		else if (testCase.equals("Config-v1-15"))
+		{
 			testConfig_v1_15UpdateDefaultLanguageToUnsupportedLanguage();
-		} else if (testCase.equals("Config-v1-16")) {
+		}
+		else if (testCase.equals("Config-v1-16"))
+		{
 			testConfig_v1_16TestChangetoUnspecifiedLanguage();
-		/*} else if (testCase.equals("Config-v1-18")) {
+		/*
+		} else if (testCase.equals("Config-v1-18"))
+		{
 			testConfig_v1_18TestUpdateReadOnlyField();*/
-		} else if (testCase.equals("Config-v1-19")) {
+		}
+		else if (testCase.equals("Config-v1-19"))
+		{
 			testConfig_v1_19TestUpdateInvalidField();
-		} else if (testCase.equals("Config-v1-20")) {
+		}
+		else if (testCase.equals("Config-v1-20"))
+		{
 			testConfig_v1_20TestResetDeviceName();
-		} else if (testCase.equals("Config-v1-21")) {
+		}
+		else if (testCase.equals("Config-v1-21"))
+		{
 			testConfig_v1_21ResetDefaultLanguage();
-		} else if (testCase.equals("Config-v1-22")) {
+		}
+		else if (testCase.equals("Config-v1-22"))
+		{
 			testConfig_v1_22ResetDefaultMultiLanguage();		
-		} else if (testCase.equals("Config-v1-24")) {
+		}
+		else if (testCase.equals("Config-v1-24"))
+		{
 			testConfig_v1_24FailResetUnsupportedLang();
-		} else if (testCase.equals("Config-v1-25")) {
+		}
+		else if (testCase.equals("Config-v1-25"))
+		{
 			testConfig_v1_25FailResetInvalidField();
-		} else if (testCase.equals("Config-v1-26")) {
+		}
+		else if (testCase.equals("Config-v1-26"))
+		{
 			testConfig_v1_26DeviceRestart();
-		} else if (testCase.equals("Config-v1-27")) {
+		}
+		else if (testCase.equals("Config-v1-27"))
+		{
 			testConfig_v1_27DeviceRestartRememberConfData();
-		} else if (testCase.equals("Config-v1-29")) {
+		}
+		else if (testCase.equals("Config-v1-29"))
+		{
 			testConfig_v1_29PasscodeChanged();
-		} else if (testCase.equals("Config-v1-30")) {
+		}
+		else if (testCase.equals("Config-v1-30"))
+		{
 			testConfig_v1_30PasscodeChangedSingleChar();
-		} else if (testCase.equals("Config-v1-31")) {
+		}
+		else if (testCase.equals("Config-v1-31"))
+		{
 			testConfig_v1_31PasscodeChangedSpecialChars();
-		} else if (testCase.equals("Config-v1-32")) {
+		}
+		else if (testCase.equals("Config-v1-32"))
+		{
 			testConfig_v1_32PasscodeChangedPersistOnRestart();
-		} else if (testCase.equals("Config-v1-33")) {
+		}
+		else if (testCase.equals("Config-v1-33"))
+		{
 			testConfig_v1_33FactoryResetNoUpdateConfiguratins();
-		/*} else if (testCase.equals("Config-v1-34")) {
+		/*
+		} else if (testCase.equals("Config-v1-34"))
+		{
 			testConfig_v1_34FactoryResetAfterUpdateConfigurations();
-		} else if (testCase.equals("Config-v1-35")) {
+		}
+		else if (testCase.equals("Config-v1-35"))
+		{
 			testConfig_v1_35FactoryResetResetsPasscode();*/
-		} else {
+		}
+		else
+		{
 			fail("Test Case not valid");
 		}
 		
@@ -222,34 +260,28 @@ public class ConfigurationTestSuite
 	
 	protected void setUp() throws Exception
 	{
-		logger.noTag("====================================================");
+		logger.raw("====================================================");
 		logger.info("test setUp started");
 
 		try
 		{
-			//appUnderTestDetails = getValidationTestContext().getAppUnderTestDetails(); //[AT4] Not needed
-			//dutDeviceId = appUnderTestDetails.getDevideId();
-			dutDeviceId = ixit.get("IXITCO_DeviceId");
-			logger.info(String.format("Running Config test case against Device ID: %s", dutDeviceId));
-			//dutAppId = appUnderTestDetails.getAppId();
-			dutAppId = UUID.fromString(ixit.get("IXITCO_AppId"));
-			logger.info(String.format("Running Config test case against App ID: %s", dutAppId));
-			//keyStorePath = getValidationTestContext().getKeyStorePath();
+			dutDeviceId = ixitList.IXITCO_DeviceId;
+			logger.info("Running Config test case against Device ID: %s", dutDeviceId);
+			dutAppId = ixitList.IXITCO_AppId;
+			logger.info("Running Config test case against App ID: %s", dutAppId);
+
 			keyStorePath="/KeyStore";
-			logger.info(String.format("Running Config test case using KeyStorePath: %s", keyStorePath));
-			//aboutAnnouncementTimeout = determineAboutAnnouncementTimeout();
+			logger.info("Running Config test case using KeyStorePath: %s", keyStorePath);
 
 			initServiceHelper();
 			resetPasscodeIfNeeded();
 
 			logger.info("test setUp done");
-			logger.noTag("====================================================");
+			logger.raw("====================================================");
 		}
 		catch (Exception e)
 		{
-			//logger.debug("test setUp thrown an exception", e);
-			inconc("test setUp thrown an exception: "+e.getMessage()); //[AT4] inconcluse function
-			releaseResources();
+			tearDown();
 			throw e;
 		}
 	}
@@ -277,12 +309,13 @@ public class ConfigurationTestSuite
 	
 	private void releaseServiceHelper()
 	{
-		try {
-			if (aboutClient != null)
+		try
+		{
+			if (aboutProxy != null)
 			{
-				aboutClient.disconnect();
-				aboutClient = null;
+				aboutProxy = null;
 			}
+			
 			if (configClient != null)
 			{
 				configClient.disconnect();
@@ -315,7 +348,7 @@ public class ConfigurationTestSuite
 	private void connectAboutClient(AboutAnnouncementDetails aboutAnnouncement) throws Exception
 	{
 		serviceAvailabilityHandler = createServiceAvailabilityHandler();
-		aboutClient = serviceHelper.connectAboutClient(aboutAnnouncement, serviceAvailabilityHandler);
+		aboutProxy = serviceHelper.connectAboutProxy(aboutAnnouncement);
 	}
 	
 	private AboutAnnouncementDetails waitForNextDeviceAnnouncement() throws Exception
@@ -328,16 +361,15 @@ public class ConfigurationTestSuite
 	{
 		logger.info("Waiting for session to close");
 		serviceHelper.waitForSessionToClose(SESSION_CLOSE_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
-
 	}
 	
 	protected void tearDown() throws Exception
 	{
-		logger.noTag("====================================================");
+		logger.raw("====================================================");
 		logger.info("test tearDown started");
 		releaseResources();
 		logger.info("test tearDown done");
-		logger.noTag("====================================================");
+		logger.raw("====================================================");
 	}
 	
 	public void testConfig_v1_01AppIdEqualsDeviceId() throws Exception
@@ -352,7 +384,6 @@ public class ConfigurationTestSuite
 		}
 		else
 		{
-            //getValidationTestContext().addNote(String.format("System App AppId: %s is not equal to DeviceId: %s", dutAppId.toString(), dutDeviceId));
 			fail(String.format("System App AppId: %s is not equal to DeviceId: %s", dutAppId.toString().replace("-", ""), dutDeviceId.replace("-", "")));
 		}
 	}
@@ -368,20 +399,21 @@ public class ConfigurationTestSuite
 		boolean exceptionThrown = false;
 		try
 		{
-			logger.info(String.format("Attempting to retrieve Version property from Config interface using the passcode: %s", Arrays.toString(wrongPasscode)));
+			logger.info("Attempting to retrieve Version property from Config interface using the passcode: %s", Arrays.toString(wrongPasscode));
 			callMethodToCheckAuthentication();
 		}
 		catch (BusException be)
 		{
 			exceptionThrown = true;
 			logger.info("Expected exception thrown");
-			logger.info("Exception details:"+ be);
+			logger.info("Exception details: ", be);
 			logger.info("Checking if authentication was attempted"); //[AT4]
 			assertTrue("A call to a Config interface method must require authentication", serviceHelper.isPeerAuthenticationAttempted(deviceAboutAnnouncement));
 			logger.info("Checking if authentication was not successful"); //[AT4]
 			assertFalse("A call to a Config interface method with the wrong passcode must fail authentication",
 					serviceHelper.isPeerAuthenticationSuccessful(deviceAboutAnnouncement));
 		}
+		
 		if (!exceptionThrown)
 		{
 			logger.info("Expected exception not thrown");
@@ -400,7 +432,8 @@ public class ConfigurationTestSuite
 	{
 		logger.info("Partial Verdict: PASS"); //[AT4]
 		Map<String, Object> configMap = callGetConfigurationsWithDefaultLanguage();
-		checkMapForRequiredFields(configMap);
+		//checkMapForRequiredFields(configMap);
+		checkObjectMapForRequiredFields(configMap);
 		checkConsistencyWithAboutAnnouncement(configMap);
 	}
 
@@ -410,17 +443,22 @@ public class ConfigurationTestSuite
 		Map<String, Object> configMapWithUnspecifiedLanguage = callGetConfigurations("");
 		
 		logger.info("Checking received parameters when default language"); //[AT4]
-		checkMapForRequiredFields(configMapWithDefaultLanguage);
+		//checkMapForRequiredFields(configMapWithDefaultLanguage);
+		checkObjectMapForRequiredFields(configMapWithDefaultLanguage);
 		logger.info("Checking received parameters when unspecified language"); //[AT4]
-		checkMapForRequiredFields(configMapWithUnspecifiedLanguage);
+		//checkMapForRequiredFields(configMapWithUnspecifiedLanguage);
+		checkObjectMapForRequiredFields(configMapWithUnspecifiedLanguage);
 
 		logger.info("Checking that DeviceName and DefaultLanguage from the two GetConfigurations() calls match");
-		compareMaps(configMapWithDefaultLanguage, configMapWithUnspecifiedLanguage);
+		//compareMaps(configMapWithDefaultLanguage, configMapWithUnspecifiedLanguage);
+		compareObjectMaps(configMapWithDefaultLanguage, configMapWithUnspecifiedLanguage);
 	}
 
 	public void testConfig_v1_06LangConsistence() throws Exception
 	{
-		Map<String, Object> aboutMap = callGetAboutForDefaultLanguage();
+		//Map<String, Object> aboutMap = callGetAboutForDefaultLanguage();
+		Map<String, Variant> aboutMap = callGetAboutForDefaultLanguage();
+
 
 		String[] suppLangs = getSupportedLanguages(aboutMap);
 
@@ -429,19 +467,22 @@ public class ConfigurationTestSuite
 			for (String lang : suppLangs)
 			{
 				Map<String, Object> configMapForLang = callGetConfigurations(lang);
-				Map<String, Object> aboutMapForLang = callGetAbout(lang);
+				//Map<String, Object> aboutMapForLang = callGetAbout(lang);
+				Map<String, Variant> aboutMapForLang = callGetAbout(lang);
 				
-				checkMapForRequiredFields(configMapForLang);
+				//checkMapForRequiredFields(configMapForLang);
+				checkObjectMapForRequiredFields(configMapForLang);
 				checkMapForRequiredFields(aboutMapForLang);
 
 				logger.info(String.format("Comparing config and about maps for the language: %s", lang));
-				compareMaps(configMapForLang, aboutMapForLang);
+				//compareMaps(configMapForLang, aboutMapForLang);
+				compareMaps(aboutMapForLang, configMapForLang);
 			}
 		}
 		else
 		{
 			//getValidationTestContext().addNote("Only one language is supported");
-			logger.addNote("Only one language is supported");
+			logger.info("Only one language is supported");
 		}
 	}
 
@@ -624,7 +665,7 @@ public class ConfigurationTestSuite
 		else
 		{
 			//getValidationTestContext().addNote("Only one language is supported");
-			logger.addNote("Only one language is supported");
+			logger.info("Only one language is supported");
 		}
 	}
 	
@@ -632,7 +673,8 @@ public class ConfigurationTestSuite
 	{
 		String defaultLanguage = deviceAboutAnnouncement.getDefaultLanguage();
 
-		Map<String, Object> aboutMap = callGetAboutForDefaultLanguage();
+		//Map<String, Object> aboutMap = callGetAboutForDefaultLanguage();
+		Map<String, Variant> aboutMap = callGetAboutForDefaultLanguage();
 
 		String newLang = null;
 		String[] suppLangs = getSupportedLanguages(aboutMap);
@@ -763,8 +805,10 @@ public class ConfigurationTestSuite
 		callResetConfigurations(defaultLanguage, DEVICE_NAME_FIELD);
 		deviceAboutAnnouncement = waitForNextAnnouncementAndCheckFieldValue(AboutKeys.ABOUT_DEFAULT_LANGUAGE, defaultLanguage);
 
-		Map<String, Object> aboutMap = callGetAboutForDefaultLanguage();
-		String originalDeviceName = (String) aboutMap.get(AboutKeys.ABOUT_DEVICE_NAME);
+		//Map<String, Object> aboutMap = callGetAboutForDefaultLanguage();
+		Map<String, Variant> aboutMap = callGetAboutForDefaultLanguage();
+		//String originalDeviceName = (String) aboutMap.get(AboutKeys.ABOUT_DEVICE_NAME);
+		String originalDeviceName = aboutMap.get(AboutKeys.ABOUT_DEVICE_NAME).getObject(String.class);
 
 		logger.info(String.format("Original Device Name: %s", originalDeviceName));
 
@@ -803,7 +847,8 @@ public class ConfigurationTestSuite
 		callResetConfigurations(defaultLanguage, DEFAULT_LANGUAGE_FIELD);
 
 		Map<String, Object> configMap = callGetConfigurationsWithDefaultLanguage();
-		Map<String, Object> aboutMap = callGetAboutForDefaultLanguage();
+		//Map<String, Object> aboutMap = callGetAboutForDefaultLanguage();
+		Map<String, Variant> aboutMap = callGetAboutForDefaultLanguage();
 
 		compareMapsForField(AboutKeys.ABOUT_DEFAULT_LANGUAGE, aboutMap, configMap);
 	}
@@ -817,8 +862,10 @@ public class ConfigurationTestSuite
 
 			callResetConfigurations(defaultLanguage, DEFAULT_LANGUAGE_FIELD);
 
-			Map<String, Object> aboutMap = callGetAbout("");
-			String originalDefaultLanguage = (String) aboutMap.get(AboutKeys.ABOUT_DEFAULT_LANGUAGE);
+			//Map<String, Object> aboutMap = callGetAbout("");
+			Map<String, Variant> aboutMap = callGetAbout("");
+			//String originalDefaultLanguage = (String) aboutMap.get(AboutKeys.ABOUT_DEFAULT_LANGUAGE);
+			String originalDefaultLanguage = aboutMap.get(AboutKeys.ABOUT_DEFAULT_LANGUAGE).getObject(String.class);
 			Map<String, Object> configMap = callGetConfigurations("");
 
 			compareMapsForField(AboutKeys.ABOUT_DEFAULT_LANGUAGE, aboutMap, configMap);
@@ -850,7 +897,7 @@ public class ConfigurationTestSuite
 		else
 		{
 			//getValidationTestContext().addNote("Only one language is supported");
-			logger.addNote("Only one language is supported");
+			logger.info("Only one language is supported");
 		}
 	}
 	
@@ -944,7 +991,8 @@ public class ConfigurationTestSuite
 		reconnectClients();
 
 		Map<String, Object> configMap = callGetConfigurationsWithDefaultLanguage();
-		Map<String, Object> aboutMap = callGetAboutForDefaultLanguage();
+		//Map<String, Object> aboutMap = callGetAboutForDefaultLanguage();
+		Map<String, Variant> aboutMap = callGetAboutForDefaultLanguage();
 		verifyValueForAboutAndConfig(aboutMap, configMap, AboutKeys.ABOUT_DEVICE_NAME, NEW_DEVICE_NAME);
 
 		updateConfigurationsAndVerifyResult(AboutKeys.ABOUT_DEVICE_NAME, originalDeviceName);
@@ -1046,7 +1094,7 @@ public class ConfigurationTestSuite
 		if (deviceAboutAnnouncement.supportsInterface(OnboardingTransport.INTERFACE_NAME))
 		{
 			//getValidationContext().addNote("The device supports Onboarding so this Test Case is Not Applicable");
-			logger.addNote("The device supports Onboarding so this Test Case is Not Applicable");
+			logger.info("The device supports Onboarding so this Test Case is Not Applicable");
 		}
 		else
 		{
@@ -1119,7 +1167,7 @@ public class ConfigurationTestSuite
 		if (deviceAboutAnnouncement.supportsInterface(OnboardingTransport.INTERFACE_NAME))
 		{
 			//getValidationContext().addNote("The device supports Onboarding so this Test Case is Not Applicable");
-			logger.addNote("The device supports Onboarding so this Test Case is Not Applicable");
+			logger.info("The device supports Onboarding so this Test Case is Not Applicable");
 		}
 		else
 		{
@@ -1185,7 +1233,7 @@ public class ConfigurationTestSuite
 		if (deviceAboutAnnouncement.supportsInterface(OnboardingTransport.INTERFACE_NAME))
 		{
 			//getValidationTestContext().addNote("The device supports Onboarding so this Test Case is Not Applicable");
-			logger.addNote("The device supports Onboarding so this Test Case is Not Applicable");
+			logger.info("The device supports Onboarding so this Test Case is Not Applicable");
 		}
 		else
 		{
@@ -1273,7 +1321,8 @@ public class ConfigurationTestSuite
 		deviceAboutAnnouncement = waitForNextAnnouncementAndCheckFieldValue(fieldName, newFieldValue);
 
 		Map<String, Object> configMap = callGetConfigurationsWithDefaultLanguage();
-		Map<String, Object> aboutMap = callGetAboutForDefaultLanguage();
+		//Map<String, Object> aboutMap = callGetAboutForDefaultLanguage();
+		Map<String, Variant> aboutMap = callGetAboutForDefaultLanguage();
 		verifyValueForAboutAndConfig(aboutMap, configMap, fieldName, newFieldValue);
 	}
 	
@@ -1297,7 +1346,7 @@ public class ConfigurationTestSuite
 	
 	protected ServiceHelper createServiceHelper()
 	{
-		return new ServiceHelper(logger);
+		return new ServiceHelper();
 	}
 
 	protected ServiceAvailabilityHandler createServiceAvailabilityHandler()
@@ -1325,15 +1374,17 @@ public class ConfigurationTestSuite
         return newGeneratedDeviceName;
     }
     
-	private void verifyValueForAboutAndConfig(Map<String, Object> aboutMap, Map<String, Object> configMap, String key, String verifyValue)
+	//private void verifyValueForAboutAndConfig(Map<String, Object> aboutMap, Map<String, Object> configMap, String key, String verifyValue)
+	private void verifyValueForAboutAndConfig(Map<String, Variant> aboutMap, Map<String, Object> configMap, String key, String verifyValue) throws BusException
 	{
 		logger.info("Checking if "+key+" from GetConfigurations() matches expected value"); //[AT4]
 		assertEquals(String.format("Value for %s retrieved from GetConfigurations() does not match expected value", key), verifyValue,(String)  configMap.get(key));
 		logger.info("Checking if "+key+" from GetAboutData() matches expected value"); //[AT4]
-		assertEquals(String.format("Value for %s retrieved from GetAboutData() does not match expected value", key), verifyValue, (String) aboutMap.get(key));
+		//assertEquals(String.format("Value for %s retrieved from GetAboutData() does not match expected value", key), verifyValue, (String) aboutMap.get(key));
+		assertEquals(String.format("Value for %s retrieved from GetAboutData() does not match expected value", key), verifyValue, aboutMap.get(key).getObject(String.class));
 	}
 	
-    private void testFailReset(String exceptionName, String resetLang, String[] fieldsToReset)
+    /*private void testFailReset(String exceptionName, String resetLang, String[] fieldsToReset)
     {
         try
         {
@@ -1356,7 +1407,7 @@ public class ConfigurationTestSuite
             return;
         }
 
-    }
+    }*/
     
     protected StringValue createStringValue()
     {
@@ -1388,7 +1439,15 @@ public class ConfigurationTestSuite
 		return dutDeviceId.equals(dutAppId.toString().replace("-", ""));
 	}
 	
-	private void checkMapForRequiredFields(Map<String, Object> map)
+	private void checkObjectMapForRequiredFields(Map<String, Object> map)
+	{
+		logger.info("Checking that DeviceName field is present"); //[AT4]
+		assertTrue("Required DeviceName field not present in map", map.containsKey(AboutKeys.ABOUT_DEVICE_NAME));
+		logger.info("Checking that DefaultLanguage field is present"); //[AT4]
+		assertTrue("Required DefaultLanguage field not present in map", map.containsKey(AboutKeys.ABOUT_DEFAULT_LANGUAGE));
+	}
+	
+	private void checkMapForRequiredFields(Map<String, Variant> map)
 	{
 		logger.info("Checking that DeviceName field is present"); //[AT4]
 		assertTrue("Required DeviceName field not present in map", map.containsKey(AboutKeys.ABOUT_DEVICE_NAME));
@@ -1405,7 +1464,17 @@ public class ConfigurationTestSuite
 				(String) configMap.get(AboutKeys.ABOUT_DEFAULT_LANGUAGE));
 	}
 	
-	private void compareMaps(Map<String, Object> map1, Map<String, Object> map2) throws Exception
+	private void compareObjectMaps(Map<String, Object> map1, Map<String, Object> map2) throws Exception
+	{
+		logger.info("Comparing DeviceName"); //[AT4]
+		//compareMapsForField(AboutKeys.ABOUT_DEVICE_NAME, map1, map2);
+		compareObjectMapsForField(AboutKeys.ABOUT_DEVICE_NAME, map1, map2);
+		logger.info("Comparing DefaultLanguage"); //[AT4]
+		//compareMapsForField(AboutKeys.ABOUT_DEFAULT_LANGUAGE, map1, map2);
+		compareObjectMapsForField(AboutKeys.ABOUT_DEFAULT_LANGUAGE, map1, map2);
+	}
+	
+	private void compareMaps(Map<String, Variant> map1, Map<String, Object> map2) throws Exception
 	{
 		logger.info("Comparing DeviceName"); //[AT4]
 		compareMapsForField(AboutKeys.ABOUT_DEVICE_NAME, map1, map2);
@@ -1413,10 +1482,18 @@ public class ConfigurationTestSuite
 		compareMapsForField(AboutKeys.ABOUT_DEFAULT_LANGUAGE, map1, map2);
 	}
 
-	private void compareMapsForField(String fieldName, Map<String, Object> map1, Map<String, Object> map2) throws Exception
+	private void compareObjectMapsForField(String fieldName, Map<String, Object> map1, Map<String, Object> map2) throws Exception
 	{
 		logger.info("Comparing GetConfigurations() and GetAbout() "+fieldName+" field"); //[AT4]
-		assertEquals(String.format("%s does not match", fieldName), (String) map1.get(fieldName),(String) map2.get(fieldName));
+		//assertEquals(String.format("%s does not match", fieldName), (String) map1.get(fieldName), (String) map2.get(fieldName));
+		assertEquals(String.format("%s does not match", fieldName), (String) map1.get(fieldName), (String) map2.get(fieldName));
+	}
+	
+	private void compareMapsForField(String fieldName, Map<String, Variant> map1, Map<String, Object> map2) throws Exception
+	{
+		logger.info("Comparing GetConfigurations() and GetAbout() "+fieldName+" field"); //[AT4]
+		//assertEquals(String.format("%s does not match", fieldName), (String) map1.get(fieldName), (String) map2.get(fieldName));
+		assertEquals(String.format("%s does not match", fieldName), map1.get(fieldName).getObject(String.class), (String) map2.get(fieldName));
 	}
 
 	private Map<String, Object> callGetConfigurationsWithDefaultLanguage() throws BusException
@@ -1445,31 +1522,36 @@ public class ConfigurationTestSuite
 		configClient.ResetConfigurations(languageTag, fields);
 	}
 	
-	private Map<String, Object> callGetAboutForDefaultLanguage() throws BusException
+	//private Map<String, Object> callGetAboutForDefaultLanguage() throws BusException
+	private Map<String, Variant> callGetAboutForDefaultLanguage() throws BusException
 	{
 		String defaultLanguage = deviceAboutAnnouncement.getDefaultLanguage();
 		return callGetAbout(defaultLanguage);
 	}
 
-	private Map<String, Object> callGetAbout(String language) throws BusException
+	//private Map<String, Object> callGetAbout(String language) throws BusException
+	private Map<String, Variant> callGetAbout(String language) throws BusException
 	{
 		logger.info(String.format("Calling getAboutData() with the language: \"%s\"", language));
-		return aboutClient.getAbout(language);
+		//return aboutClient.getAbout(language);
+		return aboutProxy.getAboutData(language);
 	}
 	
-	private String[] getSupportedLanguages(Map<String, Object> aboutMap)
+	//private String[] getSupportedLanguages(Map<String, Object> aboutMap)
+	private String[] getSupportedLanguages(Map<String, Variant> aboutMap) throws BusException
 	{
-		String[] suppLangs = (String[]) aboutMap.get(AboutKeys.ABOUT_SUPPORTED_LANGUAGES);
+		//String[] suppLangs = (String[]) aboutMap.get(AboutKeys.ABOUT_SUPPORTED_LANGUAGES);
+		String[] suppLangs = aboutMap.get(AboutKeys.ABOUT_SUPPORTED_LANGUAGES).getObject(String[].class);
 		logger.info(String.format("Supported languages: %s", Arrays.toString(suppLangs)));
 		return suppLangs;
 	}
 
-	private short callGetVersionOnConfig() throws BusException
+	/*private short callGetVersionOnConfig() throws BusException
 	{
 		short version = configClient.getVersion();
 		logger.info(String.format("Call to getVersion() returns: %d", version));
 		return version;
-	}
+	}*/
 	
 	//private short callMethodToCheckAuthentication() throws BusException
 	private void callMethodToCheckAuthentication() throws BusException
@@ -1607,14 +1689,14 @@ public class ConfigurationTestSuite
 		}
 	}
 	
-	private void assertEquals(String first, String second)
+	/*private void assertEquals(String first, String second)
 	{
 		if (!first.equals(second)) {
 			fail("Strings are not equal");
 		} else {
 			logger.info("Partial Verdict: PASS");
 		}
-	}
+	}*/
 
 	private void assertTrue(String errorMessage, boolean condition)
 	{
@@ -1659,24 +1741,27 @@ public class ConfigurationTestSuite
 
 	}
 
-	private void inconc(String msg)
+	/*private void inconc(String msg)
 	{
 		logger.error(msg);
 		logger.info("Partial Verdict: INCONC");
 		inconc = true;
-	}
+	}*/
 
 	public String getFinalVerdict()
 	{
-		if (inconc) {
+		if (inconc)
+		{
 			return "INCONC";
 		} 
 		
-		if (pass) {
+		if (pass)
+		{
 			return "PASS";
-		} else {
+		}
+		else
+		{
 			return "FAIL";
 		}
 	}
-
 }

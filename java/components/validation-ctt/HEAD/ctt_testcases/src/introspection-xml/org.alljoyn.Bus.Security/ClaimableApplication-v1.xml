@@ -1,0 +1,122 @@
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://www.alljoyn.org/schemas/introspect.xsd">
+        <!-- The ClaimableApplication interface is provided by security 2.0 applications that
+            are in the claimable state.
+        -->
+        <interface name="org.alljoyn.Bus.Security.ClaimableApplication">
+        <annotation name="org.alljoyn.Bus.Secure" value="true"/>
+
+        <!-- A struct providing the details of an Elliptic Curve Cryptography
+            public key.
+        -->
+        <struct name="EccPublicKey">
+            <!-- An enumeration describing the key type. Values:
+                   0: ECDSA with SHA-256
+            -->
+            <field name="algorithm" type="y"/>
+            <!-- An enumeration identifying the curve this key is using. Values:
+                   0: NIST P-256
+            -->
+            <field name="curveIdentifier" type="y"/>
+            <!-- The X coordinate of the public key.-->
+            <field name="xCoordinate" type="ay"/>
+            <!-- The Y coordinate of the public key.-->
+            <field name="yCoordinate" type="ay"/>
+        </struct>
+
+        <struct name="Guid">
+            <!-- The GUID represented as a byte array. -->
+            <field name="guidData" type="ay"/>
+        </struct>
+
+        <struct name="Certificate">
+            <!-- An enumeration representing the encoding of the
+                certificate data. Values:
+                  0: an X.509 DER encoded certificate.
+                  1: an X.509 PEM encoded certificate.
+            -->
+            <field name="encoding" type="y"/>
+            <field name="certificateData" type="ay"/>
+        </struct>
+
+        <!-- A struct describing a member of an interface
+             and the access rights on it.
+        -->
+        <struct name="Member">
+            <!-- The name of the interface member. The '*' matches
+                all members of the type specified by the type field.
+            -->
+            <field name="name" type="s"/>
+            <!-- An enumeration describing the type of the member. Values:
+                  0: Any type.
+                  1: Method.
+                  2: Signal.
+                  3: Property.
+            -->
+            <field name="type" type="y"/>
+            <!-- A bitmask describing the action on the member. Values:
+                  0x1: Provide. Allows sending signals and/or exposing
+                       methods and properties.
+                  0x2: Observe. Allows receiving signals and reading properties.
+                  0x4: Modify. Allows setting properties and making method
+                       calls.
+            -->
+            <field name="action" type="y"/>
+        </struct>
+
+        <struct name="Rule">
+            <!-- contains the required object path on which the rule applies.
+                The '*' character is allowed at the end of the object path.
+                The object path is then considered a prefix. The rule
+                applies to all object paths starting with the prefix.
+            -->
+            <field name="objectPath" type="s"/>
+            <!-- contains the required interface name on which the rule applies.
+                The '*' character is allowed at the end of the interface name.
+                The interface name is then considered a prefix. The rule
+                applies to all interfaces names starting with the prefix.
+            -->
+            <field name="interfaceName" type="s"/>
+            <!-- The order of the members is not significant.  Duplicates are
+                allowed but not efficient since they will be evaluated multiple
+                times.
+            -->
+            <field name="members" type="a[Member]"/>
+        </struct>
+
+        <!-- The Interface version.-->
+        <property name="Version" access="read" type="q">
+            <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+        </property>
+
+        <!-- Claim the application, providing it an identity
+            certificate along with a set of permissions. A security group
+            identity is passed. Members of this group are allowed to
+            manage the application.
+        -->
+        <method name="Claim">
+            <!-- The public key of the certificate authority on whose authority
+                 this application is claimed. Certificates signed
+                 by this CA are considered trusted.
+            -->
+            <arg name="certificateAuthority" type="[EccPublicKey]" direction="in"/>
+            <!-- The key identifier of the certificate authority public key -->
+            <arg name="authorityKeyIdentifier" type="ay" direction="in"/>
+            <!-- The GUID of the security group who holds administration rights -->
+            <arg name="adminSecurityGroupId" type="ay" direction="in"/>  <!-- type="[Guid]" -->
+            <!-- The public key of the admin security group authority. -->
+            <arg name="adminSecurityGroupAuthority" type="[EccPublicKey]" direction="in"/>
+            <arg name="adminGroupAuthorityKeyIdentifier" type="ay" direction="in"/>
+            <!-- The identity certificate this application can use to identify
+                itself to other peers on the network.
+            -->
+            <arg name="identityCertificateChain" type="a[Certificate]" direction="in"/>
+            <!-- The permissions the application is given.  At least one rule
+                must be specified.  The order of the rules is not significant.
+                Duplicates are allowed but not efficient since they will be
+                evaluated multiple times.
+            -->
+            <arg name="manifest" type="a[Rule]" direction="in"/>
+        </method>
+    </interface>
+</node>
+
