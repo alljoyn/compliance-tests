@@ -32,7 +32,7 @@ import org.alljoyn.bus.ProxyBusObject;
 import org.alljoyn.bus.Variant;
 
 import com.at4wireless.alljoyn.core.about.AboutAnnouncementDetails;
-import com.at4wireless.alljoyn.core.commons.ServiceAvailabilityHandler;
+import com.at4wireless.alljoyn.core.commons.log.Logger;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.interfacevalidator.ValidationResult;
 import com.at4wireless.alljoyn.core.introspection.BusIntrospector;
@@ -102,13 +102,13 @@ import com.at4wireless.alljoyn.core.lightingcontroller.LeaderElectionBusInterfac
 import com.at4wireless.alljoyn.core.lightingcontroller.LeaderElectionBusInterface.ChecksumAndTimestampValues;
 import com.at4wireless.alljoyn.core.lightingcontroller.LeaderElectionBusObject;
 import com.at4wireless.alljoyn.core.lightingcontroller.LeaderElectionSignalHandler;
+import com.at4wireless.alljoyn.testcases.parameter.GeneralParameter;
+import com.at4wireless.alljoyn.testcases.parameter.Ics;
+import com.at4wireless.alljoyn.testcases.parameter.Ixit;
 
 public class LightingControllerTestSuite
 {
-	// Logging constants
-	private static final String TAG = "LControllerTestSuite";
-	//private static final Logger logger = LoggerFactory.getLogger(TAG);
-	private static final WindowsLoggerImpl logger = new WindowsLoggerImpl(TAG);
+	private static final Logger logger = new WindowsLoggerImpl("LControllerTestSuite");
 
 	// AJ testing constants
 	private static final String BUS_APPLICATION_NAME = "ControllerTestSuite";
@@ -181,70 +181,25 @@ public class LightingControllerTestSuite
 	 * */
 	boolean pass = true;
 	boolean inconc = false;
-    Map<String, Boolean> ics;
-    Map<String, String> ixit;
+	private Ics icsList;
+	private Ixit ixitList;
 
-	public LightingControllerTestSuite(String testCase,
-			boolean iCSLC_LightingControllerServiceFramework,
-			boolean iCSLC_ControllerServiceInterface,
-			boolean iCSLC_ControllerServiceLampInterface,
-			boolean iCSLC_ControllerServiceLampGroupInterface,
-			boolean iCSLC_ControllerServicePresetInterface,
-			boolean iCSLC_ControllerServiceSceneInterface,
-			boolean iCSLC_ControllerServiceMasterSceneInterface,
-			boolean iCSLC_LeaderElectionAndStateSyncInterface,
-			String iXITCO_AppId, String iXITCO_DeviceId,
-			String iXITCO_DefaultLanguage,
-			String iXITLC_ControllerServiceVersion,
-			String iXITLC_ControllerServiceLampVersion,
-			String iXITLC_ControllerServiceLampGroupVersion,
-			String iXITLC_ControllerServicePresetVersion,
-			String iXITLC_ControllerServiceSceneVersion,
-			String iXITLC_ControllerServiceMasterSceneVersion,
-			String iXITLC_LeaderElectionAndStateSyncVersion,
-			String gPCO_AnnouncementTimeout, String gPLC_SessionClose)
+	public LightingControllerTestSuite(String testCase, Ics icsList, Ixit ixitList, GeneralParameter gpList)
 	{
-		ics = new HashMap<String, Boolean>();
-		ixit = new HashMap<String, String>();
-		
-		ics.put("ICSLC_LightingControllerServiceFramework", iCSLC_LightingControllerServiceFramework);
-		ics.put("ICSLC_ControllerServiceInterface", iCSLC_ControllerServiceInterface);
-		ics.put("ICSLC_ControllerServiceLampInterface", iCSLC_ControllerServiceLampInterface);
-		ics.put("ICSLC_ControllerServiceLampGroupInterface", iCSLC_ControllerServiceLampGroupInterface);
-		ics.put("ICSLC_ControllerServicePresetInterface", iCSLC_ControllerServicePresetInterface);
-		ics.put("ICSLC_ControllerServiceSceneInterface", iCSLC_ControllerServiceSceneInterface);
-		ics.put("ICSLC_ControllerServiceMasterSceneInterface", iCSLC_ControllerServiceMasterSceneInterface);
-		ics.put("ICSLC_LeaderElectionAndStateSyncInterface", iCSLC_LeaderElectionAndStateSyncInterface);
-		
-		ixit.put("IXITCO_AppId", iXITCO_AppId);
-		ixit.put("IXITCO_DeviceId", iXITCO_DeviceId);
-		ixit.put("IXITCO_DefaultLanguage", iXITCO_DefaultLanguage);
-		ixit.put("IXITLC_ControllerServiceVersion", iXITLC_ControllerServiceVersion);
-		ixit.put("IXITLC_ControllerServiceLampVersion", iXITLC_ControllerServiceLampVersion);
-		ixit.put("IXITLC_ControllerServiceLampGroupVersion", iXITLC_ControllerServiceLampGroupVersion);
-		ixit.put("IXITLC_ControllerServicePresetVersion", iXITLC_ControllerServicePresetVersion);
-		ixit.put("IXITLC_ControllerServiceSceneVersion", iXITLC_ControllerServiceSceneVersion);
-		ixit.put("IXITLC_ControllerServiceMasterSceneVersion", iXITLC_ControllerServiceMasterSceneVersion);
-		ixit.put("IXITLC_LeaderElectionAndStateSyncVersion", iXITLC_LeaderElectionAndStateSyncVersion);
+		this.icsList = icsList;
+		this.ixitList = ixitList;
 
-		ANNOUNCEMENT_TIMEOUT_IN_SECONDS   = Integer.parseInt(gPCO_AnnouncementTimeout);
-		SESSION_CLOSE_TIMEOUT_IN_SECONDS  = Integer.parseInt(gPLC_SessionClose);
+		ANNOUNCEMENT_TIMEOUT_IN_SECONDS   = gpList.GPCO_AnnouncementTimeout;
+		SESSION_CLOSE_TIMEOUT_IN_SECONDS  = gpList.GPLC_SessionClose;
 
 		try
 		{
 			runTestCase(testCase);
 		}
-		catch (Exception e)
+		catch(Exception e)
 		{
-			if (e.getMessage().equals("Timed out waiting for About announcement"))
-			{
-				fail("Timed out waiting for About announcement");
-			}
-			else
-			{
-				inconc = true;
-				fail("Exception: "+e.toString());
-			}
+			logger.error(String.format("Exception: %s", e.toString()));
+			inconc = true;
 		}
 	}
 
@@ -253,7 +208,8 @@ public class LightingControllerTestSuite
 		setUp();
 		logger.info("Running testcase: "+testCase);
 
-		if (testCase.equals("LSF_Controller-v1-01")){
+		if (testCase.equals("LSF_Controller-v1-01"))
+		{
 			testLSF_Controller_v1_01_StandardizedInterfacesMatchDefinitions();
 		}
 		else if (testCase.equals("LSF_Controller-v1-02"))
@@ -399,16 +355,16 @@ public class LightingControllerTestSuite
 	private void setUp() throws Exception
 	{
 		//super.setUp();
-		logger.noTag("====================================================");
+		System.out.println("====================================================");
 		logger.info("setUp started");
 
 		try
 		{
 			//appUnderTestDetails = getValidationTestContext().getAppUnderTestDetails();
 			//dutDeviceId = appUnderTestDetails.getDeviceId();
-			dutDeviceId = ixit.get("IXITCO_DeviceId");
+			dutDeviceId = ixitList.IXITCO_DeviceId;
 			//dutAppId = appUnderTestDetails.getAppId();
-			dutAppId = UUID.fromString(ixit.get("IXITCO_AppId"));
+			dutAppId = ixitList.IXITCO_AppId;
 
 			logger.info("Running LSF_Controller test case against Device ID: " + dutDeviceId);
 			logger.info("Running LSF_Controller test case against App ID: " + dutAppId);
@@ -426,23 +382,23 @@ public class LightingControllerTestSuite
 			tearDown();
 			throw e;
 		}
-		logger.noTag("====================================================");
+		System.out.println("====================================================");
 	} 
 	
 	protected void tearDown() throws Exception
 	{
-		logger.noTag("====================================================");
+		System.out.println("====================================================");
 		logger.info("test tearDown started");
 		controllerIface.LightingResetControllerService(); // clean up Controller
 		releaseServiceHelper();
 		logger.info("test tearDown done");
-		logger.noTag("====================================================");
+		System.out.println("====================================================");
 	}
 
 	private void initServiceHelper() throws BusException, Exception
 	{
 		releaseServiceHelper();
-		serviceHelper = new ControllerServiceHelper(logger);
+		serviceHelper = new ControllerServiceHelper();
 		serviceHelper.initialize(BUS_APPLICATION_NAME, dutDeviceId, dutAppId);
 		signalListener = new ControllerServiceSignalListener(); // callback class for all signal handlers
 
@@ -575,7 +531,7 @@ public class LightingControllerTestSuite
 
 	private void connectControllerService(AboutAnnouncementDetails aboutAnnouncement) throws Exception
 	{
-		ServiceAvailabilityHandler serviceAvailabilityHandler = new ServiceAvailabilityHandler();
+		//ServiceAvailabilityHandler serviceAvailabilityHandler = new ServiceAvailabilityHandler();
 		serviceHelper.connect(aboutAnnouncement);
 	}
 
@@ -605,38 +561,38 @@ public class LightingControllerTestSuite
 			version = controllerIface.getVersion();
 			logger.info(CONTROLLERSERVICE_INTERFACE_NAME + ", Version:" + version);
 			assertEquals("The controller Service Version does not match IXIT", version,
-					Integer.parseInt(ixit.get("IXITLC_ControllerServiceVersion")));
+					ixitList.IXITLC_ControllerServiceVersion);
 			
 			version = lampIface.getVersion();
 			logger.info(LAMP_INTERFACE_NAME + ", Version: " + version);
 			assertEquals("The controller Service Lamp Version does not match IXIT", version,
-					Integer.parseInt(ixit.get("IXITLC_ControllerServiceLampVersion")));
+					ixitList.IXITLC_ControllerServiceLampVersion);
 
 			version = lampGroupIface.getVersion();
 			logger.info(LAMPGROUP_INTERFACE_NAME + " Version: " + version);
 			assertEquals("The controller Service Lamp Group Version does not match IXIT", version,
-					Integer.parseInt(ixit.get("IXITLC_ControllerServiceLampGroupVersion")));
+					ixitList.IXITLC_ControllerServiceLampGroupVersion);
 
 			version = presetIface.getVersion();
 			logger.info(PRESET_INTERFACE_NAME + " Version: " + version);
 			assertEquals("The controller Service Preset Version does not match IXIT", version,
-					Integer.parseInt(ixit.get("IXITLC_ControllerServicePresetVersion")));
+					ixitList.IXITLC_ControllerServicePresetVersion);
 
 			version = sceneIface.getVersion();
 			logger.info(SCENE_INTERFACE_NAME + " Version: " + version);
 			assertEquals("The controller Service Scene Version does not match IXIT", version,
-					Integer.parseInt(ixit.get("IXITLC_ControllerServiceSceneVersion")));
+					ixitList.IXITLC_ControllerServiceSceneVersion);
 
 			version = masterSceneIface.getVersion();
 			logger.info(MASTERSCENE_INTERFACE_NAME + " Version: " + version);
 			assertEquals("The controller Service Master Scene Version does not match IXIT", version,
-					Integer.parseInt(ixit.get("IXITLC_ControllerServiceMasterSceneVersion")));
+					ixitList.IXITLC_ControllerServiceMasterSceneVersion);
 
 			// verify version from method on ControllerService interface
 			version = controllerIface.GetControllerServiceVersion();
 			logger.info(LEADER_ELECTION_INTERFACE_NAME + " MethodCall-Version: " + version);
 			assertEquals("The controller Service Preset Version does not match", version,
-					Integer.parseInt(ixit.get("IXITLC_LeaderElectionAndStateSyncVersion")));
+					ixitList.IXITLC_ControllerServicePresetVersion);
 
 		}
 		catch (Exception e)

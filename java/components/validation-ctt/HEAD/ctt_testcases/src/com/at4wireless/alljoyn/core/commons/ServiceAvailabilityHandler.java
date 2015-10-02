@@ -35,4 +35,3 @@ public class ServiceAvailabilityHandler implements ServiceAvailabilityListener
         return countDownLatch.await(timeout, unit);
     }
 }
-

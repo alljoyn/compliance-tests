@@ -60,6 +60,7 @@ import org.xml.sax.SAXException;
 
 import com.at4wireless.alljoyn.core.about.AboutAnnouncementDetails;
 import com.at4wireless.alljoyn.core.commons.ServiceHelper;
+import com.at4wireless.alljoyn.core.commons.log.Logger;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.interfacevalidator.InterfaceValidator;
 import com.at4wireless.alljoyn.core.interfacevalidator.ValidationResult;
@@ -70,11 +71,13 @@ import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionInterface;
 import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionNode;
 import com.at4wireless.alljoyn.core.introspection.bean.NodeDetail;
 import com.at4wireless.alljoyn.core.time.Pair;
+import com.at4wireless.alljoyn.testcases.parameter.GeneralParameter;
+import com.at4wireless.alljoyn.testcases.parameter.Ics;
+import com.at4wireless.alljoyn.testcases.parameter.Ixit;
 
 public class TimeTestSuite {
  	private final String INTROSPECTABLE_INTERFACE_NAME = "org.allseen.Introspectable";
-	protected final String TAG = "TimeServiceTestSuite";
-	private final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG); //[AT4] Changed to Windows' Logger implementation
+ 	private static final Logger logger = new WindowsLoggerImpl(TimeTestSuite.class.getSimpleName());
 	private final String BUS_APPLICATION_NAME = "TimeServiceTestSuite";
 	private final String ERROR_MSG_BUS_INTROSPECTION = "Encountered exception while trying to introspect the bus";
 	private final String DBUS_ERROR_SERVICE_UNKNOWN = "org.freedesktop.DBus.Error.ServiceUnknown";
@@ -107,60 +110,29 @@ public class TimeTestSuite {
 	 * 
 	 * */
 	
- 	Boolean pass=true;
-	private Map<String, Boolean> ics;
-	private Map<String, String> ixit;
+ 	private boolean pass = true;
+ 	private boolean inconc = false;
+	private Ics icsList;
+	private Ixit ixitList;
 
-	public TimeTestSuite(String testCase, boolean iCST_TimeServiceFramework,
-			boolean iCST_ClockInterface, boolean iCST_Date,
-			boolean iCST_Milliseconds, boolean iCST_TimeAuthorityInterface,
-			boolean iCST_AlarmFactoryInterface, boolean iCST_AlarmInterface,
-			boolean iCST_TimerFactoryInterface, boolean iCST_TimerInterface,
-			String iXITCO_AppId, String iXITCO_DeviceId,
-			String iXITCO_DefaultLanguage, String iXITT_ClockVersion,
-			String iXITT_TimeAuthorityVersion,
-			String iXITT_AlarmFactoryVersion, String iXITT_AlarmVersion,
-			String iXITT_TimerFactoryVersion, String iXITT_TimerVersion,
-			String gPCO_AnnouncementTimeout) {
-		
+	public TimeTestSuite(String testCase, Ics icsList, Ixit ixitList, GeneralParameter gpList)
+	{
 		/** 
 		 * [AT4] Attributes initialization
 		 * */
+		this.icsList = icsList;
+		this.ixitList = ixitList;
 
-		ics = new HashMap<String,Boolean>();
-		ixit = new HashMap<String,String>();
+		ANNOUNCEMENT_TIMEOUT_IN_SECONDS = gpList.GPCO_AnnouncementTimeout;
 		
-		ics.put("ICST_TimeServiceFramework", iCST_TimeServiceFramework);
-		ics.put("ICST_ClockInterface", iCST_ClockInterface);
-		ics.put("ICST_Date", iCST_Date);
-		ics.put("ICST_Milliseconds", iCST_Milliseconds);
-		ics.put("ICST_TimeAuthorityInterface", iCST_TimeAuthorityInterface);
-		ics.put("ICST_AlarmFactoryInterface", iCST_AlarmFactoryInterface);
-		ics.put("ICST_AlarmInterface", iCST_AlarmInterface);
-		ics.put("ICST_TimerFactoryInterface", iCST_TimerFactoryInterface);
-		ics.put("ICST_TimerInterface", iCST_TimerInterface);
-		
-		ixit.put("IXITCO_AppId", iXITCO_AppId);
-		ixit.put("IXITCO_DeviceId", iXITCO_DeviceId);
-		ixit.put("IXITCO_DefaultLanguage", iXITCO_DefaultLanguage);
-		ixit.put("IXITT_ClockVersion", iXITT_ClockVersion);
-		ixit.put("IXITT_TimeAuthorityVersion", iXITT_TimeAuthorityVersion);
-		ixit.put("IXITT_AlarmFactoryVersion", iXITT_AlarmFactoryVersion);
-		ixit.put("IXITT_AlarmVersion", iXITT_AlarmVersion);
-		ixit.put("IXITT_TimerFactoryVersion", iXITT_TimerFactoryVersion);
-		ixit.put("IXITT_TimerVersion", iXITT_TimerVersion);
-	
-		ANNOUNCEMENT_TIMEOUT_IN_SECONDS = Integer.parseInt(gPCO_AnnouncementTimeout);
-
-		try {
+		try
+		{
 			runTestCase(testCase);
-		} catch(Exception e) {
-			
-			//if(e.getMessage().equals("Timed out waiting for About announcement")){
-				//fail("Timed out waiting for About announcement");
-			//}else{
-				fail("Exception: "+e.toString());
-			//}
+		}
+		catch(Exception e)
+		{
+			logger.error(String.format("Exception: %s", e.toString()));
+			inconc = true;
 		}
 	}
 	
@@ -174,15 +146,24 @@ public class TimeTestSuite {
 		
 		setUp();		
 		
-		if (testCase.equals("TimeService-v1-01")) {
+		if (testCase.equals("TimeService-v1-01"))
+		{
 			testTime_v1_01_GetObjectDescription();
-		} else if (testCase.equals("TimeService-v1-02")) {
+		}
+		else if (testCase.equals("TimeService-v1-02"))
+		{
 			testTime_v1_02_VerifyClocks();
-		} else if (testCase.equals("TimeService-v1-03")) {
+		}
+		else if (testCase.equals("TimeService-v1-03"))
+		{
 			testTime_v1_03_VerifyTimers();
-		} else if (testCase.equals("TimeService-v1-04")) {
+		}
+		else if (testCase.equals("TimeService-v1-04"))
+		{
 			testTime_v1_04_VerifyAlarms();
-		} else {
+		}
+		else
+		{
 			fail("Test Case not valid");
 		}
 		
@@ -191,15 +172,15 @@ public class TimeTestSuite {
 
 	private void setUp() throws Exception
 	{
-		logger.noTag("====================================================");
+		System.out.println("====================================================");
 		logger.info("test setUp started");
 
 		try {
-			logger.info("Running Time Service test case against Device ID: "+ ixit.get("IXITCO_DeviceId"));
-			logger.info("Running Time Service test case against App ID: "+ UUID.fromString(ixit.get("IXITCO_AppId")));
+			logger.info("Running Time Service test case against Device ID: "+ ixitList.IXITCO_DeviceId);
+			logger.info("Running Time Service test case against App ID: "+ ixitList.IXITCO_AppId);
 
 			serviceHelper = getServiceHelper();
-			serviceHelper.initialize(BUS_APPLICATION_NAME, ixit.get("IXITCO_DeviceId"), UUID.fromString(ixit.get("IXITCO_AppId")));
+			serviceHelper.initialize(BUS_APPLICATION_NAME, ixitList.IXITCO_DeviceId, ixitList.IXITCO_AppId);
 
 			//deviceAboutAnnouncement = serviceHelper.waitForNextDeviceAnnouncement(ANNOUCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
 			deviceAboutAnnouncement = serviceHelper.waitForNextDeviceAnnouncement(ANNOUNCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
@@ -227,7 +208,7 @@ public class TimeTestSuite {
 			assertEquals(Status.OK, joinRes.getSecond());
 			
 			logger.info("test setUp done");
-			logger.noTag("====================================================");
+			System.out.println("====================================================");
 
 		} catch (Exception exception) {
 			try {
@@ -242,11 +223,11 @@ public class TimeTestSuite {
 
 	protected void tearDown() throws Exception {
 
-		logger.noTag("====================================================");
+		System.out.println("====================================================");
 		logger.debug("test tearDown started");
 		releaseResources();
 		logger.debug("test tearDown done");
-		logger.noTag("====================================================");
+		System.out.println("====================================================");
 	}
 
 	public void testTime_v1_01_GetObjectDescription() throws Exception {
@@ -707,7 +688,7 @@ public class TimeTestSuite {
 	}
 	
 	protected  ServiceHelper getServiceHelper() {
-		return new ServiceHelper(logger); //[AT4] Changed "new AndroidLogger()" to "logger"
+		return new ServiceHelper();
 		
 	}
 
@@ -797,13 +778,20 @@ public class TimeTestSuite {
 		pass=false;
 	}
 
-	public String getFinalVerdict() {
-
-		if (pass) {
+	public String getFinalVerdict()
+	{
+		if (inconc)
+		{
+			return "INCONC";
+		}
+		
+		if (pass)
+		{
 			return "PASS";
-		} else {
+		}
+		else
+		{
 			return "FAIL";
 		}
 	}
 }
-

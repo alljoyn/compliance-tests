@@ -18,68 +18,36 @@ package com.at4wireless.alljoyn.core.introspection.bean;
 import java.util.Set;
 import java.util.TreeSet;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class IntrospectionInterface.
- */
 public class IntrospectionInterface extends IntrospectionBaseTag
 {
-    
-    /** The methods. */
     private Set<IntrospectionMethod> methods = new TreeSet<IntrospectionMethod>();
     
-    /** The properties. */
     private Set<IntrospectionProperty> properties = new TreeSet<IntrospectionProperty>();
     
-    /** The signals. */
     private Set<IntrospectionSignal> signals = new TreeSet<IntrospectionSignal>();
     
-    /** The annotations. */
     private Set<IntrospectionAnnotation> annotations = new TreeSet<IntrospectionAnnotation>();
 
-    /**
-     * Gets the methods.
-     *
-     * @return the methods
-     */
     public Set<IntrospectionMethod> getMethods()
     {
         return methods;
     }
 
-    /**
-     * Gets the properties.
-     *
-     * @return the properties
-     */
     public Set<IntrospectionProperty> getProperties()
     {
         return properties;
     }
 
-    /**
-     * Gets the signals.
-     *
-     * @return the signals
-     */
     public Set<IntrospectionSignal> getSignals()
     {
         return signals;
     }
 
-    /**
-     * Gets the annotations.
-     *
-     * @return the annotations
-     */
     public Set<IntrospectionAnnotation> getAnnotations()
     {
         return annotations;
     }
 
-    /* (non-Javadoc)
-     * @see com.at4wireless.alljoyn.core.introspection.bean.IntrospectionBaseTag#hashCode()
-     */
     @Override
     public int hashCode()
     {
@@ -93,9 +61,6 @@ public class IntrospectionInterface extends IntrospectionBaseTag
         return result;
     }
 
-    /* (non-Javadoc)
-     * @see com.at4wireless.alljoyn.core.introspection.bean.IntrospectionBaseTag#equals(java.lang.Object)
-     */
     @Override
     public boolean equals(Object obj)
     {

@@ -38,28 +38,29 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
+import com.at4wireless.alljoyn.core.commons.log.Logger;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.iop.CategoryKeys;
 import com.at4wireless.alljoyn.core.iop.IOPMessage;
+import com.at4wireless.alljoyn.testcases.parameter.Ics;
 
 public class AboutIOPTestSuite
 {
-	protected static final String TAG = "AboutIOPTestSuite";
-	private static final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	private static final Logger logger = new WindowsLoggerImpl(AboutIOPTestSuite.class.getSimpleName());
 	private static final int GOLDEN_UNIT_SELECTOR_WIDTH = 500;
 	private static final int GOLDEN_UNIT_SELECTOR_HEIGHT = 200;
 	
 	boolean pass = true;
 	boolean inconc = false;
-	IOPMessage message = new IOPMessage(logger);
+	IOPMessage message = new IOPMessage();
 	Map<String, List<String>> goldenUnits;
 	Boolean ICSON_OnboardingServiceFramework = false;
 	String name = null;
 
-	public AboutIOPTestSuite(String testCase, Map<String, List<String>> goldenUnits, boolean iCSON_OnboardingServiceFramework)
+	public AboutIOPTestSuite(String testCase, Map<String, List<String>> goldenUnits, Ics icsList)
 	{		
 		this.goldenUnits = goldenUnits;
-		ICSON_OnboardingServiceFramework = iCSON_OnboardingServiceFramework;
+		ICSON_OnboardingServiceFramework = icsList.ICSON_OnboardingServiceFramework;
 		
 		try
 		{
