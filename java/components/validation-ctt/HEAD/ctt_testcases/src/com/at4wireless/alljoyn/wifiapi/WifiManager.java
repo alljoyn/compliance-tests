@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import com.at4wireless.alljoyn.core.commons.log.Logger;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.sun.jna.Pointer;
 import com.sun.jna.WString;
@@ -32,8 +33,7 @@ public class WifiManager
 	private PointerByReference hClient;
 	private Guid.GUID interfaceGuid;
 	
-    private static final String TAG = "WifiManager";
-	private static final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	private static final Logger logger = new WindowsLoggerImpl(WifiManager.class.getSimpleName());
 	
 	private WlanApi.WlanNotificationCallback notificationCallback = new WlanApi.WlanNotificationCallback()
 	{

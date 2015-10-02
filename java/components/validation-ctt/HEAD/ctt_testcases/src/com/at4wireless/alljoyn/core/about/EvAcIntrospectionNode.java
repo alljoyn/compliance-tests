@@ -33,31 +33,27 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 import com.at4wireless.alljoyn.core.commons.log.Logger;
-import com.at4wireless.alljoyn.core.commons.log.LoggerFactory;
+import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 public class EvAcIntrospectionNode
 {
-
     class NoOpEntityResolver implements EntityResolver
     {
         public InputSource resolveEntity(String publicId, String systemId) throws SAXException, java.io.IOException
         {
             return new InputSource(new ByteArrayInputStream("".getBytes()));
         }
-
     } 
 
     //=============================================//
 
     class IntrospectionParser extends DefaultHandler
     {
-
         private XMLReader xmlReader = null;
         private SAXParser saxParser = null;
 
         private EvAcIntrospectionNode currentNode = null;
         private boolean sawRootNode = false;
-
 
         public IntrospectionParser() throws IOException, ParserConfigurationException, SAXException
         {
@@ -88,7 +84,7 @@ public class EvAcIntrospectionNode
         {
             if (qName.equals("node"))
             {
-                if(!sawRootNode)
+                if (!sawRootNode)
                 {
                     sawRootNode = true;
                     return;
@@ -107,7 +103,7 @@ public class EvAcIntrospectionNode
         private String getNameAttr(Attributes attrs) throws SAXException
         {
             int i = attrs.getIndex("name");
-            if(-1 == i) 
+            if (-1 == i) 
             	throw new SAXException("inner node without a name");
             return attrs.getValue(i);
         }
@@ -117,8 +113,7 @@ public class EvAcIntrospectionNode
     // END OF NESTED CLASSES //
     // ================================================//
 
-    private static final String TAG = "EvAcIntrospectionNode";
-    private static final Logger logger = LoggerFactory.getLogger(TAG);
+    private static final Logger logger = new WindowsLoggerImpl(EvAcIntrospectionNode.class.getSimpleName());
 
     private boolean parsed = false;
     private String path = null;
@@ -142,7 +137,7 @@ public class EvAcIntrospectionNode
     protected void addChild(String name)
     {
         StringBuilder sb = new StringBuilder(path);
-        if(!name.endsWith("/")) 
+        if (!name.endsWith("/")) 
         	sb.append('/');
         sb.append(name);
         children.add(new EvAcIntrospectionNode(sb.toString(), parser));
@@ -193,7 +188,6 @@ public class EvAcIntrospectionNode
      */
     public void parse(String xml) throws SAXException
     {
-
         parser.parse(this, xml);
         parsed = true;
     }// parse
@@ -207,5 +201,4 @@ public class EvAcIntrospectionNode
     {
         return interfaces;
     }
-
 }

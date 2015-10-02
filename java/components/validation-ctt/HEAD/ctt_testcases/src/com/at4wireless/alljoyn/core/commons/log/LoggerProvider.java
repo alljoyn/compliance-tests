@@ -17,5 +17,5 @@ package com.at4wireless.alljoyn.core.commons.log;
 
 public interface LoggerProvider
 {
-    WindowsLoggerImpl getLogger(String tag);
+    Logger getLogger(String tag);
 }

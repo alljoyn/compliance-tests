@@ -24,12 +24,11 @@ import org.alljoyn.bus.annotation.BusSignalHandler;
 import com.at4wireless.alljoyn.core.audio.AudioTransports.Configuration;
 import com.at4wireless.alljoyn.core.audio.AudioTransports.Port;
 import com.at4wireless.alljoyn.core.commons.log.Logger;
-import com.at4wireless.alljoyn.core.commons.log.LoggerFactory;
+import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 public class OwnershipLostSignalHandler implements Port, BusObject
 {
-	private static final String TAG = "OwnershipLostHandler";
-	private static final Logger logger = LoggerFactory.getLogger(TAG);
+	private static final Logger logger = new WindowsLoggerImpl(OwnershipLostSignalHandler.class.getSimpleName());
 	private CountDownLatch countDownLatch;
 	private String expectedNewOwner;
 	

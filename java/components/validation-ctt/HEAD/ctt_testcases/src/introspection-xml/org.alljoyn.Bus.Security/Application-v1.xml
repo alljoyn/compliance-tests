@@ -1,0 +1,165 @@
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://www.alljoyn.org/schemas/introspect.xsd">
+        <!--The Application interface is provided by all security v2 applications
+            and provides the basic interface of security v2 applications regardless
+            of the state they are in.
+        -->
+        <interface name="org.alljoyn.Bus.Security.Application">
+        <annotation name="org.alljoyn.Bus.Secure" value="true"/>
+
+        <!-- A struct providing the details of an Elliptic Curve Cryptography
+            public key.
+        -->
+        <struct name="EccPublicKey">
+            <!-- An enumeration describing the key type. Values:
+                   0: ECDSA with SHA-256
+            -->
+            <field name="algorithm" type="y"/>
+            <!-- An enumeration identifying the curve this key is using. Values:
+                   0: NIST P-256
+            -->
+            <field name="curveIdentifier" type="y"/>
+            <!-- The X coordinate of the public key.-->
+            <field name="xCoordinate" type="ay"/>
+            <!-- The Y coordinate of the public key.-->
+            <field name="yCoordinate" type="ay"/>
+        </struct>
+
+        <struct name="Certificate">
+            <!-- An enumeration representing the encoding of the
+                certificate data. Values:
+                  0: an X.509 DER encoded certificate.
+                  1: an X.509 PEM encoded certificate.
+            -->
+            <field name="encoding" type="y"/>
+            <field name="certificateData" type="ay"/>
+        </struct>
+
+        <!-- A struct describing a member of an interface
+             and the access rights on it.
+        -->
+        <struct name="Member">
+            <!-- The name of the interface member. The '*' matches
+                all members of the type specified by the type field.
+            -->
+            <field name="name" type="s"/>
+            <!-- An enumeration describing the type of the member. Values:
+                  0: Any type.
+                  1: Method.
+                  2: Signal.
+                  3: Property.
+            -->
+            <field name="type" type="y"/>
+            <!-- A bitmask describing the action on the member. Values:
+                  0x1: Provide. Allows sending signals and/or exposing
+                       methods and properties.
+                  0x2: Observe. Allows receiving signals and reading properties.
+                  0x4: Modify. Allows setting properties and making method
+                       calls.
+            -->
+            <field name="action" type="y"/>
+        </struct>
+
+        <!-- A struct describing a digest value including the digest algorithm. -->
+        <struct name="Digest">
+            <!-- An enumeration describing the algorithm used to calculate the
+                 digest value. Values:
+                   0: SHA-256.
+            -->
+            <field name="algorithm" type="y"/>
+            <!-- The actual digest. -->
+            <field name="digestData" type="ay"/>
+        </struct>
+
+        <struct name="Rule">
+            <!-- contains the required object path on which the rule applies.
+                The '*' character is allowed at the end of the object path.
+                The object path is then considered a prefix. The rule
+                applies to all object paths starting with the prefix.
+            -->
+            <field name="objectPath" type="s"/>
+            <!-- contains the required interface name on which the rule applies.
+                The '*' character is allowed at the end of the interface name.
+                The interface name is then considered a prefix. The rule
+                applies to all interfaces names starting with the prefix.
+            -->
+            <field name="interfaceName" type="s"/>
+            <!-- The order of the members is not significant.  Duplicates are
+                allowed but not efficient since they will be evaluated multiple
+                times.
+            -->
+            <field name="members" type="a[Member]"/>
+        </struct>
+
+        <!-- The Interface version.-->
+        <property name="Version" access="read" type="q">
+            <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+        </property>
+
+        <!-- An enumeration representing the current state of the application.
+            Values:
+              0: Not claimable.  The application is not claimed and not
+                 accepting claim requests.
+              1: Claimable. The application is not claimed, but is
+                 accepting claim requests.
+              2: Claimed. The application is claimed and can be configured.
+              3: NeedsUpdate. The application is claimed, but requires a
+                 configuration update (after a software upgrade).
+        -->
+        <property name="ApplicationState" access="read" type="q">
+            <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+        </property>
+
+        <!--  The SHA-256 digest of the manifest template. This property is
+            not evented as we assume nobody will keep a session alive to
+            receive change events on this property.
+        -->
+        <property name="ManifestTemplateDigest" access="read" type="[Digest]">
+            <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+        </property>
+
+        <!-- The public key used by this application to identify itself.-->
+        <property name="EccPublicKey" access="read" type="[EccPublicKey]">
+            <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+        </property>
+
+        <!-- A property containing the manufacturer certificate chain. Such
+            certificates are (when available) installed by the manufacturer at
+            production time.
+            The value is an array of certificates. The certificates form up a
+            chain with the first element being the certificate of the application
+            followed by the certificate of the issuer...
+            If no manufacturer certificate is available, then an empty array
+            should be returned.
+            -->
+        <property name="ManufacturerCertificate" access="read" type="a[Certificate]">
+            <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+        </property>
+
+        <!-- A property containing the permissions expressed as rules this
+            application requires to operate.
+        -->
+        <property name="ManifestTemplate" access="read" type="a[Rule]">
+            <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+        </property>
+
+        <!-- The ClaimCapabilities property describes the authentication
+            mechanisms the application supports for the claim process.
+            It is a bit mask.
+                0x1: claiming via ECDHE_NULL
+                0x2: claiming via ECDHE_PSK
+                0x4: claiming via ECDHE_ECDSA
+        -->
+        <property name="ClaimCapabilities" access="read" type="q">
+            <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+        </property>
+        <!-- The ClaimCapabilityAdditionalInfo property provides additional
+            information on the claim capabilities.  It is a bit mask.
+                0x1: PSK generated by Security Manager
+                0x2: PSK generated by application
+        -->
+        <property name="ClaimCapabilityAdditionalInfo" access="read" type="q">
+            <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="false"/>
+        </property>
+    </interface>
+</node>
+

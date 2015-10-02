@@ -25,12 +25,11 @@ import org.alljoyn.bus.annotation.BusSignalHandler;
 import com.at4wireless.alljoyn.core.audio.AudioTransports.Volume;
 import com.at4wireless.alljoyn.core.audio.AudioTransports.VolumeRange;
 import com.at4wireless.alljoyn.core.commons.log.Logger;
-import com.at4wireless.alljoyn.core.commons.log.LoggerFactory;
+import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 public class VolumeControlSignalHandler implements Volume, BusObject
 {
-    private static final String TAG = "VolControlSignalHandler";
-    private static final Logger logger = LoggerFactory.getLogger(TAG);
+	private static final Logger logger = new WindowsLoggerImpl("VolControlSignalHandler");
     private LinkedBlockingDeque<Boolean> muteChangedSignalQueue = new LinkedBlockingDeque<Boolean>();
     private LinkedBlockingDeque<Boolean> enabledChangedSignalQueue = new LinkedBlockingDeque<Boolean>();
     private LinkedBlockingDeque<Short> volumeChangedSignalQueue = new LinkedBlockingDeque<Short>();

@@ -15,39 +15,20 @@
  *******************************************************************************/
 package com.at4wireless.alljoyn.core.introspection.bean;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class IntrospectionBaseTag.
- */
 public class IntrospectionBaseTag
 {
-    
-    /** The name. */
     private String name;
 
-    /**
-     * Gets the name.
-     *
-     * @return the name
-     */
     public String getName()
     {
         return name;
     }
 
-    /**
-     * Sets the name.
-     *
-     * @param name the new name
-     */
     public void setName(String name)
     {
         this.name = name;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
     @Override
     public int hashCode()
     {
@@ -58,9 +39,6 @@ public class IntrospectionBaseTag
         return result;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
     public boolean equals(Object obj)
     {

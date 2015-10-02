@@ -155,6 +155,16 @@
             <arg name=" remoteAuthMask" type="u" direction="out"/>
             <arg name=" remotePublicKey" type="v" direction="out"/>
         </method>
+        <method name="SendManifest">
+	      	<arg name="manifest" type="a(ssa(syy))" direction="in"/>
+	      	<arg name="manifest" type="a(ssa(syy))" direction="out"/>
+	    </method>
+	    <method name="SendMemberships">
+	      	<arg name="sendCode" type="y" direction="in"/>
+	      	<arg name="memberships" type="a(yay)" direction="in"/>
+	      	<arg name="sendCode" type="y" direction="out"/>
+	      	<arg name="memberships" type="a(yay)" direction="out"/>
+	    </method>
         <property name="Mechanisms" type="s" access="read" />
         <property name="Version" type="u" access="read" />
         <annotation name="org.alljoyn.Bus.Secure" value="off"/>
