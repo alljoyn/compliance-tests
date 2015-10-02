@@ -17,22 +17,22 @@ package com.at4wireless.alljoyn.core.lighting;
 
 import org.alljoyn.bus.annotation.BusSignalHandler;
 
+import com.at4wireless.alljoyn.core.commons.log.Logger;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.testcases.conf.lighting.LightingTestSuite;
 
 public class LampStateSignalHandler
 {
 	//Load AllJoyn Library
-	/*static
+	static
 	{
 		System.loadLibrary("alljoyn_java");
-	}*/
+	}
 	
 	/* Interface variables */
 	private LightingTestSuite updateListener;
 	
-	protected static final String TAG = "LampStateSignalHandler";
-	private static final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	private static final Logger logger = new WindowsLoggerImpl(LampStateSignalHandler.class.getSimpleName());
 	boolean signalReceived = false;
 	
 	public LampStateSignalHandler()
@@ -48,7 +48,7 @@ public class LampStateSignalHandler
 	@BusSignalHandler(iface="org.allseen.LSF.LampState", signal="LampStateChanged")
 	public void handleLampStateChanged(String LampID)
 	{
-		logger.debug(String.format("LampStateChanged for LampID: %s", LampID));
+		logger.debug("LampStateChanged for LampID: %s", LampID);
 		
 		if (updateListener != null)
 		{

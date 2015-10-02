@@ -17,37 +17,27 @@ package com.at4wireless.alljoyn.core.introspection.bean;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class IntrospectionNode.
- */
 public class IntrospectionNode extends IntrospectionBaseTag
 {
-    
-    /** The interfaces. */
     private List<IntrospectionInterface> interfaces = new ArrayList<IntrospectionInterface>();
-    
-    /** The sub nodes. */
     private List<IntrospectionSubNode> subNodes = new ArrayList<IntrospectionSubNode>();
+    private Set<IntrospectionAnnotation> annotations = new TreeSet<IntrospectionAnnotation>(); //[AT4] fix to support annotations on the same level than interfaces
 
-    /**
-     * Gets the interfaces.
-     *
-     * @return the interfaces
-     */
     public List<IntrospectionInterface> getInterfaces()
     {
         return interfaces;
     }
 
-    /**
-     * Gets the sub nodes.
-     *
-     * @return the sub nodes
-     */
     public List<IntrospectionSubNode> getSubNodes()
     {
         return subNodes;
+    }
+    
+    public Set<IntrospectionAnnotation> getAnnotations() //[AT4] fix to support annotations on the same level than interfaces
+    {
+    	return annotations;
     }
 }

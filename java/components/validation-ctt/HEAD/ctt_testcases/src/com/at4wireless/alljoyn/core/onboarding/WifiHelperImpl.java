@@ -18,14 +18,14 @@ package  com.at4wireless.alljoyn.core.onboarding;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import com.at4wireless.alljoyn.core.commons.log.Logger;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.wifiapi.ScanResult;
 import com.at4wireless.alljoyn.wifiapi.WifiManager;
 
 public class WifiHelperImpl implements WifiHelper
 {
-	private static final String TAG = "WifiHelperImpl";
-	private static final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	private static final Logger logger = new WindowsLoggerImpl(WifiHelperImpl.class.getSimpleName());
 	//private Context context;
 	//private WifiBroadcastReceiver wifiBroadcastReceiver;
 	private WifiManager wifiManager;

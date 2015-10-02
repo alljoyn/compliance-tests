@@ -22,12 +22,11 @@ import java.util.Set;
 import org.alljoyn.bus.Variant;
 
 import com.at4wireless.alljoyn.core.commons.log.Logger;
-import com.at4wireless.alljoyn.core.commons.log.LoggerFactory;
+import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 public class ControllerServiceSignalListener
 {
-    private static final String TAG     = "SignalListener";
-    private static final Logger logger  = LoggerFactory.getLogger(TAG);
+	private static final Logger logger = new WindowsLoggerImpl("SignalListener");
 
     private enum Signals
     {

@@ -21,9 +21,10 @@ import java.util.UUID;
 
 //import org.alljoyn.about.AboutKeys;
 import org.alljoyn.bus.AboutKeys;
-import org.alljoyn.about.client.AboutClient;
+import org.alljoyn.bus.AboutProxy;
 import org.alljoyn.bus.BusException;
 import org.alljoyn.bus.ErrorReplyBusException;
+import org.alljoyn.bus.Variant;
 import org.alljoyn.config.client.ConfigClient;
 import org.alljoyn.config.transport.ConfigTransport;
 import org.alljoyn.onboarding.OnboardingService;
@@ -34,15 +35,18 @@ import org.alljoyn.onboarding.transport.ScanInfo;
 
 import com.at4wireless.alljoyn.core.about.AboutAnnouncementDetails;
 import com.at4wireless.alljoyn.core.commons.SrpAnonymousKeyListener;
+import com.at4wireless.alljoyn.core.commons.log.Logger;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.onboarding.OnboardingHelper;
 import com.at4wireless.alljoyn.core.onboarding.SoftAPValidator;
 import com.at4wireless.alljoyn.core.onboarding.WifiNetworkConfig;
+import com.at4wireless.alljoyn.testcases.parameter.GeneralParameter;
+import com.at4wireless.alljoyn.testcases.parameter.Ics;
+import com.at4wireless.alljoyn.testcases.parameter.Ixit;
 
 public class OnboardingTestSuite
 {
-	private static final String TAG = "OnboardingTestSuite";
-	private static final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	private static final Logger logger = new WindowsLoggerImpl(OnboardingTestSuite.class.getSimpleName());
 	
 	protected static final String INVALID_NETWORK_NAME = "InvalidPersonalAP";
 	protected static final String INVALID_NETWORK_PASSPHRASE = "InvalidNetworkPassphrase";
@@ -70,7 +74,8 @@ public class OnboardingTestSuite
 	protected  final String ALLJOYN_ERROR_FEATURE_NOT_AVAILABLE = "org.alljoyn.Error.FeatureNotAvailable";
 
 	private ConfigClient configClient;
-	private AboutClient aboutClient;
+	//private AboutClient aboutClient;
+	private AboutProxy aboutProxy;
 	private static final char[] VALID_DEFAULT_PASSCODE = SrpAnonymousKeyListener.DEFAULT_PINCODE;
 	private static final char[] TEMP_PASSCODE = "111111".toCharArray();
 	private static final char[] INVALID_PASSCODE = "123456".toCharArray();
@@ -101,106 +106,92 @@ public class OnboardingTestSuite
 	private Boolean inconc = false;
 	private int TIME_TO_WAIT_FOR_SCAN_RESULTS_IN_SECONDS;
 
-	private Map<String, Boolean> ics;
-	private Map<String, String> ixit;
+	private Ics icsList;
+	private Ixit ixitList;
 
-	public OnboardingTestSuite(String testCase,
-			boolean iCSON_OnboardingServiceFramework,
-			boolean iCSON_OnboardingInterface, boolean iCSON_ChannelSwitching,
-			boolean iCSON_GetScanInfoMethod, String iXITCO_AppId,
-			String iXITCO_DeviceId, String iXITCO_DefaultLanguage,
-			String iXITON_OnboardingVersion, String iXITON_SoftAP,
-			String iXITON_SoftAPAuthType, String iXITON_SoftAPpassphrase,
-			String iXITON_PersonalAP, String iXITON_PersonalAPAuthType,
-			String iXITON_PersonalAPpassphrase,
-			String gPCO_AnnouncementTimeout, String gPON_WaitSoftAP,
-			String gPON_ConnectSoftAP, String gPON_WaitSoftAPAfterOffboard,
-			String gPON_ConnectPersonalAP, String gPON_Disconnect,
-			String gPON_NextAnnouncement, String gPON_TimeToWaitForScanResults)
+	public OnboardingTestSuite(String testCase, Ics icsList, Ixit ixitList, GeneralParameter gpList)
 	{
 		/** 
 		 * [AT4] Attributes initialization
 		 * */
-
-		ics = new HashMap<String,Boolean>();
-		ixit = new HashMap<String,String>();
-		
-		ics.put("ICSON_OnboardingServiceFramework", iCSON_OnboardingServiceFramework);
-		ics.put("ICSON_OnboardingInterface", iCSON_OnboardingInterface);
-		ics.put("ICSON_ChannelSwitching", iCSON_ChannelSwitching);
-		ics.put("ICSON_GetScanInfoMethod", iCSON_GetScanInfoMethod);
-		
-		ixit.put("IXITCO_AppId", iXITCO_AppId);
-		ixit.put("IXITCO_DeviceId", iXITCO_DeviceId);
-		ixit.put("IXITCO_DefaultLanguage", iXITCO_DefaultLanguage);
-		ixit.put("IXITON_OnboardingVersion", iXITON_OnboardingVersion);
-		ixit.put("IXITON_SoftAP", iXITON_SoftAP);
-		ixit.put("IXITON_SoftAPAuthType", iXITON_SoftAPAuthType);
-		ixit.put("IXITON_SoftAPpassphrase", iXITON_SoftAPpassphrase);
-		ixit.put("IXITON_PersonalAP", iXITON_PersonalAP);
-		ixit.put("IXITON_PersonalAPAuthType", iXITON_PersonalAPAuthType);
-		ixit.put("IXITON_PersonalAPpassphrase", iXITON_PersonalAPpassphrase);
+		this.icsList = icsList;
+		this.ixitList = ixitList;
 	
-		ANNOUNCEMENT_TIMEOUT_IN_SECONDS = Integer.parseInt(gPCO_AnnouncementTimeout);
-		TIME_TO_WAIT_FOR_SOFT_AP_IN_MS_SHORT = Integer.parseInt(gPON_WaitSoftAP);
-		TIME_TO_WAIT_TO_CONNECT_TO_SOFT_AP_IN_MS = Integer.parseInt(gPON_ConnectSoftAP);
-		TIME_TO_WAIT_FOR_SOFT_AP_AFTER_OFFBOARD = Integer.parseInt(gPON_WaitSoftAPAfterOffboard);
-		TIME_TO_WAIT_TO_CONNECT_TO_PERSONAL_AP_IN_MS = Integer.parseInt(gPON_ConnectPersonalAP);
-		TIME_TO_WAIT_FOR_DISCONNECT_IN_MS = Integer.parseInt(gPON_Disconnect);
-		TIME_TO_WAIT_FOR_NEXT_DEVICE_ANNOUNCEMENT_IN_MS = Integer.parseInt(gPON_NextAnnouncement);
-		TIME_TO_WAIT_FOR_SCAN_RESULTS_IN_SECONDS = Integer.parseInt(gPON_TimeToWaitForScanResults);
+		ANNOUNCEMENT_TIMEOUT_IN_SECONDS = gpList.GPCO_AnnouncementTimeout;
+		TIME_TO_WAIT_FOR_SOFT_AP_IN_MS_SHORT = gpList.GPON_WaitSoftAP;
+		TIME_TO_WAIT_TO_CONNECT_TO_SOFT_AP_IN_MS = gpList.GPON_ConnectSoftAP;
+		TIME_TO_WAIT_FOR_SOFT_AP_AFTER_OFFBOARD = gpList.GPON_WaitSoftAPAfterOffboard;
+		TIME_TO_WAIT_TO_CONNECT_TO_PERSONAL_AP_IN_MS = gpList.GPON_ConnectPersonalAP;
+		TIME_TO_WAIT_FOR_DISCONNECT_IN_MS = gpList.GPON_Disconnect;
+		TIME_TO_WAIT_FOR_NEXT_DEVICE_ANNOUNCEMENT_IN_MS = gpList.GPON_NextAnnouncement;
+		TIME_TO_WAIT_FOR_SCAN_RESULTS_IN_SECONDS = gpList.GPON_TimeToWaitForScanResults;
 
 		try
 		{
 			runTestCase(testCase);
 		}
-		catch (Exception e)
+		catch(Exception e)
 		{
-			if ((e.getMessage() != null) && (e.getMessage().equals("Timed out waiting for About announcement")))
-			{
-				//fail("Timed out waiting for About announcement");
-			}
-			else
-			{
-				String errorMsg = "Exception: "+e.toString();
-				logger.error(errorMsg);
-				//fail(errorMsg);
-			}
+			logger.error(String.format("Exception: %s", e.toString()));
 			inconc = true;
-			tearDown();
 		}
 	}
 
-	public void runTestCase(String testCase) throws Exception {
-		
+	public void runTestCase(String testCase) throws Exception
+	{	
 		setUp();
-		//logger.info("Running testcase: "+testCase);
+		logger.info(String.format("Running testcase: %s", testCase));
 		
-		if (testCase.equals("Onboarding-v1-01")) {
+		if (testCase.equals("Onboarding-v1-01"))
+		{
 			testOnboarding_v1_01_OffboardDevice();
-		} else if(testCase.equals("Onboarding-v1-02")) {
+		}
+		else if(testCase.equals("Onboarding-v1-02"))
+		{
 			testOnboarding_v1_02_OnboardDevice();
-		} else if(testCase.equals("Onboarding-v1-03")) {
+		}
+		else if(testCase.equals("Onboarding-v1-03"))
+		{
 			testOnboarding_v1_03_ConnectivityOverSoftAP();
-		} else if(testCase.equals("Onboarding-v1-04")) {
+		}
+		else if(testCase.equals("Onboarding-v1-04"))
+		{
 			testOnboarding_v1_04_ConfigureWiFiWithOutOfRangeValue();
-		} else if(testCase.equals("Onboarding-v1-05")) {
+		}
+		else if(testCase.equals("Onboarding-v1-05"))
+		{
 			testOnboarding_v1_05_ConfigureWiFiWithWrongSSID();
-		} else if(testCase.equals("Onboarding-v1-06")) {
+		}
+		else if(testCase.equals("Onboarding-v1-06"))
+		{
 			testOnboarding_v1_06_ConfigureWiFiWithWrongPassword();
-		} else if(testCase.equals("Onboarding-v1-07")) {
+		}
+		else if(testCase.equals("Onboarding-v1-07"))
+		{
 			testOnboarding_v1_07_ConfigureWiFiAuthTypeOfAny();
-		} else if(testCase.equals("Onboarding-v1-08")) {
+		}
+		else if(testCase.equals("Onboarding-v1-08"))
+		{
 			testOnboarding_v1_08_GetScanInfo();
-		} else if(testCase.equals("Onboarding-v1-09")) {
+		}
+		else if(testCase.equals("Onboarding-v1-09"))
+		{
 			testOnboarding_v1_09_WrongPasscode();
-		} else if(testCase.equals("Onboarding-v1-10")) {
+		}
+		else if(testCase.equals("Onboarding-v1-10"))
+		{
 			testOnboarding_v1_10_AuthenticateAfterChangingPasscode();
-		} else if(testCase.equals("Onboarding-v1-11")) {
+		}
+		else if(testCase.equals("Onboarding-v1-11"))
+		{
 			testOnboarding_v1_11_FactoryResetClearsConfiguration();
-		} else if(testCase.equals("Onboarding-v1-12")) {
+		}
+		else if(testCase.equals("Onboarding-v1-12"))
+		{
 			testOnboarding_v1_12_FactoryResetResetsPasscode();
-		} else {
+		}
+		else
+		{
 			fail("Test Case not valid");
 		}
 
@@ -211,17 +202,17 @@ public class OnboardingTestSuite
 	{
 		//super.setUp();
 		
-		logger.noTag("====================================================");
+		System.out.println("====================================================");
 		logger.info("test setUp started");
 
 		try
 		{
 			//appUnderTestDetails = getValidationTestContext().getAppUnderTestDetails();
             //dutDeviceId = appUnderTestDetails.getDeviceId();
-			dutDeviceId = ixit.get("IXITCO_DeviceId");
+			dutDeviceId = ixitList.IXITCO_DeviceId;
 			logger.info(String.format("Running Onboarding test case against Device ID: %s", dutDeviceId));
 			//dutAppId = appUnderTestDetails.getAppId();
-			dutAppId = UUID.fromString(ixit.get("IXITCO_AppId"));
+			dutAppId = ixitList.IXITCO_AppId;
 			logger.info(String.format("Running Onboarding test case against App ID: %s", dutAppId));
 			//String keyStorePath = getValidationTestContext().getKeyStorePath();
 			String keyStorePath = "/KeyStore";
@@ -230,22 +221,22 @@ public class OnboardingTestSuite
 			onboardingHelper = getOnboardingHelper();
 			
 			//short personalApSecurity = getPersonalApSecurity();
-			short personalApSecurity = Short.parseShort(ixit.get("IXITON_PersonalAPAuthType"));
+			short personalApSecurity = Short.parseShort(ixitList.IXITON_PersonalAPAuthType);
 			logger.info(String.format("Running Onboarding test case using PersonalApSecurity: %s", personalApSecurity));
 			//String personalApSsid = getPersonalApSsid();
-			String personalApSsid = ixit.get("IXITON_PersonalAP");
+			String personalApSsid = ixitList.IXITON_PersonalAP;
 			logger.info(String.format("Running Onboarding test case using PersonalApSsid: %s", personalApSsid));
 			//String personalApPassphrase = getPersonalApPassphrase();
-			String personalApPassphrase = ixit.get("IXITON_PersonalAPpassphrase");
+			String personalApPassphrase = ixitList.IXITON_PersonalAPpassphrase;
 			logger.info(String.format("Running Onboarding test case using PersonalApPassphrase: %s", personalApPassphrase));
 			//String onboardeeSoftApSsid = getOnboardeeSoftApSsid();
-			String onboardeeSoftApSsid = ixit.get("IXITON_SoftAP");
+			String onboardeeSoftApSsid = ixitList.IXITON_SoftAP;
 			logger.info(String.format("Running Onboarding test case against onboardeeSoftApSsid: %s", onboardeeSoftApSsid));
 			//String onboardeeSoftApPassphrase = getOnboardeeSoftApPassphrase();
-			String onboardeeSoftApPassphrase = ixit.get("IXITON_SoftAPpassphrase");
+			String onboardeeSoftApPassphrase = ixitList.IXITON_SoftAPpassphrase;
 			logger.info(String.format("Running Onboarding test case against OnboardeeSoftApPassphrase: %s", onboardeeSoftApPassphrase));
 			//String onboardeeSoftApSecurityType = getOnboardeeSoftApSecurityType();
-			short onboardeeSoftApSecurityType = Short.parseShort(ixit.get("IXITON_SoftAPAuthType"));
+			short onboardeeSoftApSecurityType = Short.parseShort(ixitList.IXITON_SoftAPAuthType);
 			logger.info(String.format("Running Onboarding test case against OnboardeeSoftApSecurityType: %s", onboardeeSoftApSecurityType));
 
 			String authTypeString = onboardingHelper.mapAuthTypeToAuthTypeString(personalApSecurity);
@@ -260,7 +251,7 @@ public class OnboardingTestSuite
 			onboardingHelper.initialize(keyStorePath, dutDeviceId, dutAppId);
 			
 			logger.info("test setUp done");
-			logger.noTag("====================================================");
+			System.out.println("====================================================");
 		}
 		catch (Exception e)
 		{
@@ -273,11 +264,11 @@ public class OnboardingTestSuite
 	}
 
 	private void tearDown() {
-		logger.noTag("====================================================");
+		System.out.println("====================================================");
 		logger.info("test tearDown started");
 		releaseResources();
 		logger.info("test tearDown done");
-		logger.noTag("====================================================");
+		System.out.println("====================================================");
 	}
 	
 	protected OnboardingHelper getOnboardingHelper()
@@ -305,12 +296,13 @@ public class OnboardingTestSuite
 	
 		logger.info("Checking Onboarding interface version property");
 		short version = onboardingHelper.retrieveVersionProperty();
-		//assertEquals("Onboarding interface version mismatch", 1, version);
-		assertEquals("Onboarding interface version mismatchs IXITON_OnboardingVersion", Short.parseShort(ixit.get("IXITON_OnboardingVersion")), version);
+
+		assertEquals("Onboarding interface version mismatchs IXITON_OnboardingVersion", ixitList.IXITON_OnboardingVersion, version);
 
 		placeDUTInOffboardState();
-		
-		verifyOnboardingState(OBS_STATE_PERSONAL_AP_NOT_CONFIGURED);
+		//[AT4] ASACOMP-100 starts
+		//verifyOnboardingState(OBS_STATE_PERSONAL_AP_NOT_CONFIGURED);
+		//[AT4] ASACOMP-100 ends
 		
 		//SotfAPValidator.validateSoftAP(softAPssid);
 		if (!SoftAPValidator.validateSoftAP(softAPssid)) //[AT4]
@@ -433,21 +425,23 @@ public class OnboardingTestSuite
 
 		try
 		{
-			boolean foundPersonalAP = false;
+			//[AT4] ASACOMP-102 starts
+			//boolean foundPersonalAP = false;
 
-			String personalAPNetworkName = personalAPConfig.getSsid();
+			//String personalAPNetworkName = personalAPConfig.getSsid();
 			ScanInfo scanInfo = onboardingHelper.callScanInfo();
 			MyScanResult[] scanResults = scanInfo.getScanResults();
 			for (MyScanResult myScanResult : scanResults)
 			{
 				validateScanResult(myScanResult);
 				System.out.println(myScanResult.m_ssid);
-				if (personalAPNetworkName.equals(myScanResult.m_ssid))
+				/*if (personalAPNetworkName.equals(myScanResult.m_ssid))
 				{
 					foundPersonalAP = true;
-				}
+				}*/
 			}
-			assertTrue(String.format("Onboarding.getScanInfo() did not include the personal AP network: %s", personalAPNetworkName), foundPersonalAP);
+			//assertTrue(String.format("Onboarding.getScanInfo() did not include the personal AP network: %s", personalAPNetworkName), foundPersonalAP);
+			//[AT4] ASACOMP-102 ends
 		}
 		catch (ErrorReplyBusException e)
 		{
@@ -546,42 +540,56 @@ public class OnboardingTestSuite
         String defaultLanguage = aboutAnnouncementDetails.getDefaultLanguage();
         logger.info(String.format("Default language is: %s", defaultLanguage));
 
-        aboutClient = onboardingHelper.connectAboutClient(aboutAnnouncementDetails);
+        //aboutClient = onboardingHelper.connectAboutClient(aboutAnnouncementDetails);
+        aboutProxy = onboardingHelper.connectAboutProxy(aboutAnnouncementDetails);
         configClient = onboardingHelper.connectConfigClient(aboutAnnouncementDetails);
+        
+        Map<String, Object> configMap;
+        Map<String, Variant> aboutMap;
+        String defaultDeviceName = null;
 
-        configClient.ResetConfigurations(defaultLanguage, new String[]
-        { AboutKeys.ABOUT_DEVICE_NAME });
+        if (icsList.ICSCO_DeviceName)
+        {
+        	configClient.ResetConfigurations(defaultLanguage, new String[]
+        	        { AboutKeys.ABOUT_DEVICE_NAME });
 
-        Map<String, Object> configMap = configClient.getConfig("");
-        Map<String, Object> aboutMap = aboutClient.getAbout("");
-        String defaultDeviceName = (String) aboutMap.get(AboutKeys.ABOUT_DEVICE_NAME);
+	        configMap = configClient.getConfig("");
+	        //Map<String, Object> aboutMap = aboutClient.getAbout("");
+	        aboutMap = aboutProxy.getAboutData("");
+	        //String defaultDeviceName = (String) aboutMap.get(AboutKeys.ABOUT_DEVICE_NAME);
+	        defaultDeviceName = aboutMap.get(AboutKeys.ABOUT_DEVICE_NAME).getObject(String.class);
 
-        assertEquals("GetConfigurations() returns the same DeviceName as GetAboutData()", defaultDeviceName, (String) configMap.get(AboutKeys.ABOUT_DEVICE_NAME));
+	        assertEquals("GetConfigurations() returns the same DeviceName as GetAboutData()", defaultDeviceName, (String) configMap.get(AboutKeys.ABOUT_DEVICE_NAME));
 
-        String modifiedDeviceName = NEW_DEVICE_NAME;
+	        String modifiedDeviceName = NEW_DEVICE_NAME;
 
-        onboardingHelper.clearQueuedDeviceAnnouncements();
+	        onboardingHelper.clearQueuedDeviceAnnouncements();
 
-        configMap = new HashMap<String, Object>();
-        configMap.put(AboutKeys.ABOUT_DEVICE_NAME, modifiedDeviceName);
-        configClient.setConfig(configMap, defaultLanguage);
+	        configMap = new HashMap<String, Object>();
+	        configMap.put(AboutKeys.ABOUT_DEVICE_NAME, modifiedDeviceName);
+	        configClient.setConfig(configMap, defaultLanguage);
 
-        disconnectAboutClient();
-        disconnectConfigClient();
+	        //disconnectAboutClient();
+	        disconnectAboutProxy();
+	        disconnectConfigClient();
 
-        aboutAnnouncementDetails = onboardingHelper.waitForAboutAnnouncementAndThenConnect();
+	        aboutAnnouncementDetails = onboardingHelper.waitForAboutAnnouncementAndThenConnect();
 
-        assertEquals("Device name in announcement was not modified as expected", modifiedDeviceName, aboutAnnouncementDetails.getDeviceName());
+	        assertEquals("Device name in announcement was not modified as expected", modifiedDeviceName, aboutAnnouncementDetails.getDeviceName());
 
-        aboutClient = onboardingHelper.connectAboutClient(aboutAnnouncementDetails);
-        configClient = onboardingHelper.connectConfigClient(aboutAnnouncementDetails);
+	        //aboutClient = onboardingHelper.connectAboutClient(aboutAnnouncementDetails);
+	        aboutProxy = onboardingHelper.connectAboutProxy(aboutAnnouncementDetails);
+	        configClient = onboardingHelper.connectConfigClient(aboutAnnouncementDetails);
 
-        aboutMap = aboutClient.getAbout("");
-        assertEquals("Device name in aboutMap was not modified as expected", modifiedDeviceName, (String) aboutMap.get(AboutKeys.ABOUT_DEVICE_NAME));
+	        //aboutMap = aboutClient.getAbout("");
+	        aboutMap = aboutProxy.getAboutData("");
+	        //assertEquals("Device name in aboutMap was not modified as expected", modifiedDeviceName, (String) aboutMap.get(AboutKeys.ABOUT_DEVICE_NAME));
+	        assertEquals("Device name in aboutMap was not modified as expected", modifiedDeviceName, aboutMap.get(AboutKeys.ABOUT_DEVICE_NAME).getObject(String.class));
 
-        configMap = configClient.getConfig("");
-        assertEquals("GetConfigurations() returns the same DeviceName as GetAboutData()", modifiedDeviceName, (String) configMap.get(AboutKeys.ABOUT_DEVICE_NAME));
-
+	        configMap = configClient.getConfig("");
+	        assertEquals("GetConfigurations() returns the same DeviceName as GetAboutData()", modifiedDeviceName, (String) configMap.get(AboutKeys.ABOUT_DEVICE_NAME));
+        }
+        
         try
         {
             logger.info("Calling factory reset");
@@ -595,34 +603,43 @@ public class OnboardingTestSuite
             //getValidationTestContext().addNote("Factory reset method is not supported by device");
             fail("Factory reset method is not supported by device");
 
-            configClient.ResetConfigurations(defaultLanguage, new String[]
-            { AboutKeys.ABOUT_DEVICE_NAME });
+            if (icsList.ICSCO_DeviceName)
+            {
+            	configClient.ResetConfigurations(defaultLanguage, new String[]
+                        { AboutKeys.ABOUT_DEVICE_NAME });
+            }
 
             return;
         }
 
         disconnectConfigClient();
-        disconnectAboutClient();
+        //disconnectAboutClient();
+        disconnectAboutProxy();
 
         onboardingHelper.connectToDUTOnSoftAP();
 
         aboutAnnouncementDetails = onboardingHelper.waitForAboutAnnouncementAndThenConnect();
 
-        assertEquals("Device name in announcement was not the default as expected", defaultDeviceName, aboutAnnouncementDetails.getDeviceName());
+        if (icsList.ICSCO_DeviceName)
+        {
+        	assertEquals("Device name in announcement was not the default as expected", defaultDeviceName, aboutAnnouncementDetails.getDeviceName());
 
-        defaultLanguage = aboutAnnouncementDetails.getDefaultLanguage();
-        logger.info(String.format("Default language is: %s", defaultLanguage));
+            defaultLanguage = aboutAnnouncementDetails.getDefaultLanguage();
+            logger.info(String.format("Default language is: %s", defaultLanguage));
 
-        aboutClient = onboardingHelper.connectAboutClient(aboutAnnouncementDetails);
-        configClient = onboardingHelper.connectConfigClient(aboutAnnouncementDetails);
+            //aboutClient = onboardingHelper.connectAboutClient(aboutAnnouncementDetails);
+            aboutProxy = onboardingHelper.connectAboutProxy(aboutAnnouncementDetails);
+            configClient = onboardingHelper.connectConfigClient(aboutAnnouncementDetails);
 
-        aboutMap = aboutClient.getAbout("");
-        logger.info(String.format("After factoryReset, the deviceName is: %s", aboutMap.get(AboutKeys.ABOUT_DEVICE_NAME).toString()));
+            //aboutMap = aboutClient.getAbout("");
+            aboutMap = aboutProxy.getAboutData("");
+            logger.info(String.format("After factoryReset, the deviceName is: %s", aboutMap.get(AboutKeys.ABOUT_DEVICE_NAME).toString()));
 
-        assertEquals("DeviceName not reset to default value", defaultDeviceName, aboutMap.get(AboutKeys.ABOUT_DEVICE_NAME).toString());
+            assertEquals("DeviceName not reset to default value", defaultDeviceName, aboutMap.get(AboutKeys.ABOUT_DEVICE_NAME).toString());
 
-        configMap = configClient.getConfig("");
-        assertEquals("GetConfigurations() returns the same DeviceName as GetAboutData()", defaultDeviceName, configMap.get(AboutKeys.ABOUT_DEVICE_NAME).toString());
+            configMap = configClient.getConfig("");
+            assertEquals("GetConfigurations() returns the same DeviceName as GetAboutData()", defaultDeviceName, configMap.get(AboutKeys.ABOUT_DEVICE_NAME).toString());
+        }
     }
 	 
  	public void testOnboarding_v1_12_FactoryResetResetsPasscode() throws Exception
@@ -696,9 +713,11 @@ public class OnboardingTestSuite
 		{
 			softAPssid = ssid;
 		}
-
-		onboardingHelper.waitForAboutAnnouncementAndThenConnect();
-		logger.info("Partial Verdict: PASS");
+		
+		//[AT4] ASACOMP-100 starts
+		/*onboardingHelper.waitForAboutAnnouncementAndThenConnect();
+		logger.info("Partial Verdict: PASS");*/
+		//[AT4] ASACOMP-100 ends
 	}
 	
     /*protected String getOnboardeeSoftApSsid()
@@ -872,7 +891,8 @@ public class OnboardingTestSuite
 	{
 		try
 		{
-			disconnectAboutClient();
+			//disconnectAboutClient();
+			disconnectAboutProxy();
 			disconnectConfigClient();
 			if (onboardingHelper != null)
 			{
@@ -898,13 +918,21 @@ public class OnboardingTestSuite
 		}
 	}
 
-	private void disconnectAboutClient()
+	/*private void disconnectAboutClient()
 	{
 		if (aboutClient != null)
 		{
 			logger.info("Disconnecting about client");
 			aboutClient.disconnect();
 			aboutClient = null;
+		}
+	}*/
+	
+	private void disconnectAboutProxy()
+	{
+		if (aboutProxy != null)
+		{
+			aboutProxy = null;
 		}
 	}
 

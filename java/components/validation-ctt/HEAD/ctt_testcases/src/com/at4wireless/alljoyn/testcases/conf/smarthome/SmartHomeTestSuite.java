@@ -15,25 +15,25 @@
  *******************************************************************************/
 package com.at4wireless.alljoyn.testcases.conf.smarthome;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import org.alljoyn.about.client.AboutClient;
 import org.alljoyn.bus.BusException;
 import org.alljoyn.bus.ProxyBusObject;
 import org.alljoyn.smarthome.centralizedmanagement.client.SmartHomeClient;
 
 import com.at4wireless.alljoyn.core.about.AboutAnnouncementDetails;
 import com.at4wireless.alljoyn.core.commons.ServiceHelper;
+import com.at4wireless.alljoyn.core.commons.log.Logger;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
+import com.at4wireless.alljoyn.testcases.parameter.GeneralParameter;
+import com.at4wireless.alljoyn.testcases.parameter.Ics;
+import com.at4wireless.alljoyn.testcases.parameter.Ixit;
 
 public class SmartHomeTestSuite
 {
-	private static final String TAG = "SmartHomeTestSuite";
-	private static final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	private static final Logger logger = new WindowsLoggerImpl(SmartHomeTestSuite.class.getSimpleName());
 	private static final String BUS_APPLICATION_NAME = "SmartHome";
 	public static String BUS_OBJECT_PATH = "/org/alljoyn/SmartHome/CentralizedManagement";
 	private long SIGNAL_TIMEOUT_IN_SECONDS = 30;
@@ -59,50 +59,27 @@ public class SmartHomeTestSuite
 	 * 
 	 * */
 	boolean pass = true;
-	Map<String, Boolean> ics;
-	Map<String, String> ixit;
+	boolean inconc = false;
 	private long ANNOUNCEMENT_TIMEOUT_IN_SECONDS = 30;
+	private Ics icsList;
+	private Ixit ixitList;
 
-	public SmartHomeTestSuite(String testCase,
-			boolean iCSSH_SmartHomeServiceFramework,
-			boolean iCSSH_CentralizedManagementInterface, String iXITCO_AppId,
-			String iXITCO_DeviceId, String iXITCO_DefaultLanguage,
-			String iXITSH_CentralizedManagementVersion,
-			String iXITSH_WellKnownName, String iXITSH_UniqueName,
-			String iXITSH_DeviceId, String iXITSH_HeartBeatInterval,
-			String gPCO_AnnouncementTimeout, String gPSH_Signal)
+	public SmartHomeTestSuite(String testCase, Ics icsList, Ixit ixitList, GeneralParameter gpList)
 	{
-		ics = new HashMap<String, Boolean>();
-		ixit = new HashMap<String,String>();
+		this.icsList = icsList;
+		this.ixitList = ixitList;
 		
-		ics.put("ICSSH_SmartHomeServiceFramework", iCSSH_SmartHomeServiceFramework);
-		ics.put("ICSSH_CentralizedManagementInterface", iCSSH_CentralizedManagementInterface);
-
-		ixit.put("IXITCO_AppId", iXITCO_AppId);
-		ixit.put("IXITCO_DeviceId", iXITCO_DeviceId);
-		ixit.put("IXITSH_CentralizedManagementVersion", iXITSH_CentralizedManagementVersion);
-		ixit.put("IXITSH_WellKnownName", iXITSH_WellKnownName);
-		ixit.put("IXITSH_UniqueName", iXITSH_UniqueName);
-		ixit.put("IXITSH_DeviceId", iXITSH_DeviceId);
-		ixit.put("IXITSH_HeartBeatInterval", iXITSH_HeartBeatInterval);
-		
-		ANNOUNCEMENT_TIMEOUT_IN_SECONDS = Integer.parseInt(gPCO_AnnouncementTimeout);
-		SIGNAL_TIMEOUT_IN_SECONDS = Integer.parseInt(gPSH_Signal);
+		ANNOUNCEMENT_TIMEOUT_IN_SECONDS = gpList.GPCO_AnnouncementTimeout;
+		SIGNAL_TIMEOUT_IN_SECONDS = gpList.GPSH_Signal;
 		
 		try
 		{
 			runTestCase(testCase);
 		}
-		catch (Exception e)
+		catch(Exception e)
 		{
-			if (e.getMessage().equals("Timed out waiting for About announcement"))
-			{
-				fail("Timed out waiting for About announcement");
-			}
-			else
-			{
-				fail("Exception: "+e.toString());
-			}
+			logger.error(String.format("Exception: %s", e.toString()));
+			inconc = true;
 		}
 	}
 
@@ -142,13 +119,13 @@ public class SmartHomeTestSuite
 	{		
 		try
 		{
-			logger.noTag("====================================================");
+			System.out.println("====================================================");
 			logger.info("test setUp started");
 
 
-			dutDeviceId = ixit.get("iXITCO_DeviceId");
+			dutDeviceId = ixitList.IXITCO_DeviceId;
 			logger.info(String.format("Running ControlPanel test case against Device ID: %s", dutDeviceId));
-			dutAppId = UUID.fromString(ixit.get("iXITCO_AppId"));
+			dutAppId = ixitList.IXITCO_AppId;
 			logger.info(String.format("Running ControlPanel test case against App ID: %s", dutAppId));
 
 			serviceHelper = getServiceHelper();
@@ -159,7 +136,7 @@ public class SmartHomeTestSuite
 			//aboutClient = serviceHelper.connectAboutClient(deviceAboutAnnouncement);
 
 			logger.info("test setUp done");
-			logger.noTag("====================================================");
+			System.out.println("====================================================");
 		}
 		catch (Exception exception)
 		{
@@ -178,10 +155,10 @@ public class SmartHomeTestSuite
 	
 	protected void tearDown() throws Exception
 	{
-		logger.noTag("====================================================");
+		System.out.println("====================================================");
 		logger.debug("test tearDown started");
 		releaseResources();
-		logger.noTag("test tearDown done");
+		System.out.println("test tearDown done");
 		System.out.println("====================================================");
 	}
 	
@@ -207,7 +184,7 @@ public class SmartHomeTestSuite
 		}
 
 		assertEquals("Centralized Management service interface version does not match", 
-				Integer.parseInt(ixit.get("IXITSH_CentralizedManagementVersion")), interfaceVersion);
+				ixitList.IXITSH_CentralizedManagementVersion, interfaceVersion);
 	}
 
 	private void testSmartHome_v1_02() throws Exception
@@ -216,8 +193,8 @@ public class SmartHomeTestSuite
 				new Class[] { SmartHomeClient.class });
 
 
-		proxy.getInterface(SmartHomeClient.class).ApplianceRegistration(ixit.get("IXITSH_WellKnownName"), 
-				ixit.get("IXITSH_UniqueName"), ixit.get("IXITSH_DeviceId"));
+		proxy.getInterface(SmartHomeClient.class).ApplianceRegistration(ixitList.IXITSH_WellKnownName, 
+				ixitList.IXITSH_UniqueName, ixitList.IXITSH_DeviceId);
 
 		CountDownLatch countDownLatch = new CountDownLatch(1);
 		ReturnValueHandler signalHandler=new ReturnValueHandler(countDownLatch);
@@ -267,7 +244,7 @@ public class SmartHomeTestSuite
 
 	protected ServiceHelper getServiceHelper()
 	{
-		return new ServiceHelper( logger);
+		return new ServiceHelper();
 	}
 
 	/** 

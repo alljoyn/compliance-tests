@@ -15,48 +15,26 @@
  *******************************************************************************/
 package com.at4wireless.alljoyn.core.introspection.bean;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class IntrospectionAnnotation.
- */
 public class IntrospectionAnnotation extends IntrospectionBaseTag implements Comparable<IntrospectionAnnotation>
 {
-    
-    /** The value. */
     private String value;
 
-    /**
-     * Gets the value.
-     *
-     * @return the value
-     */
     public String getValue()
     {
         return value;
     }
 
-    /**
-     * Sets the value.
-     *
-     * @param value the new value
-     */
     public void setValue(String value)
     {
         this.value = value;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
-     */
     @Override
     public int compareTo(IntrospectionAnnotation introspectionAnnotation)
     {
         return getName().compareTo(introspectionAnnotation.getName());
     }
 
-    /* (non-Javadoc)
-     * @see com.at4wireless.alljoyn.core.introspection.bean.IntrospectionBaseTag#hashCode()
-     */
     @Override
     public int hashCode()
     {
@@ -67,9 +45,6 @@ public class IntrospectionAnnotation extends IntrospectionBaseTag implements Com
         return result;
     }
 
-    /* (non-Javadoc)
-     * @see com.at4wireless.alljoyn.core.introspection.bean.IntrospectionBaseTag#equals(java.lang.Object)
-     */
     @Override
     public boolean equals(Object obj)
     {
@@ -85,7 +60,9 @@ public class IntrospectionAnnotation extends IntrospectionBaseTag implements Com
         {
             return false;
         }
+        
         IntrospectionAnnotation other = (IntrospectionAnnotation) obj;
+       
         if (value == null)
         {
             if (other.value != null)
@@ -101,9 +78,6 @@ public class IntrospectionAnnotation extends IntrospectionBaseTag implements Com
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
     @Override
     public String toString()
     {
