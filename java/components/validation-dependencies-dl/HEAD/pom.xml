@@ -157,6 +157,7 @@
                             <downloadUrl>${download-mirror}/alljoyn-controlpanel-service-framework-${alljoyn.base-services.version}-android-sdk-rel.zip</downloadUrl>
                             <extractFile>alljoyn-android/services/alljoyn-controlpanel-${alljoyn.base-services.version}-rel/java/libs/ControlPanelAdapter.jar</extractFile>
                         </artifactItem>
+<!--
                          <artifactItem>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>gateway_controller</artifactId>
@@ -166,6 +167,7 @@
                             <downloadUrl>${download-mirror}/alljoyn-gwagent-${alljoyn.gwagent.version}-android-sdk-rel.zip</downloadUrl>
                             <extractFile>alljoyn-android/gwagent/alljoyn-gwagent-${alljoyn.gwagent.version}-rel/java/libs/GatewayController.jar</extractFile>
                         </artifactItem>
+-->
                     </artifactItems>
                 </configuration>
                 <executions>

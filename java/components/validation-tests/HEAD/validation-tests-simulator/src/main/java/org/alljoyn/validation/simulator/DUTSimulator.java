@@ -46,7 +46,7 @@ import org.alljoyn.validation.simulator.config.ConfigPropertyStoreImpl;
 import org.alljoyn.validation.simulator.config.DUTSimulatorAuthPasswordHandler;
 import org.alljoyn.validation.simulator.config.DUTSimulatorConfigTransport;
 import org.alljoyn.validation.simulator.controlpanel.ControlPanelInterfaceManager;
-import org.alljoyn.validation.simulator.gwagent.GWAgentInterfaceManager;
+//import org.alljoyn.validation.simulator.gwagent.GWAgentInterfaceManager;
 import org.alljoyn.validation.simulator.notification.NotificationSignalHandler;
 import org.alljoyn.validation.simulator.notification.NotificationTransport;
 
@@ -92,7 +92,7 @@ public class DUTSimulator
 
     public SrpAnonymousKeyListener authListener;
     private NotificationSignalHandler notificationSignalHandler;
-    private GWAgentInterfaceManager gwAgentInterfaceManager;
+    //private GWAgentInterfaceManager gwAgentInterfaceManager;
 
     static
     {
@@ -196,7 +196,7 @@ public class DUTSimulator
 
         addControlPanelInterfaces();
 
-        addGWAgentInterfaces();
+        //addGWAgentInterfaces();
 
         SignalEmitter signalEmitter = new SignalEmitter(aboutInterfaceMapper, SignalEmitter.GlobalBroadcast.Off);
         signalEmitter.setSessionlessFlag(true);
@@ -251,7 +251,7 @@ public class DUTSimulator
             throw new RuntimeException(e);
         }
     }
-
+/*
     private void addGWAgentInterfaces()
     {
         if (gwAgentSupported)
@@ -261,7 +261,7 @@ public class DUTSimulator
             gwAgentInterfaceManager.registerBusObjects();
         }
     }
-
+*/
     public void sendNotification(int version, int msgId, short messageType, String deviceId, String deviceName, byte[] appId, String appName, Map<Integer, Variant> attributes,
             Map<String, String> customAttributes, TransportNotificationText[] text)
     {
@@ -478,7 +478,7 @@ public class DUTSimulator
             {
                 Log.d(TAG, "Disconnecting busAttachment!");
                 unregisterControlPanelBusObjects();
-                unregisterGWAgentBusObjects();
+                //unregisterGWAgentBusObjects();
                 busAttachment.unregisterBusObject(notificationObjEmergency);
                 busAttachment.unregisterBusObject(notificationObjInfo);
                 busAttachment.unregisterBusObject(notificationObjWarning);
@@ -564,6 +564,7 @@ public class DUTSimulator
         this.controlPanelSupported = controlPanelSupported;
     }
 
+/*
     public boolean isGWAgentSupported()
     {
         return gwAgentSupported;
@@ -573,7 +574,7 @@ public class DUTSimulator
     {
         this.gwAgentSupported = gwAgentSupported;
     }
-
+*/
     public String getKeyStorePath()
     {
         return keyStorePath;
@@ -649,7 +650,7 @@ public class DUTSimulator
             controlPanelInterfaceManager.unregisterBusObjects();
         }
     }
-
+/*
     private void unregisterGWAgentBusObjects()
     {
         if (gwAgentSupported)
@@ -657,7 +658,7 @@ public class DUTSimulator
             gwAgentInterfaceManager.unregisterBusObjects();
         }
     }
-
+*/
     public BusAttachment getBusAttachment()
     {
         return busAttachment;

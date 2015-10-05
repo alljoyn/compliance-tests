@@ -162,7 +162,7 @@ public class AllJoynManager
 			}
 
 			@Override
-			public void sessionLost(int sessionId)
+			public void sessionLost(int sessionId, int reason)
 			{
 				if (sessionId == sessionID)
 				{

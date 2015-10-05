@@ -1,0 +1,70 @@
+/*******************************************************************************
+*  Copyright (c) AllSeen Alliance. All rights reserved.
+*
+*     Permission to use, copy, modify, and/or distribute this software for any
+*     purpose with or without fee is hereby granted, provided that the above
+*     copyright notice and this permission notice appear in all copies.
+*
+*     THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+*     WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+*     MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+*     ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+*     WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+*     ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+*     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+*******************************************************************************/
+package org.alljoyn.validation.testing.suites.controller.alljoyn;
+
+import org.alljoyn.bus.annotation.BusSignalHandler;
+import org.alljoyn.validation.testing.suites.controller.ControllerServiceSignalListener;
+
+public class ControllerServiceTransitionEffectSignalHandler
+{
+    static
+    {
+        System.loadLibrary("alljoyn_java");
+    }
+
+    private ControllerServiceSignalListener signalListener;
+
+    public void setUpdateListener(ControllerServiceSignalListener listener)
+    {
+        signalListener = listener;
+    }
+
+    @BusSignalHandler(iface = "org.allseen.LSF.ControllerService.TransitionEffect", signal = "TransitionEffectsNameChanged")
+    public void TransitionEffectsNameChanged(String[] transitionEffectIDs)
+    {
+        if (signalListener != null)
+        {
+            signalListener.handleTransitionEffectsNameChanged(transitionEffectIDs);
+        }
+    }
+
+    @BusSignalHandler(iface = "org.allseen.LSF.ControllerService.TransitionEffect", signal = "TransitionEffectsCreated")
+    public void TransitionEffectsCreated(String[] transitionEffectIDs)
+    {
+        if (signalListener != null)
+        {
+            signalListener.handleTransitionEffectsCreated(transitionEffectIDs);
+        }
+    }
+
+    @BusSignalHandler(iface = "org.allseen.LSF.ControllerService.TransitionEffect", signal = "TransitionEffectsUpdated")
+    public void TransitionEffectsUpdated(String[] transitionEffectIDs)
+    {
+        if (signalListener != null)
+        {
+            signalListener.handleTransitionEffectsUpdated(transitionEffectIDs);
+        }
+    }
+
+    @BusSignalHandler(iface = "org.allseen.LSF.ControllerService.TransitionEffect", signal = "TransitionEffectsDeleted")
+    public void TransitionEffectsDeleted(String[] transitionEffectIDs)
+    {
+        if (signalListener != null)
+        {
+            signalListener.handleTransitionEffectsDeleted(transitionEffectIDs);
+        }
+    }
+}
