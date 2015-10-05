@@ -150,16 +150,16 @@ public class LSF_LampTestSuite extends ValidationBaseTestCase implements Service
         serviceHelper.initialize(BUS_APPLICATION_NAME, dutDeviceId, dutAppId);
 
         lampStateBusObject = new LampStateBusObject();
-        serviceHelper.registerBusObject(lampStateBusObject, BUS_OBJECT_PATH);
+        serviceHelper.registerBusObject(lampStateBusObject, BUS_OBJECT_PATH+"/LampStateBusObject");
 
         lampServiceBusObject = new LampServiceBusObject();
-        serviceHelper.registerBusObject(lampServiceBusObject, BUS_OBJECT_PATH);
+        serviceHelper.registerBusObject(lampServiceBusObject, BUS_OBJECT_PATH+"/LampServiceBusObject");
 
         lampParametersBusObject = new LampParametersBusObject();
-        serviceHelper.registerBusObject(lampParametersBusObject, BUS_OBJECT_PATH);
+        serviceHelper.registerBusObject(lampParametersBusObject, BUS_OBJECT_PATH+"/LampParametersBusObject");
 
         lampDetailsBusObject = new LampDetailsBusObject();
-        serviceHelper.registerBusObject(lampDetailsBusObject, BUS_OBJECT_PATH);
+        serviceHelper.registerBusObject(lampDetailsBusObject, BUS_OBJECT_PATH+"/LampDetailsBusObject");
 
         deviceAboutAnnouncement = waitForNextDeviceAnnouncement();
 
@@ -573,6 +573,11 @@ public class LSF_LampTestSuite extends ValidationBaseTestCase implements Service
 			//assertEquals("TransitionLampState getOnOff failed ", onOffValue, newOnOff);
 
 			/******************************************************************************/
+
+			logger.info("Waiting for TransitionLampState signal return");
+			Thread.sleep(5000);
+			// there should have been enough time for signal to be received
+			assertEquals("LSF_Lamp TransitionLampState await signal returns failure. ", true, signalReceived);
 		}
 		catch (BusException e)
 		{

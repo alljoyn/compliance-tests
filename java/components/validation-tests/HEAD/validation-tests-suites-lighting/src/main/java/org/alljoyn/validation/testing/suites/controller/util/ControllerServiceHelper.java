@@ -108,7 +108,7 @@ public class ControllerServiceHelper extends ServiceHelper
             }
 
             @Override
-            public void sessionLost(int sid)
+            public void sessionLost(int sid, int reason)
             {
 
             }
