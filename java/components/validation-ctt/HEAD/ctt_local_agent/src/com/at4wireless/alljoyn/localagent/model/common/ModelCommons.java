@@ -41,6 +41,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -60,6 +61,7 @@ import com.sun.jersey.api.representation.Form;
 public class ModelCommons
 {
 	private static final String configurationFileName = "config.xml";
+	private static final int CONNECTION_REQUEST_TIMEOUT_IN_MILLISECONDS = 5000;
 	
 	public static ClientResponse unsecuredPostRequest(String url, Form postForm) throws ClientHandlerException
 	{
@@ -89,7 +91,14 @@ public class ModelCommons
 		URI URI = new URI(url);
 		HttpClient httpClient = HttpClientBuilder.create().build();
 		HttpGet getRequest = new HttpGet(URI);
+		RequestConfig Default = RequestConfig.DEFAULT;
+		RequestConfig requestConfig = RequestConfig.copy(Default)
+				.setSocketTimeout(5000)
+				.setConnectTimeout(5000)
+				.setConnectionRequestTimeout(CONNECTION_REQUEST_TIMEOUT_IN_MILLISECONDS)
+				.build();
 		
+		getRequest.setConfig(requestConfig);
 		getRequest.addHeader("Authorization", "bearer " + sessionToken);
 		
 		return httpClient.execute(getRequest);
