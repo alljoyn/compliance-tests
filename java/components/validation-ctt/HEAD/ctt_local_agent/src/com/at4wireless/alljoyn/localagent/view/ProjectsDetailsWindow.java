@@ -24,10 +24,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -147,8 +149,12 @@ public class ProjectsDetailsWindow extends JPanel
 		}
 		catch (ExecutionException e)
 		{
-			// TODO Redirect to login window again
-			e.printStackTrace();
+			if (e.getCause() instanceof SocketTimeoutException)
+			{
+				logger.warn("Timeout waiting for response from the server");
+				JOptionPane.showMessageDialog(ProjectsDetailsWindow.this, "Server does not respond, please click on refresh to try again.");
+				return;
+			}
 		}
 		
 		logger.debug(projectsTableContent.length);
