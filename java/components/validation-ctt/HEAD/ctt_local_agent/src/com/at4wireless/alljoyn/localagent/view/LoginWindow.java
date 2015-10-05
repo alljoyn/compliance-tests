@@ -107,7 +107,6 @@ public class LoginWindow extends JDialog
     	JIconTextField userInputField = new JIconTextField();
     	
     	userInputLabel.setForeground(LABELS_COLOR);
-    	//userInputLabel.setFont(new Font("Arial", Font.PLAIN, 12));
     	userInputLabel.setBounds(new Rectangle(60, 150, 80, 20));
     	
     	userInputField.setBounds(new Rectangle(140, 150, 220, 23));
@@ -140,7 +139,6 @@ public class LoginWindow extends JDialog
     	JIconPasswordField passwordInputField = new JIconPasswordField();
     	
     	passwordInputLabel.setForeground(LABELS_COLOR);
-    	//passwordInputLabel.setFont(new Font("Arial", Font.PLAIN, 12));
     	passwordInputLabel.setBounds(new Rectangle(60, 180, 80, 20));
     	
     	passwordInputField.setBounds(new Rectangle(140, 180, 220, 23));
@@ -297,16 +295,24 @@ public class LoginWindow extends JDialog
 		checkingForUpdatesAction.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
 		
 		List<Object> responseFromServer = mySwingWorker.get();
-		if (!(Boolean) responseFromServer.get(0))
+		
+		if (!responseFromServer.isEmpty())
 		{
-			logger.info("A new version of CTT Local Agent is available");
-			UpdateTestToolWindow updateTestToolWindow = new UpdateTestToolWindow(loginInvoker, Main.CTT_LOCAL_AGENT_VERSION,
-					(String) responseFromServer.get(1), loginController.getSessionToken());
-			updateTestToolWindow.setVisible(true);
+			if (!(Boolean) responseFromServer.get(0))
+			{
+				logger.info("A new version of CTT Local Agent is available");
+				UpdateTestToolWindow updateTestToolWindow = new UpdateTestToolWindow(loginInvoker, Main.CTT_LOCAL_AGENT_VERSION,
+						(String) responseFromServer.get(1), loginController.getSessionToken());
+				updateTestToolWindow.setVisible(true);
+			}
+			else
+			{
+				logger.info("CTT Local Agent is updated");
+			}
 		}
 		else
 		{
-			logger.info("CTT Local Agent is updated");
+			logger.info("CTT Local Agent version is newer than server version");
 		}
     }
     
