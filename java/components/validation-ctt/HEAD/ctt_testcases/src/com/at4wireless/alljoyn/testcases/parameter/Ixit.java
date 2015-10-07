@@ -211,12 +211,12 @@ public class Ixit
 		}
 	}
 	
-	public String get(String ixitName)
+	public Object get(String ixitName)
 	{
-		String field = null;
+		Object field = null;
 		try
 		{
-			field = (String) this.getClass().getField(ixitName).get(this);
+			field = this.getClass().getField(ixitName).get(this);
 		}
 		catch (IllegalArgumentException e)
 		{
