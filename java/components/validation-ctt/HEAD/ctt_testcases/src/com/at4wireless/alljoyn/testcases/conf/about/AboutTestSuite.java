@@ -58,6 +58,7 @@ import org.xml.sax.SAXException;
 import com.at4wireless.alljoyn.core.about.AboutAnnouncementDetails;
 import com.at4wireless.alljoyn.core.about.EvAcIntrospectionNode;
 import com.at4wireless.alljoyn.core.audio.MediaType;
+import com.at4wireless.alljoyn.core.commons.CommonUtils;
 import com.at4wireless.alljoyn.core.commons.ServiceHelper;
 import com.at4wireless.alljoyn.core.commons.log.Logger;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
@@ -853,7 +854,16 @@ public class AboutTestSuite
 					else
 					{
 						logger.info("Checking if received %s is equal to IXITCO_%s", fieldName, fieldName);
-						compareAbout(fieldName, ixitList.get("IXITCO_" + fieldName), (String) aboutMap.get(fieldName).getObject(String.class), "");
+						
+						if (fieldName == AboutKeys.ABOUT_APP_ID)
+						{
+							compareAbout(fieldName, ((UUID) ixitList.get("IXITCO_" + fieldName)).toString(), 
+									CommonUtils.getUuidFromByteArray(((byte[]) aboutMap.get(fieldName).getObject(byte[].class))).toString(), "");
+						}
+						else
+						{
+							compareAbout(fieldName, (String) ixitList.get("IXITCO_" + fieldName), (String) aboutMap.get(fieldName).getObject(String.class), "");
+						}
 					}
 				}
 				catch (BusException e)
@@ -1149,6 +1159,7 @@ public class AboutTestSuite
 		
 		ProxyBusObject proxyObj = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, objectPath,
 				new Class<?>[]{AllSeenIntrospectable.class});
+		
 		String[] descLangs = getDescriptionLanguages(proxyObj, objectPath);
 		
 		if (descLangs.length == 0)
@@ -1249,6 +1260,8 @@ public class AboutTestSuite
 		for (String lang : descLangs)
 		{
 			String currentXML = getIntrospectionXML(proxyObj, parentObjectPath, lang);
+			logger.debug("The IntrospectionXML for language %s is: ", lang);
+			logger.raw("%s", currentXML);
 			assertNotNull(String.format("Introspection XML is NULL Object Path: '%s'", parentObjectPath), currentXML);
 
 			currentXML = removeXMLDesc(currentXML);
@@ -1356,9 +1369,7 @@ public class AboutTestSuite
 				}
 			}
 		}
-		
 		//[AT4] ends
-		
 		return retList;
 	}
 	
