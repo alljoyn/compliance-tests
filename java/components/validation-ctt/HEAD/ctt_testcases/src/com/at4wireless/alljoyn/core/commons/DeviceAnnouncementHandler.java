@@ -70,6 +70,7 @@ public class DeviceAnnouncementHandler implements AboutListener
         receivedAnnouncements.clear();
     }
 
+    @Override
     public void announced(String busName, int version, short port, 
     		AboutObjectDescription[] objectDescriptions,
     		Map<String, Variant> aboutData)
@@ -86,18 +87,8 @@ public class DeviceAnnouncementHandler implements AboutListener
 	        logger.warn("BusException processing AboutMap", e);
 	    }
 
-	    String deviceId = null;
-	    UUID appId = null;
-	    
-		try
-		{
-			deviceId = receivedAboutAnnouncement.getDeviceId();
-			appId = receivedAboutAnnouncement.getAppId();
-		}
-		catch (Exception e)
-		{
-			logger.error(e.toString());
-		}
+	    String deviceId = receivedAboutAnnouncement.getDeviceId();
+	    UUID appId = receivedAboutAnnouncement.getAppId();
 	   
 	    if (deviceIdMatches(dutDeviceId, deviceId) && appIdMatches(dutAppId, appId))
 	    {
