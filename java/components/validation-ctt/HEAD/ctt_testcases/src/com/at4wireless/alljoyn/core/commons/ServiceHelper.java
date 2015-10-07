@@ -588,7 +588,7 @@ public class ServiceHelper
         int sessionId = this.sessionId.value;
 
         String peerName = announcement.getServiceName();
-        logger.info(String.format("Creating ProxyBusObject for peerName: %s; sessionid: %d; path: %s", peerName, sessionId, path));
+        logger.info("Creating ProxyBusObject for peerName: %s; sessionid: %d; path: %s", peerName, sessionId, path);
         return busAttachmentMgr.getBusAttachment().getProxyBusObject(peerName, path, sessionId, classes);
     }
     
