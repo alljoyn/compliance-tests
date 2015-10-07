@@ -28,6 +28,8 @@ import org.alljoyn.bus.AboutObjectDescription;
 import org.alljoyn.bus.BusException;
 import org.alljoyn.bus.Variant;
 
+import com.at4wireless.alljoyn.core.commons.CommonUtils;
+
 public class AboutAnnouncementDetails extends AboutAnnouncement
 {
     private Map<String, Object> aboutDataObjectMap = null;
@@ -64,7 +66,7 @@ public class AboutAnnouncementDetails extends AboutAnnouncement
                     byte[] byteArray = variant.getObject(new byte[]
                     {}.getClass());
                     //value = TransportUtil.byteArrayToUUID(byteArray); //[AT4] Deprecated
-                    value = UUID.nameUUIDFromBytes(byteArray);
+                    value = CommonUtils.getUuidFromByteArray(byteArray);
                 }
                 else if ("as".equals(signature))
                 {
