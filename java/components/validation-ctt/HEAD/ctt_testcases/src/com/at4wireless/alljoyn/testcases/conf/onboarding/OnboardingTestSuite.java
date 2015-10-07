@@ -434,7 +434,7 @@ public class OnboardingTestSuite
 			for (MyScanResult myScanResult : scanResults)
 			{
 				validateScanResult(myScanResult);
-				System.out.println(myScanResult.m_ssid);
+				
 				/*if (personalAPNetworkName.equals(myScanResult.m_ssid))
 				{
 					foundPersonalAP = true;
