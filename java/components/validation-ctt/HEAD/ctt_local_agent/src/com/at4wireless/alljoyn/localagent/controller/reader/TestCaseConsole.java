@@ -58,11 +58,11 @@ public class TestCaseConsole implements Runnable
 			    displayPane.append(line + "\n");
 			    displayPane.setCaretPosition( displayPane.getDocument().getLength());
 			    
-			    if (line.contains(":Final Verdict:"))
+			    if (line.contains(": Final Verdict:"))
 			    {
 			    	if (runningAll)
 			    	{
-			    		Thread.sleep(1000); //To allow the Test Cases Package to create the XML
+			    		Thread.sleep(2000); //To allow the Test Cases Package to create the XML
 			    		executeTestCaseWindow.saveButtonAction();
 			    	}
 			    	else

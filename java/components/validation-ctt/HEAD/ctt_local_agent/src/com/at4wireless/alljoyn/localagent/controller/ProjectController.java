@@ -67,34 +67,26 @@ public class ProjectController
 				data[i][7] = json.getJSONObject(i).get("golden");
 				data[i][8] = json.getJSONObject(i).getBoolean("isConfigured") ? "Yes" : "No";
 				data[i][9] = json.getJSONObject(i).getBoolean("hasResults");
-				
-				logger.debug(String.format("Data structure length: %d", data.length));
 			}
+			logger.debug(String.format("Data structure length: %d", data.length));
 		}
 		catch (JSONException e)
 		{
-			/*try
-			{*/
-				JSONObject json = new JSONObject(projects);
-				data = new Object[1][10];
-				
-				data[0][0] = json.getInt("idProject");
-				data[0][1] = json.get("name");
-				data[0][2] = json.getString("type");
-				data[0][3] = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date(json.getLong("createdDate")));
-				data[0][4] = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date(json.getLong("modifiedDate")));
-				data[0][5] = json.getString("certRel");
-				data[0][6] = json.get("dut");
-				data[0][7] = json.get("golden");
-				data[0][8] = json.getBoolean("isConfigured");
-				data[0][9] = json.getBoolean("hasResults");
-				
-				logger.debug(String.format("Data structure length: %d", data.length));
-			/*}
-			catch (JSONException e1)
-			{
-				//Empty list
-			}*/
+			JSONObject json = new JSONObject(projects);
+			data = new Object[1][10];
+			
+			data[0][0] = json.getInt("idProject");
+			data[0][1] = json.get("name");
+			data[0][2] = json.getString("type");
+			data[0][3] = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date(json.getLong("createdDate")));
+			data[0][4] = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date(json.getLong("modifiedDate")));
+			data[0][5] = json.getString("certRel");
+			data[0][6] = json.get("dut");
+			data[0][7] = json.get("golden");
+			data[0][8] = json.getBoolean("isConfigured");
+			data[0][9] = json.getBoolean("hasResults");
+			
+			logger.debug(String.format("Data structure length: %d", data.length));
 		}
 
 		return data;
