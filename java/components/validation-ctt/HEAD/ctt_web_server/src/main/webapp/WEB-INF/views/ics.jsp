@@ -8,142 +8,145 @@
     	<jsp:include page="/WEB-INF/views/page_head.jsp"/>	
     </head>
     <body>
-    
-    	<!-- CSRT for logout -->
-    	<c:url value="/j_spring_security_logout" var="logoutUrl" />
- 
-		<form action="${logoutUrl}" method="post" id="logoutForm">
-		  <input type="hidden" 
-			name="${_csrf.parameterName}"
-			value="${_csrf.token}" />
-		</form>
-		
-    	<!-- Main -->
-        <div class="container">
-        	<jsp:include page="/WEB-INF/views/header.jsp"/>
-		    
-		    <div class="row" align="right">
-		    	<h4 id="selectedProject" class="pull-left"></h4>
-		    	<c:if test="${pageContext.request.userPrincipal.name != null}">
-					<h4>
-						Welcome : ${pageContext.request.userPrincipal.name} | <a
-						href="javascript:formSubmit()"> Logout</a>
-					</h4>
-				</c:if>
-		    </div>
-	        
-	        <!-- ICS table -->
-	        <div class="row">
-	        	<!-- Service tabs -->
-		        <ul class="nav nav-tabs">
-		        	<c:forEach var="service" items="${serviceList}" varStatus="status">
-		        		<c:choose>
-							<c:when test="${service.idService==1}">
-								<li class="active">
-									<a href="#${service.idService}" data-toggle="tab">
-										${service.name}  <span id="badge${service.idService}" 
-											style="color:#000000; background-color:#F2DEDE;" class="badge"></span>
-									</a>
-								</li>
-							</c:when>
-							<c:otherwise>
-								<li>
-									<a href="#${service.idService}" data-toggle="tab">
-										${service.name}  <span id="badge${service.idService}"
-											style="color:#000000; background-color:#F2DEDE;" class="badge"></span>
-									</a>
-								</li>
-							</c:otherwise>
-						</c:choose>
-					</c:forEach>
-		        </ul>
+    	<div id="wrap">
+		  	<div id="main" class="container clear-top">
+		    	<!-- CSRT for logout -->
+		    	<c:url value="/j_spring_security_logout" var="logoutUrl" />
+		 
+				<form action="${logoutUrl}" method="post" id="logoutForm">
+				  <input type="hidden" 
+					name="${_csrf.parameterName}"
+					value="${_csrf.token}" />
+				</form>
+				
+		    	<!-- Main -->
+		        <div class="container">
+		        	<jsp:include page="/WEB-INF/views/header.jsp"/>
+				    
+				    <div class="row" align="right">
+				    	<h4 id="selectedProject" class="pull-left"></h4>
+				    	<c:if test="${pageContext.request.userPrincipal.name != null}">
+							<h4>
+								Welcome : ${pageContext.request.userPrincipal.name} | <a
+								href="javascript:formSubmit()"> Logout</a>
+							</h4>
+						</c:if>
+				    </div>
+			        
+			        <!-- ICS table -->
+			        <div class="row">
+			        	<!-- Service tabs -->
+				        <ul class="nav nav-tabs">
+				        	<c:forEach var="service" items="${serviceList}" varStatus="status">
+				        		<c:choose>
+									<c:when test="${service.idService==1}">
+										<li class="active">
+											<a href="#${service.idService}" data-toggle="tab">
+												${service.name}  <span id="badge${service.idService}" 
+													style="color:#000000; background-color:#F2DEDE;" class="badge"></span>
+											</a>
+										</li>
+									</c:when>
+									<c:otherwise>
+										<li>
+											<a href="#${service.idService}" data-toggle="tab">
+												${service.name}  <span id="badge${service.idService}"
+													style="color:#000000; background-color:#F2DEDE;" class="badge"></span>
+											</a>
+										</li>
+									</c:otherwise>
+								</c:choose>
+							</c:forEach>
+				        </ul>
+				        
+				        <!-- Service tables -->
+				        <div class="tab-content">
+					        <c:forEach var="service" items="${serviceList}" varStatus="status">
+					        	<div class="tab-pane" id="${service.idService}">
+							       	<table class="table table-hover">
+							       		<!-- <thead class="scroll-thead">
+							       			<tr class="scroll-tr">  -->
+							       		<thead>
+							       			<tr>
+									        	<th>Id</th>
+									        	<th>Name</th>
+									        	<th>Description</th>
+									        	<th>Value</th>
+									        </tr>
+									    </thead>
+							        	<!-- <tbody class="scroll-tbody">  -->
+							        	<tbody>
+											<c:forEach var="ics" items="${icsList}" varStatus="status">
+												<c:if test="${ics.serviceGroup==service.idService}">
+													<tr>
+										        	<!-- <tr class="scroll-tr">  -->
+										        		<td>${ics.id}</td>
+										        		<td>${ics.name}</td>
+														<td>${ics.description}</td>
+														<td>
+															<select class="form-control">
+																<option value="${ics.value}">${ics.value}</option>
+																<option value="${ics.value==false}">${ics.value==false}</option>
+															</select>
+														</td>							
+										        	</tr>
+									        	</c:if>
+											</c:forEach>
+										</tbody>        	
+							       	</table>
+							    </div>
+					        </c:forEach>
+				        </div>
+			        </div>
+			        
+			        <div class="row" align="right">
+			        	<p id="scrNeed">You need to perform SCR verification</p>
+			        	<p hidden="true" id="fixErrors">You need to correct invalid ICS values</p>
+			        </div>
+			        
+			        <!-- Navigation and SCR buttons -->
+			        <div class="row" align="right">
+			       		<a id="prevButton" type="button" class="btn btn-custom btn-lg pull-left">« Previous Step</a>
+			       		<button id="changeButton" type="button" class="btn btn-default btn-lg">Change All Service ICS</button>
+			        	<button id="scrButton" type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#pleaseWaitDialog">SCR</button>
+			        	<button id="nextButton" disabled class="btn btn-custom btn-lg disabled">Next Step »</button>
+			        </div>
+		        </div>
 		        
-		        <!-- Service tables -->
-		        <div class="tab-content">
-			        <c:forEach var="service" items="${serviceList}" varStatus="status">
-			        	<div class="tab-pane" id="${service.idService}">
-					       	<table class="table table-hover">
-					       		<!-- <thead class="scroll-thead">
-					       			<tr class="scroll-tr">  -->
-					       		<thead>
-					       			<tr>
-							        	<th>Id</th>
-							        	<th>Name</th>
-							        	<th>Description</th>
-							        	<th>Value</th>
-							        </tr>
-							    </thead>
-					        	<!-- <tbody class="scroll-tbody">  -->
-					        	<tbody>
-									<c:forEach var="ics" items="${icsList}" varStatus="status">
-										<c:if test="${ics.serviceGroup==service.idService}">
-											<tr>
-								        	<!-- <tr class="scroll-tr">  -->
-								        		<td>${ics.id}</td>
-								        		<td>${ics.name}</td>
-												<td>${ics.description}</td>
-												<td>
-													<select class="form-control">
-														<option value="${ics.value}">${ics.value}</option>
-														<option value="${ics.value==false}">${ics.value==false}</option>
-													</select>
-												</td>							
-								        	</tr>
-							        	</c:if>
-									</c:forEach>
-								</tbody>        	
-					       	</table>
-					    </div>
-			        </c:forEach>
+		        <!-- Hidden form to next view -->
+		        <div>
+		        	<form:form method="GET" id="nextForm" action="ixit" modelAttribute="newProject">
+		        		<form:input type="hidden" id="idProject" name="idProject" path="idProject" value=""/>
+		        		<!-- <form:input type="hidden" id="isConfigured" name="isConfigured" path="isConfigured" value=""/> -->
+		        		<form:input type="hidden" id="idDut" name="idDut" path="idDut" value=""/>
+		        	</form:form>
+		        </div>
+		        
+		        <!-- Hidden form to previous view -->
+		        <div>
+		        	<form:form method="GET" id="prevForm" action="ics/decide" modelAttribute="newProject">
+		        		<form:input type="hidden" id="prevIdProject" name="idProject" path="idProject" value=""/>
+		        	</form:form>
+		        </div>
+		        
+		        <!-- Processing... modal -->
+		        <div class="modal" tabindex="-1" role="dialog" aria-hidden="true" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false">
+					<div class="modal-dialog">
+				        <div class="modal-content">
+				        	<div class="modal-header">
+				        		<h1>Processing...</h1>
+				        	</div>
+				        	<div class="modal-body">
+				        		<div class="progress progress-striped active">
+					        			<div class="progress-bar" role="progressbar" aria-valuenow="100"
+											aria-valuemin="0" aria-valuemax="100" style="width:100%">
+				        				</div>
+					        	</div>
+				        	</div>
+				        </div>
+					</div>
 		        </div>
 	        </div>
-	        
-	        <div class="row" align="right">
-	        	<p id="scrNeed">You need to perform SCR verification</p>
-	        	<p hidden="true" id="fixErrors">You need to correct invalid ICS values</p>
-	        </div>
-	        
-	        <!-- Navigation and SCR buttons -->
-	        <div class="row" align="right">
-	       		<a id="prevButton" type="button" class="btn btn-custom btn-lg pull-left">« Previous Step</a>
-	       		<button id="changeButton" type="button" class="btn btn-default btn-lg">Change All Service ICS</button>
-	        	<button id="scrButton" type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#pleaseWaitDialog">SCR</button>
-	        	<button id="nextButton" disabled class="btn btn-custom btn-lg disabled">Next Step »</button>
-	        </div>
-        </div>
-        
-        <!-- Hidden form to next view -->
-        <div>
-        	<form:form method="GET" id="nextForm" action="ixit" modelAttribute="newProject">
-        		<form:input type="hidden" id="idProject" name="idProject" path="idProject" value=""/>
-        		<!-- <form:input type="hidden" id="isConfigured" name="isConfigured" path="isConfigured" value=""/> -->
-        		<form:input type="hidden" id="idDut" name="idDut" path="idDut" value=""/>
-        	</form:form>
-        </div>
-        
-        <!-- Hidden form to previous view -->
-        <div>
-        	<form:form method="GET" id="prevForm" action="ics/decide" modelAttribute="newProject">
-        		<form:input type="hidden" id="prevIdProject" name="idProject" path="idProject" value=""/>
-        	</form:form>
-        </div>
-        
-        <!-- Processing... modal -->
-        <div class="modal" tabindex="-1" role="dialog" aria-hidden="true" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false">
-			<div class="modal-dialog">
-		        <div class="modal-content">
-		        	<div class="modal-header">
-		        		<h1>Processing...</h1>
-		        	</div>
-		        	<div class="modal-body">
-		        		<div class="progress progress-striped active">
-			        			<div class="progress-bar" role="progressbar" aria-valuenow="100"
-									aria-valuemin="0" aria-valuemax="100" style="width:100%">
-		        				</div>
-			        	</div>
-		        	</div>
-		        </div>
-			</div>
         </div>
         
         <jsp:include page="/WEB-INF/views/footer.jsp"/>

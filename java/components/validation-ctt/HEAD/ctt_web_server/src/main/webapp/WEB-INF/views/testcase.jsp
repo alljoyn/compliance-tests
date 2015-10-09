@@ -8,96 +8,99 @@
     	<jsp:include page="/WEB-INF/views/page_head.jsp"/>
     </head>
     <body>
-    
-    	<!-- CSRT for logout -->
-    	<c:url value="/j_spring_security_logout" var="logoutUrl" />
- 
-		<form action="${logoutUrl}" method="post" id="logoutForm">
-		  <input type="hidden" 
-			name="${_csrf.parameterName}"
-			value="${_csrf.token}" />
-		</form>
-		
-    	<!-- Main -->
-        <div class="container" id="container">
-        	<jsp:include page="/WEB-INF/views/header.jsp"/>
-		    
-		    <div class="row" align="right">
-		    	<h4 id="selectedProject" class="pull-left"></h4>
-		    	<c:if test="${pageContext.request.userPrincipal.name != null}">
-					<h4>
-						Welcome : ${pageContext.request.userPrincipal.name} | <a
-						href="javascript:formSubmit()"> Logout</a>
-					</h4>
-				</c:if>
-		    </div>
-	        
-	        <!-- Testcases table -->
-	        <div class="row">
-		       	<table class="table table-hover">
-		       		<thead>
-		       			<tr>
-		       				<th class="hide">TC ID</th>
-				        	<th>Test Case</th>
-				        	<th>Description</th>
-				        	<th>Select</th>
-				        </tr>
-				    </thead>
-		        	<tbody id="tcBody">
-						<c:forEach var="tc" items="${tcList}" varStatus="status">
-							<tr>
-				        		<td class="hide">${tc.idTC}</td>
-				        		<td width="15%">${tc.name}</td>
-								<td width="80%">${tc.description}</td>
-								<td width="5%" style="text-align: center">
-									<input class="is_checkbox" type="checkbox">
-								</td>								
-				        	</tr>
-						</c:forEach>
-					</tbody>        	
-		       	</table>
-			</div>
-			
-			<!-- Action buttons -->
-			<div class="row" align="left">
-	        	<button id="selectAll" type="button" class="btn btn-default btn-lg">Select All (*)</button>
-	        	<button id="deselectAll" type="button" class="btn btn-default btn-lg">Deselect All</button>
-	        </div>
-	        
-	        <div class="row" align="left">
-	        	<p>(*) Mandatory for Certification purpose</p>
-	        </div>
-	        
-	        <!-- Navigation buttons -->
-	        <div class="row" align="left">
-	        	<button id="prevButton" class="btn btn-custom btn-lg">« Previous Step</button>
-	        	<a id="nextButton" type="button" class="btn btn-custom btn-lg pull-right" href="end">Next Step »</a>
-	        </div>
-        </div>
-        
-        <!-- Hidden form to previous view -->
-        <div>
-        	<form:form method="GET" id="prevForm" action="parameter" modelAttribute="newProject">
-        		<form:input type="hidden" id="idProject" name="idProject" path="idProject" value=""/>
-        	</form:form>
-        </div>
-        
-        <!-- Processing... modal -->	
-       	<div class="modal" tabindex="-1" role="dialog" aria-hidden="true" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false">
-			<div class="modal-dialog">
-		        <div class="modal-content">
-		        	<div class="modal-header">
-		        		<h1>Processing...</h1>
-		        	</div>
-		        	<div class="modal-body">
-		        		<div class="progress progress-striped active">
-		        			<div class="progress-bar" role="progressbar" aria-valuenow="100"
-								aria-valuemin="0" aria-valuemax="100" style="width:100%">
-	        				</div>
-		        		</div>
-		        	</div>
+    	<div id="wrap">
+		  	<div id="main" class="container clear-top">
+		    	<!-- CSRT for logout -->
+		    	<c:url value="/j_spring_security_logout" var="logoutUrl" />
+		 
+				<form action="${logoutUrl}" method="post" id="logoutForm">
+				  <input type="hidden" 
+					name="${_csrf.parameterName}"
+					value="${_csrf.token}" />
+				</form>
+				
+		    	<!-- Main -->
+		        <div class="container" id="container">
+		        	<jsp:include page="/WEB-INF/views/header.jsp"/>
+				    
+				    <div class="row" align="right">
+				    	<h4 id="selectedProject" class="pull-left"></h4>
+				    	<c:if test="${pageContext.request.userPrincipal.name != null}">
+							<h4>
+								Welcome : ${pageContext.request.userPrincipal.name} | <a
+								href="javascript:formSubmit()"> Logout</a>
+							</h4>
+						</c:if>
+				    </div>
+			        
+			        <!-- Testcases table -->
+			        <div class="row">
+				       	<table class="table table-hover">
+				       		<thead>
+				       			<tr>
+				       				<th class="hide">TC ID</th>
+						        	<th>Test Case</th>
+						        	<th>Description</th>
+						        	<th>Select</th>
+						        </tr>
+						    </thead>
+				        	<tbody id="tcBody">
+								<c:forEach var="tc" items="${tcList}" varStatus="status">
+									<tr>
+						        		<td class="hide">${tc.idTC}</td>
+						        		<td width="15%">${tc.name}</td>
+										<td width="80%">${tc.description}</td>
+										<td width="5%" style="text-align: center">
+											<input class="is_checkbox" type="checkbox">
+										</td>								
+						        	</tr>
+								</c:forEach>
+							</tbody>        	
+				       	</table>
+					</div>
+					
+					<!-- Action buttons -->
+					<div class="row" align="left">
+			        	<button id="selectAll" type="button" class="btn btn-default btn-lg">Select All (*)</button>
+			        	<button id="deselectAll" type="button" class="btn btn-default btn-lg">Deselect All</button>
+			        </div>
+			        
+			        <div class="row" align="left">
+			        	<p>(*) Mandatory for Certification purpose</p>
+			        </div>
+			        
+			        <!-- Navigation buttons -->
+			        <div class="row" align="left">
+			        	<button id="prevButton" class="btn btn-custom btn-lg">« Previous Step</button>
+			        	<a id="nextButton" type="button" class="btn btn-custom btn-lg pull-right" href="end">Next Step »</a>
+			        </div>
 		        </div>
-			</div>
+		        
+		        <!-- Hidden form to previous view -->
+		        <div>
+		        	<form:form method="GET" id="prevForm" action="parameter" modelAttribute="newProject">
+		        		<form:input type="hidden" id="idProject" name="idProject" path="idProject" value=""/>
+		        	</form:form>
+		        </div>
+		        
+		        <!-- Processing... modal -->	
+		       	<div class="modal" tabindex="-1" role="dialog" aria-hidden="true" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false">
+					<div class="modal-dialog">
+				        <div class="modal-content">
+				        	<div class="modal-header">
+				        		<h1>Processing...</h1>
+				        	</div>
+				        	<div class="modal-body">
+				        		<div class="progress progress-striped active">
+				        			<div class="progress-bar" role="progressbar" aria-valuenow="100"
+										aria-valuemin="0" aria-valuemax="100" style="width:100%">
+			        				</div>
+				        		</div>
+				        	</div>
+				        </div>
+					</div>
+		        </div>
+	        </div>
         </div>
         
         <jsp:include page="/WEB-INF/views/footer.jsp"/>

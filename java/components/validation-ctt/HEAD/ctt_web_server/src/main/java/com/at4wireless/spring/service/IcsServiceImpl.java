@@ -13,7 +13,6 @@
  *      ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  *      OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *******************************************************************************/
-
 package com.at4wireless.spring.service;
 
 import java.io.FileInputStream;
@@ -127,7 +126,7 @@ public class IcsServiceImpl implements IcsService {
 			Result r = new Result(ics.getId(), ics.getServiceGroup(), true);
 			if((condition!=null)&&(!condition.isEmpty())) {
 				try {
-					r.setResult((Double)engine.eval(condition)==1.0);
+					r.setResult((Integer)engine.eval(condition)==1.0);
 				} catch (ScriptException e) {
 					e.printStackTrace();
 				}
