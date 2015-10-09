@@ -6,7 +6,7 @@
 
 !define APP_NAME "Certification Test Tool - Local Agent"
 !define COMP_NAME "AT4 wireless"
-!define VERSION "1.06.00.00"
+!define VERSION "1.08.00.00"
 !define COPYRIGHT "AllSeen Alliance 2015"
 !define DESCRIPTION "Installer for CTT-Local Agent"
 !define MAIN_APP_EXE "CTT_Local_Agent.exe"
@@ -18,10 +18,10 @@
 !define REG_START_MENU "Start Menu Folder"
 ######################################################################
 ;Modify values to fit your project
-!define INSTALLER_NAME "C:\Users\Administrador\Desktop\CTT_Local_Agent_v1.6.0_Installer.exe"
-!define LOCAL_AGENT_PATH "C:\Users\Administrador\Desktop\ctt_local_agent"
-!define MSVS2012_PATH "C:\Users\Administrador\Desktop\MSVS2012"
-!define MSVS2013_PATH "C:\Users\Administrador\Desktop\MSVS2013"
+!define INSTALLER_NAME "C:\Users\jtf\Desktop\CTT_Local_Agent_v1.8.0_Installer.exe"
+!define LOCAL_AGENT_PATH "C:\Users\jtf\Desktop\ctt_local_agent"
+!define MSVS2012_PATH "C:\Users\jtf\Desktop\MSVS2012"
+!define MSVS2013_PATH "C:\Users\jtf\Desktop\MSVS2013"
 
 var SM_Folder
 
@@ -40,6 +40,7 @@ SetCompressor ZLIB
 Name "${APP_NAME}"
 Caption "${APP_NAME}"
 OutFile "${INSTALLER_NAME}"
+RequestExecutionLevel admin ;Request application privileges for Windows Vista, 7, 8
 BrandingText "${APP_NAME}"
 XPStyle on
 InstallDirRegKey "${REG_ROOT}" "${REG_APP_PATH}" ""
@@ -47,17 +48,27 @@ InstallDir "C:\Program Files\CTTLocalAgent"
 
 ######################################################################
 
+!include LogicLib.nsh
 
-;Visual 2012
+Function .onInit
+UserInfo::GetAccountType
+pop $0
+${If} $0 != "admin" ;Require admin rights on NT4+
+    MessageBox mb_iconstop "Administrator rights required!"
+    SetErrorLevel 740 ;ERROR_ELEVATION_REQUIRED
+    Quit
+${EndIf}
+FunctionEnd
+
+######################################################################
+
+;Visual 2012 and 2013
 !define ICON_PATH "${LOCAL_AGENT_PATH}\res\drawable"
 !define MSVS2012_DIR "${MSVS2012_PATH}"
 !define MSVS2013_DIR "${MSVS2013_PATH}"
-;Request application privileges for Windows Vista, 7, 8
-RequestExecutionLevel admin 
- 
 
 
-; Definitions for Java 7.0
+; Definitions for Java 8.0
 !define JRE_VERSION "8.0"
 !define JRE_URL "http://download.oracle.com/otn-pub/java/jdk/8u60-b27/jre-8u60-windows-i586.exe"
 !define JRE64_URL "http://download.oracle.com/otn-pub/java/jdk/8u60-b27/jre-8u60-windows-x64.exe"
@@ -66,7 +77,6 @@ RequestExecutionLevel admin
 ; use java.exe to keep stdout/stderr
 !define JAVAEXE "javaw.exe"
 
-RequestExecutionLevel user
 ;SilentInstall silent
 AutoCloseWindow true
 ;ShowInstDetails nevershow
@@ -126,36 +136,10 @@ File "${LOCAL_AGENT_PATH}\config.xml"
 File "${LOCAL_AGENT_PATH}\CTT_Local_Agent.exe"
 
 SetOutPath "$INSTDIR\testcases"
-File "${LOCAL_AGENT_PATH}\testcases\TestCases_Package_v14.06.00a_R1.jar"
-File "${LOCAL_AGENT_PATH}\testcases\TestCases_Package_v14.12.00_R3.jar"
-File "${LOCAL_AGENT_PATH}\testcases\TestCases_Package_v14.12.00a_R5.jar"
-File "${LOCAL_AGENT_PATH}\testcases\TestCases_Package_v14.12.00b_R5.jar"
-File "${LOCAL_AGENT_PATH}\testcases\TestCases_Package_v15.04.00_R5.jar"
-File "${LOCAL_AGENT_PATH}\testcases\TestCases_Package_v15.04.00a_R8.jar"
-File "${LOCAL_AGENT_PATH}\testcases\TestCases_Package_v15.04.00b_R2.jar"
-File "${LOCAL_AGENT_PATH}\testcases\TestCases_Package_v15.09.00_D2.jar"
+File "${LOCAL_AGENT_PATH}\testcases\*.jar"
+
 SetOutPath "$INSTDIR\res\drawable"
-File "${LOCAL_AGENT_PATH}\res\drawable\back.jpg"
-File "${LOCAL_AGENT_PATH}\res\drawable\footer.jpg"
-File "${LOCAL_AGENT_PATH}\res\drawable\header.jpg"
-File "${LOCAL_AGENT_PATH}\res\drawable\ico_close.jpg"
-File "${LOCAL_AGENT_PATH}\res\drawable\ico_login.png"
-File "${LOCAL_AGENT_PATH}\res\drawable\ico_next.png"
-File "${LOCAL_AGENT_PATH}\res\drawable\ico_refresh.png"
-File "${LOCAL_AGENT_PATH}\res\drawable\ico_stop.jpg"
-File "${LOCAL_AGENT_PATH}\res\drawable\allseen128.ico"
-File "${LOCAL_AGENT_PATH}\res\drawable\install.jpg"
-File "${LOCAL_AGENT_PATH}\res\drawable\log.jpg"
-File "${LOCAL_AGENT_PATH}\res\drawable\MainWindowBackground.jpg"
-File "${LOCAL_AGENT_PATH}\res\drawable\MainWindowBackground2.jpg"
-File "${LOCAL_AGENT_PATH}\res\drawable\results.jpg"
-File "${LOCAL_AGENT_PATH}\res\drawable\run.jpg"
-File "${LOCAL_AGENT_PATH}\res\drawable\ic_AllSeen.png"
-File "${LOCAL_AGENT_PATH}\res\drawable\run_all.jpg"
-File "${LOCAL_AGENT_PATH}\res\drawable\save.jpg"
-File "${LOCAL_AGENT_PATH}\res\drawable\short_footer.jpg"
-File "${LOCAL_AGENT_PATH}\res\drawable\ico_password.png"
-File "${LOCAL_AGENT_PATH}\res\drawable\ico_user.png"
+File "${LOCAL_AGENT_PATH}\res\drawable\*.*"
 
 SetOutPath "$INSTDIR\lib\v14.12.00"
 File "${LOCAL_AGENT_PATH}\lib\v14.12.00\alljoyn_java.dll"
@@ -232,36 +216,9 @@ ${INSTALL_TYPE}
 Delete "$INSTDIR\config.xml"
 Delete "$INSTDIR\icon.ico"
 Delete "$INSTDIR\CTT_Local_Agent.exe"
-Delete "$INSTDIR\testcases\TestCases_Package_v14.06.00a_R1.jar"
-Delete "$INSTDIR\testcases\TestCases_Package_v14.12.00_R3.jar"
-Delete "$INSTDIR\testcases\TestCases_Package_v14.12.00a_R5.jar"
-Delete "$INSTDIR\testcases\TestCases_Package_v14.12.00b_R5.jar"
-Delete "$INSTDIR\testcases\TestCases_Package_v15.04.00_R5.jar"
-Delete "$INSTDIR\testcases\TestCases_Package_v15.04.00a_R8.jar"
-Delete "$INSTDIR\testcases\TestCases_Package_v15.04.00b_R2.jar"
-Delete "$INSTDIR\testcases\TestCases_Package_v15.09.00_D2.jar"
-Delete "$INSTDIR\res\drawable\back.jpg"
-Delete "$INSTDIR\res\drawable\footer.jpg"
-Delete "$INSTDIR\res\drawable\header.jpg"
-Delete "$INSTDIR\res\drawable\ico_close.jpg"
-Delete "$INSTDIR\res\drawable\ico_stop.jpg"
-Delete "$INSTDIR\res\drawable\allseen128.ico"
-Delete "$INSTDIR\res\drawable\ic_AllSeen.png"
-Delete "$INSTDIR\res\drawable\ico_login.png"
-Delete "$INSTDIR\res\drawable\ico_next.png"
-Delete "$INSTDIR\res\drawable\ico_refresh.png"
-Delete "$INSTDIR\res\drawable\ic_AllSeen.ico"
-Delete "$INSTDIR\res\drawable\install.jpg"
-Delete "$INSTDIR\res\drawable\log.jpg"
-Delete "$INSTDIR\res\drawable\MainWindowBackground.jpg"
-Delete "$INSTDIR\res\drawable\MainWindowBackground2.jpg"
-Delete "$INSTDIR\res\drawable\results.jpg"
-Delete "$INSTDIR\res\drawable\run.jpg"
-Delete "$INSTDIR\res\drawable\run_all.jpg"
-Delete "$INSTDIR\res\drawable\save.jpg"
-Delete "$INSTDIR\res\drawable\short_footer.jpg"
-Delete "$INSTDIR\res\drawable\ico_password.png"
-Delete "$INSTDIR\res\drawable\ico_user.png"
+Delete "$INSTDIR\testcases\*.jar"
+Delete "$INSTDIR\res\drawable\*.*"
+Delete "$INSTDIR\log\*.log"
 Delete "$INSTDIR\lib\v14.06.00a\alljoyn_java.dll"
 Delete "$INSTDIR\lib\v14.12.00\alljoyn_java.dll"
 Delete "$INSTDIR\lib\v14.12.00a\alljoyn_java.dll"
@@ -269,7 +226,7 @@ Delete "$INSTDIR\lib\v14.12.00b\alljoyn_java.dll"
 Delete "$INSTDIR\lib\v15.04.00\alljoyn_java.dll"
 Delete "$INSTDIR\lib\v15.04.00a\alljoyn_java.dll"
 Delete "$INSTDIR\lib\v15.04.00b\alljoyn_java.dll"
-Delete "$INSTDIR\lib\v15.09.000\alljoyn_java.dll"
+Delete "$INSTDIR\lib\v15.09.00\alljoyn_java.dll"
 RmDir "$INSTDIR\lib\v14.06.00a"
 RmDir "$INSTDIR\lib\v14.12.00"
 RmDir "$INSTDIR\lib\v14.12.00a"

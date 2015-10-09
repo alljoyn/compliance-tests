@@ -40,7 +40,7 @@ import com.at4wireless.alljoyn.localagent.view.common.ViewCommons;
 public class Main
 {
 	private static final Logger logger = LogManager.getLogger(Main.class.getName());
-	public static final String CTT_LOCAL_AGENT_VERSION = "v1.6.0";
+	public static final String CTT_LOCAL_AGENT_VERSION = "v1.8.0";
 	public static final String VERSION_LABEL = "AllSeen Test Tool Local Agent " + CTT_LOCAL_AGENT_VERSION;
 	public static final String POWERED_BY_LABEL = "Powered by AT4 wireless";
 	private static final int WINDOW_WIDTH = 1024;
