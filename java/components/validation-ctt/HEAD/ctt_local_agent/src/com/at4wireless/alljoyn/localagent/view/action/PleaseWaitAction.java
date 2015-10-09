@@ -49,6 +49,7 @@ public class PleaseWaitAction extends AbstractAction
 	public void actionPerformed(ActionEvent evt)
 	{
 		final JDialog dialog = new JDialog(parentFrame, "CTT Local Agent", ModalityType.APPLICATION_MODAL);
+		JProgressBar progressBar = new JProgressBar();
 
 		mySwingWorker.addPropertyChangeListener(new PropertyChangeListener()
 		{
@@ -66,7 +67,7 @@ public class PleaseWaitAction extends AbstractAction
 		});
 		
 		mySwingWorker.execute();
-		JProgressBar progressBar = new JProgressBar();
+
 		progressBar.setIndeterminate(true);
 		JPanel panel = new JPanel(new BorderLayout());
 		panel.add(progressBar, BorderLayout.CENTER);

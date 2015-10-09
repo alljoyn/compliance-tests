@@ -196,9 +196,11 @@ public class TestCasesDetailsWindow
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				projectWindow.drawProjectsTable();
-				projectWindow.drawNextButton();
-				projectWindow.drawRefreshButton();
+				if (projectWindow.drawProjectsTable())
+				{
+					projectWindow.drawNextButton();
+					projectWindow.drawRefreshButton();
+				}
 			}
     	});
     	backButton.setBounds(new Rectangle(517, 411, 83, 23));
