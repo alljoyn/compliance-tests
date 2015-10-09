@@ -26,6 +26,7 @@ import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.SocketTimeoutException;
 import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
@@ -232,6 +233,13 @@ public class ExecuteTestCaseWindow extends JDialog
 					((JTextArea) ((JScrollPane) getContentPane().getComponent(1)).getViewport().getView()).getText());
 			testCasesDetailsWindow.updateVerdictAndDatetime(testCaseName, resultVerdictAndDatetime.get(0), resultVerdictAndDatetime.get(1));
 			dispose();
+		}
+		catch (SocketTimeoutException e)
+		{
+			logger.error("Timeout waiting for response from the server");
+			JOptionPane.showMessageDialog(ExecuteTestCaseWindow.this, "Server does not respond."
+					+ " Log will be sent the next time.");
+			saveEncryptedLogFile();
 		}
 		catch (SendResultsException e)
 		{

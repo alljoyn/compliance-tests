@@ -24,6 +24,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -111,7 +112,7 @@ public class ProjectsDetailsWindow extends JPanel
 		add(headerImagePanel);
 	}
 	
-	public void drawProjectsTable()
+	public boolean drawProjectsTable()
 	{
 		Object[][] projectsTableContent = null;
 		
@@ -143,15 +144,17 @@ public class ProjectsDetailsWindow extends JPanel
 		{
 			logger.warn("SwingWorker was interrupted");
 			JOptionPane.showMessageDialog(ProjectsDetailsWindow.this, "Program execution was interrupted, please click on refresh to try again.");
-			return;
+			return false;
 		}
 		catch (ExecutionException e)
 		{
-			// TODO Redirect to login window again
-			e.printStackTrace();
+			if (e.getCause() instanceof SocketTimeoutException)
+			{
+				logger.warn("Timeout waiting for response from the server");
+				JOptionPane.showMessageDialog(ProjectsDetailsWindow.this, "Server does not respond, please click on refresh to try again.");
+				return false;
+			}
 		}
-		
-		logger.debug(projectsTableContent.length);
 		
 		if (projectsTableContent != null)
 		{
@@ -250,6 +253,8 @@ public class ProjectsDetailsWindow extends JPanel
 			scrollPane.setBounds(new Rectangle(0, getComponent(0).getHeight(), getWidth(), getHeight() - getComponent(0).getHeight() - getComponent(6).getHeight()));
 			scrollPane.setViewportView(table);
 		}
+		
+		return true;
 	}
 	
 	private void drawFooter()

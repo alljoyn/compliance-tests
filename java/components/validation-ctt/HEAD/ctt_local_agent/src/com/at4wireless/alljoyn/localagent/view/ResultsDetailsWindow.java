@@ -165,9 +165,11 @@ public class ResultsDetailsWindow
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				projectWindow.drawProjectsTable();
-				projectWindow.drawNextButton();
-				projectWindow.getComponent(3).setVisible(true);
+				if (projectWindow.drawProjectsTable())
+				{
+					projectWindow.drawNextButton();
+					projectWindow.getComponent(3).setVisible(true);
+				}			
 			}
     	});
     	
