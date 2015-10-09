@@ -528,6 +528,8 @@ public class LSF_LampTestSuite extends ValidationBaseTestCase implements Service
 		ajMan.registerSignalHandler(lampStateSignalHandler);
 		ajMan.createAllJoynSession(aboutClient.getPeerName(), AllJoynManager.LAMP_SERVICE_PORT);
 
+        Thread.sleep(1000);
+
 		boolean onOffValue = true;
 		int brightnessValue = 10;
 		int hueValue 		= 20;
