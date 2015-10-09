@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.at4wireless.spring.common.ConfigParam;
 import com.at4wireless.spring.dao.CertificationReleaseDAO;
 import com.at4wireless.spring.dao.TcDAO;
 import com.at4wireless.spring.dao.TcclDAO;
@@ -33,30 +34,29 @@ import com.at4wireless.spring.model.Tccl;
 import com.at4wireless.spring.model.TestCaseTccl;
 
 @Service
-public class TcclServiceImpl implements TcclService {
-
+public class TcclServiceImpl implements TcclService
+{
 	@Autowired
-	private TcclDAO tcclDao;
-	
+	private TcclDAO tcclDao;	
 	@Autowired
 	private CertificationReleaseDAO certrelDao;
-	
 	@Autowired
 	private TcDAO tcDao;
 	
 	@Override
 	@Transactional
-	public List<Tccl> list() {
+	public List<Tccl> list()
+	{
 		return tcclDao.list();
 	}
 
 	@Override
 	@Transactional
-	public Tccl create(Map<String, String[]> map) {
+	public Tccl create(Map<String, String[]> map)
+	{
 		Tccl tccl = new Tccl();
 		
-		java.sql.Timestamp date = new java.sql.Timestamp(
-				new java.util.Date().getTime());
+		java.sql.Timestamp date = new java.sql.Timestamp(new java.util.Date().getTime());
 		int next = tcclDao.getNumber(map.get("certrel[name]")[0].substring(1))+1;
 		tccl.setName("TCCL_"+map.get("certrel[name]")[0].substring(1)+"_v0."+next);
 		tccl.setCreatedDate(date);
@@ -66,13 +66,17 @@ public class TcclServiceImpl implements TcclService {
 		tccl.setNameCertrel(certrelDao.getName(Integer.parseInt(map.get("certrel[id]")[0])));
 		int idTccl = tcclDao.addTccl(tccl);
 		
-		if (idTccl!=0) {
+		if (idTccl != 0)
+		{
 			StringBuilder str = new StringBuilder();
-			for (int j=0; j<((map.size()-2)/3); j++) {
-				String s = "("+idTccl+",'"+map.get("json["+j+"][type]")[0]+"',"
-						+map.get("json["+j+"][enabled]")[0]+","+map.get("json["+j+"][id]")[0]+")";
+			
+			for (int j = 0; j < ((map.size() - 2)/3); j++)
+			{
+				String s = String.format("(%d, '%s', %s, %s)", idTccl, map.get(String.format("json[%d][type]", j))[0], 
+						map.get(String.format("json[%d][enabled]", j))[0], map.get(String.format("json[%d][id]", j))[0]);
 				str.append(s);
-				if (j!=(((map.size()-2)/3)-1)) str.append(",");
+				
+				if (j != (((map.size() - 2)/3) - 1)) str.append(",");
 			}
 
 			tcclDao.saveList(str.toString());
@@ -82,24 +86,24 @@ public class TcclServiceImpl implements TcclService {
 
 	@Override
 	@Transactional
-	public void delete(int idTccl) {
+	public void delete(int idTccl)
+	{
 		tcclDao.deleteList(idTccl);
 		tcclDao.deleteTccl(idTccl);
-		
 	}
 
 	@Override
 	@Transactional
-	public List<TestCaseTccl> getTccl(int idTccl) {
+	public List<TestCaseTccl> getTccl(int idTccl)
+	{
 		return tcclDao.getList(idTccl);
 	}
 
 	@Override
 	@Transactional
-	public Tccl update(Map<String, String[]> map) {
-
-		java.sql.Timestamp date = new java.sql.Timestamp(
-				new java.util.Date().getTime());
+	public Tccl update(Map<String, String[]> map)
+	{
+		java.sql.Timestamp date = new java.sql.Timestamp(new java.util.Date().getTime());
 		int idTccl = Integer.parseInt(map.get("idTccl")[0]);
 		Tccl tccl = new Tccl();
 		tccl.setIdTccl(idTccl);
@@ -108,13 +112,17 @@ public class TcclServiceImpl implements TcclService {
 		tcclDao.updateTccl(idTccl,date);
 		tcclDao.deleteList(idTccl);
 		
-		if (idTccl!=0) {
+		if (idTccl != 0)
+		{
 			StringBuilder str = new StringBuilder();
-			for (int j=0; j<((map.size()-2)/3); j++) {
-				String s = "("+idTccl+",'"+map.get("json["+j+"][type]")[0]+"',"
-						+map.get("json["+j+"][enabled]")[0]+","+map.get("json["+j+"][id]")[0]+")";
+			
+			for (int j = 0; j < ((map.size() - 2)/3); j++)
+			{
+				String s = String.format("(%d, '%s', %s, %s)", idTccl, map.get(String.format("json[%d][type]", j))[0], 
+						map.get(String.format("json[%d][enabled]", j))[0], map.get(String.format("json[%d][id]", j))[0]);
 				str.append(s);
-				if (j!=(((map.size()-2)/3)-1)) str.append(",");
+				
+				if (j != (((map.size() - 2)/3) - 1)) str.append(",");
 			}
 
 			tcclDao.saveList(str.toString());
@@ -124,16 +132,18 @@ public class TcclServiceImpl implements TcclService {
 
 	@Override
 	@Transactional
-	public List<Tccl> listByCR(int idCertRel) {
+	public List<Tccl> listByCR(int idCertRel)
+	{
 		return tcclDao.listByCR(idCertRel);
 	}
 
 	@Override
 	@Transactional
 	public void addCertificationReleaseIfNotExists(String certificationRelease, String packageVersion,
-			String description) throws Exception {
-		
-		if(!certrelDao.certificationReleaseExists(certificationRelease)) {
+			String description) throws Exception
+	{
+		if (!certrelDao.certificationReleaseExists(certificationRelease))
+		{
 			CertificationRelease cRelease = new CertificationRelease();
 			cRelease.setName(certificationRelease);
 			cRelease.setEnabled(true);
@@ -141,19 +151,24 @@ public class TcclServiceImpl implements TcclService {
 			cRelease.setDescription(description);
 			int crId = certrelDao.addCertificationRelease(cRelease);
 			tcDao.assignTestCasesToCertificationRelease(crId);
-			
-			//certrelDao.assignTestCases(certificationRelease);
-		} else {
-			if (certrelDao.isReleaseVersion(certificationRelease)) {
-				if (!isReleaseVersion(packageVersion)) {
-					throw new Exception("A release version of the package already exists. Debug versions of "+certificationRelease+" are not allowed");
+		}
+		else
+		{
+			if (certrelDao.isReleaseVersion(certificationRelease))
+			{
+				if (!isReleaseVersion(packageVersion))
+				{
+					throw new Exception(String.format("A release version of the package already exists. Debug versions of %s are not allowed", certificationRelease));
 				}
 				else
 				{
 					certrelDao.updateDescription(certificationRelease, description);
 				}
-			} else {
-				if (isReleaseVersion(packageVersion)) {
+			}
+			else
+			{
+				if (isReleaseVersion(packageVersion))
+				{
 					certrelDao.fromDebugToRelease(certificationRelease);
 					cleanDebugPackages(certificationRelease);
 				}
@@ -162,23 +177,28 @@ public class TcclServiceImpl implements TcclService {
 		}
 	}
 	
-	private boolean isReleaseVersion(String packageVersion) {
+	private boolean isReleaseVersion(String packageVersion)
+	{
 		return (packageVersion.charAt(0) == 'R');
 	}
 	
-	private void cleanDebugPackages(final String certificationRelease) {
-		File folder = new File(File.separator+"Allseen"+File.separator+"Technology");
+	private void cleanDebugPackages(final String certificationRelease)
+	{
+		File folder = new File(ConfigParam.PACKAGES_PATH);
 		File[] files = folder.listFiles(new FilenameFilter()
 		{
 			@Override
-			public boolean accept(File dir, String name) {
-				return name.contains(certificationRelease+"_D");
+			public boolean accept(File dir, String name)
+			{
+				return name.contains(certificationRelease + "_D");
 			}
 		});
 		
-		for (final File file : files) {
-			if (!file.delete()) {
-				System.err.println("Can't remove "+file.getAbsolutePath());
+		for (final File file : files)
+		{
+			if (!file.delete())
+			{
+				System.err.println(String.format("Can't remove %s", file.getAbsolutePath()));
 			}
 		}
 	}

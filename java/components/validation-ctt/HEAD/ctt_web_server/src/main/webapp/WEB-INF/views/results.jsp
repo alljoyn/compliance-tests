@@ -8,87 +8,90 @@
 		<jsp:include page="/WEB-INF/views/page_head.jsp"/>	
     </head>
     <body>
-    
-    	<!-- CSRT for logout -->
-    	<c:url value="/j_spring_security_logout" var="logoutUrl" />
- 
-		<form action="${logoutUrl}" method="post" id="logoutForm">
-		  <input type="hidden" 
-			name="${_csrf.parameterName}"
-			value="${_csrf.token}" />
-		</form>
-		
-		<!-- Main -->	
-    	<div class="container">
-    		<jsp:include page="/WEB-INF/views/header.jsp"/>
-		    
-		    <div class="row" align="right">
-		    	<c:if test="${pageContext.request.userPrincipal.name != null}">
-					<h4>
-						Welcome : ${pageContext.request.userPrincipal.name} | <a
-						href="javascript:formSubmit()"> Logout</a>
-					</h4>
-				</c:if>
-		    </div>
-		    
-		    <!-- Results table -->
-	        <div class="row">      
-			       	<table id="table" class="table table-hover hide dt-responsive">
-			       		<!-- <thead class="scroll-thead">
-			       			<tr class="scroll-tr">  -->
-			       		<thead>
-			       			<tr>
-					        	<th width="20%">Name</th>
-					        	<th width="50%">Description</th>
-					        	<th width="10%">Date and Time Execution</th>
-					        	<th width="10%">Certification Release</th>
-					        	<th width="10%">Final Verdict</th>
-					        	<th class="hide">Full Log</th>
-					        </tr>
-					    </thead>
-					    <tbody>
-			        	<!-- <tbody class="scroll-tbody">  -->
-							<c:forEach var="result" items="${listTCResult}" varStatus="status">
-								<tr>
-					        	<!-- <tr class="scroll-tr">  -->
-					        		<td width="20%">${result.name}</td>
-					        		<td width="50%">${result.description}</td>
-									<td width="10%">${result.execTimestamp}</td>
-									<td width="10%">${result.version}</td>
-									<c:if test="${result.verdict=='PASS'}">
-										<td style="font-weight: bold; color: #99CC32"width="10%">${result.verdict}</td>
-									</c:if>
-									<c:if test="${result.verdict=='FAIL'}">
-										<td style="font-weight: bold; color: #D43D1A"width="10%">${result.verdict}</td>
-									</c:if>
-									<c:if test="${result.verdict=='INCONC'}">
-										<td style="font-weight: bold; color: #EEC900" width="10%">${result.verdict}</td>
-									</c:if>
-									<!-- <td width="10%"><a href="#" class="result-link">Link to log file</a></td>  -->
-									<td class="hide">${result.log}</td>
-								</tr>
-							</c:forEach>
-						</tbody>        	
-			       	</table>
-		     </div>
-		     
-		    <div class="row">
-		    	<p id="notRanAll">You need to execute all applicable Test Cases to be able to create the Test Report</p>
-		    </div>
-		
-			<!-- Action buttons -->
-			<div class="row" align="left">
-	        	<button class="btn btn-default btn-lg disabled" id="createTR">Create Test Report</button>
-	        	<a class="btn btn-default btn-lg disabled" id="sendTR" href="results/tr/send">Send Test Report</a>
-	        	<a class="btn btn-default btn-lg disabled" id="viewTR" href="results/tr/view" target="_blank">View Test Report</a>
-	        	   
-	        </div>
-	        
-	        <!-- Navigation buttons -->
-	        <div class="row" align="left">
-	        	<a id="prevButton" type="button" class="btn btn-custom btn-lg" href="project">« Back</a>
-	        </div>
-        </div>
+    	<div id="wrap">
+		  	<div id="main" class="container clear-top">
+		    	<!-- CSRT for logout -->
+		    	<c:url value="/j_spring_security_logout" var="logoutUrl" />
+		 
+				<form action="${logoutUrl}" method="post" id="logoutForm">
+				  <input type="hidden" 
+					name="${_csrf.parameterName}"
+					value="${_csrf.token}" />
+				</form>
+				
+				<!-- Main -->	
+		    	<div class="container">
+		    		<jsp:include page="/WEB-INF/views/header.jsp"/>
+				    
+				    <div class="row" align="right">
+				    	<c:if test="${pageContext.request.userPrincipal.name != null}">
+							<h4>
+								Welcome : ${pageContext.request.userPrincipal.name} | <a
+								href="javascript:formSubmit()"> Logout</a>
+							</h4>
+						</c:if>
+				    </div>
+				    
+				    <!-- Results table -->
+			        <div class="row">      
+					       	<table id="table" class="table table-hover hide dt-responsive">
+					       		<!-- <thead class="scroll-thead">
+					       			<tr class="scroll-tr">  -->
+					       		<thead>
+					       			<tr>
+							        	<th width="20%">Name</th>
+							        	<th width="50%">Description</th>
+							        	<th width="10%">Date and Time Execution</th>
+							        	<th width="10%">Certification Release</th>
+							        	<th width="10%">Final Verdict</th>
+							        	<th class="hide">Full Log</th>
+							        </tr>
+							    </thead>
+							    <tbody>
+					        	<!-- <tbody class="scroll-tbody">  -->
+									<c:forEach var="result" items="${listTCResult}" varStatus="status">
+										<tr>
+							        	<!-- <tr class="scroll-tr">  -->
+							        		<td width="20%">${result.name}</td>
+							        		<td width="50%">${result.description}</td>
+											<td width="10%">${result.execTimestamp}</td>
+											<td width="10%">${result.version}</td>
+											<c:if test="${result.verdict=='PASS'}">
+												<td style="font-weight: bold; color: #99CC32"width="10%">${result.verdict}</td>
+											</c:if>
+											<c:if test="${result.verdict=='FAIL'}">
+												<td style="font-weight: bold; color: #D43D1A"width="10%">${result.verdict}</td>
+											</c:if>
+											<c:if test="${result.verdict=='INCONC'}">
+												<td style="font-weight: bold; color: #EEC900" width="10%">${result.verdict}</td>
+											</c:if>
+											<!-- <td width="10%"><a href="#" class="result-link">Link to log file</a></td>  -->
+											<td class="hide">${result.log}</td>
+										</tr>
+									</c:forEach>
+								</tbody>        	
+					       	</table>
+				     </div>
+				     
+				    <div class="row">
+				    	<p id="notRanAll">You need to execute all applicable Test Cases to be able to create the Test Report</p>
+				    </div>
+				
+					<!-- Action buttons -->
+					<div class="row" align="left">
+			        	<button class="btn btn-default btn-lg disabled" id="createTR">Create Test Report</button>
+			        	<a class="btn btn-default btn-lg disabled" id="sendTR" href="results/tr/send">Send Test Report</a>
+			        	<a class="btn btn-default btn-lg disabled" id="viewTR" href="results/tr/view" target="_blank">View Test Report</a>
+			        	   
+			        </div>
+			        
+			        <!-- Navigation buttons -->
+			        <div class="row" align="left">
+			        	<a id="prevButton" type="button" class="btn btn-custom btn-lg" href="project">« Back</a>
+			        </div>
+		        </div>
+			</div>
+		</div>
         
         <jsp:include page="/WEB-INF/views/footer.jsp"/>
 

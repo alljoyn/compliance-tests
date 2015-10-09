@@ -21,13 +21,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Table(name="golden")
-public class GoldenUnit {
-	
+public class GoldenUnit
+{
 	@Id @GeneratedValue
 	@Column(name="id_golden")
 	private int idGolden;
@@ -44,6 +45,9 @@ public class GoldenUnit {
 	
 	@Column(name="modified_date")
 	private java.sql.Timestamp modifiedDate;
+	
+	/*@Transient
+	private String supportedCategories;*/
 	
 	@Column(name="id_category")
 	private int category;
@@ -63,70 +67,100 @@ public class GoldenUnit {
 	@Column(name="description")
 	private String description;
 	
-	public int getIdGolden() {
+	public int getIdGolden()
+	{
 		return idGolden;
 	}
-	public void setIdGolden(int idGolden) {
+	public void setIdGolden(int idGolden)
+	{
 		this.idGolden = idGolden;
 	}
-	public String getName() {
+	public String getName()
+	{
 		return name;
 	}
-	public void setName(String name) {
+	public void setName(String name)
+	{
 		this.name = name;
 	}
-	public String getUser() {
+	public String getUser()
+	{
 		return user;
 	}
-	public void setUser(String user) {
+	public void setUser(String user)
+	{
 		this.user = user;
 	}
-	public java.sql.Timestamp getCreatedDate() {
+	public java.sql.Timestamp getCreatedDate()
+	{
 		return createdDate;
 	}
-	public void setCreatedDate(java.sql.Timestamp createdDate) {
+	public void setCreatedDate(java.sql.Timestamp createdDate)
+	{
 		this.createdDate = createdDate;
 	}
-	public java.sql.Timestamp getModifiedDate() {
+	public java.sql.Timestamp getModifiedDate()
+	{
 		return modifiedDate;
 	}
-	public void setModifiedDate(java.sql.Timestamp modifiedDate) {
+	public void setModifiedDate(java.sql.Timestamp modifiedDate)
+	{
 		this.modifiedDate = modifiedDate;
 	}
-	public int getCategory() {
+	public int getCategory()
+	{
 		return category;
 	}
-	public void setCategory(int category) {
+	public void setCategory(int category)
+	{
 		this.category = category;
 	}
-	public String getManufacturer() {
+	public String getManufacturer()
+	{
 		return manufacturer;
 	}
-	public void setManufacturer(String manufacturer) {
+	public void setManufacturer(String manufacturer)
+	{
 		this.manufacturer = manufacturer;
 	}
-	public String getModel() {
+	public String getModel()
+	{
 		return model;
 	}
-	public void setModel(String model) {
+	public void setModel(String model)
+	{
 		this.model = model;
 	}
-	public String getSwVer() {
+	public String getSwVer()
+	{
 		return swVer;
 	}
-	public void setSwVer(String swVer) {
+	public void setSwVer(String swVer)
+	{
 		this.swVer = swVer;
 	}
-	public String getHwVer() {
+	public String getHwVer()
+	{
 		return hwVer;
 	}
-	public void setHwVer(String hwVer) {
+	public void setHwVer(String hwVer)
+	{
 		this.hwVer = hwVer;
 	}
-	public String getDescription() {
+	public String getDescription()
+	{
 		return description;
 	}
-	public void setDescription(String description) {
+	public void setDescription(String description)
+	{
 		this.description = description;
 	}
+	/*public String getSupportedCategories()
+	{
+		return supportedCategories;
+	}
+	public void setSupportedCategories(String supportedCategories)
+	{
+		this.supportedCategories = supportedCategories;
+	}*/
 }
