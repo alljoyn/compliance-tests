@@ -20,54 +20,57 @@
 		
     </head>
     <body>
-    
-    	<!-- Main -->
-        <div class="container">
-			<jsp:include page="/WEB-INF/views/header.jsp"/>
-		    
-			<!-- Login panel -->
-			<div id="login-box" class="col-sm-6 col-md-4 col-md-offset-4">
-				<div class="panel panel-default">
-					<!-- Panel header -->
-					<div class="panel-heading">
-						<strong>Connect to the Linux Foundation to continue</strong>
-					</div>
-					<!-- Panel body -->
-					<div class="panel-body">
-					
-						<div class="text-center">
-							<img class="img-circle" src="resources/img/login.png"
-									width="120" height="120"></img>
-						</div>
-										 
-						<form name='loginForm' class="form-signin"
-								action="<c:url value='j_spring_security_check' />" method='POST'>
-								 
-						  	<input type="hidden" name="${_csrf.parameterName}"
-							value="${_csrf.token}" />
+   		<div id="wrap">
+		  	<div id="main" class="container clear-top">
+		    	<!-- Main -->
+		        <div class="container">
+					<jsp:include page="/WEB-INF/views/header.jsp"/>
+				    
+					<!-- Login panel -->
+					<div id="login-box" class="col-sm-6 col-md-4 col-md-offset-4">
+						<div class="panel panel-default">
+							<!-- Panel header -->
+							<div class="panel-heading">
+								<strong>Connect to the Linux Foundation to continue</strong>
+							</div>
+							<!-- Panel body -->
+							<div class="panel-body">
 							
-							<button class="btn btn-lg btn-custom btn-block" type="submit">Connect</button>	
-						</form>
+								<div class="text-center">
+									<img class="img-circle" src="resources/img/login.png"
+											width="120" height="120"></img>
+								</div>
+												 
+								<form name='loginForm' class="form-signin"
+										action="<c:url value='j_spring_security_check' />" method='POST'>
+										 
+								  	<input type="hidden" name="${_csrf.parameterName}"
+									value="${_csrf.token}" />
+									
+									<button class="btn btn-lg btn-custom btn-block" type="submit">Connect</button>	
+								</form>
+							</div>
+						</div>
+						<!-- Logout alert -->
+						<c:if test="${not empty msg}">
+							<div class="alert alert-info" align="center">
+								<span class="glyphicon glyphicon-ok"></span>
+								${msg}
+								<div class="row">
+								<a class="btn btn-info" href="j_spring_cas_security_logout">Logout of CAS</a>
+								</div>
+							</div>
+						</c:if>
+						
+						<!-- Session expired alert -->
+						<c:if test="${not empty session_expired}">
+							<div class="alert alert-info" align="center">
+								<span class="glyphicon glyphicon-ok"></span>
+								${session_expired}
+							</div>
+						</c:if>
 					</div>
 				</div>
-				<!-- Logout alert -->
-				<c:if test="${not empty msg}">
-					<div class="alert alert-info" align="center">
-						<span class="glyphicon glyphicon-ok"></span>
-						${msg}
-						<div class="row">
-						<a class="btn btn-info" href="j_spring_cas_security_logout">Logout of CAS</a>
-						</div>
-					</div>
-				</c:if>
-				
-				<!-- Session expired alert -->
-				<c:if test="${not empty session_expired}">
-					<div class="alert alert-info" align="center">
-						<span class="glyphicon glyphicon-ok"></span>
-						${session_expired}
-					</div>
-				</c:if>
 			</div>
 		</div>
         

@@ -38,7 +38,6 @@ import com.at4wireless.spring.model.Project;
 import com.at4wireless.spring.model.Tccl;
 import com.at4wireless.spring.service.CertificationReleaseService;
 import com.at4wireless.spring.service.DutService;
-import com.at4wireless.spring.service.GoldenUnitService;
 import com.at4wireless.spring.service.ProjectService;
 import com.at4wireless.spring.service.ServiceFrameworkService;
 import com.at4wireless.spring.service.TcclService;
@@ -60,8 +59,6 @@ public class ProjectController
 	private CertificationReleaseService crService;
 	@Autowired
 	private ServiceFrameworkService sfService;
-	@Autowired
-	private GoldenUnitService guService;
 	@Autowired
 	private TcclService tcclService;	
 	@Autowired
@@ -92,7 +89,7 @@ public class ProjectController
 					ControllerCommons.dataToHtml(projectService.getTableData(username)));
 			model.addAttribute("newProject", new Project());
 			model.addAttribute("certrelList", crService.list());
-			model.addAttribute("tcclList",tcclService.list());
+			model.addAttribute("tcclList", tcclService.list());
 			model.addAttribute("serviceList", sfService.list());
 			model.addAttribute("dutList", ControllerCommons.dataToHtml(dutService.getTableData(username)));
 			

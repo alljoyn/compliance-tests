@@ -8,105 +8,108 @@
 		<jsp:include page="/WEB-INF/views/page_head.jsp"/>
     </head>
     <body>
-    
-    	<!-- CSRT for logout -->
-    	<c:url value="/j_spring_security_logout" var="logoutUrl" />
- 
-		<form action="${logoutUrl}" method="post" id="logoutForm">
-		  <input type="hidden" 
-			name="${_csrf.parameterName}"
-			value="${_csrf.token}" />
-		</form>
-		
-    	<!-- Main -->
-        <div class="container">
-        	<jsp:include page="/WEB-INF/views/header.jsp"/>
-		    
-		    <div class="row" align="right">
-		    	<h4 id="selectedProject" class="pull-left"></h4>
-		    	<c:if test="${pageContext.request.userPrincipal.name != null}">
-					<h4>
-						Welcome : ${pageContext.request.userPrincipal.name} | <a
-						href="javascript:formSubmit()"> Logout</a>
-					</h4>
-				</c:if>
-		    </div>
-	        
-	        <!-- IXIT Table -->
-	        <div class="row">
-	        	<!-- Service tabs -->
-		        <ul class="nav nav-tabs">
-		        	<c:forEach var="service" items="${serviceList}" varStatus="status">
-		        		<c:choose>
-							<c:when test="${service.idService==1}">
-								<li class="active"><a href="#${service.idService}" data-toggle="tab">${service.name}</a></li>
-							</c:when>
-							<c:otherwise>
-								<li><a href="#${service.idService}" data-toggle="tab">${service.name}</a></li>
-							</c:otherwise>
-						</c:choose>
-					</c:forEach>
-		        </ul>
+    	<div id="wrap">
+		  	<div id="main" class="container clear-top">
+		    	<!-- CSRT for logout -->
+		    	<c:url value="/j_spring_security_logout" var="logoutUrl" />
+		 
+				<form action="${logoutUrl}" method="post" id="logoutForm">
+				  <input type="hidden" 
+					name="${_csrf.parameterName}"
+					value="${_csrf.token}" />
+				</form>
+				
+		    	<!-- Main -->
+		        <div class="container">
+		        	<jsp:include page="/WEB-INF/views/header.jsp"/>
+				    
+				    <div class="row" align="right">
+				    	<h4 id="selectedProject" class="pull-left"></h4>
+				    	<c:if test="${pageContext.request.userPrincipal.name != null}">
+							<h4>
+								Welcome : ${pageContext.request.userPrincipal.name} | <a
+								href="javascript:formSubmit()"> Logout</a>
+							</h4>
+						</c:if>
+				    </div>
+			        
+			        <!-- IXIT Table -->
+			        <div class="row">
+			        	<!-- Service tabs -->
+				        <ul class="nav nav-tabs">
+				        	<c:forEach var="service" items="${serviceList}" varStatus="status">
+				        		<c:choose>
+									<c:when test="${service.idService==1}">
+										<li class="active"><a href="#${service.idService}" data-toggle="tab">${service.name}</a></li>
+									</c:when>
+									<c:otherwise>
+										<li><a href="#${service.idService}" data-toggle="tab">${service.name}</a></li>
+									</c:otherwise>
+								</c:choose>
+							</c:forEach>
+				        </ul>
+				        
+				        <!-- Service tables -->
+				        <div class="tab-content">
+					        <c:forEach var="service" items="${serviceList}" varStatus="status">
+					        	<div class="tab-pane" id="${service.idService}">
+							       	<table class="table table-hover">
+						       		<!-- <thead class="scroll-thead">
+						       			<tr class="scroll-tr">  -->
+						       		<thead>
+						       			<tr>
+								        	<th width="3%">Id</th>
+								        	<th width="25%">Name</th>
+								        	<th width="55%">Description</th>
+								        	<th width="17%">Value</th>
+								        </tr>
+								    </thead>
+						        	<!-- <tbody class="scroll-tbody">  -->
+						        	<tbody>
+										<c:forEach var="ixit" items="${ixitList}" varStatus="status">
+											<c:if test="${ixit.serviceGroup == service.idService}">
+												<tr>
+									        	<!-- <tr class="scroll-tr">  -->
+									        		<td width="3%">${ixit.idIxit}</td>
+									        		<td width="25%">${ixit.name}</td>
+													<td width="55%">${ixit.description}</td>
+													<td width="17%">
+													<!-- <a href=# class="is_editable">${ixit.value}</a>  -->
+													<input style="width: 100%" type="text" class="form-control" maxlength="255" value="${ixit.value}"/>
+													</td>								
+									        	</tr>
+								        	</c:if>
+										</c:forEach>
+									</tbody>        	
+						       	</table>
+							    </div>
+					        </c:forEach>
+				        </div>
+			        </div>
+					
+					<!-- Navigation buttons -->
+					<div class="row" align="right">
+						<a id="prevButton" type="button" class="btn btn-custom btn-lg pull-left">« Previous Step</a>
+		        		<!-- <button id="nextButton" class="btn btn-custom btn-lg" data-toggle="modal" data-target="#pleaseWaitDialog">Next »</button> -->
+		        		<a id="nextButton" type="button" class="btn btn-custom btn-lg" href="testcase">Next Step »</a>
+		        	</div>
+		       	</div>
+		       	
+		    	<!-- Hidden form to previous view -->
+		        <div>
+		        	<form:form method="GET" id="prevForm" action="ics" modelAttribute="newProject">
+		        		<form:input type="hidden" id="idProjectPrev" name="idProject" path="idProject" value=""/>
+		        		<!-- <form:input type="hidden" id="isConfigured" name="isConfigured" path="isConfigured" value=""/> -->
+		        	</form:form>
+		        </div>
 		        
-		        <!-- Service tables -->
-		        <div class="tab-content">
-			        <c:forEach var="service" items="${serviceList}" varStatus="status">
-			        	<div class="tab-pane" id="${service.idService}">
-					       	<table class="table table-hover">
-				       		<!-- <thead class="scroll-thead">
-				       			<tr class="scroll-tr">  -->
-				       		<thead>
-				       			<tr>
-						        	<th width="3%">Id</th>
-						        	<th width="25%">Name</th>
-						        	<th width="55%">Description</th>
-						        	<th width="17%">Value</th>
-						        </tr>
-						    </thead>
-				        	<!-- <tbody class="scroll-tbody">  -->
-				        	<tbody>
-								<c:forEach var="ixit" items="${ixitList}" varStatus="status">
-									<c:if test="${ixit.serviceGroup == service.idService}">
-										<tr>
-							        	<!-- <tr class="scroll-tr">  -->
-							        		<td width="3%">${ixit.idIxit}</td>
-							        		<td width="25%">${ixit.name}</td>
-											<td width="55%">${ixit.description}</td>
-											<td width="17%">
-											<!-- <a href=# class="is_editable">${ixit.value}</a>  -->
-											<input style="width: 100%" type="text" class="form-control" maxlength="255" value="${ixit.value}"/>
-											</td>								
-							        	</tr>
-						        	</c:if>
-								</c:forEach>
-							</tbody>        	
-				       	</table>
-					    </div>
-			        </c:forEach>
+		        <!-- Hidden form to next view -->
+		        <div>
+		        	<form:form method="GET" id="nextForm" action="parameter" modelAttribute="newProject">
+		        		<form:input type="hidden" id="idProjectNext" name="idProject" path="idProject" value=""/>
+		        	</form:form>
 		        </div>
 	        </div>
-			
-			<!-- Navigation buttons -->
-			<div class="row" align="right">
-				<a id="prevButton" type="button" class="btn btn-custom btn-lg pull-left">« Previous Step</a>
-        		<!-- <button id="nextButton" class="btn btn-custom btn-lg" data-toggle="modal" data-target="#pleaseWaitDialog">Next »</button> -->
-        		<a id="nextButton" type="button" class="btn btn-custom btn-lg" href="testcase">Next Step »</a>
-        	</div>
-       	</div>
-       	
-    	<!-- Hidden form to previous view -->
-        <div>
-        	<form:form method="GET" id="prevForm" action="ics" modelAttribute="newProject">
-        		<form:input type="hidden" id="idProjectPrev" name="idProject" path="idProject" value=""/>
-        		<!-- <form:input type="hidden" id="isConfigured" name="isConfigured" path="isConfigured" value=""/> -->
-        	</form:form>
-        </div>
-        
-        <!-- Hidden form to next view -->
-        <div>
-        	<form:form method="GET" id="nextForm" action="parameter" modelAttribute="newProject">
-        		<form:input type="hidden" id="idProjectNext" name="idProject" path="idProject" value=""/>
-        	</form:form>
         </div>
         
         <jsp:include page="/WEB-INF/views/footer.jsp"/>
