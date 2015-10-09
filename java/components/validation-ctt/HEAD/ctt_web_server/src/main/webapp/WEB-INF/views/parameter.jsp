@@ -8,77 +8,80 @@
     	<jsp:include page="/WEB-INF/views/page_head.jsp"/>
     </head>
     <body>
-    
-    	<!-- CSRT for logout -->
-    	<c:url value="/j_spring_security_logout" var="logoutUrl" />
- 
-		<form action="${logoutUrl}" method="post" id="logoutForm">
-		  <input type="hidden" 
-			name="${_csrf.parameterName}"
-			value="${_csrf.token}" />
-		</form>
+    	<div id="wrap">
+		  	<div id="main" class="container clear-top">
+		    	<!-- CSRT for logout -->
+		    	<c:url value="/j_spring_security_logout" var="logoutUrl" />
+		 
+				<form action="${logoutUrl}" method="post" id="logoutForm">
+				  <input type="hidden" 
+					name="${_csrf.parameterName}"
+					value="${_csrf.token}" />
+				</form>
+				
+		    	<!-- Main -->
+		        <div class="container">
+		        	<jsp:include page="/WEB-INF/views/header.jsp"/>
+				    
+				    <div class="row" align="right">
+				    	<h4 id="selectedProject" class="pull-left"></h4>
+				    	<c:if test="${pageContext.request.userPrincipal.name != null}">
+							<h4>
+								Welcome : ${pageContext.request.userPrincipal.name} | <a
+								href="javascript:formSubmit()"> Logout</a>
+							</h4>
+						</c:if>
+				    </div>
+			        
+			        <!-- Parameters Table -->
+			        <div class="row">
+				        
+				        <!-- Service tables -->
 		
-    	<!-- Main -->
-        <div class="container">
-        	<jsp:include page="/WEB-INF/views/header.jsp"/>
-		    
-		    <div class="row" align="right">
-		    	<h4 id="selectedProject" class="pull-left"></h4>
-		    	<c:if test="${pageContext.request.userPrincipal.name != null}">
-					<h4>
-						Welcome : ${pageContext.request.userPrincipal.name} | <a
-						href="javascript:formSubmit()"> Logout</a>
-					</h4>
-				</c:if>
-		    </div>
-	        
-	        <!-- Parameters Table -->
-	        <div class="row">
-		        
-		        <!-- Service tables -->
-
-				<table class="table table-hover">
-		       		<!-- <thead class="scroll-thead">
-		       			<tr class="scroll-tr">  -->
-		       		<thead>
-		       			<tr>
-				        	<th width="3%">Id</th>
-				        	<th width="30%">Name</th>
-				        	<th width="57%">Description</th>
-				        	<th width="10%">Value</th>
-				        </tr>
-				    </thead>
-		        	<!-- <tbody class="scroll-tbody">  -->
-		        	<tbody>
-						<c:forEach var="parameter" items="${listParameter}" varStatus="status">
-							<tr>
-					        	<!-- <tr class="scroll-tr">  -->
-					        		<td width="3%">${parameter.idParam}</td>
-					        		<td width="30%">${parameter.name}</td>
-									<td width="57%">${parameter.description}</td>
-									<td width="10%">
-									<input style="width: 100%" type="number" min="1" class="form-control" value="${parameter.value}"/>
-									</td>								
-					        	</tr>
-						</c:forEach>
-					</tbody>        	
-		       	</table>
-		    </div>
-
-			
-			<!-- Navigation buttons -->
-			<div class="row" align="right">
-				<a id="prevButton" type="button" class="btn btn-custom btn-lg pull-left">« Previous Step</a>
-        		<!-- <button id="nextButton" class="btn btn-custom btn-lg" data-toggle="modal" data-target="#pleaseWaitDialog">Next »</button> -->
-        		<a id="nextButton" type="button" class="btn btn-custom btn-lg" href="testcase">Next Step »</a>
-        	</div>
-       	</div>
-       	
-    	<!-- Hidden form to previous view -->
-        <div>
-        	<form:form method="GET" id="prevForm" action="ixit" modelAttribute="newProject">
-        		<form:input type="hidden" id="idProject" name="idProject" path="idProject" value=""/>
-        	</form:form>
+						<table class="table table-hover">
+				       		<!-- <thead class="scroll-thead">
+				       			<tr class="scroll-tr">  -->
+				       		<thead>
+				       			<tr>
+						        	<th width="3%">Id</th>
+						        	<th width="30%">Name</th>
+						        	<th width="57%">Description</th>
+						        	<th width="10%">Value</th>
+						        </tr>
+						    </thead>
+				        	<!-- <tbody class="scroll-tbody">  -->
+				        	<tbody>
+								<c:forEach var="parameter" items="${listParameter}" varStatus="status">
+									<tr>
+							        	<!-- <tr class="scroll-tr">  -->
+							        		<td width="3%">${parameter.idParam}</td>
+							        		<td width="30%">${parameter.name}</td>
+											<td width="57%">${parameter.description}</td>
+											<td width="10%">
+											<input style="width: 100%" type="number" min="1" class="form-control" value="${parameter.value}"/>
+											</td>								
+							        	</tr>
+								</c:forEach>
+							</tbody>        	
+				       	</table>
+				    </div>
+		
+					
+					<!-- Navigation buttons -->
+					<div class="row" align="right">
+						<a id="prevButton" type="button" class="btn btn-custom btn-lg pull-left">« Previous Step</a>
+		        		<!-- <button id="nextButton" class="btn btn-custom btn-lg" data-toggle="modal" data-target="#pleaseWaitDialog">Next »</button> -->
+		        		<a id="nextButton" type="button" class="btn btn-custom btn-lg" href="testcase">Next Step »</a>
+		        	</div>
+		       	</div>
+		       	
+		    	<!-- Hidden form to previous view -->
+		        <div>
+		        	<form:form method="GET" id="prevForm" action="ixit" modelAttribute="newProject">
+		        		<form:input type="hidden" id="idProject" name="idProject" path="idProject" value=""/>
+		        	</form:form>
+		        </div>
+	        </div>
         </div>
         
         <jsp:include page="/WEB-INF/views/footer.jsp"/>

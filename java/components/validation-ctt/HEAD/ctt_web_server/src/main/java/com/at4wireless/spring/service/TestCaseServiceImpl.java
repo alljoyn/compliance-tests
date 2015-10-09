@@ -120,7 +120,7 @@ public class TestCaseServiceImpl implements TestCaseService {
 
 			if (!condition.isEmpty()) {
 				try {
-					if ((Double)engine.eval(condition)==1.0) {
+					if ((Integer)engine.eval(condition)==1.0) {
 						applyTC.add(tc);
 					}
 				} catch (ScriptException e) {
