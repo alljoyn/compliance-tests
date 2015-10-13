@@ -247,7 +247,15 @@ public class TestCaseController
 				data[i][0] = ModelCommons.getValue("DeviceId", element);
 				data[i][1] = ModelCommons.getValue("AppId", element);
 				data[i][2] = ModelCommons.getValue("swVer", element);
-				data[i][3] = ModelCommons.getValue("hwVer", element);
+				
+				try
+				{
+					data[i][3] = ModelCommons.getValue("hwVer", element);
+				}
+				catch (NullPointerException e)
+				{
+					logger.warn("No Hardware Version available for this sample");
+				}
 			}
 		}
 
