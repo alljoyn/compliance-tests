@@ -21,6 +21,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
@@ -39,9 +40,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -57,11 +58,12 @@ import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.representation.Form;
 
-
 public class ModelCommons
 {
 	private static final String configurationFileName = "config.xml";
 	private static final int CONNECTION_REQUEST_TIMEOUT_IN_MILLISECONDS = 5000;
+	private static final short NUMBER_OF_RETRIES = 3;
+	private static final HttpClient httpClient = HttpClientBuilder.create().build();
 	
 	public static ClientResponse unsecuredPostRequest(String url, Form postForm) throws ClientHandlerException
 	{
@@ -76,24 +78,53 @@ public class ModelCommons
 	public static HttpResponse securedPostRequest(String url, String sessionToken, HttpEntity requestBody) throws URISyntaxException, IOException
 	{
 		URI URI = new URI(url);
-		HttpClient httpClient = HttpClientBuilder.create().build();
 		HttpPost postRequest = new HttpPost(URI);
+		RequestConfig Default = RequestConfig.DEFAULT;
+		RequestConfig requestConfig = RequestConfig.copy(Default)
+				.setSocketTimeout(2000)
+				.setConnectTimeout(5000)
+				.setConnectionRequestTimeout(CONNECTION_REQUEST_TIMEOUT_IN_MILLISECONDS)
+				.build();
+		
+		postRequest.setConfig(requestConfig);
 		
 		postRequest.addHeader("Authorization", "bearer " + sessionToken);
 		postRequest.addHeader("Accept-Encoding", "UTF-8");
 		postRequest.setEntity(requestBody);
 		
-		return httpClient.execute(postRequest);
+		short connectionNumber = 0;
+		boolean isResponseReceived = false;
+		HttpResponse receivedResponse = null;
+		
+		while ((connectionNumber < NUMBER_OF_RETRIES) && (!isResponseReceived))
+		{
+			try
+			{
+				receivedResponse = httpClient.execute(postRequest);
+				isResponseReceived = true;
+			}
+			catch (SocketTimeoutException connectionTimeoutException)
+			{
+				if (connectionNumber < NUMBER_OF_RETRIES - 1)
+				{
+					connectionNumber++;
+				}
+				else
+				{
+					throw connectionTimeoutException;
+				}
+			}
+		}
+		return receivedResponse;
 	}
 	
 	public static HttpResponse securedGetRequest(String url, String sessionToken) throws URISyntaxException, IOException
 	{
 		URI URI = new URI(url);
-		HttpClient httpClient = HttpClientBuilder.create().build();
 		HttpGet getRequest = new HttpGet(URI);
 		RequestConfig Default = RequestConfig.DEFAULT;
 		RequestConfig requestConfig = RequestConfig.copy(Default)
-				.setSocketTimeout(5000)
+				.setSocketTimeout(2000)
 				.setConnectTimeout(5000)
 				.setConnectionRequestTimeout(CONNECTION_REQUEST_TIMEOUT_IN_MILLISECONDS)
 				.build();
@@ -101,7 +132,30 @@ public class ModelCommons
 		getRequest.setConfig(requestConfig);
 		getRequest.addHeader("Authorization", "bearer " + sessionToken);
 		
-		return httpClient.execute(getRequest);
+		short connectionNumber = 0;
+		boolean isResponseReceived = false;
+		HttpResponse receivedResponse = null;
+		
+		while ((connectionNumber < NUMBER_OF_RETRIES) && (!isResponseReceived))
+		{
+			try
+			{
+				receivedResponse = httpClient.execute(getRequest);
+				isResponseReceived = true;
+			}
+			catch (SocketTimeoutException connectionTimeoutException)
+			{
+				if (connectionNumber < NUMBER_OF_RETRIES - 1)
+				{
+					connectionNumber++;
+				}
+				else
+				{
+					throw connectionTimeoutException;
+				}
+			}
+		}
+		return receivedResponse;
 	}
 	
 	/**
