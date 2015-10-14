@@ -18,7 +18,7 @@
     <parent>
         <groupId>org.alljoyn.validation.validation-tests</groupId>
         <artifactId>validation-tests</artifactId>
-        <version>15.04.00-SNAPSHOT</version>
+        <version>00.00.01-SNAPSHOT</version>
     </parent>
     <artifactId>validation-tests-it</artifactId>
     <name>validation-tests-it</name>
@@ -54,12 +54,14 @@
             <artifactId>validation-tests-suites-lighting</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!--
         <dependency>
             <groupId>org.alljoyn.validation.validation-tests</groupId>
             <artifactId>validation-tests-suites-gwagent</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--
+
+
         <dependency>
             <groupId>org.alljoyn.validation.validation-tests</groupId>
             <artifactId>validation-tests-suites-time</artifactId>
@@ -113,7 +115,7 @@
                     <resourceBundles>
                         <resourceBundle>org.alljoyn.validation.validation-tests:validation-tests-suites:${project.version}</resourceBundle>
                         <resourceBundle>org.alljoyn.validation.validation-tests:validation-tests-suites-lighting:${project.version}</resourceBundle>
-                        <!--<resourceBundle>org.alljoyn.validation.validation-tests:validation-tests-suites-gwagent:${project.version}</resourceBundle>-->
+                        <resourceBundle>org.alljoyn.validation.validation-tests:validation-tests-suites-gwagent:${project.version}</resourceBundle>
                         <!--<resourceBundle>org.alljoyn.validation.validation-tests:validation-tests-suites-time:${project.version}</resourceBundle>-->
                     </resourceBundles>
                     <attached>false</attached>
