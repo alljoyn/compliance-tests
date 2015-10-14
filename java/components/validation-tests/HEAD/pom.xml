@@ -37,7 +37,7 @@
         <robolectric.version>2.2</robolectric.version>
         <alljoyn.core.version>14.12.00b</alljoyn.core.version>
         <alljoyn.base-services.version>14.12.00</alljoyn.base-services.version>
-        <alljoyn.gwagent.version>14.12.00</alljoyn.gwagent.version>
+        <!--<alljoyn.gwagent.version>14.12.00</alljoyn.gwagent.version>-->
         <alljoyn.classifier>android-dbg</alljoyn.classifier>
         <validation-framework.version>00.00.01-SNAPSHOT</validation-framework.version>
         <powermock.version>1.4.12</powermock.version>
@@ -169,12 +169,14 @@
                 <version>${alljoyn.base-services.version}</version>
                 <classifier>android</classifier>
             </dependency>
+<!--
             <dependency>
                 <groupId>org.alljoyn</groupId>
                 <artifactId>gateway_controller</artifactId>
                 <version>${alljoyn.gwagent.version}</version>
                 <classifier>android</classifier>
             </dependency>
+-->
             <dependency>
                 <groupId>org.powermock</groupId>
                 <artifactId>powermock-module-junit4</artifactId>

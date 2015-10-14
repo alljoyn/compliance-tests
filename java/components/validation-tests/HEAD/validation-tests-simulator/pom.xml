@@ -38,11 +38,13 @@
             <groupId>org.alljoyn.validation.validation-framework</groupId>
             <artifactId>validation-framework-test-utils</artifactId>
         </dependency>
+<!--
         <dependency>
             <groupId>org.alljoyn</groupId>
             <artifactId>gateway_controller</artifactId>
             <classifier>android</classifier>
         </dependency>
+-->
         <dependency>
             <groupId>org.robolectric</groupId>
             <artifactId>robolectric</artifactId>
