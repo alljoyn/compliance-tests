@@ -56,7 +56,7 @@ public class ServiceHelper
     private static final int LINK_TIMEOUT_IN_SECONDS = 120;
     private static final String[] AUTH_MECHANISMS = new String[]
     //{ "ALLJOYN_SRP_KEYX", "ALLJOYN_PIN_KEYX", "ALLJOYN_ECDHE_PSK" }; //[AT4] PIN_KEYX is deprecated
-    { "ALLJOYN_SRP_KEYX", "ALLJOYN_ECDHE_PSK" };
+    { "ALLJOYN_SRP_KEYX", "ALLJOYN_ECDHE_NULL", "ALLJOYN_ECDHE_PSK", "ALLJOYN_ECDHE_ECDSA"}; //[AT4] New mechanisms added
     //private AboutService aboutService;
     private NotificationService notificationService;
     private DeviceAnnouncementHandler deviceAnnouncementHandler;
