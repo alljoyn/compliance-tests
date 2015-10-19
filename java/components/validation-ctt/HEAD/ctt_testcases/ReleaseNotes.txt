@@ -1,39 +1,28 @@
-CTT Test Cases Package Version 15.04.00b_R2 (TestCases_Package_v15.04.00b_R2.jar) Release Notes
-===============================================================================================
+CTT Test Cases Package Version 15.09.00_R4 (TestCases_Package_v15.09.00_R4.jar) Release Notes
+=============================================================================================
  
 Fully Validated Platforms
 -------------------------
  1) Windows 7 (64 bit)
  2) Java 8 (64 bits)
 
-Features added in Version v15.04.00b_R2
----------------------------------------
+Features added in Version v15.09.00_R4
+--------------------------------------
  1) 
  
-Issues Addressed in Version v15.04.00b_R2
------------------------------------------
- ASACOMP-67   Onboarding: TIME_TO_WAIT_FOR_SCAN_RESULTS_IN_SECONDS needs to be configured
- ASACOMP-69   Onboarding: Onboarding-v1-06 test case is not checking properly the "LastError" property
- ASACORE-2464 SampleServiceECDHE/SampleClientECDHE fail to authenticate ...
- ASACORE-2496 Avoid a huge number of leaked blocks
- ASACORE-2492 Avoid destroying subjectPublicKey prematurely  
- ASACORE-2468 Need a setter API to set the AKI in a certificate
- ASACORE-2477 Compile error building AllJoyn core master on OpenWrt  
- ASACORE-2495 Avoid buffer overrun for serialLen==0 
- ASACORE-2490 ASACORE-2497 fix BusAttachment::SecureConnection 
-  
+Issues Addressed in Version v15.09.00_R4
+----------------------------------------
+ ASACOMP-133  CTT Local Agent - Control Panel - Error in a partial verdict
+   
  For a complete list of fixed issues:
  https://jira.allseenalliance.org/browse/ASACOMP-63?jql=project%20%3D%20ASACOMP%20AND%20issuetype%20in%20standardIssueTypes()%20AND%20status%20in%20(Resolved%2C%20Closed) 
  
-Known Issues in Version v15.04.00b_R2
--------------------------------------
- ASACOMP-105  Take out steps 17, 20, 21 and 25b from Onboarding-v1-11
- ASACOMP-104  C&C test infrastructure assumes PIN and requires use of a specific PIN code
- ASACOMP-102  Take out the final expected result from Onboarding-v1-08 
- ASACOMP-100  Take out steps 7 - 11 from Onboarding-v1-01 
+Known Issues in Version v15.09.00_R4
+------------------------------------
+ ASACOMP-129  About-v1-05 Test failure with TestCases_Package_v15.09.00_R2.jar
+ ASACOMP-104  C&C test infrastructure assumes PIN and requires use of a specific PIN code    
  ASACOMP-80   About-v1-09 is invalid after ASACORE-1872 fix
  ASACOMP-73   Expected results of Onboarding testcases v1-05 and v1-06 are no longer valid
- ASACOMP-70   About: At About-v1-02 test case told DUT About version is 0.
  ASACOMP-54   Onboarding certification fails for concurrent mode devices
  ASACOMP-52   The C&C tests do not correctly test the About Icon
  ASACOMP-6    Onboarding test case Onboarding-v1-04 is disabled
@@ -44,6 +33,25 @@ Known Issues in Version v15.04.00b_R2
 
 Change history
 --------------
+ [20151016] - 15.09.00_R4  - Core(15.09)  Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 133.
+ [20151016] - 15.04.00b_R6 - Core(15.04b) Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 133.
+ [20151016] - 15.04.00a_R12- Core(15.04a) Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 133.
+ [20151016] - 15.04.00_R9  - Core(15.04)  Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 133.
+ [20151016] - 14.12.00b_R6 - Core(14.12b) Base(14.12) Gateway(14.12) - Bug fixes: ASACOMPs: 133.
+ [20151016] - 14.12.00a_R6 - Core(14.12a) Base(14.12) Gateway(14.12) - Bug fixes: ASACOMPs: 133. 
+ [20151016] - 14.12.00_R4  - Core(14.12)  Base(14.12) Gateway(14.12) - Bug fixes: ASACOMPs: 133.
+ [20151009] - 15.09.00_R3  - Core(15.09)  Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 126.
+ [20151009] - 15.04.00b_R5 - Core(15.04b) Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 126.
+ [20151009] - 15.04.00a_R11- Core(15.04a) Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 126.
+ [20151009] - 15.04.00_R8  - Core(15.04)  Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 126.
+ [20151006] - 15.09.00_R2  - Core(15.09)  Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 121. 
+ [20151006] - 15.04.00b_R4 - Core(15.04b) Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 121.
+ [20151006] - 15.04.00a_R10- Core(15.04a) Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 121.
+ [20151006] - 15.04.00_R7  - Core(15.04)  Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 121.
+ [20151001] - 15.09.00_R1  - Core(15.09)  Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 100,102,105,113,114,115,116. ASACOREs: 2561,2559,2529,2531,2509,2524,2548,2519,2081,2362,2545,2467,2530,2462,2528,2401,2518,181,2460,2411,2469,2443,2510. 
+ [20151001] - 15.04.00b_R3 - Core(15.04b) Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 100,102,105,114,115,116.
+ [20151001] - 15.04.00a_R9 - Core(15.04a) Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 100,102,105,114,115,116.
+ [20151001] - 15.04.00_R6  - Core(15.04)  Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 100,102,105,114,115,116.
  [20150917] - 15.09.00_D2  - Core(15.09)  Base(15.04) Gateway(14.12) - Core(15.09-Master) Base(15.09-Master)   - Debug 2
  [20150917] - 15.04.00b_R2 - Core(15.04b) Base(15.04) Gateway(14.12) - Bug fixes: ASACOMP-67, ASACOMP-69, ASACORE-2464, ASACORE-2496, ASACORE-2492, ASACORE-2468, ASACORE-2477, ASACORE-2495, ASACORE-2490.
  [20150917] - 15.04.00a_R8 - Core(15.04a) Base(15.04) Gateway(14.12) - It includes all possible fixes in 15.04.00b_R2 according to Core(15.04a) and Base(15.04).
