@@ -6,7 +6,7 @@
 
 !define APP_NAME "Certification Test Tool - Local Agent"
 !define COMP_NAME "AT4 wireless"
-!define VERSION "1.08.00.00"
+!define VERSION "1.09.00.00"
 !define COPYRIGHT "AllSeen Alliance 2015"
 !define DESCRIPTION "Installer for CTT-Local Agent"
 !define MAIN_APP_EXE "CTT_Local_Agent.exe"
@@ -18,7 +18,7 @@
 !define REG_START_MENU "Start Menu Folder"
 ######################################################################
 ;Modify values to fit your project
-!define INSTALLER_NAME "C:\Users\jtf\Desktop\CTT_Local_Agent_v1.8.0_Installer.exe"
+!define INSTALLER_NAME "C:\Users\jtf\Desktop\CTT_Local_Agent_v1.9.0_Installer.exe"
 !define LOCAL_AGENT_PATH "C:\Users\jtf\Desktop\ctt_local_agent"
 !define MSVS2012_PATH "C:\Users\jtf\Desktop\MSVS2012"
 !define MSVS2013_PATH "C:\Users\jtf\Desktop\MSVS2013"

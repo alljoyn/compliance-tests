@@ -226,6 +226,6 @@ public class TestCaseModel
 	
 	public void saveEncryptedLogFile(int projectId, String logName, String encryptedLogToBeSaved)
 	{
-		ModelCommons.saveFile(new File("").getAbsolutePath() + "log" + File.separator + projectId, logName, encryptedLogToBeSaved);
+		ModelCommons.saveFile("log" + File.separator + projectId, logName, encryptedLogToBeSaved);
 	}
 }
