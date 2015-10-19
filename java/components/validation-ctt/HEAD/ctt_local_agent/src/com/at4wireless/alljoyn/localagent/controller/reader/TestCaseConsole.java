@@ -58,7 +58,7 @@ public class TestCaseConsole implements Runnable
 			    displayPane.append(line + "\n");
 			    displayPane.setCaretPosition( displayPane.getDocument().getLength());
 			    
-			    if (line.contains(": Final Verdict:"))
+			    if (line.contains(": Final Verdict:") || line.contains(":Final Verdict:")) //[AT4] Second condition until v14.12 TCs update
 			    {
 			    	if (runningAll)
 			    	{
@@ -77,7 +77,14 @@ public class TestCaseConsole implements Runnable
 		}
         catch (IOException e)
         {
-        	executeTestCaseWindow.drawSaveButton();
+        	if (runningAll)
+        	{
+	    		executeTestCaseWindow.saveButtonAction();
+        	}
+        	else
+        	{
+        		executeTestCaseWindow.drawSaveButton();
+        	}
 		}
         catch (Throwable e)
         {
