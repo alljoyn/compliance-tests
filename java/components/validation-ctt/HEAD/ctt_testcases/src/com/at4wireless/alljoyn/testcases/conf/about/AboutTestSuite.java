@@ -1103,7 +1103,7 @@ public class AboutTestSuite
 	
 	private void compareAboutNonRequired(Map<String, Variant> aboutMapDefaultLanguage, Map<String, Variant> aboutMapSupportedLanguage, String language, String fieldName) throws Exception
 	{
-		logger.info(String.format("Comparing %s of default language: %s and language: %s", fieldName, aboutMapDefaultLanguage, aboutMapSupportedLanguage));
+		logger.info(String.format("Comparing %s of default language and language: %s", fieldName, language));
 		if (aboutMapDefaultLanguage.containsKey(fieldName))
 		{
 			if (aboutMapSupportedLanguage.containsKey(fieldName))

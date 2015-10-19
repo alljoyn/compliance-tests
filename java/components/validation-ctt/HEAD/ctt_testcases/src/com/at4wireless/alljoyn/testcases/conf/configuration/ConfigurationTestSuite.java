@@ -352,8 +352,7 @@ public class ConfigurationTestSuite
 		}
 		else
 		{
-            //getValidationTestContext().addNote(String.format("System App AppId: %s is not equal to DeviceId: %s", dutAppId.toString(), dutDeviceId));
-			fail(String.format("System App AppId: %s is not equal to DeviceId: %s", dutAppId.toString().replace("-", ""), dutDeviceId.replace("-", "")));
+            logger.addNote(String.format("System App AppId: %s is not equal to DeviceId: %s", dutAppId.toString(), dutDeviceId));
 		}
 	}
 
