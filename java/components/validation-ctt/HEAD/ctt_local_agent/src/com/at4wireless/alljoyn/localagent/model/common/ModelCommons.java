@@ -63,7 +63,6 @@ public class ModelCommons
 	private static final String configurationFileName = "config.xml";
 	private static final int CONNECTION_REQUEST_TIMEOUT_IN_MILLISECONDS = 5000;
 	private static final short NUMBER_OF_RETRIES = 3;
-	private static final HttpClient httpClient = HttpClientBuilder.create().build();
 	
 	public static ClientResponse unsecuredPostRequest(String url, Form postForm) throws ClientHandlerException
 	{
@@ -79,14 +78,14 @@ public class ModelCommons
 	{
 		URI URI = new URI(url);
 		HttpPost postRequest = new HttpPost(URI);
-		RequestConfig Default = RequestConfig.DEFAULT;
+		/*RequestConfig Default = RequestConfig.DEFAULT;
 		RequestConfig requestConfig = RequestConfig.copy(Default)
-				.setSocketTimeout(2000)
+				.setSocketTimeout(5000)
 				.setConnectTimeout(5000)
 				.setConnectionRequestTimeout(CONNECTION_REQUEST_TIMEOUT_IN_MILLISECONDS)
 				.build();
 		
-		postRequest.setConfig(requestConfig);
+		postRequest.setConfig(requestConfig);*/
 		
 		postRequest.addHeader("Authorization", "bearer " + sessionToken);
 		postRequest.addHeader("Accept-Encoding", "UTF-8");
@@ -100,6 +99,7 @@ public class ModelCommons
 		{
 			try
 			{
+				HttpClient httpClient = HttpClientBuilder.create().build();
 				receivedResponse = httpClient.execute(postRequest);
 				isResponseReceived = true;
 			}
@@ -140,6 +140,7 @@ public class ModelCommons
 		{
 			try
 			{
+				HttpClient httpClient = HttpClientBuilder.create().build();
 				receivedResponse = httpClient.execute(getRequest);
 				isResponseReceived = true;
 			}
