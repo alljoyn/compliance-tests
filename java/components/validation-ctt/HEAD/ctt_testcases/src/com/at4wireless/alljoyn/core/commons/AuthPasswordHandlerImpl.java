@@ -82,6 +82,7 @@ public class AuthPasswordHandlerImpl implements AuthPasswordHandler
     protected boolean isTrueBoolean(Boolean value)
     {
         boolean result;
+        
         if (value == null)
         {
             result = false;
