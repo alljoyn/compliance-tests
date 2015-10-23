@@ -1057,7 +1057,7 @@ public class AboutTestSuite
 
 	private String prepareAssertionFailureResponse(String fieldName ,String ixit ,String value,String language)
 	{
-		return String.format("%s value returned from the About announcement: '%s' does not match IXIT_%s: '%s' for language '%s'", fieldName, value, fieldName, ixit, language);
+		return String.format("%s value returned from the About announcement: '%s' does not match IXITCO_%s: '%s' for language '%s'", fieldName, value, fieldName, ixit, language);
 	} //[AT4]
 	
 	private void populateBusIntrospectPathInterfaceSet(BusIntrospector busIntrospector, Set<String> busIntrospectPathInterfaceSet, String path) throws Exception
