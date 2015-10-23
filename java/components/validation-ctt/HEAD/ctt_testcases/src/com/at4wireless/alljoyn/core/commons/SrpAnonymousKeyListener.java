@@ -21,14 +21,13 @@ import java.util.List;
 
 import org.alljoyn.bus.AuthListener;
 
-import com.at4wireless.alljoyn.core.commons.AuthPasswordHandler;
 import com.at4wireless.alljoyn.core.commons.log.Logger;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 public class SrpAnonymousKeyListener implements AuthListener
 {
 	public static String KEY_STORE_FINE_NAME;
-	public static final char [] DEFAULT_PINCODE = new char[]{'0','0','0','0','0','0'};
+	public static final char [] DEFAULT_PINCODE = new char[]{'0','0','0','0','0','0'}; //[AT4] This has to be removed
 	private static final Logger logger = new WindowsLoggerImpl(SrpAnonymousKeyListener.class.getSimpleName());
 	AuthPasswordHandler m_passwordHandler;
 
@@ -45,20 +44,23 @@ public class SrpAnonymousKeyListener implements AuthListener
 	public SrpAnonymousKeyListener(AuthPasswordHandler passwordHandler, Logger genericLogger, String[] authMechanisms)
 	{
 		this(passwordHandler, genericLogger);
-		if ( authMechanisms == null ) {
+		
+		if (authMechanisms == null)
+		{
 			
 			throw new IllegalArgumentException("authMechanisms is undefined");
 		}
 		
 		this.authMechanisms = Arrays.asList(authMechanisms);
-		logger.debug("Supported authentication mechanisms: '" + this.authMechanisms + "'");
+		logger.info("Supported authentication mechanisms: '" + this.authMechanisms + "'");
 	}
 	
 	@Override
 	public boolean requested(String mechanism, String peer, int count, String userName,  AuthRequest[] requests) 
 	{
 		logger.info(" ** " + "requested, mechanism = " + mechanism + " peer = " + peer);
-		if ( !this.authMechanisms.contains(mechanism) )
+		
+		if (!this.authMechanisms.contains(mechanism))
 		{
 			return false;
 		}
@@ -101,14 +103,16 @@ public class SrpAnonymousKeyListener implements AuthListener
 	public String getAuthMechanismsAsString() 
 	{	
 		final String separator = " ";
-		StringBuilder sb       = new StringBuilder();
-		for (String mech : authMechanisms ) {
-			
+		StringBuilder sb 	   = new StringBuilder();
+		for (String mech : authMechanisms)
+		{
 			sb.append(mech).append(separator);
 		}
 		
 		int length = sb.length();
-		if ( length >= 1 ) {
+		
+		if (length >= 1)
+		{
 			sb.deleteCharAt(length - 1); //remove the last added separator
 		}
 		
