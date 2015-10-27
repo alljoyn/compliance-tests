@@ -75,7 +75,7 @@ public class NotificationConsumerTestSuite extends ValidationBaseTestCase
             serviceHelper = getServiceHelper();
             serviceHelper.initialize(BUS_APPLICATION_NAME, null, null);
 
-            serviceHelper.startAboutServer((short) 1080, propertyStore);
+            //serviceHelper.startAboutServer((short) 1080, propertyStore);
 
             nSender = serviceHelper.initNotificationSender(propertyStore);
         }
