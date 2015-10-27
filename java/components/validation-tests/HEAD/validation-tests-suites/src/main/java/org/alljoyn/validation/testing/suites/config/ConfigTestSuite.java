@@ -796,6 +796,7 @@ public class ConfigTestSuite extends BaseTestSuite implements ServiceAvailabilit
         callRestartOnConfig();
 
         loseSessionOrWait();
+	deviceAboutAnnouncement = waitForNextDeviceAnnouncement(); // added this call
 
         connectAboutClient(deviceAboutAnnouncement);
     }
@@ -811,6 +812,7 @@ public class ConfigTestSuite extends BaseTestSuite implements ServiceAvailabilit
         callRestartOnConfig();
 
         loseSessionOrWait();
+        waitForNextDeviceAnnouncement(); // added this call
 
         reconnectClients();
 
@@ -901,6 +903,7 @@ public class ConfigTestSuite extends BaseTestSuite implements ServiceAvailabilit
         callRestartOnConfig();
 
         loseSessionOrWait();
+        waitForNextDeviceAnnouncement(); // added this call
 
         reconnectClients();
         serviceHelper.clearKeyStore();
@@ -1435,7 +1438,7 @@ public class ConfigTestSuite extends BaseTestSuite implements ServiceAvailabilit
     {
         if (serviceAvailabilityHandler.waitForSessionLost(SESSION_LOST_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS))
         {
-            deviceAboutAnnouncement = waitForNextDeviceAnnouncement();
+            //deviceAboutAnnouncement = waitForNextDeviceAnnouncement();
         }
         else
         {
