@@ -399,7 +399,7 @@ public class TestCaseWrapper extends AndroidTestCase
         simulator.setKeyStorePath(absolutePath);
         simulator.setSupportsConfig(true);
         simulator.setSupportsNotificationProducer(true);
-        simulator.setControlPanelSupported(true);
+        //simulator.setControlPanelSupported(true);
         //simulator.setGWAgentSupported(true);
         setAboutInterfaceForSimulator();
         setAboutIconInterfaceForSimulator();
