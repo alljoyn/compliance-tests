@@ -46,6 +46,7 @@ import org.alljoyn.services.android.utils.AndroidLogger;
 import org.alljoyn.services.common.BusObjectDescription;
 import org.alljoyn.services.common.utils.TransportUtil;
 import org.alljoyn.validation.framework.AppUnderTestDetails;
+import org.alljoyn.validation.framework.annotation.Disabled;
 import org.alljoyn.validation.framework.annotation.ValidationSuite;
 import org.alljoyn.validation.framework.annotation.ValidationTest;
 import org.alljoyn.validation.framework.utils.introspection.BusIntrospector;
@@ -254,6 +255,7 @@ public class AboutTestSuite extends BaseTestSuite
     }
 
     @ValidationTest(name = "About-v1-09")
+    @Disabled
     public void testAbout_v1_09_GetAboutForUnsupportedLanguage() throws Exception
     {
         boolean exceptionThrown = false;
