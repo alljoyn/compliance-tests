@@ -21,9 +21,9 @@
     <name>validation-dependencies-dl</name>
     <packaging>pom</packaging>
     <properties>
-        <alljoyn.major.version>14.12</alljoyn.major.version>
-        <alljoyn.core.version>14.12.00b</alljoyn.core.version>
-        <alljoyn.base-services.version>14.12.00</alljoyn.base-services.version>
+        <alljoyn.major.version>15.09</alljoyn.major.version>
+        <alljoyn.core.version>15.09.00</alljoyn.core.version>
+        <alljoyn.base-services.version>15.09.00</alljoyn.base-services.version>
         <alljoyn.gwagent.version>14.12.00</alljoyn.gwagent.version>
         <download-mirror>http://mirrors.kernel.org/allseenalliance/alljoyn/${alljoyn.major.version}</download-mirror>
     </properties>
