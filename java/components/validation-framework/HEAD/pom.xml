@@ -132,6 +132,7 @@
                 <version>${alljoyn.base-services.version}</version>
                 <classifier>android</classifier>
             </dependency>
+            <!--
             <dependency>
                 <groupId>org.alljoyn</groupId>
                 <artifactId>controlpanel</artifactId>
@@ -144,6 +145,7 @@
                 <version>${alljoyn.base-services.version}</version>
                 <classifier>android</classifier>
             </dependency>
+            -->
             <dependency>
                 <groupId>org.powermock</groupId>
                 <artifactId>powermock-module-junit4</artifactId>

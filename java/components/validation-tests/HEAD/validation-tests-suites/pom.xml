@@ -95,6 +95,7 @@
             <artifactId>onboarding</artifactId>
             <classifier>android</classifier>
         </dependency>
+        <!--
         <dependency>
             <groupId>org.alljoyn</groupId>
             <artifactId>controlpanel</artifactId>
@@ -105,6 +106,7 @@
             <artifactId>controlpanel_adapter</artifactId>
             <classifier>android</classifier>
         </dependency>
+        -->
         <dependency>
             <groupId>org.robolectric</groupId>
             <artifactId>robolectric</artifactId>

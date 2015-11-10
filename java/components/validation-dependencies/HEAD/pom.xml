@@ -200,6 +200,7 @@
                             <file>libs\alljoyn_onboarding.jar</file>
                         </configuration>
                     </execution>
+                    <!--
                     <execution>
                         <id>install-controlpanel</id>
                         <phase>install</phase>
@@ -230,6 +231,7 @@
                             <file>libs\ControlPanelAdapter.jar</file>
                         </configuration>
                     </execution>
+                    -->
                     <!--
                     <execution>
                         <id>install-gateway-controller</id>

@@ -45,7 +45,7 @@ import org.alljoyn.validation.simulator.about.DUTSimulatorAboutTransport;
 import org.alljoyn.validation.simulator.config.ConfigPropertyStoreImpl;
 import org.alljoyn.validation.simulator.config.DUTSimulatorAuthPasswordHandler;
 import org.alljoyn.validation.simulator.config.DUTSimulatorConfigTransport;
-import org.alljoyn.validation.simulator.controlpanel.ControlPanelInterfaceManager;
+//import org.alljoyn.validation.simulator.controlpanel.ControlPanelInterfaceManager;
 //import org.alljoyn.validation.simulator.gwagent.GWAgentInterfaceManager;
 import org.alljoyn.validation.simulator.notification.NotificationSignalHandler;
 import org.alljoyn.validation.simulator.notification.NotificationTransport;
@@ -88,7 +88,7 @@ public class DUTSimulator
     private boolean listenForNotifications = false;
     private AboutTransport aboutInterface = new DUTSimulatorAboutTransport(this);
     private ConfigTransport configInterface = new DUTSimulatorConfigTransport(this);
-    private ControlPanelInterfaceManager controlPanelInterfaceManager;
+    //private ControlPanelInterfaceManager controlPanelInterfaceManager;
 
     public SrpAnonymousKeyListener authListener;
     private NotificationSignalHandler notificationSignalHandler;
@@ -194,7 +194,7 @@ public class DUTSimulator
             warningNotification = emitterWarning.getInterface(NotificationTransport.class);
         }
 
-        addControlPanelInterfaces();
+        //addControlPanelInterfaces();
 
         //addGWAgentInterfaces();
 
@@ -308,7 +308,7 @@ public class DUTSimulator
 
         checkStatus("BusAttachment.bindSessionPort", status, true);
     }
-
+/*
     private void addControlPanelInterfaces()
     {
         if (controlPanelSupported)
@@ -318,7 +318,7 @@ public class DUTSimulator
             controlPanelInterfaceManager.registerBusObjects();
         }
     }
-
+*/
     private void checkStatus(String msg, Status status, boolean throwException)
     {
         if (!status.equals(Status.OK))
@@ -477,7 +477,7 @@ public class DUTSimulator
             if (busAttachment != null)
             {
                 Log.d(TAG, "Disconnecting busAttachment!");
-                unregisterControlPanelBusObjects();
+                //unregisterControlPanelBusObjects();
                 //unregisterGWAgentBusObjects();
                 busAttachment.unregisterBusObject(notificationObjEmergency);
                 busAttachment.unregisterBusObject(notificationObjInfo);
@@ -553,7 +553,7 @@ public class DUTSimulator
     {
         this.supportsConfig = supportsConfig;
     }
-
+/*
     public boolean isControlPanelSupported()
     {
         return controlPanelSupported;
@@ -563,7 +563,7 @@ public class DUTSimulator
     {
         this.controlPanelSupported = controlPanelSupported;
     }
-
+*/
 /*
     public boolean isGWAgentSupported()
     {
@@ -642,7 +642,7 @@ public class DUTSimulator
         busObjectDescription.setPath(path);
         supportedInterfaces.add(busObjectDescription);
     }
-
+/*
     private void unregisterControlPanelBusObjects()
     {
         if (controlPanelSupported)
@@ -650,6 +650,7 @@ public class DUTSimulator
             controlPanelInterfaceManager.unregisterBusObjects();
         }
     }
+*/
 /*
     private void unregisterGWAgentBusObjects()
     {

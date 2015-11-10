@@ -139,6 +139,7 @@
                             <downloadUrl>${download-mirror}/alljoyn-onboarding-service-framework-${alljoyn.base-services.version}-android-sdk-rel.zip</downloadUrl>
                             <extractFile>alljoyn-android/services/alljoyn-onboarding-${alljoyn.base-services.version}-rel/java/libs/alljoyn_onboarding.jar</extractFile>
                         </artifactItem>
+<!--
                         <artifactItem>
                             <groupId>org.alljoyn</groupId>
                             <artifactId>controlpanel</artifactId>
@@ -157,6 +158,7 @@
                             <downloadUrl>${download-mirror}/alljoyn-controlpanel-service-framework-${alljoyn.base-services.version}-android-sdk-rel.zip</downloadUrl>
                             <extractFile>alljoyn-android/services/alljoyn-controlpanel-${alljoyn.base-services.version}-rel/java/libs/ControlPanelAdapter.jar</extractFile>
                         </artifactItem>
+-->
 <!--
                          <artifactItem>
                             <groupId>org.alljoyn</groupId>
