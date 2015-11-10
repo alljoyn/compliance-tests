@@ -299,7 +299,9 @@ public class ConfigTestSuite extends BaseTestSuite implements ServiceAvailabilit
         }
     }
 
+    // Config-v1-07 is disabled since the test is no longer valid (see ASACOMP-143 / ASACORE-1872)
     @ValidationTest(name = "Config-v1-07")
+    @Disabled
     public void testConfig_v1_07UnsupportedLanguage() throws Exception
     {
         String expectedError = AllJoynErrorReplyCodes.LANGUAGE_NOT_SUPPORTED;
