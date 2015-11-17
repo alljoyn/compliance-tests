@@ -94,7 +94,6 @@ public class GWAgentTestSuite //implements ServiceAvailabilityListener
 		}
 		catch(Exception e)
 		{
-			logger.error(String.format("Exception: %s", e.toString()));
 			inconc = true;
 		}
 	}
@@ -102,15 +101,34 @@ public class GWAgentTestSuite //implements ServiceAvailabilityListener
 	public void runTestCase(String testCase) throws Exception
 	{	
 		setUp();
-		logger.info("Running testcase: "+testCase);
 		
-		if (testCase.equals("GWAgent-v1-01"))
+		try
 		{
-			testGWAgent_v1_01_ValiateCtrlAppMgmtInterfaces();
+			logger.info("Running testcase: "+testCase);
+			
+			if (testCase.equals("GWAgent-v1-01"))
+			{
+				testGWAgent_v1_01_ValiateCtrlAppMgmtInterfaces();
+			}
+			else
+			{
+				fail("Test Case not valid");
+			}
 		}
-		else
+		catch (Exception exception)
 		{
-			fail("Test Case not valid");
+			logger.error("Exception executing Test Case: %s", exception.getMessage()); //[AT4]
+			
+			try 
+			{
+				tearDown();
+			} 
+			catch (Exception newException) 
+			{
+				logger.error("Exception releasing resources: %s", newException.getMessage());
+			}
+			
+			throw exception;
 		}
 
 		tearDown();
