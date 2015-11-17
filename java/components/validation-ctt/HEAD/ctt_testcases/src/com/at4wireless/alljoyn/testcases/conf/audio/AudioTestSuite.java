@@ -273,6 +273,9 @@ import com.at4wireless.alljoyn.core.introspection.BusIntrospector;
 import com.at4wireless.alljoyn.core.introspection.XmlBasedBusIntrospector;
 import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionSubNode;
 import com.at4wireless.alljoyn.core.introspection.bean.NodeDetail;
+import com.at4wireless.alljoyn.testcases.parameter.GeneralParameter;
+import com.at4wireless.alljoyn.testcases.parameter.Ics;
+import com.at4wireless.alljoyn.testcases.parameter.Ixit;
 
 public class AudioTestSuite
 {
@@ -330,80 +333,23 @@ public class AudioTestSuite
 	 * ixit	map that stores IXIT values
 	 * 
 	 * */
-	private Map<String, Boolean> ics;
-	private Map<String, String> ixit;
 	boolean pass = true;
 	boolean inconc = false;
 	private long ANNOUNCEMENT_TIMEOUT_IN_SECONDS = 30;
-	//private short port = 91;
+	private Ics icsList;
+	private Ixit ixitList;
 
-	public AudioTestSuite(String testCase, boolean iCSAU_AudioServiceFramework,
-			boolean iCSAU_StreamInterface, boolean iCSAU_StreamPortInterface,
-			boolean iCSAU_PortAudioSinkInterface,
-			boolean iCSAU_PortAudioSourceInterface,
-			boolean iCSAU_PortImageSinkInterface,
-			boolean iCSAU_PortImageSourceInterface,
-			boolean iCSAU_PortApplicationMetadataSinkInterface,
-			boolean iCSAU_PortApplicationMetadataSourceInterface,
-			boolean iCSAU_ControlVolumeInterface,
-			boolean iCSAU_StreamClockInterface, boolean iCSAU_AudioXalac,
-			boolean iCSAU_ImageJpeg, boolean iCSAU_ApplicationXmetadata,
-			boolean iCSAU_VolumeControl, String iXITCO_AppId,
-			String iXITCO_DeviceId, String iXITCO_DefaultLanguage,
-			String iXITAU_StreamVersion, String iXITAU_TestObjectPath,
-			String iXITAU_PortVersion, String iXITAU_AudioSinkVersion,
-			String iXITAU_timeNanos, String iXITAU_AudioSourceVersion,
-			String iXITAU_ImageSinkVersion, String iXITAU_ImageSourceVersion,
-			String iXITAU_MetadataSinkVersion,
-			String iXITAU_MetadataSourceVersion,
-			String iXITAU_ControlVolumeVersion, String iXITAU_delta,
-			String iXITAU_change, String iXITAU_ClockVersion,
-			String iXITAU_adjustNanos, String gPCO_AnnouncementTimeout,
-			String gPAU_Signal, String gPAU_Link)
+	public AudioTestSuite(String testCase, Ics icsList, Ixit ixitList, GeneralParameter gpList)
 	{
 		/** 
 		 * [AT4] Attributes initialization
 		 * */
+		this.icsList = icsList;
+		this.ixitList = ixitList;
 		
-		ics = new HashMap<String,Boolean>();
-		ics.put("ICSAU_AudioServiceFramework", iCSAU_AudioServiceFramework);
-		ics.put("ICSAU_StreamInterface", iCSAU_StreamInterface);
-		ics.put("ICSAU_StreamPortInterface", iCSAU_StreamPortInterface);
-		ics.put("ICSAU_PortAudioSinkInterface", iCSAU_PortAudioSinkInterface);
-		ics.put("ICSAU_PortAudioSourceInterface", iCSAU_PortAudioSourceInterface);
-		ics.put("ICSAU_PortImageSinkInterface", iCSAU_PortImageSinkInterface);
-		ics.put("ICSAU_PortImageSourceInterface", iCSAU_PortImageSourceInterface);
-		ics.put("ICSAU_PortApplicationMetadataSinkInterface", iCSAU_PortApplicationMetadataSinkInterface);
-		ics.put("ICSAU_PortApplicationMetadataSourceInterface", iCSAU_PortApplicationMetadataSourceInterface);
-		ics.put("ICSAU_ControlVolumeInterface", iCSAU_ControlVolumeInterface);
-		ics.put("ICSAU_StreamClockInterface", iCSAU_StreamClockInterface);
-		ics.put("ICSAU_AudioXalac", iCSAU_AudioXalac);
-		ics.put("ICSAU_ImageJpeg", iCSAU_ImageJpeg);
-		ics.put("ICSAU_ApplicationXmetadata", iCSAU_ApplicationXmetadata);
-		ics.put("ICSAU_VolumeControl", iCSAU_VolumeControl);
-		
-		ixit = new HashMap<String,String>();
-		ixit.put("IXITCO_AppId",iXITCO_AppId);
-		ixit.put("IXITCO_DeviceId", iXITCO_DeviceId);
-		ixit.put("IXITAU_StreamVersion", iXITAU_StreamVersion);
-		ixit.put("IXITAU_PortVersion",iXITAU_PortVersion);
-		ixit.put("IXITAU_TestObjectPath", iXITAU_TestObjectPath);
-		ixit.put("IXITAU_AudioSinkVersion", iXITAU_AudioSinkVersion);
-		ixit.put("IXITAU_AudioSourceVersion", iXITAU_AudioSourceVersion);
-		ixit.put("IXITAU_timeNanos", iXITAU_timeNanos);
-		ixit.put("IXITAU_ImageSinkVersion", iXITAU_ImageSinkVersion);
-		ixit.put("IXITAU_ImageSourceVersion", iXITAU_ImageSourceVersion);
-		ixit.put("IXITAU_MetadataSinkVersion", iXITAU_MetadataSinkVersion);
-		ixit.put("IXITAU_MetadataSourceVersion", iXITAU_MetadataSourceVersion);
-		ixit.put("IXITAU_ControlVolumeVersion", iXITAU_ControlVolumeVersion);
-		ixit.put("IXITAU_delta", iXITAU_delta);
-		ixit.put("IXITAU_change", iXITAU_change);
-		ixit.put("IXITAU_ClockVersion", iXITAU_ClockVersion);
-		ixit.put("IXITAU_adjustNanos", iXITAU_adjustNanos);
-		
-		ANNOUNCEMENT_TIMEOUT_IN_SECONDS = Integer.parseInt(gPCO_AnnouncementTimeout);
-		SIGNAL_TIMEOUT_IN_SECONDS = Integer.parseInt(gPAU_Signal);
-		LINK_TIMEOUT_IN_SECONDS = Integer.parseInt(gPAU_Link);
+		ANNOUNCEMENT_TIMEOUT_IN_SECONDS = gpList.GPCO_AnnouncementTimeout;
+		SIGNAL_TIMEOUT_IN_SECONDS = gpList.GPAU_Signal;
+		LINK_TIMEOUT_IN_SECONDS = gpList.GPAU_Link;
 		
 		try
 		{
@@ -412,81 +358,91 @@ public class AudioTestSuite
 		catch (Exception e)
 		{
 			inconc = true;
-			
-			if (e.getMessage().equals("Timed out waiting for About announcement"))
-			{
-				fail("Timed out waiting for About announcement");
-			}
-			else
-			{
-				fail("Exception: "+e.getMessage());
-			}
 		}
 	}
 
 	public void runTestCase(String testCase) throws Exception
 	{
 		setUp();
-		logger.info("Running testcase: "+testCase);
-
-		if (testCase.equals("Audio-v1-01")) {
-			testAudio_v1_01_ValidateStreamObjects();
-		} else if(testCase.equals("Audio-v1-02")) {
-			testAudio_v1_02_OpenStreamObject();
-		} else if(testCase.equals("Audio-v1-03")) {
-			testAudio_v1_03_OpenAndCloseStreamObject();
-		} else if(testCase.equals("Audio-v1-04")) {
-			testAudio_v1_04_CloseUnopenedStreamObject();
-		} else if(testCase.equals("Audio-v1-05")) {
-			testAudio_v1_05_VerifyAudioSinkCapabilities();
-		} else if(testCase.equals("Audio-v1-06")) {
-			testAudio_v1_06_VerifyImageSinkCapabilities();
-		} else if(testCase.equals("Audio-v1-07")) {
-			testAudio_v1_07_VerifyApplicationMetadataCapabilities();
-		} else if(testCase.equals("Audio-v1-08")) {
-			testAudio_v1_08_ConfigureAudioSinkPort();
-		} else if(testCase.equals("Audio-v1-09")) {
-			testAudio_v1_09_ConfigureAudioSinkPortWithInvalidConfiguration();
-		} else if(testCase.equals("Audio-v1-10")) {
-			testAudio_v1_10_ConfigureAudioSinkPortTwice();
-		} else if(testCase.equals("Audio-v1-11")) {
-			testAudio_v1_11_CheckOwnershipLostSignal();
-		} else if(testCase.equals("Audio-v1-12")) {
-			testAudio_v1_12_PlaybackAudioSink();
-		} else if(testCase.equals("Audio-v1-13")) {
-			testAudio_v1_13_PauseAudioSinkPlayback();
-		} else if(testCase.equals("Audio-v1-14")) {
-			testAudio_v1_14_FlushPausedAudioSink();
-		} else if(testCase.equals("Audio-v1-15")) {
-			testAudio_v1_15_FlushPlayingAudioSink();
-		} else if(testCase.equals("Audio-v1-16")) {
-			testAudio_v1_16_VerifyPausedAudioSinkRemainsPausedAfterSendingData();
-		} else if(testCase.equals("Audio-v1-17")) {
-			testAudio_v1_17_VerifyPlayingEmptyAudioSinkRemainsIdle();
-		} else if(testCase.equals("Audio-v1-18")) {
-			testAudio_v1_18_FlushIdleAudioSink();
-		} else if(testCase.equals("Audio-v1-19")) {
-			testAudio_v1_19_SendDataToImageSink();
-		} else if(testCase.equals("Audio-v1-20")) {
-			testAudio_v1_20_SendDataToMetadataSink();
-		} else if(testCase.equals("Audio-v1-21")) {
-			testAudio_v1_21_VerifyAudioSinkCanBeMutedUnmuted();
-		} else if(testCase.equals("Audio-v1-22")) {
-			testAudio_v1_22_VerifyVolumeCanBeSetOnAudioSink();
-		} else if(testCase.equals("Audio-v1-23")) {
-			testAudio_v1_23_SetInvalidVolumeOnAudioSink();
-		} else if(testCase.equals("Audio-v1-24")) {
-			testAudio_v1_24_VerifyIndependenceOfMuteAndVolumeOnAudioSink();
-		} else if(testCase.equals("Audio-v1-25")) {
-			testAudio_v1_25_SynchronizeClocksOnAudioSink();
-		} else if(testCase.equals("Audio-v1-26")) {
-			testAudio_v1_26_VerifyVolumeCanBeAdjustedOnAudioSink();
-		} else if(testCase.equals("Audio-v1-27")) {
-			testAudio_v1_27_VerifyVolumeCanBeAdjustedByPercentOnAudioSink();
-		} else if(testCase.equals("Audio-v1-28")) {
-			testAudio_v1_28_VerifyVolumeNotAdjustableWhenDisabled();
-		} else {
-			fail("Test Case not valid");
+		
+		try
+		{
+			logger.info("Running testcase: "+testCase);
+	
+			if (testCase.equals("Audio-v1-01")) {
+				testAudio_v1_01_ValidateStreamObjects();
+			} else if(testCase.equals("Audio-v1-02")) {
+				testAudio_v1_02_OpenStreamObject();
+			} else if(testCase.equals("Audio-v1-03")) {
+				testAudio_v1_03_OpenAndCloseStreamObject();
+			} else if(testCase.equals("Audio-v1-04")) {
+				testAudio_v1_04_CloseUnopenedStreamObject();
+			} else if(testCase.equals("Audio-v1-05")) {
+				testAudio_v1_05_VerifyAudioSinkCapabilities();
+			} else if(testCase.equals("Audio-v1-06")) {
+				testAudio_v1_06_VerifyImageSinkCapabilities();
+			} else if(testCase.equals("Audio-v1-07")) {
+				testAudio_v1_07_VerifyApplicationMetadataCapabilities();
+			} else if(testCase.equals("Audio-v1-08")) {
+				testAudio_v1_08_ConfigureAudioSinkPort();
+			} else if(testCase.equals("Audio-v1-09")) {
+				testAudio_v1_09_ConfigureAudioSinkPortWithInvalidConfiguration();
+			} else if(testCase.equals("Audio-v1-10")) {
+				testAudio_v1_10_ConfigureAudioSinkPortTwice();
+			} else if(testCase.equals("Audio-v1-11")) {
+				testAudio_v1_11_CheckOwnershipLostSignal();
+			} else if(testCase.equals("Audio-v1-12")) {
+				testAudio_v1_12_PlaybackAudioSink();
+			} else if(testCase.equals("Audio-v1-13")) {
+				testAudio_v1_13_PauseAudioSinkPlayback();
+			} else if(testCase.equals("Audio-v1-14")) {
+				testAudio_v1_14_FlushPausedAudioSink();
+			} else if(testCase.equals("Audio-v1-15")) {
+				testAudio_v1_15_FlushPlayingAudioSink();
+			} else if(testCase.equals("Audio-v1-16")) {
+				testAudio_v1_16_VerifyPausedAudioSinkRemainsPausedAfterSendingData();
+			} else if(testCase.equals("Audio-v1-17")) {
+				testAudio_v1_17_VerifyPlayingEmptyAudioSinkRemainsIdle();
+			} else if(testCase.equals("Audio-v1-18")) {
+				testAudio_v1_18_FlushIdleAudioSink();
+			} else if(testCase.equals("Audio-v1-19")) {
+				testAudio_v1_19_SendDataToImageSink();
+			} else if(testCase.equals("Audio-v1-20")) {
+				testAudio_v1_20_SendDataToMetadataSink();
+			} else if(testCase.equals("Audio-v1-21")) {
+				testAudio_v1_21_VerifyAudioSinkCanBeMutedUnmuted();
+			} else if(testCase.equals("Audio-v1-22")) {
+				testAudio_v1_22_VerifyVolumeCanBeSetOnAudioSink();
+			} else if(testCase.equals("Audio-v1-23")) {
+				testAudio_v1_23_SetInvalidVolumeOnAudioSink();
+			} else if(testCase.equals("Audio-v1-24")) {
+				testAudio_v1_24_VerifyIndependenceOfMuteAndVolumeOnAudioSink();
+			} else if(testCase.equals("Audio-v1-25")) {
+				testAudio_v1_25_SynchronizeClocksOnAudioSink();
+			} else if(testCase.equals("Audio-v1-26")) {
+				testAudio_v1_26_VerifyVolumeCanBeAdjustedOnAudioSink();
+			} else if(testCase.equals("Audio-v1-27")) {
+				testAudio_v1_27_VerifyVolumeCanBeAdjustedByPercentOnAudioSink();
+			} else if(testCase.equals("Audio-v1-28")) {
+				testAudio_v1_28_VerifyVolumeNotAdjustableWhenDisabled();
+			} else {
+				fail("Test Case not valid");
+			}
+		}
+		catch (Exception exception)
+		{
+			logger.error("Exception executing Test Case: %s", exception.getMessage()); //[AT4]
+			
+			try 
+			{
+				tearDown();
+			} 
+			catch (Exception newException) 
+			{
+				logger.error("Exception releasing resources: %s", newException.getMessage());
+			}
+			
+			throw exception;
 		}
 
 		tearDown();
@@ -503,14 +459,14 @@ public class AudioTestSuite
 
 			//appUnderDetails = getValidationTestContext().getAppUnderTestDetails();
 			//dutDeviceId = appUnderTestDetails.getDeviceId();
-			dutDeviceId = ixit.get("IXITCO_DeviceId");
+			dutDeviceId = ixitList.IXITCO_DeviceId;
 			logger.info(String.format("Running test case against Device ID: %s", dutDeviceId));
 			//dutAppId = appUnderTestDetails.getAppId();
-			dutAppId = UUID.fromString(ixit.get("IXITCO_AppId"));
+			dutAppId = ixitList.IXITCO_AppId;
 			logger.info(String.format("Running test case against App ID: %s", dutAppId));
 
 			//streamObjectPath = getValidationTestContext().getTestObjectPath();
-			streamObjectPath = ixit.get("IXITAU_TestObjectPath");
+			streamObjectPath = ixitList.IXITAU_TestObjectPath;
 
 			if (streamObjectPath == null || streamObjectPath.isEmpty())
 			{
@@ -1475,8 +1431,8 @@ public class AudioTestSuite
 		{
 			clock = getIntrospector().getInterface(path, Clock.class);
 			//assertEquals(1, clock.getVersion());
-			assertEquals(String.format("The clock Version is not: %s", ixit.get("IXITAU_ClockVersion")),
-					Short.parseShort(ixit.get("IXITAU_ClockVersion")), clock.getVersion());
+			assertEquals(String.format("The clock Version is not: %s", ixitList.IXITAU_ClockVersion),
+					ixitList.IXITAU_ClockVersion, clock.getVersion());
 		}
 		catch (Exception e)
 		{
@@ -1765,7 +1721,7 @@ public class AudioTestSuite
 			}
 			else if (mediaType.equals(AudioXAlac.getValue()))
 			{
-				if(ics.get("ICSAU_AudioXalac")) { //[AT4]
+				if(icsList.ICSAU_AudioXalac) { //[AT4]
 					validateAudioConfigurationStrictly(configuration);
 				} else {
 					fail("Received mediaType \"audio/x-alac\" and ICSAU_AudioXalac is false");
@@ -1948,7 +1904,7 @@ public class AudioTestSuite
 		{
 			String mediaType = configuration.mediaType;
 			if(mediaType.equals(ImageJpeg.getValue())) { //[AT4]
-				if(ics.get("ICSAU_ImageJpeg")) {
+				if(icsList.ICSAU_ImageJpeg) {
 					logger.info("Received mediaType \"image/jpeg\" and ICSAU_ImageJpeg is true");
 					logger.info("Partial Verdict: PASS");
 				} else {
@@ -1992,14 +1948,14 @@ public class AudioTestSuite
 	{
 		Stream stream = busIntrospector.getInterface(path, Stream.class);
 		//assertEquals("Stream Interface version does not match", INTERFACE_VERSION, stream.getVersion());
-		assertEquals("Stream Interface version does not match", Short.parseShort(ixit.get("IXITAU_StreamVersion")), stream.getVersion());
+		assertEquals("Stream Interface version does not match", ixitList.IXITAU_StreamVersion, stream.getVersion());
 	}
 	
 	private  void validatePortInterface(String path, BusIntrospector busIntrospector) throws BusException, IOException, ParserConfigurationException, SAXException
 	{
 		Port port = busIntrospector.getInterface(path, Port.class);
 		//assertEquals("Port Interface version does not match", INTERFACE_VERSION, port.getVersion());
-		assertEquals("Port Interface version does not match", Short.parseShort(ixit.get("IXITAU_PortVersion")), port.getVersion());
+		assertEquals("Port Interface version does not match", ixitList.IXITAU_PortVersion, port.getVersion());
 		assertEquals("Port Interface direction does not match", PORT_DIRECTION, port.getDirection());
 		assertMediaTypeSpecificPortInterfaceIsPresent(path, busIntrospector);
 	}

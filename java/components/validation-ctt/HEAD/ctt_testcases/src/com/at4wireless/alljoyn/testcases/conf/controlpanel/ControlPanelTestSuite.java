@@ -77,6 +77,9 @@ import com.at4wireless.alljoyn.core.commons.ServiceHelper;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.introspection.BusIntrospector;
 import com.at4wireless.alljoyn.core.introspection.bean.InterfaceDetail;
+import com.at4wireless.alljoyn.testcases.parameter.GeneralParameter;
+import com.at4wireless.alljoyn.testcases.parameter.Ics;
+import com.at4wireless.alljoyn.testcases.parameter.Ixit;
 
 public class ControlPanelTestSuite
 {
@@ -114,119 +117,71 @@ public class ControlPanelTestSuite
 	boolean inconc=false;
 	short port =91;
 
-	private Map<String, Boolean> ics;
-	private Map<String, String> ixit;
+	private Ics icsList;
+	private Ixit ixitList;
 
-	public ControlPanelTestSuite(String testCase,
-			boolean iCSCP_ControlPanelServiceFramework,
-			boolean iCSCP_ControlPanelInterface,
-			boolean iCSCP_ContainerInterface,
-			boolean iCSCP_SecuredContainerInterface,
-			boolean iCSCP_PropertyInterface,
-			boolean iCSCP_SecuredPropertyInterface,
-			boolean iCSCP_LabelPropertyInterface,
-			boolean iCSCP_ActionInterface,
-			boolean iCSCP_SecuredActionInterface,
-			boolean iCSCP_NotificationActionInterface,
-			boolean iCSCP_DialogInterface, boolean iCSCP_DI_Action2,
-			boolean iCSCP_DI_Action3, boolean iCSCP_SecuredDialogInterface,
-			boolean iCSCP_SDI_Action2, boolean iCSCP_SDI_Action3,
-			boolean iCSCP_ListPropertyInterface,
-			boolean iCSCP_SecuredListPropertyInterface,
-			boolean iCSCP_HTTPControlInterface, String iXITCO_AppId,
-			String iXITCO_DeviceId, String iXITCO_DefaultLanguage,
-			String iXITCP_ControlPanelVersion, String iXITCP_ContainerVersion,
-			String iXITCP_PropertyVersion, String iXITCP_LabelPropertyVersion,
-			String iXITCP_ActionVersion,
-			String iXITCP_NotificationActionVersion,
-			String iXITCP_DialogVersion, String iXITCP_ListPropertyVersion,
-			String iXITCP_HTTPControlVersion, String gPCO_AnnouncementTimeout)
+	public ControlPanelTestSuite(String testCase, Ics icsList, Ixit ixitList, GeneralParameter gpList)
 	{
 		/** 
 		 * [AT4] Attributes initialization
 		 * */
-
-		ics = new HashMap<String,Boolean>();
-		ixit = new HashMap<String,String>();
-		
-		ics.put("ICSCP_ControlPanelServiceFramework", iCSCP_ControlPanelServiceFramework);
-		ics.put("ICSCP_ControlPanelInterface", iCSCP_ControlPanelInterface);
-		ics.put("ICSCP_ContainerInterface", iCSCP_ContainerInterface);
-		ics.put("ICSCP_SecuredContainerInterface", iCSCP_SecuredContainerInterface);
-		ics.put("ICSCP_PropertyInterface", iCSCP_PropertyInterface);
-		ics.put("ICSCP_SecuredPropertyInterface", iCSCP_SecuredPropertyInterface);
-		ics.put("ICSCP_LabelPropertyInterface", iCSCP_LabelPropertyInterface);
-		ics.put("ICSCP_ActionInterface", iCSCP_ActionInterface);
-		ics.put("ICSCP_SecuredActionInterface", iCSCP_SecuredActionInterface);
-		ics.put("ICSCP_NotificationActionInterface", iCSCP_NotificationActionInterface);
-		ics.put("ICSCP_DialogInterface", iCSCP_DialogInterface);
-		ics.put("ICSCP_DI_Action2", iCSCP_DI_Action2);
-		ics.put("ICSCP_DI_Action3", iCSCP_DI_Action3);
-		ics.put("ICSCP_SecuredDialogInterface", iCSCP_SecuredDialogInterface);
-		ics.put("ICSCP_SDI_Action2", iCSCP_SDI_Action2);
-		ics.put("ICSCP_SDI_Action3", iCSCP_SDI_Action3);
-		ics.put("ICSCP_ListPropertyInterface", iCSCP_ListPropertyInterface);
-		ics.put("ICSCP_SecuredListPropertyInterface", iCSCP_SecuredListPropertyInterface);
-		ics.put("ICSCP_HTTPControlInterface", iCSCP_HTTPControlInterface);
-		
-		ixit.put("IXITCO_AppId", iXITCO_AppId);
-		ixit.put("IXITCO_DeviceId", iXITCO_DeviceId);
-		ixit.put("IXITCO_DefaultLanguage", iXITCO_DefaultLanguage);
-		ixit.put("IXITCP_ControlPanelVersion", iXITCP_ControlPanelVersion);
-		ixit.put("IXITCP_ContainerVersion", iXITCP_ContainerVersion);
-		ixit.put("IXITCP_PropertyVersion", iXITCP_PropertyVersion);
-		ixit.put("IXITCP_LabelPropertyVersion", iXITCP_LabelPropertyVersion);
-		ixit.put("IXITCP_ActionVersion", iXITCP_ActionVersion);
-		ixit.put("IXITCP_NotificationActionVersion", iXITCP_NotificationActionVersion);
-		ixit.put("IXITCP_DialogVersion", iXITCP_DialogVersion);
-		ixit.put("IXITCP_ListPropertyVersion", iXITCP_ListPropertyVersion);
-		ixit.put("IXITCP_HTTPControlVersion", iXITCP_HTTPControlVersion);
-	
-		ANNOUNCEMENT_TIMEOUT_IN_SECONDS = Integer.parseInt(gPCO_AnnouncementTimeout);
+		this.icsList = icsList;
+		this.ixitList = ixitList;
+		ANNOUNCEMENT_TIMEOUT_IN_SECONDS = gpList.GPCO_AnnouncementTimeout;
 		
 		try{
 			runTestCase(testCase);
 		} catch (Exception e) {
 			inconc=true;
-			/*if (e!=null) {
-				if (e.getMessage().equals("Timed out waiting for About announcement")) {
-					logger.error("Timed out waiting for About announcement");
-					pass=false;
-				} else {*/
-					logger.error("Exception: "+e.toString());
-					/*pass=false;
-				}
-			}*/
 		}
 	}
 
 	public void runTestCase(String testCase) throws Exception
 	{
 		setUp();
-		//logger.info("Running testcase: "+testCase);
 		
-		if (testCase.equals("ControlPanel-v1-01")) {
-			testControlPanel_v1_01_ValidateControlPanelBusObjects();
-		} else if(testCase.equals("ControlPanel-v1-02")) {
-			testControlPanel_v1_02_ValidateContainerBusObjects();
-		} else if(testCase.equals("ControlPanel-v1-03")) {
-			testControlPanel_v1_03_ValidatePropertyBusObjects();
-		} else if(testCase.equals("ControlPanel-v1-04")) {
-			testControlPanel_v1_04_ValidateLabelPropertyBusObjects();
-		} else if(testCase.equals("ControlPanel-v1-05")) {
-			testControlPanel_v1_05_ValidateActionBusObjects();
-		} else if(testCase.equals("ControlPanel-v1-06")) {
-			testControlPanel_v1_06_ValidateDialogBusObjects();
-		} else if(testCase.equals("ControlPanel-v1-07")) {
-			testControlPanel_v1_07_ValidateListPropertyBusObjects();
-		} else if(testCase.equals("ControlPanel-v1-08")) {
-			testControlPanel_v1_08_ValidateNotificationActionBusObjects();
-		} else if(testCase.equals("ControlPanel-v1-09")) {
-			testControlPanel_v1_09_ValidateHttpControlBusObjects();
-		} else if(testCase.equals("ControlPanel-v1-10")) {
-			testControlPanel_v1_10_ValidateSecuredControlPanelBusObjects();
-		} else{
-			fail("Test Case not valid");
+		try
+		{
+			logger.info("Running testcase: "+testCase);
+			
+			if (testCase.equals("ControlPanel-v1-01")) {
+				testControlPanel_v1_01_ValidateControlPanelBusObjects();
+			} else if(testCase.equals("ControlPanel-v1-02")) {
+				testControlPanel_v1_02_ValidateContainerBusObjects();
+			} else if(testCase.equals("ControlPanel-v1-03")) {
+				testControlPanel_v1_03_ValidatePropertyBusObjects();
+			} else if(testCase.equals("ControlPanel-v1-04")) {
+				testControlPanel_v1_04_ValidateLabelPropertyBusObjects();
+			} else if(testCase.equals("ControlPanel-v1-05")) {
+				testControlPanel_v1_05_ValidateActionBusObjects();
+			} else if(testCase.equals("ControlPanel-v1-06")) {
+				testControlPanel_v1_06_ValidateDialogBusObjects();
+			} else if(testCase.equals("ControlPanel-v1-07")) {
+				testControlPanel_v1_07_ValidateListPropertyBusObjects();
+			} else if(testCase.equals("ControlPanel-v1-08")) {
+				testControlPanel_v1_08_ValidateNotificationActionBusObjects();
+			} else if(testCase.equals("ControlPanel-v1-09")) {
+				testControlPanel_v1_09_ValidateHttpControlBusObjects();
+			} else if(testCase.equals("ControlPanel-v1-10")) {
+				testControlPanel_v1_10_ValidateSecuredControlPanelBusObjects();
+			} else{
+				fail("Test Case not valid");
+			}
+		}
+		catch (Exception exception)
+		{
+			logger.error("Exception executing Test Case: %s", exception.getMessage()); //[AT4]
+			
+			try 
+			{
+				tearDown();
+			} 
+			catch (Exception newException) 
+			{
+				logger.error("Exception releasing resources: %s", newException.getMessage());
+			}
+			
+			throw exception;
 		}
 
 		tearDown();
@@ -242,10 +197,10 @@ public class ControlPanelTestSuite
 			
 			//appUnderTestDetails = getValidationTestContext().getAppUnderTestDetails(); //[AT4] Not needed
 			//dutDeviceId = appUnderTestDetails.getDeviceId();
-			dutDeviceId = ixit.get("IXITCO_DeviceId");
+			dutDeviceId = ixitList.IXITCO_DeviceId;
 			logger.info(String.format("Running ControlPanel test case against Device ID: %s", dutDeviceId));
 			//dutAppId = appUnderTestDetails.getAppId();
-			dutAppId = UUID.fromString(ixit.get("IXITCO_AppId"));
+			dutAppId = ixitList.IXITCO_AppId;
 			logger.info(String.format("Running ControlPanel test case against App ID: %s", dutAppId));
 			//String keyStorePath = getValidationTestContext().getKeyStorePath();
 			String keyStorePath = KeyStorePath;
@@ -641,11 +596,11 @@ public class ControlPanelTestSuite
 		/** 
 		 * [AT4] Code added to compare results with ICS
 		 * */
-		if (((ics.get("ICSCP_DI_Action2") && (!isSecured)) || (ics.get("ICSCP_SDI_Action2") && isSecured)) && (nActions<2)) {
+		if (((icsList.ICSCP_DI_Action2 && (!isSecured)) || (icsList.ICSCP_SDI_Action2 && isSecured)) && (nActions<2)) {
 			fail("Method Action2() is not present"); 
 		}
 
-		if (((ics.get("ICSCP_DI_Action3") && (!isSecured)) || (ics.get("ICSCP_SDI_Action3") && isSecured)) && (nActions<3)) {
+		if (((icsList.ICSCP_DI_Action3 && (!isSecured)) || (icsList.ICSCP_SDI_Action3 && isSecured)) && (nActions<3)) {
 			fail("Method Action3() is not present");
 		}
 		
@@ -803,7 +758,7 @@ public class ControlPanelTestSuite
 	{
 		ControlPanel controlPanel = busIntrospector.getInterface(path, ControlPanel.class);
 		//assertEquals("Interface version does not match", INTERFACE_VERSION, controlPanel.getVersion());
-		assertEquals("Interface version does not match", Short.parseShort(ixit.get("IXITCP_ControlPanelVersion")), controlPanel.getVersion());
+		assertEquals("Interface version does not match", ixitList.IXITCP_ControlPanelVersion, controlPanel.getVersion());
 		assertContainerObjectExists(path);
 	}
 	
@@ -821,7 +776,7 @@ public class ControlPanelTestSuite
 		}
 
 		//assertEquals("Interface version does not match", INTERFACE_VERSION, container.getVersion());
-		assertEquals("Interface version does not match", Short.parseShort(ixit.get("IXITCP_ContainerVersion")), container.getVersion());
+		assertEquals("Interface version does not match", ixitList.IXITCP_ContainerVersion, container.getVersion());
 		assertTrue(String.format("Interface state %d does not equals expected value of 0 or 1", container.getStates()), isValidState(container.getStates(), TWO_STATES_LIST));
 		validateContainerParameters(container.getOptParams());
 	}
@@ -840,7 +795,7 @@ public class ControlPanelTestSuite
 		}
 
 		//assertEquals("Interface version does not match", INTERFACE_VERSION, propertyControl.getVersion());
-		assertEquals("Interface version does not match", Short.parseShort(ixit.get("IXITCP_PropertyVersion")), propertyControl.getVersion());
+		assertEquals("Interface version does not match", ixitList.IXITCP_PropertyVersion, propertyControl.getVersion());
 		assertTrue(String.format("Interface state %d does not equals expected value of 0, 1, 2 or 3", propertyControl.getStates()),
 				isValidState(propertyControl.getStates(), PROPERTY_STATES_LIST));
 		validatePropertyControlParameters(propertyControl.getOptParams(), propertyControl.getValue());
@@ -850,7 +805,7 @@ public class ControlPanelTestSuite
 	{
 		Label label = busIntrospector.getInterface(path, Label.class);
 		//assertEquals("Interface version does not match", INTERFACE_VERSION, label.getVersion());
-		assertEquals("Interface version does not match", Short.parseShort(ixit.get("IXITCP_LabelPropertyVersion")), label.getVersion());
+		assertEquals("Interface version does not match", ixitList.IXITCP_LabelPropertyVersion, label.getVersion());
 		assertTrue(String.format("Interface state %d does not equals expected value of 0 or 1", label.getStates()), isValidState(label.getStates(), TWO_STATES_LIST));
 		assertTrue("Label property must be a String", label.getLabel() instanceof String);
 		validateLabelPropertyParameters(label.getOptParams());
@@ -870,7 +825,7 @@ public class ControlPanelTestSuite
 		}
 
 		//assertEquals("Interface version does not match", INTERFACE_VERSION, action.getVersion());
-		assertEquals("Interface version does not match", Short.parseShort(ixit.get("IXITCP_ActionVersion")), action.getVersion());
+		assertEquals("Interface version does not match", ixitList.IXITCP_ActionVersion, action.getVersion());
 		assertTrue(String.format("Interface state %d does not equals expected value of 0 or 1", action.getStates()), isValidState(action.getStates(), TWO_STATES_LIST));
 		validateActionParameters(action.getOptParams());
 	}
@@ -889,7 +844,7 @@ public class ControlPanelTestSuite
 		}
 
         //assertEquals("Interface version does not match", INTERFACE_VERSION, dialog.getVersion());
-		assertEquals("Interface version does not match", Short.parseShort(ixit.get("IXITCP_DialogVersion")), dialog.getVersion());
+		assertEquals("Interface version does not match", ixitList.IXITCP_DialogVersion, dialog.getVersion());
 		assertTrue(String.format("Interface state %d does not equals expected value of 0 or 1", dialog.getStates()), isValidState(dialog.getStates(), TWO_STATES_LIST));
 		short numberOfActions = dialog.getNumActions();
 		validateDialogParameters(dialog.getOptParams(), numberOfActions);
@@ -911,7 +866,7 @@ public class ControlPanelTestSuite
 		}
 
 		//assertEquals("Interface version does not match", INTERFACE_VERSION, listPropertyControl.getVersion());
-		assertEquals("Interface version does not match", Short.parseShort(ixit.get("IXITCP_ListPropertyVersion")), listPropertyControl.getVersion());
+		assertEquals("Interface version does not match", ixitList.IXITCP_ListPropertyVersion, listPropertyControl.getVersion());
 		assertTrue(String.format("Interface state %d does not equals expected value of 0 or 1", listPropertyControl.getStates()),
 				isValidState(listPropertyControl.getStates(), TWO_STATES_LIST));
 		validateListPropertyParameters(listPropertyControl.getOptParams());
@@ -922,7 +877,7 @@ public class ControlPanelTestSuite
 	{
 		NotificationAction notificationAction = busIntrospector.getInterface(path, NotificationAction.class);
 		//assertEquals("Interface version does not match", INTERFACE_VERSION, notificationAction.getVersion());
-		assertEquals("Interface version does not match", Short.parseShort(ixit.get("IXITCP_NotificationActionVersion")), notificationAction.getVersion());
+		assertEquals("Interface version does not match", ixitList.IXITCP_NotificationActionVersion, notificationAction.getVersion());
 		assertContainerOrDialogObjectExists(path);
 	}
 	
@@ -930,7 +885,7 @@ public class ControlPanelTestSuite
 	{
 		HTTPControl httpControl = busIntrospector.getInterface(path, HTTPControl.class);
 		//assertEquals("Interface version does not match", INTERFACE_VERSION, httpControl.getVersion());
-		assertEquals("Interface version does not match", Short.parseShort(ixit.get("IXITCP_HTTPControlVersion")), httpControl.getVersion());
+		assertEquals("Interface version does not match", ixitList.IXITCP_HTTPControlVersion, httpControl.getVersion());
 		validateRootUrl(httpControl.GetRootURL());
 	}
 	

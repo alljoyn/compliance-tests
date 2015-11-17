@@ -100,6 +100,9 @@ import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceSignalLi
 import com.at4wireless.alljoyn.core.lightingcontroller.LeaderElectionBusInterface;
 import com.at4wireless.alljoyn.core.lightingcontroller.LeaderElectionBusInterface.BlobValues;
 import com.at4wireless.alljoyn.core.lightingcontroller.LeaderElectionBusInterface.ChecksumAndTimestampValues;
+import com.at4wireless.alljoyn.testcases.parameter.GeneralParameter;
+import com.at4wireless.alljoyn.testcases.parameter.Ics;
+import com.at4wireless.alljoyn.testcases.parameter.Ixit;
 import com.at4wireless.alljoyn.core.lightingcontroller.LeaderElectionBusObject;
 import com.at4wireless.alljoyn.core.lightingcontroller.LeaderElectionSignalHandler;
 
@@ -181,54 +184,16 @@ public class LightingControllerTestSuite
 	 * */
 	boolean pass = true;
 	boolean inconc = false;
-    Map<String, Boolean> ics;
-    Map<String, String> ixit;
+	private Ics icsList;
+	private Ixit ixitList;
 
-	public LightingControllerTestSuite(String testCase,
-			boolean iCSLC_LightingControllerServiceFramework,
-			boolean iCSLC_ControllerServiceInterface,
-			boolean iCSLC_ControllerServiceLampInterface,
-			boolean iCSLC_ControllerServiceLampGroupInterface,
-			boolean iCSLC_ControllerServicePresetInterface,
-			boolean iCSLC_ControllerServiceSceneInterface,
-			boolean iCSLC_ControllerServiceMasterSceneInterface,
-			boolean iCSLC_LeaderElectionAndStateSyncInterface,
-			String iXITCO_AppId, String iXITCO_DeviceId,
-			String iXITCO_DefaultLanguage,
-			String iXITLC_ControllerServiceVersion,
-			String iXITLC_ControllerServiceLampVersion,
-			String iXITLC_ControllerServiceLampGroupVersion,
-			String iXITLC_ControllerServicePresetVersion,
-			String iXITLC_ControllerServiceSceneVersion,
-			String iXITLC_ControllerServiceMasterSceneVersion,
-			String iXITLC_LeaderElectionAndStateSyncVersion,
-			String gPCO_AnnouncementTimeout, String gPLC_SessionClose)
+	public LightingControllerTestSuite(String testCase, Ics icsList, Ixit ixitList, GeneralParameter gpList)
 	{
-		ics = new HashMap<String, Boolean>();
-		ixit = new HashMap<String, String>();
-		
-		ics.put("ICSLC_LightingControllerServiceFramework", iCSLC_LightingControllerServiceFramework);
-		ics.put("ICSLC_ControllerServiceInterface", iCSLC_ControllerServiceInterface);
-		ics.put("ICSLC_ControllerServiceLampInterface", iCSLC_ControllerServiceLampInterface);
-		ics.put("ICSLC_ControllerServiceLampGroupInterface", iCSLC_ControllerServiceLampGroupInterface);
-		ics.put("ICSLC_ControllerServicePresetInterface", iCSLC_ControllerServicePresetInterface);
-		ics.put("ICSLC_ControllerServiceSceneInterface", iCSLC_ControllerServiceSceneInterface);
-		ics.put("ICSLC_ControllerServiceMasterSceneInterface", iCSLC_ControllerServiceMasterSceneInterface);
-		ics.put("ICSLC_LeaderElectionAndStateSyncInterface", iCSLC_LeaderElectionAndStateSyncInterface);
-		
-		ixit.put("IXITCO_AppId", iXITCO_AppId);
-		ixit.put("IXITCO_DeviceId", iXITCO_DeviceId);
-		ixit.put("IXITCO_DefaultLanguage", iXITCO_DefaultLanguage);
-		ixit.put("IXITLC_ControllerServiceVersion", iXITLC_ControllerServiceVersion);
-		ixit.put("IXITLC_ControllerServiceLampVersion", iXITLC_ControllerServiceLampVersion);
-		ixit.put("IXITLC_ControllerServiceLampGroupVersion", iXITLC_ControllerServiceLampGroupVersion);
-		ixit.put("IXITLC_ControllerServicePresetVersion", iXITLC_ControllerServicePresetVersion);
-		ixit.put("IXITLC_ControllerServiceSceneVersion", iXITLC_ControllerServiceSceneVersion);
-		ixit.put("IXITLC_ControllerServiceMasterSceneVersion", iXITLC_ControllerServiceMasterSceneVersion);
-		ixit.put("IXITLC_LeaderElectionAndStateSyncVersion", iXITLC_LeaderElectionAndStateSyncVersion);
+		this.icsList = icsList;
+		this.ixitList = ixitList;
 
-		ANNOUNCEMENT_TIMEOUT_IN_SECONDS   = Integer.parseInt(gPCO_AnnouncementTimeout);
-		SESSION_CLOSE_TIMEOUT_IN_SECONDS  = Integer.parseInt(gPLC_SessionClose);
+		ANNOUNCEMENT_TIMEOUT_IN_SECONDS   = gpList.GPCO_AnnouncementTimeout;
+		SESSION_CLOSE_TIMEOUT_IN_SECONDS  = gpList.GPLC_SessionClose;
 
 		try
 		{
@@ -236,157 +201,168 @@ public class LightingControllerTestSuite
 		}
 		catch (Exception e)
 		{
-			if (e.getMessage().equals("Timed out waiting for About announcement"))
-			{
-				fail("Timed out waiting for About announcement");
-			}
-			else
-			{
-				inconc = true;
-				fail("Exception: "+e.toString());
-			}
+			inconc = true;
 		}
 	}
 
 	public void runTestCase(String testCase) throws Exception
 	{
 		setUp();
-		logger.info("Running testcase: "+testCase);
-
-		if (testCase.equals("LSF_Controller-v1-01")){
-			testLSF_Controller_v1_01_StandardizedInterfacesMatchDefinitions();
-		}
-		else if (testCase.equals("LSF_Controller-v1-02"))
+		
+		try
 		{
-			testLSF_Controller_v1_02_VersionField();
+			logger.info("Running testcase: "+testCase);
+	
+			if (testCase.equals("LSF_Controller-v1-01")){
+				testLSF_Controller_v1_01_StandardizedInterfacesMatchDefinitions();
+			}
+			else if (testCase.equals("LSF_Controller-v1-02"))
+			{
+				testLSF_Controller_v1_02_VersionField();
+			}
+			else if (testCase.equals("LSF_Controller-v1-03"))
+			{
+				testLSF_Controller_v1_03_LightingReset();
+			}
+			else if (testCase.equals("LSF_Controller-v1-04"))
+			{
+				testLSF_Controller_v1_04_LampInfo();
+			}
+			else if (testCase.equals("LSF_Controller-v1-05"))
+			{
+				testLSF_Controller_v1_05_LampName();
+			}
+			else if (testCase.equals("LSF_Controller-v1-06"))
+			{
+				testLSF_Controller_v1_06_LampDetails();
+			}
+			else if (testCase.equals("LSF_Controller-v1-07"))
+			{
+				testLSF_Controller_v1_07_LampParameters();
+			}
+			else if (testCase.equals("LSF_Controller-v1-08"))
+			{
+				testLSF_Controller_v1_08_LampStateFields();
+			}
+			else if (testCase.equals("LSF_Controller-v1-09"))
+			{
+				testLSF_Controller_v1_09_LampStateTransition();
+			}
+			else if (testCase.equals("LSF_Controller-v1-10"))
+			{
+				testLSF_Controller_v1_10_LampStatePulse();
+			}
+			else if (testCase.equals("LSF_Controller-v1-11"))
+			{
+				testLSF_Controller_v1_11_LampStatePresets();
+			}
+			else if (testCase.equals("LSF_Controller-v1-12"))
+			{
+				testLSF_Controller_v1_12_LampReset();
+			}
+			else if (testCase.equals("LSF_Controller-v1-13"))
+			{
+				testLSF_Controller_v1_13_LampFaults();
+			}
+			else if (testCase.equals("LSF_Controller-v1-14"))
+			{
+				testLSF_Controller_v1_14_LampGroupCRUD();
+			}
+			else if (testCase.equals("LSF_Controller-v1-15"))
+			{
+				testLSF_Controller_v1_15_LampGroupName();
+			}
+			else if (testCase.equals("LSF_Controller-v1-16"))
+			{
+				testLSF_Controller_v1_16_LampGroupStateTransition();
+			}
+			else if (testCase.equals("LSF_Controller-v1-17"))
+			{
+				testLSF_Controller_v1_17_LampGroupStatePulse();
+			}
+			else if (testCase.equals("LSF_Controller-v1-18"))
+			{
+				testLSF_Controller_v1_18_LampGroupReset();
+			}
+			else if (testCase.equals("LSF_Controller-v1-19"))
+			{
+				testLSF_Controller_v1_19_LampGroupStatePresets();
+			}
+			else if (testCase.equals("LSF_Controller-v1-20"))
+			{
+				testLSF_Controller_v1_20_DefaultLampState();
+			}
+			else if (testCase.equals("LSF_Controller-v1-21"))
+			{
+				testLSF_Controller_v1_21_PresetCRUD();
+			}
+			else if (testCase.equals("LSF_Controller-v1-22"))
+			{
+				testLSF_Controller_v1_22_PresetNameChange();
+			}
+			else if (testCase.equals("LSF_Controller-v1-23"))
+			{
+				testLSF_Controller_v1_23_SceneCreate();
+			}
+			else if (testCase.equals("LSF_Controller-v1-24"))
+			{
+				testLSF_Controller_v1_24_SceneUpdateDelete();
+			}
+			else if (testCase.equals("LSF_Controller-v1-25"))
+			{
+				testLSF_Controller_v1_25_SceneApply();
+			}
+			else if (testCase.equals("LSF_Controller-v1-26"))
+			{
+				testLSF_Controller_v1_26_SceneNameChanged();
+			}
+			else if (testCase.equals("LSF_Controller-v1-27"))
+			{
+				testLSF_Controller_v1_27_MasterSceneCreate();
+			}
+			else if (testCase.equals("LSF_Controller-v1-28"))
+			{
+				testLSF_Controller_v1_28_MasterSceneUpdateDelete();
+			}
+			else if (testCase.equals("LSF_Controller-v1-29"))
+			{
+				testLSF_Controller_v1_29_MasterSceneApply();
+			}
+			else if (testCase.equals("LSF_Controller-v1-30"))
+			{
+				testLSF_Controller_v1_30_MasterSceneNameChanged();
+			}
+			else if (testCase.equals("LSF_Controller-v1-31"))
+			{
+				testLSF_Controller_v1_31_LeaderElectionBlobs();
+			}
+			else if (testCase.equals("LSF_Controller-v1-32"))
+			{
+				testLSF_Controller_v1_32_LeaderElectionBlobChanged();
+			}
+			else if (testCase.equals("LSF_Controller-v1-33"))
+			{
+				testLSF_Controller_v1_33_LeaderElectionOverthrow();
+			}
+			else
+			{
+				fail("Test Case not valid");
+			}
 		}
-		else if (testCase.equals("LSF_Controller-v1-03"))
+		catch (Exception exception)
 		{
-			testLSF_Controller_v1_03_LightingReset();
-		}
-		else if (testCase.equals("LSF_Controller-v1-04"))
-		{
-			testLSF_Controller_v1_04_LampInfo();
-		}
-		else if (testCase.equals("LSF_Controller-v1-05"))
-		{
-			testLSF_Controller_v1_05_LampName();
-		}
-		else if (testCase.equals("LSF_Controller-v1-06"))
-		{
-			testLSF_Controller_v1_06_LampDetails();
-		}
-		else if (testCase.equals("LSF_Controller-v1-07"))
-		{
-			testLSF_Controller_v1_07_LampParameters();
-		}
-		else if (testCase.equals("LSF_Controller-v1-08"))
-		{
-			testLSF_Controller_v1_08_LampStateFields();
-		}
-		else if (testCase.equals("LSF_Controller-v1-09"))
-		{
-			testLSF_Controller_v1_09_LampStateTransition();
-		}
-		else if (testCase.equals("LSF_Controller-v1-10"))
-		{
-			testLSF_Controller_v1_10_LampStatePulse();
-		}
-		else if (testCase.equals("LSF_Controller-v1-11"))
-		{
-			testLSF_Controller_v1_11_LampStatePresets();
-		}
-		else if (testCase.equals("LSF_Controller-v1-12"))
-		{
-			testLSF_Controller_v1_12_LampReset();
-		}
-		else if (testCase.equals("LSF_Controller-v1-13"))
-		{
-			testLSF_Controller_v1_13_LampFaults();
-		}
-		else if (testCase.equals("LSF_Controller-v1-14"))
-		{
-			testLSF_Controller_v1_14_LampGroupCRUD();
-		}
-		else if (testCase.equals("LSF_Controller-v1-15"))
-		{
-			testLSF_Controller_v1_15_LampGroupName();
-		}
-		else if (testCase.equals("LSF_Controller-v1-16"))
-		{
-			testLSF_Controller_v1_16_LampGroupStateTransition();
-		}
-		else if (testCase.equals("LSF_Controller-v1-17"))
-		{
-			testLSF_Controller_v1_17_LampGroupStatePulse();
-		}
-		else if (testCase.equals("LSF_Controller-v1-18"))
-		{
-			testLSF_Controller_v1_18_LampGroupReset();
-		}
-		else if (testCase.equals("LSF_Controller-v1-19"))
-		{
-			testLSF_Controller_v1_19_LampGroupStatePresets();
-		}
-		else if (testCase.equals("LSF_Controller-v1-20"))
-		{
-			testLSF_Controller_v1_20_DefaultLampState();
-		}
-		else if (testCase.equals("LSF_Controller-v1-21"))
-		{
-			testLSF_Controller_v1_21_PresetCRUD();
-		}
-		else if (testCase.equals("LSF_Controller-v1-22"))
-		{
-			testLSF_Controller_v1_22_PresetNameChange();
-		}
-		else if (testCase.equals("LSF_Controller-v1-23"))
-		{
-			testLSF_Controller_v1_23_SceneCreate();
-		}
-		else if (testCase.equals("LSF_Controller-v1-24"))
-		{
-			testLSF_Controller_v1_24_SceneUpdateDelete();
-		}
-		else if (testCase.equals("LSF_Controller-v1-25"))
-		{
-			testLSF_Controller_v1_25_SceneApply();
-		}
-		else if (testCase.equals("LSF_Controller-v1-26"))
-		{
-			testLSF_Controller_v1_26_SceneNameChanged();
-		}
-		else if (testCase.equals("LSF_Controller-v1-27"))
-		{
-			testLSF_Controller_v1_27_MasterSceneCreate();
-		}
-		else if (testCase.equals("LSF_Controller-v1-28"))
-		{
-			testLSF_Controller_v1_28_MasterSceneUpdateDelete();
-		}
-		else if (testCase.equals("LSF_Controller-v1-29"))
-		{
-			testLSF_Controller_v1_29_MasterSceneApply();
-		}
-		else if (testCase.equals("LSF_Controller-v1-30"))
-		{
-			testLSF_Controller_v1_30_MasterSceneNameChanged();
-		}
-		else if (testCase.equals("LSF_Controller-v1-31"))
-		{
-			testLSF_Controller_v1_31_LeaderElectionBlobs();
-		}
-		else if (testCase.equals("LSF_Controller-v1-32"))
-		{
-			testLSF_Controller_v1_32_LeaderElectionBlobChanged();
-		}
-		else if (testCase.equals("LSF_Controller-v1-33"))
-		{
-			testLSF_Controller_v1_33_LeaderElectionOverthrow();
-		}
-		else
-		{
-			fail("Test Case not valid");
+			logger.error("Exception executing Test Case: %s", exception.getMessage()); //[AT4]
+			
+			try 
+			{
+				tearDown();
+			} 
+			catch (Exception newException) 
+			{
+				logger.error("Exception releasing resources: %s", newException.getMessage());
+			}
+			
+			throw exception;
 		}
 		
 		tearDown();
@@ -406,9 +382,9 @@ public class LightingControllerTestSuite
 		{
 			//appUnderTestDetails = getValidationTestContext().getAppUnderTestDetails();
 			//dutDeviceId = appUnderTestDetails.getDeviceId();
-			dutDeviceId = ixit.get("IXITCO_DeviceId");
+			dutDeviceId = ixitList.IXITCO_DeviceId;
 			//dutAppId = appUnderTestDetails.getAppId();
-			dutAppId = UUID.fromString(ixit.get("IXITCO_AppId"));
+			dutAppId = ixitList.IXITCO_AppId;
 
 			logger.info("Running LSF_Controller test case against Device ID: " + dutDeviceId);
 			logger.info("Running LSF_Controller test case against App ID: " + dutAppId);
@@ -605,38 +581,38 @@ public class LightingControllerTestSuite
 			version = controllerIface.getVersion();
 			logger.info(CONTROLLERSERVICE_INTERFACE_NAME + ", Version:" + version);
 			assertEquals("The controller Service Version does not match IXIT", version,
-					Integer.parseInt(ixit.get("IXITLC_ControllerServiceVersion")));
+					ixitList.IXITLC_ControllerServiceVersion);
 			
 			version = lampIface.getVersion();
 			logger.info(LAMP_INTERFACE_NAME + ", Version: " + version);
 			assertEquals("The controller Service Lamp Version does not match IXIT", version,
-					Integer.parseInt(ixit.get("IXITLC_ControllerServiceLampVersion")));
+					ixitList.IXITLC_ControllerServiceLampVersion);
 
 			version = lampGroupIface.getVersion();
 			logger.info(LAMPGROUP_INTERFACE_NAME + " Version: " + version);
 			assertEquals("The controller Service Lamp Group Version does not match IXIT", version,
-					Integer.parseInt(ixit.get("IXITLC_ControllerServiceLampGroupVersion")));
+					ixitList.IXITLC_ControllerServiceLampGroupVersion);
 
 			version = presetIface.getVersion();
 			logger.info(PRESET_INTERFACE_NAME + " Version: " + version);
 			assertEquals("The controller Service Preset Version does not match IXIT", version,
-					Integer.parseInt(ixit.get("IXITLC_ControllerServicePresetVersion")));
+					ixitList.IXITLC_ControllerServicePresetVersion);
 
 			version = sceneIface.getVersion();
 			logger.info(SCENE_INTERFACE_NAME + " Version: " + version);
 			assertEquals("The controller Service Scene Version does not match IXIT", version,
-					Integer.parseInt(ixit.get("IXITLC_ControllerServiceSceneVersion")));
+					ixitList.IXITLC_ControllerServiceSceneVersion);
 
 			version = masterSceneIface.getVersion();
 			logger.info(MASTERSCENE_INTERFACE_NAME + " Version: " + version);
 			assertEquals("The controller Service Master Scene Version does not match IXIT", version,
-					Integer.parseInt(ixit.get("IXITLC_ControllerServiceMasterSceneVersion")));
+					ixitList.IXITLC_ControllerServiceMasterSceneVersion);
 
 			// verify version from method on ControllerService interface
 			version = controllerIface.GetControllerServiceVersion();
 			logger.info(LEADER_ELECTION_INTERFACE_NAME + " MethodCall-Version: " + version);
 			assertEquals("The controller Service Preset Version does not match", version,
-					Integer.parseInt(ixit.get("IXITLC_LeaderElectionAndStateSyncVersion")));
+					ixitList.IXITLC_LeaderElectionAndStateSyncVersion);
 
 		}
 		catch (Exception e)

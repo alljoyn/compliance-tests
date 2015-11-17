@@ -24,6 +24,8 @@ public interface Logger
     void info(String format, Object... args);
 
     void debug(String format, Object... args);
+    
+    void raw(String format, Object... args);
 
     void error(String message, Throwable t);
 
@@ -32,10 +34,4 @@ public interface Logger
     void info(String message, Throwable t);
 
     void debug(String message, Throwable t);
-    
-    void pass(String format);
-    		
-    void fail(String format);
-    
-    void addNote(String format);
 }

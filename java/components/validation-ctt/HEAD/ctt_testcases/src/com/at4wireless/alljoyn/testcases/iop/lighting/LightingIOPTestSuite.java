@@ -40,6 +40,7 @@ import javax.swing.table.TableModel;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.iop.CategoryKeys;
 import com.at4wireless.alljoyn.core.iop.IOPMessage;
+import com.at4wireless.alljoyn.testcases.parameter.Ics;
 
 public class LightingIOPTestSuite
 {
@@ -55,10 +56,10 @@ public class LightingIOPTestSuite
 	Boolean ICSON_OnboardingServiceFramework = false;
 	String name = null;
 
-	public LightingIOPTestSuite(String testCase, Map<String, List<String>> goldenUnits, boolean iCSON_OnboardingServiceFramework)
+	public LightingIOPTestSuite(String testCase, Map<String, List<String>> goldenUnits, Ics icsList)
 	{
 		this.goldenUnits = goldenUnits;
-		ICSON_OnboardingServiceFramework = iCSON_OnboardingServiceFramework;
+		ICSON_OnboardingServiceFramework = icsList.ICSON_OnboardingServiceFramework;
 
 		try
 		{
@@ -1062,11 +1063,11 @@ public class LightingIOPTestSuite
 			return;
 		}
 		
-		message.showMessage("Test Procedure", String.format("Step 11) Operate %s to make a group ‘Group 1’ "
+		message.showMessage("Test Procedure", String.format("Step 11) Operate %s to make a group ï¿½Group 1ï¿½ "
 				+ "including DUT, %s and %s.", TBAD2, TBAD3, TBAD4));
-		message.showMessage("Test Procedure", String.format("Step 12) Operate %s to make a group ‘Group 2’ "
+		message.showMessage("Test Procedure", String.format("Step 12) Operate %s to make a group ï¿½Group 2ï¿½ "
 				+ "including DUT and %s.", TBAD2, TBAD3));
-		message.showMessage("Test Procedure", String.format("Step 13) Operate %s to switch off lamps of ‘Group 1’.", TBAD2));
+		message.showMessage("Test Procedure", String.format("Step 13) Operate %s to switch off lamps of ï¿½Group 1ï¿½.", TBAD2));
 		
 		resp = message.showQuestion("Pass/Fail Criteria", String.format("Is DUT lamp switched off? Are %s and %s also switched off?", TBAD4));
 		
@@ -1076,7 +1077,7 @@ public class LightingIOPTestSuite
 			return;
 		}
 		
-		message.showMessage("Test Procedure", String.format("Step 14) Operate %s to switch on lamps of Group 2’.", TBAD1));
+		message.showMessage("Test Procedure", String.format("Step 14) Operate %s to switch on lamps of Group 2ï¿½.", TBAD1));
 		
 		resp = message.showQuestion("Pass/Fail Criteria", String.format("Is DUT lamp switched on? Is %s also switched on?", TBAD3));
 		
@@ -1101,7 +1102,7 @@ public class LightingIOPTestSuite
 		}
 		
 		message.showMessage("Test Procedure", String.format("Step 16) If DUT supports ICSL_Dimmable, operate %s "
-				+ "to change ‘Group 2’ lamps saturation to its maximum value.", TBAD2));
+				+ "to change ï¿½Group 2ï¿½ lamps saturation to its maximum value.", TBAD2));
 
 		resp = message.showQuestion("Pass/Fail Criteria", String.format("If DUT supports ICSL_Dimmable, are DUT "
 				+ "and %s lamps saturation changed to the value set by %s?", TBAD3, TBAD2));
@@ -1113,7 +1114,7 @@ public class LightingIOPTestSuite
 		}
 		
 		message.showMessage("Test Procedure", String.format("Step 17) If DUT supports ICSL_Dimmable, operate %s "
-				+ "to change ‘Group 2’ lamps saturation to a low value.", TBAD1)); 
+				+ "to change ï¿½Group 2ï¿½ lamps saturation to a low value.", TBAD1)); 
 
 		resp = message.showQuestion("Pass/Fail Criteria", String.format("If DUT supports ICSL_Dimmable, are DUT "
 				+ "and %s lamps saturation changed to the value set by %s.?", TBAD3, TBAD1));
@@ -1125,7 +1126,7 @@ public class LightingIOPTestSuite
 		}
 		
 		message.showMessage("Test Procedure", String.format("Step 18) If DUT supports ICSL_Dimmable, operate %s "
-				+ "to change ‘Group 1’ lamps saturation to its maximum value.", TBAD1)); 
+				+ "to change ï¿½Group 1ï¿½ lamps saturation to its maximum value.", TBAD1)); 
 		
 		resp = message.showQuestion("Pass/Fail Criteria", String.format("If DUT supports ICSL_Dimmable, are DUT, "
 				+ "%s and %s lamps saturation changed to the value set by %s?", TBAD3, TBAD4, TBAD1));
@@ -1276,11 +1277,11 @@ public class LightingIOPTestSuite
 			return;
 		}
 
-		message.showMessage("Test Procedure", String.format("Step 11) Operate %s to make a group ‘Group 1’ "
+		message.showMessage("Test Procedure", String.format("Step 11) Operate %s to make a group ï¿½Group 1ï¿½ "
 				+ "including DUT, %s and %s.", TBAD2, TBAD3, TBAD4));
-		message.showMessage("Test Procedure", String.format("Step 12) Operate %s to make a group ‘Group 2’ "
+		message.showMessage("Test Procedure", String.format("Step 12) Operate %s to make a group ï¿½Group 2ï¿½ "
 				+ "including DUT and %s.", TBAD2, TBAD3));
-		message.showMessage("Test Procedure", String.format("Step 13) Operate %s to switch the lamps of ‘Group 1’ off.", TBAD2));
+		message.showMessage("Test Procedure", String.format("Step 13) Operate %s to switch the lamps of ï¿½Group 1ï¿½ off.", TBAD2));
 		
 		resp=message.showQuestion("Pass/Fail Criteria", String.format("Is DUT lamp switched off? Are %s and %s also switched off?", TBAD3, TBAD4));
 		
@@ -1290,7 +1291,7 @@ public class LightingIOPTestSuite
 			return;
 		}
 		
-		message.showMessage("Test Procedure", String.format("Step 14) Operate %s to switch the lamps of ‘Group 2’ off.", TBAD1));
+		message.showMessage("Test Procedure", String.format("Step 14) Operate %s to switch the lamps of ï¿½Group 2ï¿½ off.", TBAD1));
 		
 		resp = message.showQuestion("Pass/Fail Criteria", String.format("Is DUT lamp switched on? Is %s also "
 				+ "switched on?", TBAD3));
@@ -1314,7 +1315,7 @@ public class LightingIOPTestSuite
 		}
 		
 		message.showMessage("Test Procedure", String.format("Step 16) If DUT supports ICSL_Dimmable, operate %s "
-				+ "to change ‘Group 2’ lamps saturation to its maximum value.", TBAD2));
+				+ "to change ï¿½Group 2ï¿½ lamps saturation to its maximum value.", TBAD2));
 		
 		resp = message.showQuestion("Pass/Fail Criteria", String.format("If DUT supports ICSL_Dimmable, are DUT "
 				+ "and %s lamps saturation changed to the value set by %s?", TBAD3, TBAD2));
@@ -1327,7 +1328,7 @@ public class LightingIOPTestSuite
 		}
 		
 		message.showMessage("Test Procedure", String.format("Step 17) If DUT supports ICSL_Dimmable, operate %s "
-				+ "to change ‘Group 2’ lamps saturation to a low value.", TBAD1));
+				+ "to change ï¿½Group 2ï¿½ lamps saturation to a low value.", TBAD1));
 		
 		resp = message.showQuestion("Pass/Fail Criteria", String.format("If DUT supports ICSL_Dimmable, are DUT "
 				+ "and %s lamps saturation are changed to the value set by %s?", TBAD3, TBAD1));
@@ -1339,7 +1340,7 @@ public class LightingIOPTestSuite
 		}
 		
 		message.showMessage("Test Procedure", String.format("Step 18) If DUT supports ICSL_Dimmable, operate %s "
-				+ "to change ‘Group 1’ lamps saturation to its maximum value.", TBAD1));
+				+ "to change ï¿½Group 1ï¿½ lamps saturation to its maximum value.", TBAD1));
 		
 		resp = message.showQuestion("Pass/Fail Criteria", String.format("If DUT supports ICSL_Dimmable, are DUT, "
 				+ "%s and %s lamps saturation changed to the value set by %s?", TBAD3, TBAD4, TBAD1));
@@ -1827,7 +1828,7 @@ public class LightingIOPTestSuite
 
 		String msg = "Step 1) The passcode for the DUT is set to the default passcode \"000000\""
 				+ "\nStep 2) The AllJoyn devices of the Test Bed used will register an AuthListener with the "
-				+ "AllJoyn framework that provides the default passcode (“000000”)\n when "
+				+ "AllJoyn framework that provides the default passcode (ï¿½000000ï¿½)\n when "
 				+ "authentication is requested (unless anything else is defined in a test case)."
 				+ "\nStep 3) The SSID of the soft access point (Soft AP) advertised by the DUT follows the "
 				+ "proper format such that it ends with the first seven digits of the deviceId."

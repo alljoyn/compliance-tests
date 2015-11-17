@@ -40,6 +40,7 @@ import javax.swing.table.TableModel;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.iop.CategoryKeys;
 import com.at4wireless.alljoyn.core.iop.IOPMessage;
+import com.at4wireless.alljoyn.testcases.parameter.Ics;
 
 public class ControlPanelIOPTestSuite
 {
@@ -55,9 +56,9 @@ public class ControlPanelIOPTestSuite
 	String name=null;
 	Boolean ICSON_OnboardingServiceFramework=false;
 
-	public ControlPanelIOPTestSuite(String testCase, Map<String, List<String>> goldenUnits, boolean iCSON_OnboardingServiceFramework)
+	public ControlPanelIOPTestSuite(String testCase, Map<String, List<String>> goldenUnits, Ics icsList)
 	{
-		ICSON_OnboardingServiceFramework = iCSON_OnboardingServiceFramework;
+		ICSON_OnboardingServiceFramework = icsList.ICSON_OnboardingServiceFramework;
 		this.goldenUnits = goldenUnits;
 		
 		try
@@ -333,7 +334,7 @@ public class ControlPanelIOPTestSuite
 	{
 		String msg = "Step 1) The passcode for the DUT is set to the default passcode \"000000\""
 				+ "\nStep 2) The AllJoyn devices of the Test Bed used will register an AuthListener with the "
-				+ "AllJoyn framework that provides the default passcode (“000000”)\n when "
+				+ "AllJoyn framework that provides the default passcode (ï¿½000000ï¿½)\n when "
 				+ "authentication is requested (unless anything else is defined in a test case)."
 				+ "\nStep 3) The SSID of the soft access point (Soft AP) advertised by the DUT follows the "
 				+ "proper format such that it ends with the first seven digits of the deviceId."
