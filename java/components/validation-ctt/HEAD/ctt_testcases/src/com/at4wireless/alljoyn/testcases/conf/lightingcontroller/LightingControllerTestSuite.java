@@ -198,7 +198,6 @@ public class LightingControllerTestSuite
 		}
 		catch(Exception e)
 		{
-			logger.error(String.format("Exception: %s", e.toString()));
 			inconc = true;
 		}
 	}
@@ -206,143 +205,162 @@ public class LightingControllerTestSuite
 	public void runTestCase(String testCase) throws Exception
 	{
 		setUp();
-		logger.info("Running testcase: "+testCase);
-
-		if (testCase.equals("LSF_Controller-v1-01"))
+		
+		try
 		{
-			testLSF_Controller_v1_01_StandardizedInterfacesMatchDefinitions();
+			logger.info("Running testcase: "+testCase);
+	
+			if (testCase.equals("LSF_Controller-v1-01"))
+			{
+				testLSF_Controller_v1_01_StandardizedInterfacesMatchDefinitions();
+			}
+			else if (testCase.equals("LSF_Controller-v1-02"))
+			{
+				testLSF_Controller_v1_02_VersionField();
+			}
+			else if (testCase.equals("LSF_Controller-v1-03"))
+			{
+				testLSF_Controller_v1_03_LightingReset();
+			}
+			else if (testCase.equals("LSF_Controller-v1-04"))
+			{
+				testLSF_Controller_v1_04_LampInfo();
+			}
+			else if (testCase.equals("LSF_Controller-v1-05"))
+			{
+				testLSF_Controller_v1_05_LampName();
+			}
+			else if (testCase.equals("LSF_Controller-v1-06"))
+			{
+				testLSF_Controller_v1_06_LampDetails();
+			}
+			else if (testCase.equals("LSF_Controller-v1-07"))
+			{
+				testLSF_Controller_v1_07_LampParameters();
+			}
+			else if (testCase.equals("LSF_Controller-v1-08"))
+			{
+				testLSF_Controller_v1_08_LampStateFields();
+			}
+			else if (testCase.equals("LSF_Controller-v1-09"))
+			{
+				testLSF_Controller_v1_09_LampStateTransition();
+			}
+			else if (testCase.equals("LSF_Controller-v1-10"))
+			{
+				testLSF_Controller_v1_10_LampStatePulse();
+			}
+			else if (testCase.equals("LSF_Controller-v1-11"))
+			{
+				testLSF_Controller_v1_11_LampStatePresets();
+			}
+			else if (testCase.equals("LSF_Controller-v1-12"))
+			{
+				testLSF_Controller_v1_12_LampReset();
+			}
+			else if (testCase.equals("LSF_Controller-v1-13"))
+			{
+				testLSF_Controller_v1_13_LampFaults();
+			}
+			else if (testCase.equals("LSF_Controller-v1-14"))
+			{
+				testLSF_Controller_v1_14_LampGroupCRUD();
+			}
+			else if (testCase.equals("LSF_Controller-v1-15"))
+			{
+				testLSF_Controller_v1_15_LampGroupName();
+			}
+			else if (testCase.equals("LSF_Controller-v1-16"))
+			{
+				testLSF_Controller_v1_16_LampGroupStateTransition();
+			}
+			else if (testCase.equals("LSF_Controller-v1-17"))
+			{
+				testLSF_Controller_v1_17_LampGroupStatePulse();
+			}
+			else if (testCase.equals("LSF_Controller-v1-18"))
+			{
+				testLSF_Controller_v1_18_LampGroupReset();
+			}
+			else if (testCase.equals("LSF_Controller-v1-19"))
+			{
+				testLSF_Controller_v1_19_LampGroupStatePresets();
+			}
+			else if (testCase.equals("LSF_Controller-v1-20"))
+			{
+				testLSF_Controller_v1_20_DefaultLampState();
+			}
+			else if (testCase.equals("LSF_Controller-v1-21"))
+			{
+				testLSF_Controller_v1_21_PresetCRUD();
+			}
+			else if (testCase.equals("LSF_Controller-v1-22"))
+			{
+				testLSF_Controller_v1_22_PresetNameChange();
+			}
+			else if (testCase.equals("LSF_Controller-v1-23"))
+			{
+				testLSF_Controller_v1_23_SceneCreate();
+			}
+			else if (testCase.equals("LSF_Controller-v1-24"))
+			{
+				testLSF_Controller_v1_24_SceneUpdateDelete();
+			}
+			else if (testCase.equals("LSF_Controller-v1-25"))
+			{
+				testLSF_Controller_v1_25_SceneApply();
+			}
+			else if (testCase.equals("LSF_Controller-v1-26"))
+			{
+				testLSF_Controller_v1_26_SceneNameChanged();
+			}
+			else if (testCase.equals("LSF_Controller-v1-27"))
+			{
+				testLSF_Controller_v1_27_MasterSceneCreate();
+			}
+			else if (testCase.equals("LSF_Controller-v1-28"))
+			{
+				testLSF_Controller_v1_28_MasterSceneUpdateDelete();
+			}
+			else if (testCase.equals("LSF_Controller-v1-29"))
+			{
+				testLSF_Controller_v1_29_MasterSceneApply();
+			}
+			else if (testCase.equals("LSF_Controller-v1-30"))
+			{
+				testLSF_Controller_v1_30_MasterSceneNameChanged();
+			}
+			else if (testCase.equals("LSF_Controller-v1-31"))
+			{
+				testLSF_Controller_v1_31_LeaderElectionBlobs();
+			}
+			else if (testCase.equals("LSF_Controller-v1-32"))
+			{
+				testLSF_Controller_v1_32_LeaderElectionBlobChanged();
+			}
+			else if (testCase.equals("LSF_Controller-v1-33"))
+			{
+				testLSF_Controller_v1_33_LeaderElectionOverthrow();
+			}
+			else
+			{
+				fail("Test Case not valid");
+			}
 		}
-		else if (testCase.equals("LSF_Controller-v1-02"))
+		catch (Exception exception)
 		{
-			testLSF_Controller_v1_02_VersionField();
-		}
-		else if (testCase.equals("LSF_Controller-v1-03"))
-		{
-			testLSF_Controller_v1_03_LightingReset();
-		}
-		else if (testCase.equals("LSF_Controller-v1-04"))
-		{
-			testLSF_Controller_v1_04_LampInfo();
-		}
-		else if (testCase.equals("LSF_Controller-v1-05"))
-		{
-			testLSF_Controller_v1_05_LampName();
-		}
-		else if (testCase.equals("LSF_Controller-v1-06"))
-		{
-			testLSF_Controller_v1_06_LampDetails();
-		}
-		else if (testCase.equals("LSF_Controller-v1-07"))
-		{
-			testLSF_Controller_v1_07_LampParameters();
-		}
-		else if (testCase.equals("LSF_Controller-v1-08"))
-		{
-			testLSF_Controller_v1_08_LampStateFields();
-		}
-		else if (testCase.equals("LSF_Controller-v1-09"))
-		{
-			testLSF_Controller_v1_09_LampStateTransition();
-		}
-		else if (testCase.equals("LSF_Controller-v1-10"))
-		{
-			testLSF_Controller_v1_10_LampStatePulse();
-		}
-		else if (testCase.equals("LSF_Controller-v1-11"))
-		{
-			testLSF_Controller_v1_11_LampStatePresets();
-		}
-		else if (testCase.equals("LSF_Controller-v1-12"))
-		{
-			testLSF_Controller_v1_12_LampReset();
-		}
-		else if (testCase.equals("LSF_Controller-v1-13"))
-		{
-			testLSF_Controller_v1_13_LampFaults();
-		}
-		else if (testCase.equals("LSF_Controller-v1-14"))
-		{
-			testLSF_Controller_v1_14_LampGroupCRUD();
-		}
-		else if (testCase.equals("LSF_Controller-v1-15"))
-		{
-			testLSF_Controller_v1_15_LampGroupName();
-		}
-		else if (testCase.equals("LSF_Controller-v1-16"))
-		{
-			testLSF_Controller_v1_16_LampGroupStateTransition();
-		}
-		else if (testCase.equals("LSF_Controller-v1-17"))
-		{
-			testLSF_Controller_v1_17_LampGroupStatePulse();
-		}
-		else if (testCase.equals("LSF_Controller-v1-18"))
-		{
-			testLSF_Controller_v1_18_LampGroupReset();
-		}
-		else if (testCase.equals("LSF_Controller-v1-19"))
-		{
-			testLSF_Controller_v1_19_LampGroupStatePresets();
-		}
-		else if (testCase.equals("LSF_Controller-v1-20"))
-		{
-			testLSF_Controller_v1_20_DefaultLampState();
-		}
-		else if (testCase.equals("LSF_Controller-v1-21"))
-		{
-			testLSF_Controller_v1_21_PresetCRUD();
-		}
-		else if (testCase.equals("LSF_Controller-v1-22"))
-		{
-			testLSF_Controller_v1_22_PresetNameChange();
-		}
-		else if (testCase.equals("LSF_Controller-v1-23"))
-		{
-			testLSF_Controller_v1_23_SceneCreate();
-		}
-		else if (testCase.equals("LSF_Controller-v1-24"))
-		{
-			testLSF_Controller_v1_24_SceneUpdateDelete();
-		}
-		else if (testCase.equals("LSF_Controller-v1-25"))
-		{
-			testLSF_Controller_v1_25_SceneApply();
-		}
-		else if (testCase.equals("LSF_Controller-v1-26"))
-		{
-			testLSF_Controller_v1_26_SceneNameChanged();
-		}
-		else if (testCase.equals("LSF_Controller-v1-27"))
-		{
-			testLSF_Controller_v1_27_MasterSceneCreate();
-		}
-		else if (testCase.equals("LSF_Controller-v1-28"))
-		{
-			testLSF_Controller_v1_28_MasterSceneUpdateDelete();
-		}
-		else if (testCase.equals("LSF_Controller-v1-29"))
-		{
-			testLSF_Controller_v1_29_MasterSceneApply();
-		}
-		else if (testCase.equals("LSF_Controller-v1-30"))
-		{
-			testLSF_Controller_v1_30_MasterSceneNameChanged();
-		}
-		else if (testCase.equals("LSF_Controller-v1-31"))
-		{
-			testLSF_Controller_v1_31_LeaderElectionBlobs();
-		}
-		else if (testCase.equals("LSF_Controller-v1-32"))
-		{
-			testLSF_Controller_v1_32_LeaderElectionBlobChanged();
-		}
-		else if (testCase.equals("LSF_Controller-v1-33"))
-		{
-			testLSF_Controller_v1_33_LeaderElectionOverthrow();
-		}
-		else
-		{
-			fail("Test Case not valid");
+			logger.error("Exception executing Test Case: %s", exception.getMessage()); //[AT4]
+			
+			try 
+			{
+				tearDown();
+			} 
+			catch (Exception newException) 
+			{
+				logger.error("Exception releasing resources: %s", newException.getMessage());
+			}
+			
+			throw exception;
 		}
 		
 		tearDown();
