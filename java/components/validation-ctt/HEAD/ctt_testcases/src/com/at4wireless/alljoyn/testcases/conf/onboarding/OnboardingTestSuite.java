@@ -140,59 +140,78 @@ public class OnboardingTestSuite
 	public void runTestCase(String testCase) throws Exception
 	{	
 		setUp();
-		logger.info(String.format("Running testcase: %s", testCase));
 		
-		if (testCase.equals("Onboarding-v1-01"))
+		try
 		{
-			testOnboarding_v1_01_OffboardDevice();
+			logger.info(String.format("Running testcase: %s", testCase));
+			
+			if (testCase.equals("Onboarding-v1-01"))
+			{
+				testOnboarding_v1_01_OffboardDevice();
+			}
+			else if(testCase.equals("Onboarding-v1-02"))
+			{
+				testOnboarding_v1_02_OnboardDevice();
+			}
+			else if(testCase.equals("Onboarding-v1-03"))
+			{
+				testOnboarding_v1_03_ConnectivityOverSoftAP();
+			}
+			else if(testCase.equals("Onboarding-v1-04"))
+			{
+				testOnboarding_v1_04_ConfigureWiFiWithOutOfRangeValue();
+			}
+			else if(testCase.equals("Onboarding-v1-05"))
+			{
+				testOnboarding_v1_05_ConfigureWiFiWithWrongSSID();
+			}
+			else if(testCase.equals("Onboarding-v1-06"))
+			{
+				testOnboarding_v1_06_ConfigureWiFiWithWrongPassword();
+			}
+			else if(testCase.equals("Onboarding-v1-07"))
+			{
+				testOnboarding_v1_07_ConfigureWiFiAuthTypeOfAny();
+			}
+			else if(testCase.equals("Onboarding-v1-08"))
+			{
+				testOnboarding_v1_08_GetScanInfo();
+			}
+			else if(testCase.equals("Onboarding-v1-09"))
+			{
+				testOnboarding_v1_09_WrongPasscode();
+			}
+			else if(testCase.equals("Onboarding-v1-10"))
+			{
+				testOnboarding_v1_10_AuthenticateAfterChangingPasscode();
+			}
+			else if(testCase.equals("Onboarding-v1-11"))
+			{
+				testOnboarding_v1_11_FactoryResetClearsConfiguration();
+			}
+			else if(testCase.equals("Onboarding-v1-12"))
+			{
+				testOnboarding_v1_12_FactoryResetResetsPasscode();
+			}
+			else
+			{
+				fail("Test Case not valid");
+			}
 		}
-		else if(testCase.equals("Onboarding-v1-02"))
+		catch (Exception exception)
 		{
-			testOnboarding_v1_02_OnboardDevice();
-		}
-		else if(testCase.equals("Onboarding-v1-03"))
-		{
-			testOnboarding_v1_03_ConnectivityOverSoftAP();
-		}
-		else if(testCase.equals("Onboarding-v1-04"))
-		{
-			testOnboarding_v1_04_ConfigureWiFiWithOutOfRangeValue();
-		}
-		else if(testCase.equals("Onboarding-v1-05"))
-		{
-			testOnboarding_v1_05_ConfigureWiFiWithWrongSSID();
-		}
-		else if(testCase.equals("Onboarding-v1-06"))
-		{
-			testOnboarding_v1_06_ConfigureWiFiWithWrongPassword();
-		}
-		else if(testCase.equals("Onboarding-v1-07"))
-		{
-			testOnboarding_v1_07_ConfigureWiFiAuthTypeOfAny();
-		}
-		else if(testCase.equals("Onboarding-v1-08"))
-		{
-			testOnboarding_v1_08_GetScanInfo();
-		}
-		else if(testCase.equals("Onboarding-v1-09"))
-		{
-			testOnboarding_v1_09_WrongPasscode();
-		}
-		else if(testCase.equals("Onboarding-v1-10"))
-		{
-			testOnboarding_v1_10_AuthenticateAfterChangingPasscode();
-		}
-		else if(testCase.equals("Onboarding-v1-11"))
-		{
-			testOnboarding_v1_11_FactoryResetClearsConfiguration();
-		}
-		else if(testCase.equals("Onboarding-v1-12"))
-		{
-			testOnboarding_v1_12_FactoryResetResetsPasscode();
-		}
-		else
-		{
-			fail("Test Case not valid");
+			logger.error("Exception executing Test Case: %s", exception.getMessage()); //[AT4]
+			
+			try 
+			{
+				tearDown();
+			} 
+			catch (Exception newException) 
+			{
+				logger.error("Exception releasing resources: %s", newException.getMessage());
+			}
+			
+			throw exception;
 		}
 
 		tearDown();
@@ -454,7 +473,6 @@ public class OnboardingTestSuite
 			}
 			else
 			{
-
 				throw e;
 			}
 		}
@@ -854,10 +872,11 @@ public class OnboardingTestSuite
 	{
 		if (be instanceof ErrorReplyBusException)
 		{
-			ErrorReplyBusException ex = (ErrorReplyBusException) be;
-			logger.info("ErrorStatus: " + ex.getErrorStatus());
-			logger.info("ErrorName: " + ex.getErrorName());
-			logger.info("ErrorMessage: " + ex.getErrorMessage());
+			ErrorReplyBusException erbe = (ErrorReplyBusException) be;
+			
+			logger.info("ErrorStatus: %s", erbe.getErrorStatus());
+			logger.info("ErrorName: %s", erbe.getErrorName());
+			logger.info("ErrorMessage: %s", erbe.getErrorMessage());
 		}
 	}
 

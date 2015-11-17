@@ -123,39 +123,57 @@ public class NotificationTestSuite
 			setUp();
 		}
 		
-		logger.info(String.format("Running testcase: %s", testCase));
-		
-		if (testCase.equals("Notification-Consumer-v1-01"))
+		try
 		{
-			testNotification_Consumer_v1_01();
+			logger.info(String.format("Running testcase: %s", testCase));
+			
+			if (testCase.equals("Notification-Consumer-v1-01"))
+			{
+				testNotification_Consumer_v1_01();
+			}
+			else if (testCase.equals("Notification-Consumer-v1-02"))
+			{
+				testNotification_Consumer_v1_02();
+			/*}
+			else if (testCase.equals("Notification-Consumer-v1-03"))
+			{
+				testNotification_Consumer_v1_03();*/
+			}
+			else if(testCase.equals("Notification-Consumer-v1-04"))
+			{
+				testNotification_Consumer_v1_04();
+			}
+			else if(testCase.equals("Notification-Consumer-v1-05"))
+			{
+				testNotification_Consumer_v1_05();
+			}
+			else if(testCase.equals("Notification-Consumer-v1-06"))
+			{
+				testNotification_Consumer_v1_06();
+			}
+			else if(testCase.equals("Notification-v1-01"))
+			{	
+				testNotificationsReceived();
+			}
+			else
+			{
+				fail("Test Case not valid");
+			}
 		}
-		else if (testCase.equals("Notification-Consumer-v1-02"))
+		catch (Exception exception)
 		{
-			testNotification_Consumer_v1_02();
-		/*}
-		else if (testCase.equals("Notification-Consumer-v1-03"))
-		{
-			testNotification_Consumer_v1_03();*/
-		}
-		else if(testCase.equals("Notification-Consumer-v1-04"))
-		{
-			testNotification_Consumer_v1_04();
-		}
-		else if(testCase.equals("Notification-Consumer-v1-05"))
-		{
-			testNotification_Consumer_v1_05();
-		}
-		else if(testCase.equals("Notification-Consumer-v1-06"))
-		{
-			testNotification_Consumer_v1_06();
-		}
-		else if(testCase.equals("Notification-v1-01"))
-		{	
-			testNotificationsReceived();
-		}
-		else
-		{
-			fail("Test Case not valid");
+			logger.error("Exception executing Test Case: %s", exception.getMessage()); //[AT4]
+			
+			try 
+			{
+				tearDown();
+			} 
+			catch (Exception newException) 
+			{
+				logger.error("Exception releasing resources: %s", newException.getMessage());
+			}
+			
+			throw exception;
 		}
 		
 		if (testCase.equals("Notification-v1-01"))

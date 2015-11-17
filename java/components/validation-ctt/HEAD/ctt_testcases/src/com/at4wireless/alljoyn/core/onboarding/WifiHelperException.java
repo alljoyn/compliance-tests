@@ -17,7 +17,6 @@ package com.at4wireless.alljoyn.core.onboarding;
 
 public class WifiHelperException extends RuntimeException
 {
-
     private static final long serialVersionUID = 1L;
 
     public WifiHelperException(String message)
