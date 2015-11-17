@@ -40,6 +40,7 @@ import javax.swing.table.TableModel;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.iop.CategoryKeys;
 import com.at4wireless.alljoyn.core.iop.IOPMessage;
+import com.at4wireless.alljoyn.testcases.parameter.Ics;
 
 public class NotificationIOPTestSuite
 {
@@ -55,10 +56,10 @@ public class NotificationIOPTestSuite
 	Boolean ICSON_OnboardingServiceFramework = false;
 	String name = null;
 
-	public NotificationIOPTestSuite(String testCase, Map<String, List<String>> goldenUnits, boolean iCSON_OnboardingServiceFramework)
+	public NotificationIOPTestSuite(String testCase, Map<String, List<String>> goldenUnits, Ics icsList)
 	{
 		this.goldenUnits = goldenUnits;
-		ICSON_OnboardingServiceFramework = iCSON_OnboardingServiceFramework;
+		ICSON_OnboardingServiceFramework = icsList.ICSON_OnboardingServiceFramework;
 
 		try
 		{
@@ -185,7 +186,7 @@ public class NotificationIOPTestSuite
 
 			message.showMessage("Test Procedure", String.format("Step %d) If supported by DUT (support of "
 					+ "ICS ICSN_RichIconUrl) and feasible, handle DUT to generate a "
-					+ "‘Notification’ message with ‘richIconUrl’ field.", step++));
+					+ "ï¿½Notificationï¿½ message with ï¿½richIconUrlï¿½ field.", step++));
 
 			response = message.showQuestion("Pass/Fail Criteria", String.format("Does %s receive a Notification "
 					+ "where richIconUrl attribute (attrName = 0) is present and a "
@@ -201,7 +202,7 @@ public class NotificationIOPTestSuite
 
 			message.showMessage("Test Procedure", String.format("Step %d) If supported by DUT (support of "
 					+ "ICS ICSN_RichAudioUrl) and feasible, handle DUT to generate a "
-					+ "‘Notification’ message with ‘richAudioUrl’ field.", step++));
+					+ "ï¿½Notificationï¿½ message with ï¿½richAudioUrlï¿½ field.", step++));
 
 			response = message.showQuestion("Pass/Fail Criteria", String.format("Does %s receive a "
 					+ "Notification where richAudioUrl attribute (attrName = 1) is present "
@@ -371,11 +372,11 @@ public class NotificationIOPTestSuite
 		message.showMessage("Test Procedure", String.format("Step 3) Establish an AllJoyn connection "
 				+ "between %s and %s.", TBAD1, TBAD2));
 		message.showMessage("Test Procedure", String.format("Step 4) Command %s to send a warning "
-				+ "‘Notification’ message (Notification 1) with TTL configured "
+				+ "ï¿½Notificationï¿½ message (Notification 1) with TTL configured "
 				+ "for 10 minutes.", TBAD1));
 		message.showMessage("Test Procedure", "Step 5) Wait for 1 minute.");
 		message.showMessage("Test Procedure", String.format("Step 6) Command %s to send an emergency "
-				+ "‘Notification’ message (Notification 2) with TTL configured for "
+				+ "ï¿½Notificationï¿½ message (Notification 2) with TTL configured for "
 				+ "10 minutes.", TBAD1));
 		message.showMessage("Test Procedure", "Step 7) Wait for 1 minute.");
 		message.showMessage("Test Procedure", String.format("Step 8) Command %s to send a warning "
@@ -500,7 +501,7 @@ public class NotificationIOPTestSuite
 		
 		message.showMessage("Test Procedure", String.format("Step 4) Establish an AllJoyn connection between "
 				+ "the DUT %s, %s and %s.", TBAD1, TBAD2, TBAD3));
-		message.showMessage("Test Procedure", String.format("Step 5) Command %s to send an emergency ‘Notification’ message.", TBAD1));
+		message.showMessage("Test Procedure", String.format("Step 5) Command %s to send an emergency ï¿½Notificationï¿½ message.", TBAD1));
 		
 		int response = message.showQuestion("Pass/Fail Criteria", String.format("Does DUT receive Notification "
 				+ "message from %s with the correct language?", TBAD1));
@@ -512,7 +513,7 @@ public class NotificationIOPTestSuite
 		}
 
 		message.showMessage("Test Procedure", "Step 6) Wait for 1 minute.");
-		message.showMessage("Test Procedure", String.format("Step 7) Command %s to send an information ‘Notification’ message.", TBAD2));
+		message.showMessage("Test Procedure", String.format("Step 7) Command %s to send an information ï¿½Notificationï¿½ message.", TBAD2));
 		
 		response = message.showQuestion("Pass/Fail Criteria", String.format("Does DUT DUT receive Notification "
 				+ "message from %s with the correct language?", TBAD2));
@@ -524,7 +525,7 @@ public class NotificationIOPTestSuite
 		}
 
 		message.showMessage("Test Procedure", "Step 8) Wait for 1 minute.");
-		message.showMessage("Test Procedure", String.format("Step 9) Command %s to send a warning ‘Notification’ message.", TBAD3));
+		message.showMessage("Test Procedure", String.format("Step 9) Command %s to send a warning ï¿½Notificationï¿½ message.", TBAD3));
 		
 		response = message.showQuestion("Pass/Fail Criteria", String.format("Does DUT receives Notification "
 				+ "message from %s with the correct language?", TBAD3));
@@ -540,7 +541,7 @@ public class NotificationIOPTestSuite
 	{
 		String msg = "Step 1) The passcode for the DUT is set to the default passcode \"000000\""
 				+ "\nStep 2) The AllJoyn devices of the Test Bed used will register an AuthListener with the "
-				+ "AllJoyn framework that provides the default passcode (“000000”)\n when "
+				+ "AllJoyn framework that provides the default passcode (ï¿½000000ï¿½)\n when "
 				+ "authentication is requested (unless anything else is defined in a test case)."
 				+ "\nStep 3) The SSID of the soft access point (Soft AP) advertised by the DUT follows the "
 				+ "proper format such that it ends with the first seven digits of the deviceId."

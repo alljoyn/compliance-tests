@@ -283,12 +283,12 @@ public class NotificationValidator implements NotificationReceiver, Runnable
      * @param iCSN_RespObjectPath
      * @param iXITN_NotificationVersion
      */
-	public void setTestParameters(boolean iCSN_RichIconUrl ,boolean iCSN_RichAudioUrl,boolean iCSN_RespObjectPath, String iXITN_NotificationVersion)
+	public void setTestParameters(boolean iCSN_RichIconUrl ,boolean iCSN_RichAudioUrl,boolean iCSN_RespObjectPath, int iXITN_NotificationVersion)
 	{
 		ICSN_RichIconUrl=iCSN_RichIconUrl;
 		ICSN_RichAudioUrl=iCSN_RichAudioUrl;
 		ICSN_RespObjectPath=iCSN_RespObjectPath;
 		
-		IXITN_NotificationVersion=Integer.parseInt(iXITN_NotificationVersion);
+		IXITN_NotificationVersion=iXITN_NotificationVersion;
 	}
 }

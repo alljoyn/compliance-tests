@@ -40,6 +40,7 @@ import javax.swing.table.TableModel;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.iop.CategoryKeys;
 import com.at4wireless.alljoyn.core.iop.IOPMessage;
+import com.at4wireless.alljoyn.testcases.parameter.Ics;
 
 public class AudioIOPTestSuite
 {
@@ -55,10 +56,10 @@ public class AudioIOPTestSuite
 	String name = null;
 	IOPMessage message = new IOPMessage(logger);
 	
-	public AudioIOPTestSuite(String testCase, Map<String, List<String>> goldenUnits, boolean iCSON_OnboardingServiceFramework)
+	public AudioIOPTestSuite(String testCase, Map<String, List<String>> goldenUnits, Ics icsList)
 	{
 		this.goldenUnits = goldenUnits;
-		ICSON_OnboardingServiceFramework = iCSON_OnboardingServiceFramework;
+		ICSON_OnboardingServiceFramework = icsList.ICSON_OnboardingServiceFramework;
 		
 		try
 		{
@@ -205,7 +206,7 @@ public class AudioIOPTestSuite
 			message.showMessage("Test Procedure", String.format("Step %d a) Number of channels (Support "
 					+ "for 1 and 2 channels is mandatory).", step));
 			message.showMessage("Test Procedure", String.format("Step %d b) Sample formats (Support for "
-					+ "‘s16le’ is mandatory).", step));
+					+ "ï¿½s16leï¿½ is mandatory).", step));
 			message.showMessage("Test Procedure", String.format("Step %d c) Sample rate. (Support for "
 					+ "44100 and 48000 sample rates is mandatory).", step));
 			step++;
@@ -393,7 +394,7 @@ public class AudioIOPTestSuite
 					+ "an audio stream to be played, according to Preconditions 5, and "
 					+ "command %s to play the audio on the DUT \n and on all "
 					+ "the category 6.2 AllJoyn devices of the Test Bed (by calling "
-					+ "Audio Sink service ‘Connect’ method).", step, testBed, testBed));
+					+ "Audio Sink service ï¿½Connectï¿½ method).", step, testBed, testBed));
 			step++;
 			
 			response = message.showQuestion("Pass/Fail Criteria", String.format("Did Audio stream send by %s "
@@ -1026,7 +1027,7 @@ public class AudioIOPTestSuite
 					+ "be sent, according to Preconditions 5.", step));
 			message.showMessage("Test Procedure", String.format("Step %d c) Select on the DUT %s "
 					+ "Play option (or equivalent one to call %s Audio Sink "
-					+ "service 'Connect’ method).", step, testBed, testBed));
+					+ "service 'Connectï¿½ method).", step, testBed, testBed));
 			step++;
 			
 			response = message.showQuestion("Pass/Fail Criteria", String.format("Did audio stream send by DUT "
@@ -1107,7 +1108,7 @@ public class AudioIOPTestSuite
 		message.showMessage("Test Procedure", String.format("Step 6) Operate %s to select an audio stream "
 				+ "to be played, according to Preconditions 5, and command DUT to play \n the "
 				+ "audio on all the category 6.2 AllJoyn devices of the Test Bed "
-				+ "(by calling Audio Sink service ‘Connect’ method).", testBed));
+				+ "(by calling Audio Sink service ï¿½Connectï¿½ method).", testBed));
 		
 		response = message.showQuestion("Pass/Fail Criteria", "Did audio stream send by DUT plays "
 				+ "synchronized in all category 6.2 Golden Units?");
@@ -1599,7 +1600,7 @@ public class AudioIOPTestSuite
 	{
 		String msg = "Step 1) The passcode for the DUT is set to the default passcode \"000000\""
 				+ "\nStep 2) The AllJoyn devices of the Test Bed used will register an AuthListener with the "
-				+ "AllJoyn framework that provides the default passcode (“000000”)\n when "
+				+ "AllJoyn framework that provides the default passcode (ï¿½000000ï¿½)\n when "
 				+ "authentication is requested (unless anything else is defined in a test case)."
 				+ "\nStep 3) The SSID of the soft access point (Soft AP) advertised by the DUT follows the "
 				+ "proper format such that it ends with the first seven digits of the deviceId."

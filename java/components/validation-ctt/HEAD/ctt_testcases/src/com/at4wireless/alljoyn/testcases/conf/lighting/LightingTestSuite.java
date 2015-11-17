@@ -51,6 +51,9 @@ import com.at4wireless.alljoyn.core.lighting.LampParametersBusInterface;
 import com.at4wireless.alljoyn.core.lighting.LampParametersBusObject;
 import com.at4wireless.alljoyn.core.lighting.LampServiceBusInterface;
 import com.at4wireless.alljoyn.core.lighting.LampServiceBusInterface.Values;
+import com.at4wireless.alljoyn.testcases.parameter.GeneralParameter;
+import com.at4wireless.alljoyn.testcases.parameter.Ics;
+import com.at4wireless.alljoyn.testcases.parameter.Ixit;
 import com.at4wireless.alljoyn.core.lighting.LampServiceBusObject;
 import com.at4wireless.alljoyn.core.lighting.LampStateBusInterface;
 import com.at4wireless.alljoyn.core.lighting.LampStateBusObject;
@@ -120,45 +123,16 @@ public class LightingTestSuite
 	 * */
 	boolean pass = true;
 	boolean inconc = false;
-	Map<String, Boolean> ics;
-	Map<String, String> ixit;
+	private Ics icsList;
+	private Ixit ixitList;
 
-	public LightingTestSuite(String testCase,
-			boolean iCSL_LightingServiceFramework,
-			boolean iCSL_LampServiceInterface,
-			boolean iCSL_LampParametersInterface,
-			boolean iCSL_LampDetailsInterface, boolean iCSL_Dimmable,
-			boolean iCSL_Color, boolean iCSL_ColorTemperature,
-			boolean iCSL_Effects, boolean iCSL_LampStateInterface,
-			String iXITCO_AppId, String iXITCO_DeviceId,
-			String iXITCO_DefaultLanguage, String iXITL_LampServiceVersion,
-			String iXITL_LampParametersVersion,
-			String iXITL_LampDetailsVersion, String iXITL_LampStateVersion,
-			String gPCO_AnnouncementTimeout, String gPL_SessionClose)
+	public LightingTestSuite(String testCase, Ics icsList, Ixit ixitList, GeneralParameter gpList)
 	{
-		ics = new HashMap<String, Boolean>();
-		ixit = new HashMap<String, String>();
-
-		ics.put("ICSL_LightingServiceFramework", iCSL_LightingServiceFramework);
-		ics.put("ICSL_LampServiceInterface", iCSL_LampServiceInterface);
-		ics.put("ICSL_LampParametersInterface", iCSL_LampParametersInterface);
-		ics.put("ICSL_LampDetailsInterface", iCSL_LampDetailsInterface);
-		ics.put("ICSL_Dimmable", iCSL_Dimmable);
-		ics.put("ICSL_Color", iCSL_Color);
-		ics.put("ICSL_ColorTemperature", iCSL_ColorTemperature);
-		ics.put("ICSL_Effects", iCSL_Effects);
-		ics.put("ICSL_LampStateInterface", iCSL_LampStateInterface);
+		this.icsList = icsList;
+		this.ixitList = ixitList;
 		
-		ixit.put("IXITCO_AppId", iXITCO_AppId);
-		ixit.put("IXITCO_DeviceId", iXITCO_DeviceId);
-		ixit.put("IXITCO_DefaultLanguage", iXITCO_DefaultLanguage);
-		ixit.put("IXITL_LampServiceVersion", iXITL_LampServiceVersion);
-		ixit.put("IXITL_LampParametersVersion", iXITL_LampParametersVersion);
-		ixit.put("IXITL_LampDetailsVersion", iXITL_LampDetailsVersion);
-		ixit.put("IXITL_LampStateVersion", iXITL_LampStateVersion);
-		
-		ANNOUCEMENT_TIMEOUT_IN_SECONDS = Integer.parseInt(gPCO_AnnouncementTimeout);
-		SESSION_CLOSE_TIMEOUT_IN_SECONDS = Integer.parseInt(gPL_SessionClose);
+		ANNOUCEMENT_TIMEOUT_IN_SECONDS = gpList.GPCO_AnnouncementTimeout;
+		SESSION_CLOSE_TIMEOUT_IN_SECONDS = gpList.GPL_SessionClose;
 
 		try
 		{
@@ -166,165 +140,173 @@ public class LightingTestSuite
 		}
 		catch (Exception e)
 		{
-			if (e != null)
-			{
-				if (e.getMessage().equals("Timed out waiting for About announcement"))
-				{
-					fail("Timed out waiting for About announcement");
-				}
-				else
-				{
-					inconc = true;
-					fail("Exception: "+e.toString());
-				}
-			}
+			inconc = true;
 		}
 	}
 
 	public void runTestCase(String testCase) throws Exception
 	{
 		setUp();
-		logger.info("Running testcase: "+testCase);
 		
-		if (testCase.equals("LSF_Lamp-v1-01"))
+		try
 		{
-			testLSF_Lamp_v1_01_InterfaceVersion();			
+			logger.info("Running testcase: "+testCase);
+			
+			if (testCase.equals("LSF_Lamp-v1-01"))
+			{
+				testLSF_Lamp_v1_01_InterfaceVersion();			
+			}
+			else if (testCase.equals("LSF_Lamp-v1-02"))
+			{
+				testLSF_Lamp_v1_02_ServiceVersion();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-03"))
+			{
+				testLSF_Lamp_v1_03_ClearLampFault();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-04"))
+			{
+				testLSF_Lamp_v1_04_SetOnOff();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-05"))
+			{
+				testLSF_Lamp_v1_05_SetHue();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-06"))
+			{
+				testLSF_Lamp_v1_06_SetSaturation();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-07"))
+			{
+				testLSF_Lamp_v1_07_SetColorTemp();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-08"))
+			{
+				testLSF_Lamp_v1_08_SetBrightness();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-09"))
+			{
+				testLSF_Lamp_v1_09_TransitionLampState();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-10"))
+			{
+				testLSF_Lamp_v1_10_ApplyPulseEffect();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-11"))
+			{
+				testLSF_Lamp_v1_11_StandardizedInterfacesMatchDefinitions();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-12"))
+			{
+				testLSF_Lamp_v1_12_ParametersInterfaceVersion();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-13"))
+			{
+				testLSF_Lamp_v1_13_GetEnergy_Usage_Milliwatts();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-14"))
+			{
+				testLSF_Lamp_v1_14_GetBrightness_Lumens();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-15"))
+			{
+				testLSF_Lamp_v1_15_GetInterfaceVersion();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-16"))
+			{
+				testLSF_Lamp_v1_16_GetMake();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-17"))
+			{
+				testLSF_Lamp_v1_17_GetModel();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-18"))
+			{
+				testLSF_Lamp_v1_18_GetType();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-19"))
+			{
+				testLSF_Lamp_v1_19_GetLampType();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-20"))
+			{
+				testLSF_Lamp_v1_20_GetLampBaseType();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-21"))
+			{
+				testLSF_Lamp_v1_21_GetLampBeamAngle();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-22"))
+			{
+				testLSF_Lamp_v1_22_GetDimmable();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-23"))
+			{
+				testLSF_Lamp_v1_23_GetColor();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-24"))
+			{
+				testLSF_Lamp_v1_24_GetVariableColorTemp();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-25"))
+			{
+				testLSF_Lamp_v1_25_GetLampID();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-26"))
+			{
+				testLSF_Lamp_v1_26_GetHasEffects();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-27"))
+			{
+				testLSF_Lamp_v1_27_GetMinVoltage();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-28"))
+			{
+				testLSF_Lamp_v1_28_GetMaxVoltage();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-29"))
+			{
+				testLSF_Lamp_v1_29_GetWattage();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-30"))
+			{
+				testLSF_Lamp_v1_30_GetIncandescentEquivalent();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-31"))
+			{
+				testLSF_Lamp_v1_31_GetMaxLumens();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-32"))
+			{
+				testLSF_Lamp_v1_32_GetMinTemperature();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-33"))
+			{
+				testLSF_Lamp_v1_33_GetMaxTemperature();
+			}
+			else if (testCase.equals("LSF_Lamp-v1-34"))
+			{
+				testLSF_Lamp_v1_34_GetColorRenderingIndex();
+			}
+			else
+			{
+				fail("Test Case not valid");
+			}
 		}
-		else if (testCase.equals("LSF_Lamp-v1-02"))
+		catch (Exception exception)
 		{
-			testLSF_Lamp_v1_02_ServiceVersion();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-03"))
-		{
-			testLSF_Lamp_v1_03_ClearLampFault();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-04"))
-		{
-			testLSF_Lamp_v1_04_SetOnOff();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-05"))
-		{
-			testLSF_Lamp_v1_05_SetHue();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-06"))
-		{
-			testLSF_Lamp_v1_06_SetSaturation();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-07"))
-		{
-			testLSF_Lamp_v1_07_SetColorTemp();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-08"))
-		{
-			testLSF_Lamp_v1_08_SetBrightness();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-09"))
-		{
-			testLSF_Lamp_v1_09_TransitionLampState();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-10"))
-		{
-			testLSF_Lamp_v1_10_ApplyPulseEffect();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-11"))
-		{
-			testLSF_Lamp_v1_11_StandardizedInterfacesMatchDefinitions();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-12"))
-		{
-			testLSF_Lamp_v1_12_ParametersInterfaceVersion();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-13"))
-		{
-			testLSF_Lamp_v1_13_GetEnergy_Usage_Milliwatts();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-14"))
-		{
-			testLSF_Lamp_v1_14_GetBrightness_Lumens();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-15"))
-		{
-			testLSF_Lamp_v1_15_GetInterfaceVersion();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-16"))
-		{
-			testLSF_Lamp_v1_16_GetMake();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-17"))
-		{
-			testLSF_Lamp_v1_17_GetModel();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-18"))
-		{
-			testLSF_Lamp_v1_18_GetType();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-19"))
-		{
-			testLSF_Lamp_v1_19_GetLampType();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-20"))
-		{
-			testLSF_Lamp_v1_20_GetLampBaseType();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-21"))
-		{
-			testLSF_Lamp_v1_21_GetLampBeamAngle();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-22"))
-		{
-			testLSF_Lamp_v1_22_GetDimmable();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-23"))
-		{
-			testLSF_Lamp_v1_23_GetColor();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-24"))
-		{
-			testLSF_Lamp_v1_24_GetVariableColorTemp();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-25"))
-		{
-			testLSF_Lamp_v1_25_GetLampID();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-26"))
-		{
-			testLSF_Lamp_v1_26_GetHasEffects();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-27"))
-		{
-			testLSF_Lamp_v1_27_GetMinVoltage();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-28"))
-		{
-			testLSF_Lamp_v1_28_GetMaxVoltage();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-29"))
-		{
-			testLSF_Lamp_v1_29_GetWattage();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-30"))
-		{
-			testLSF_Lamp_v1_30_GetIncandescentEquivalent();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-31"))
-		{
-			testLSF_Lamp_v1_31_GetMaxLumens();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-32"))
-		{
-			testLSF_Lamp_v1_32_GetMinTemperature();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-33"))
-		{
-			testLSF_Lamp_v1_33_GetMaxTemperature();
-		}
-		else if (testCase.equals("LSF_Lamp-v1-34"))
-		{
-			testLSF_Lamp_v1_34_GetColorRenderingIndex();
-		}
-		else
-		{
-			fail("Test Case not valid");
+			logger.error("Exception executing Test Case: %s", exception.getMessage()); //[AT4]
+			
+			try 
+			{
+				tearDown();
+			} 
+			catch (Exception newException) 
+			{
+				logger.error("Exception releasing resources: %s", newException.getMessage());
+			}
+			
+			throw exception;
 		}
 
 		tearDown();
@@ -340,10 +322,10 @@ public class LightingTestSuite
 		{
 			//appUnderTestDetails = getValidationTestContext().getAppUnderTestDetails();
 			//dutDeviceId = appUnderTestDetails.getDeviceId();
-			dutDeviceId = ixit.get("IXITCO_DeviceId");
+			dutDeviceId = ixitList.IXITCO_DeviceId;
 			logger.info(String.format("Running LSF_Lamp test case against Device ID: %s", dutDeviceId));
 			//dutAppId = appUnderTestDetails.getAppId();
-			dutAppId = UUID.fromString(ixit.get("IXITCO_AppId"));
+			dutAppId = ixitList.IXITCO_AppId;
 			logger.info(String.format("Running LSF_Lamp test case against App ID: %s", dutAppId));
 			
 			//lampObjectPath = getValidationTestContext().getTestObjectPath();
@@ -533,7 +515,7 @@ public class LightingTestSuite
 		}
 		
 		logger.info("Checking if Interface version matches IXIT");
-		assertEquals("LSF_Lamp service interface version does not match", Integer.parseInt(ixit.get("IXITL_LampServiceVersion")), interfaceVersion);
+		assertEquals("LSF_Lamp service interface version does not match", ixitList.IXITL_LampServiceVersion, interfaceVersion);
 	}
 
 	public void testLSF_Lamp_v1_02_ServiceVersion() throws Exception
@@ -557,7 +539,7 @@ public class LightingTestSuite
 		}
 		
 		logger.info("Checking LampService version matches IXIT");
-		assertEquals("LSF_Lamp service version does not match", Integer.parseInt(ixit.get("IXITL_LampServiceVersion")), lampServiceVersion);
+		assertEquals("LSF_Lamp service version does not match", ixitList.IXITL_LampServiceVersion, lampServiceVersion);
 	}
 
 	public void testLSF_Lamp_v1_03_ClearLampFault() throws Exception
@@ -973,7 +955,7 @@ public class LightingTestSuite
 		}
 		
 		logger.info("Checking if LampParameters interface version matches IXIT");
-		assertEquals("LSF_Lamp parameters interface version does not match",Integer.parseInt(ixit.get("IXITL_LampParametersVersion")) , interfaceVersion);
+		assertEquals("LSF_Lamp parameters interface version does not match", ixitList.IXITL_LampParametersVersion, interfaceVersion);
 	}
 
 	public void testLSF_Lamp_v1_13_GetEnergy_Usage_Milliwatts() throws Exception
@@ -1037,7 +1019,7 @@ public class LightingTestSuite
 			fail("Exception caught while trying to get details interface version");
 		}
 		logger.info("Checking if LampDetails interface version matches IXIT");
-		assertEquals("LSF_Lamp details interface version does not match", Integer.parseInt(ixit.get("IXITL_LampDetailsVersion")), interfaceVersion);
+		assertEquals("LSF_Lamp details interface version does not match", ixitList.IXITL_LampDetailsVersion, interfaceVersion);
 	}
 
 	public void testLSF_Lamp_v1_16_GetMake() throws Exception

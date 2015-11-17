@@ -56,7 +56,9 @@ import org.xml.sax.SAXException;
 import com.at4wireless.alljoyn.core.about.AboutAnnouncementDetails;
 import com.at4wireless.alljoyn.core.about.EvAcIntrospectionNode;
 import com.at4wireless.alljoyn.core.audio.MediaType;
+import com.at4wireless.alljoyn.core.commons.CommonUtils;
 import com.at4wireless.alljoyn.core.commons.ServiceHelper;
+import com.at4wireless.alljoyn.core.commons.log.Logger;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.interfacevalidator.InterfaceValidator;
 import com.at4wireless.alljoyn.core.interfacevalidator.ValidationResult;
@@ -65,6 +67,9 @@ import com.at4wireless.alljoyn.core.introspection.bean.InterfaceDetail;
 import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionInterface;
 import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionNode;
 import com.at4wireless.alljoyn.core.introspection.bean.NodeDetail;
+import com.at4wireless.alljoyn.testcases.parameter.GeneralParameter;
+import com.at4wireless.alljoyn.testcases.parameter.Ics;
+import com.at4wireless.alljoyn.testcases.parameter.Ixit;
 
 /**
  * Manages execution of Core Test Cases
@@ -72,22 +77,18 @@ import com.at4wireless.alljoyn.core.introspection.bean.NodeDetail;
 public class AboutTestSuite
 { 
 	private static final String INTROSPECTABLE_INTERFACE_NAME = "org.allseen.Introspectable";
-	protected static final String TAG = "AboutTestSuite";
-	private static final WindowsLoggerImpl logger =  new WindowsLoggerImpl(TAG);
+	private static final Logger logger =  new WindowsLoggerImpl(AboutTestSuite.class.getSimpleName());
 	private static final String BUS_APPLICATION_NAME = "AboutTestSuite";
 	private static final String ERROR_MSG_BUS_INTROSPECTION = "Encountered exception while trying to introspect the bus";
 	private static final String DBUS_ERROR_SERVICE_UNKNOWN = "org.freedesktop.DBus.Error.ServiceUnknown";
 	private String defaultLanguage;
-	//private AboutClient aboutClient; //[AT4] AboutClient is deprecated
 	private AboutProxy aboutProxy;
-	//private AboutIconClient aboutIconClient; //[AT4] AboutIconClient is deprecated
 	private AboutIconProxy aboutIconProxy;
 	protected AboutAnnouncementDetails deviceAboutAnnouncement;
-	private  ServiceHelper serviceHelper;
-	private  SimpleDateFormat simpleDateFormat;
-	private  final String DATE_FORMAT = "yyyy-MM-dd";
+	private ServiceHelper serviceHelper;
+	private SimpleDateFormat simpleDateFormat;
+	private final String DATE_FORMAT = "yyyy-MM-dd";
 
-	//private AppUnderTestDetails appUnderTestDetails; //[AT4] Not needed
 	private UUID dutAppId;
 	private String dutDeviceId;
 	
@@ -96,14 +97,12 @@ public class AboutTestSuite
      * INTROSPECTION_XML_DESC_PLACEHOLDER
      */
 	private static final String INTROSPECTION_XML_DESC_REGEX = "<description.*?>.*?</description>";
-	//private static final String INTROSPECTION_XML_DESC_REGEX = "(<description>).*(</description>.*)";
 	
 	/**
      * This placeholder is used to change the description tags in the
      * introspected XML
      */
     private static final String INTROSPECTION_XML_DESC_PLACEHOLDER = "<description></description>";
-	//private static final String INTROSPECTION_XML_DESC_PLACEHOLDER   = "$1$2";
 	
 	/**
      * The expected result after the introspection XML will be modified as a
@@ -111,12 +110,10 @@ public class AboutTestSuite
      * {@link EventsActionsTestSuite#INTROSPECTION_XML_DESC_REGEX}
      */
     private static final String INTROSPECTION_XML_DESC_EXPECTED = "<description></description>";
-    //private static final String INTROSPECTION_XML_DESC_EXPECTED      = "<description></description>";
     
     /**
      * Announcement time out
      */
-    //private static long ANNOUCEMENT_TIMEOUT_IN_SECONDS = 60; //[AT4] Changed "ANNOUCEMENT" to "ANNOUNCEMENT"
     private static long ANNOUNCEMENT_TIMEOUT_IN_SECONDS = 60;
 	
 	/** 
@@ -127,74 +124,36 @@ public class AboutTestSuite
 	 * ixit	map that stores IXIT values
 	 * 
 	 * */
-	
-	private Map<String, Boolean> ics;
-	private Map<String, String> ixit;
-	private boolean pass = true;
+    private boolean pass = true;
 	private boolean inconcluse = false;
+	private Ics icsList;
+	private Ixit ixitList;
 
-	public AboutTestSuite(String testCase,
-			boolean iCSCO_DateOfManufacture, boolean iCSCO_HardwareVersion,
-			boolean iCSCO_SupportUrl, boolean iCSCO_IconInterface, boolean iCSCO_DeviceName,
-			String iXITCO_AboutVersion, String iXITCO_AppId,
-			String iXITCO_DefaultLanguage, String iXITCO_DeviceName,
-			String iXITCO_DeviceId, String iXITCO_AppName,
-			String iXITCO_Manufacturer, String iXITCO_ModelNumber,
-			String iXITCO_SoftwareVersion,String iXITCO_AJSoftwareVersion, String iXITCO_HardwareVersion,
-			String iXITCO_IntrospectableVersion, String iXITCO_SupportedLanguages,
-			String iXITCO_Description, String iXITCO_DateOfManufacture,
-			String iXITCO_SupportUrl, String gPCO_AnnouncementTimeout)
+	public AboutTestSuite(String testCase, Ics icsList, Ixit ixitList, GeneralParameter gpList)
 	{
 		/** 
 		 * [AT4] Attributes initialization
-		 * */
-		
-		ics = new HashMap<String,Boolean>();
-		ixit = new HashMap<String,String>();
+		 * */	
+		this.icsList = icsList;
+		this.ixitList = ixitList;
 
-		ics.put("ICSCO_DateOfManufacture", iCSCO_DateOfManufacture);
-		ics.put("ICSCO_HardwareVersion", iCSCO_HardwareVersion);
-		ics.put("ICSCO_SupportUrl", iCSCO_SupportUrl);
-		ics.put("ICSCO_IconInterface", iCSCO_IconInterface);
-		ics.put("ICSCO_DeviceName", iCSCO_DeviceName);
+		ANNOUNCEMENT_TIMEOUT_IN_SECONDS = gpList.GPCO_AnnouncementTimeout;
 
-		ixit.put("IXITCO_AboutVersion", iXITCO_AboutVersion);
-		ixit.put("IXITCO_AppId", iXITCO_AppId);
-		ixit.put("IXITCO_DefaultLanguage", iXITCO_DefaultLanguage);
-		ixit.put("IXITCO_DeviceName", iXITCO_DeviceName);
-		ixit.put("IXITCO_DeviceId", iXITCO_DeviceId);
-		ixit.put("IXITCO_AppName", iXITCO_AppName);
-		ixit.put("IXITCO_Manufacturer", iXITCO_Manufacturer);
-		ixit.put("IXITCO_ModelNumber", iXITCO_ModelNumber);
-		ixit.put("IXITCO_SoftwareVersion", iXITCO_SoftwareVersion);
-		ixit.put("IXITCO_AJSoftwareVersion", iXITCO_AJSoftwareVersion);
-		ixit.put("IXITCO_HardwareVersion", iXITCO_HardwareVersion);
-		ixit.put("IXITCO_IntrospectableVersion", iXITCO_IntrospectableVersion);
-		ixit.put("IXITCO_SupportedLanguages", iXITCO_SupportedLanguages);
-		ixit.put("IXITCO_Description", iXITCO_Description);
-		ixit.put("IXITCO_DateOfManufacture", iXITCO_DateOfManufacture);
-		ixit.put("IXITCO_SupportUrl", iXITCO_SupportUrl);
-
-		ANNOUNCEMENT_TIMEOUT_IN_SECONDS = Integer.parseInt(gPCO_AnnouncementTimeout);
-
-		try {
+		try
+		{
 			runTestCase(testCase);
-		} catch(Exception e) {
-			/*if (e.getMessage().equals("Timed out waiting for About announcement")) {
-				//fail("Timed out waiting for About announcement");
-			} else {*/
-				String errorMsg = "Exception: "+e.toString();
-				logger.error(errorMsg);
-				//fail(errorMsg);
-			//}
-			inconcluse=true;
+		}
+		catch (Exception e)
+		{
+			logger.error("Exception: ", e);
+			inconcluse = true;
 		}
 	}
 
 	public void runTestCase(String test) throws Exception
 	{
 		setUp();
-		logger.info("Running testcase: "+test);
+		logger.info("Running testcase: %s", test);
 		
 		if (test.equals("About-v1-01"))
 		{
@@ -254,37 +213,29 @@ public class AboutTestSuite
 
 	protected void setUp() throws Exception
 	{
-		logger.noTag("====================================================");
+		logger.raw("====================================================");
 		logger.info("test setUp started");
 		try 
 		{
-			//appUnderTestDetails = getValidationTestContext().getAppUnderTestDetails();
-			//dutDeviceId = appUnderTestDetails.getDeviceId();
-			dutDeviceId = ixit.get("IXITCO_DeviceId"); //[AT4]
+			dutDeviceId = ixitList.IXITCO_DeviceId; //[AT4]
 			logger.info(String.format("Running About test case against Device ID: %s", dutDeviceId));
-			//dutAppId = appUnderTestDetails.getAppId();
-			dutAppId = UUID.fromString(ixit.get("IXITCO_AppId")); //[AT4]
+			dutAppId = ixitList.IXITCO_AppId; //[AT4]
 			logger.info(String.format("Running About test case against App ID: %s", dutAppId));
 			
 			serviceHelper = getServiceHelper();
 			serviceHelper.initialize(BUS_APPLICATION_NAME, dutDeviceId, dutAppId);
 
 			deviceAboutAnnouncement = serviceHelper.waitForNextDeviceAnnouncement(ANNOUNCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
-			//assertNotNull("Timed out waiting for About Announcement", deviceAboutAnnouncement); //[AT4] Uncomment and delete if
+
 			if (deviceAboutAnnouncement == null)
 			{
 				throw new Exception("Timed out waiting for About announcement");
 			}	
 			
-			logger.info("Partial Verdict: PASS"); //[AT4]
+			logger.info("Partial Verdict: PASS");
 			
-			defaultLanguage = ixit.get("IXITCO_DefaultLanguage");
-			//aboutClient = serviceHelper.connectAboutClient(deviceAboutAnnouncement);
-			//aboutIconClient = serviceHelper.connectAboutIconClient(deviceAboutAnnouncement);
-			//aboutProxy = serviceHelper.connectAboutProxy(deviceAboutAnnouncement); [AT4] Changed to connect on each test case. Other option is put a condition to avoid About-v1-01
-			//aboutIconProxy = serviceHelper.connectAboutIconProxy(deviceAboutAnnouncement);
-			
-			//logger.info("Session established");
+			defaultLanguage = ixitList.IXITCO_DefaultLanguage;
+
 			logger.info("test setUp done");
 		}
 		catch (Exception exception)
@@ -292,7 +243,6 @@ public class AboutTestSuite
 			logger.error("Exception setting up resources: "+ exception.getMessage()); //[AT4]
 			try 
 			{
-				//releaseResources(); //[AT4]
 				tearDown();
 			} 
 			catch (Exception newException) 
@@ -303,40 +253,34 @@ public class AboutTestSuite
 			throw exception;
 		}
 		
-		logger.noTag("====================================================");
+		logger.raw("====================================================");
 	}
 
 	protected void tearDown() throws Exception
 	{
-		//super.tearDown();
-		logger.noTag("====================================================");
+		logger.raw("====================================================");
 		logger.info("test tearDown started");
 		
 		releaseResources();
 		
 		logger.info("test tearDown done");
-		logger.noTag("====================================================");
+		logger.raw("====================================================");
 	}
 
 	public void testAbout_v1_01_AboutAnnouncement() throws Exception
 	{	
 		logger.info("Testing if version matches IXITCO_AboutVersion");
 
-		if (Integer.parseInt(ixit.get("IXITCO_AboutVersion"))!=deviceAboutAnnouncement.getVersion())
+		if (ixitList.IXITCO_AboutVersion != deviceAboutAnnouncement.getVersion())
 		{
-			fail("About version does not match: "+deviceAboutAnnouncement.getVersion()+" is not equal to "+Integer.parseInt(ixit.get("IXITCO_AboutVersion")));
+			fail(String.format("About version does not match: %s is not equal to %s", deviceAboutAnnouncement.getVersion(), 
+					ixitList.IXITCO_AboutVersion));
 		}
 		else
 		{
-			logger.info("About version matches IXITCO_AboutVersion: "+Integer.parseInt(ixit.get("IXITCO_AboutVersion")) );
+			logger.info("About version matches IXITCO_AboutVersion: %s", ixitList.IXITCO_AboutVersion);
 			logger.info("Partial Verdict: PASS");
 		} //[AT4] Checks if IXIT interface version is equal to device interface version
-
-		/*String aboutPath = getAboutInterfacePathFromAnnouncement();
-		logger.info("Testing if About interface is present in announcement");
-		assertNotNull("About interface not present in announcement", aboutPath);
-		logger.info("Testing if About interface is present at the right path");
-		assertEquals("About interface present at the wrong path", About.OBJ_PATH, aboutPath);*/
 
 		validatePathIfAboutInterfacePresentInAnnouncement(); //[AT4]
 		verifyAboutData(deviceAboutAnnouncement.getAboutData());
@@ -348,20 +292,17 @@ public class AboutTestSuite
 	{
 		aboutProxy = serviceHelper.connectAboutProxy(deviceAboutAnnouncement);
 
-		logger.info("Verifying that the Version property retrieved from the application's About bus"
-				+ " object matches the version parameter in its About announcement");
+		logger.info("Verifying that the Version property retrieved from the application's About bus object matches the version parameter in its About announcement");
 
 		if (aboutProxy.getVersion() != deviceAboutAnnouncement.getVersion())
 		{
-			fail("About version does not match: "+deviceAboutAnnouncement.getVersion()+" is not equal to "+ aboutProxy.getVersion());
+			fail(String.format("About version does not match: %s is not equal to %s", deviceAboutAnnouncement.getVersion(), aboutProxy.getVersion()));
 		}
 		else
 		{
 			logger.info("About version parameter matches Version property");
 			logger.info("Partial Verdict: PASS");
 		}
-		
-		//assertEquals("About version does not match", 1, aboutClient.getVersion()); //[AT4] Wrong, aboutProxy version has to be retrieved
 	}
 
 	public void testAbout_v1_03_GetObjectDescription() throws Exception
@@ -370,17 +311,15 @@ public class AboutTestSuite
 
 		Map<String, String[]> aboutObjectDescriptionMap = new HashMap<String, String[]>();
 		Map<String, String[]> announcementObjectDescriptionMap = new HashMap<String, String[]>();
-		populateMap(deviceAboutAnnouncement.getObjectDescriptions(), announcementObjectDescriptionMap);
-		//populateMap(aboutClient.getBusObjectDescriptions(), aboutObjectDescriptionMap);
+		
+		populateMap(deviceAboutAnnouncement.getObjectDescriptions(), announcementObjectDescriptionMap);;
 		populateMap(aboutProxy.getObjectDescription(), aboutObjectDescriptionMap);
-		/*assertEquals("GetObjectDescription does not contain the same set of paths as the announcement", aboutObjectDescriptionMap.keySet(),
-				announcementObjectDescriptionMap.keySet());*/
 		
 		Set<String> aboutSet = aboutObjectDescriptionMap.keySet();
 		Set<String> announceSet = announcementObjectDescriptionMap.keySet();
 
-		logger.info("About: "+aboutSet);
-		logger.info("Announce: "+announceSet);
+		logger.debug("About: %s", aboutSet);
+		logger.debug("Announce: %s", announceSet);
 
 		if(!aboutSet.equals(announceSet))
 		{
@@ -394,14 +333,13 @@ public class AboutTestSuite
 
 		for (String key : aboutObjectDescriptionMap.keySet())
 		{
-			//assertTrue("GetObjectDescription not consistent for "+key, Arrays.equals(aboutObjectDescriptionMap.get(key), announcementObjectDescriptionMap.get(key)));
 			if (!Arrays.equals(aboutObjectDescriptionMap.get(key), announcementObjectDescriptionMap.get(key)))
 			{
-				fail("GetObjectDescription not consistent for " + key);
+				fail(String.format("GetObjectDescription not consistent for %s", key));
 			}
 			else
 			{
-				logger.info("GetObjectDescription is consistent for " + key);
+				logger.info(String.format("GetObjectDescription is consistent for %s", key));
 				logger.info("Partial Verdict: PASS");
 			}
 		}
@@ -429,16 +367,14 @@ public class AboutTestSuite
 
 			if (!pathAndInterfaces[1].equals(INTROSPECTABLE_INTERFACE_NAME))
 			{
-				String errorMessage = new StringBuilder("AboutAnnouncement advertises interface ").append(pathAndInterfaces[1]).append(" at path ").append(pathAndInterfaces[0])
-						.append(", but bus does not contain such interface at that path.").toString();
-				//assertTrue(errorMessage, busIntrospectPathInterfaceSet.contains(announcementKey));
 				if (!busIntrospectPathInterfaceSet.contains(announcementKey))
 				{
-					fail(errorMessage);
+					fail(String.format("AboutAnnouncement advertises interface %s at path %s, but does not contain such interface at that path",
+							pathAndInterfaces[1], pathAndInterfaces[0]));
 				}
 				else
 				{
-					logger.info("Interface "+pathAndInterfaces[1]+" found at path "+pathAndInterfaces[0]);
+					logger.info(String.format("Interface %s found at path %s", pathAndInterfaces[1], pathAndInterfaces[0]));
 					logger.info("Partial Verdict: PASS");
 				}
 			}
@@ -486,33 +422,13 @@ public class AboutTestSuite
 	{
 		aboutProxy = serviceHelper.connectAboutProxy(deviceAboutAnnouncement);
 
-		//logger.info("Calling getAbout on About interface with lanuage: " + defaultLanguage);
-		logger.info("Calling getAboutData on About interface with language: " + defaultLanguage);
-		//Map<String, Object> aboutMap = aboutClient.getAbout(defaultLanguage);
+		logger.info("Calling getAboutData on About interface with language %s", defaultLanguage);
+
 		Map<String, Variant> aboutMap = aboutProxy.getAboutData(defaultLanguage);
 		
-		/*String lang= defaultLanguage;
-
-		aboutProxy = serviceHelper.connectAboutProxy(deviceAboutAnnouncement);
-
-		logger.info("Calling getAboutData");
-
-		Map<String, Variant> aboutData = null;
-
-		try {
-
-			aboutData = aboutProxy.getAboutData(lang);
-
-		} catch (BusException e) {
-
-			fail("Unexpected BusException :"+e.toString());
-
-			return;
-		}*/	
 		logger.info("Partial Verdict: PASS");
-
 		logger.info("Checking that all required fields are present");
-		//verifyAboutMap(aboutData, lang);
+		
 		verifyAboutMap(aboutMap, defaultLanguage);
 	}
 
@@ -520,36 +436,18 @@ public class AboutTestSuite
 	{
 		aboutProxy = serviceHelper.connectAboutProxy(deviceAboutAnnouncement);
 
-		//logger.info("Calling getAbout on About interface with language " + defaultLanguage);
-		logger.info("Calling getAboutData on About interface with language " + defaultLanguage);
-		//Map<String, Object> aboutMapDefaultLanguage = aboutClient.getAbout(defaultLanguage);
+		logger.info("Calling getAboutData on About interface with language %s", defaultLanguage);
+
 		Map<String, Variant> aboutMapDefaultLanguage = aboutProxy.getAboutData(defaultLanguage);
-		/*aboutProxy = serviceHelper.connectAboutProxy(deviceAboutAnnouncement);
-
-		logger.info("Calling getAboutData");
-
-		Map<String, Variant> aboutMapDefaultLanguage = null;
-
-		try {
-
-			aboutMapDefaultLanguage = aboutProxy.getAboutData(defaultLanguage);
-
-		} catch (BusException e) {
-
-			fail("Unexpected BusException :"+e.toString());
-			return;
-		}*/
 
 		logger.info("Partial Verdict: PASS");
 
-		//String[] supportedLanguages = (String[]) aboutMapDefaultLanguage.get(AboutKeys.ABOUT_SUPPORTED_LANGUAGES);
 		String[] supportedLanguages =  aboutMapDefaultLanguage.get(AboutKeys.ABOUT_SUPPORTED_LANGUAGES).getObject(String[].class);
 		validateSupportedLanguagesContainsDefaultLanguage(supportedLanguages);
 
 		if (supportedLanguages.length == 1)
 		{
-			//getValidationTestContext().addNote("Device only supports one language");
-			logger.addNote("Device only supports one language");
+			logger.info("Device only supports one language");
 		}
 		else
 		{
@@ -561,26 +459,10 @@ public class AboutTestSuite
 	{
 		aboutProxy = serviceHelper.connectAboutProxy(deviceAboutAnnouncement);
 
-		/*Map<String, Variant> aboutMapDefaultLanguage = null;
-		Map<String, Variant> aboutMapNoLanguage = null;*/
-
-		//logger.info("Calling getAbout on About interface");
 		logger.info("Calling getAboutData on About Interface");
-		/*Map<String, Object> aboutMapDefaultLanguage = aboutClient.getAbout(defaultLanguage);
-        Map<String, Object> aboutMapNoLanguage = aboutClient.getAbout("");*/
+
 		Map<String, Variant> aboutMapDefaultLanguage = aboutProxy.getAboutData(defaultLanguage);
 		Map<String, Variant> aboutMapNoLanguage = aboutProxy.getAboutData("");
-		/*aboutProxy = serviceHelper.connectAboutProxy(deviceAboutAnnouncement);
-
-		logger.info("Calling getAboutData");
-
-		try {
-			aboutMapDefaultLanguage = aboutProxy.getAboutData(defaultLanguage);
-			aboutMapNoLanguage= aboutProxy.getAboutData("");
-		} catch (BusException e) {
-
-			fail("Unexpected BusException :"+e.toString());
-		}*/
 
 		logger.info("Partial Verdict: PASS");
 
@@ -592,30 +474,26 @@ public class AboutTestSuite
 		aboutProxy = serviceHelper.connectAboutProxy(deviceAboutAnnouncement);
 
 		boolean exceptionThrown = false;
+		
 		logger.info("Calling getAbout on About interface with an unsupported language INVALID");
-		//aboutProxy = serviceHelper.connectAboutProxy(deviceAboutAnnouncement);
-
 		logger.info("Calling getAboutData");
 
-		try {
-			//aboutClient.getAbout("INVALID");
+		try
+		{
 			aboutProxy.getAboutData("INVALID");
-			//Map<String, Variant> aboutMapUnsupportedLanguage = aboutProxy.getAboutData("INVALID");
 		}
 		catch (ErrorReplyBusException ex)
 		{
-			/*if("org.alljoyn.Error.LanguageNotSupported".equals(ex.getErrorName())){
-				logger.info("A LanguageNotSupported exception was Thrown");
-			}*/
 			exceptionThrown = true;
 			assertEquals("Wrong errorName", "org.alljoyn.Error.LanguageNotSupported", ex.getErrorName());
 		}
+		
 		assertTrue("Calling getAbout on the About interface with an unsupported language must throw an exception", exceptionThrown);
 	}
 
 	public void testAbout_v1_10_GetAboutIcon() throws Exception
 	{
-		if (!ics.get("ICSCO_IconInterface"))
+		if (!icsList.ICSCO_IconInterface)
 		{
 			fail("Test Case not applicable. ICSCO_IconInterface is set to false");
 		}
@@ -623,7 +501,6 @@ public class AboutTestSuite
 		{
 			if (!deviceAboutAnnouncement.supportsInterface(Icon.INTERFACE_NAME))
 			{
-				//getValidationTestContext().addNote("Device does not support AboutIcon");
 				fail("Device does not support AboutIcon");
 			}
 			else
@@ -632,23 +509,19 @@ public class AboutTestSuite
 				aboutIconProxy = serviceHelper.connectAboutIconProxy(deviceAboutAnnouncement);
 
 				logger.info("Calling get About Icon retrieve Icon data");
-				//String mimeType = aboutIconClient.getMimeType();
 				String mimeType = aboutIconProxy.getMimeType();
-	            //int iconSize = aboutIconClient.getSize();
 				int iconSize = aboutIconProxy.getSize();
 
 				if (mimeType == null || mimeType.isEmpty())
 				{
 					logger.info("mimetype is empty");
-					//getValidationTestContext().addNote("GetContent() method is not supported");
-					logger.addNote("GetContent() method is not supported");
+					logger.info("GetContent() method is not supported");
 					pass = false;
 				}
 				else if (iconSize == 0)
 				{
 					logger.info("The icon size is zero");
-					//getValidationTestContext().addNote("GetContent() method is not supported");
-					logger.addNote("GetContent() method is not supported");
+					logger.info("GetContent() method is not supported");
 					pass = false;
 				}
 				else
@@ -672,14 +545,14 @@ public class AboutTestSuite
 
 	public void testAbout_v1_11_GetAboutIconValidUrl() throws Exception
 	{
-		if (!ics.get("ICSCO_IconInterface"))
+		if (!icsList.ICSCO_IconInterface)
 		{
 			fail("Test Case not applicable. ICSCO_IconInterface is set to false");
 		}
-		else {
+		else
+		{
 			if (!deviceAboutAnnouncement.supportsInterface(Icon.INTERFACE_NAME))
 			{
-				//getValidationTestContext().addNote("Device does not support AboutIcon");
 				fail("Device does not support AboutIcon");
 			} 
 			else
@@ -699,7 +572,6 @@ public class AboutTestSuite
 		if (iconUrl == null || iconUrl.isEmpty())
 		{
 			logger.info("Url is empty");
-			//getValidationTestContext().addNote("URL returned is null/empty");
 		}
 		else
 		{
@@ -714,22 +586,17 @@ public class AboutTestSuite
 				exception = malformedUrlException;
 			}
 			
-			//assertNull("The received icon URL: '"+ iconUrl + "' isn't valid", exception);
-			if(exception==null) {
-				logger.info("The received icon URL: '" + iconUrl + "' isn't valid");
-			}
+			assertNull(String.format("The received icon URL '%s'isn't valid", iconUrl), exception);
 		}
 	}
 	
 	protected BusIntrospector getIntrospector()
 	{
-		//return serviceHelper.getBusIntrospector(aboutClient);
 		return serviceHelper.getBusIntrospector(deviceAboutAnnouncement);
 	}
 	
 	protected InterfaceValidator getInterfaceValidator() throws IOException, ParserConfigurationException, SAXException
 	{
-		//return new InterfaceValidator(getValidationTestContext());
 		return new InterfaceValidator();
 	}
 	
@@ -776,14 +643,14 @@ public class AboutTestSuite
         else
         {
         	logger.info("About interface not present in announcement");
-        	//fail("About interface not present in announcement");
         }
     }
 	
 	private void releaseResources()
 	{
-		//disconnectFromAboutClient();
-		//disconnectFromAboutIconClient();
+		disconnectFromAboutProxy();
+		disconnectFromAboutIconProxy();
+		
 		if (serviceHelper != null)
 		{
 			serviceHelper.release();
@@ -791,23 +658,21 @@ public class AboutTestSuite
 		}
 	}
 	
-	/*private void disconnectFromAboutClient()
-    {
-        if (aboutClient != null)
-        {
-            aboutClient.disconnect();
-            aboutClient = null;
-        }
-    }*/
-
-    /*private void disconnectFromAboutIconClient()
-    {
-        if (aboutIconClient != null)
-        {
-            aboutIconClient.disconnect();
-            aboutIconClient = null;
-        }
-    }*/
+	private void disconnectFromAboutProxy()
+	{
+		if (aboutProxy != null)
+		{
+			aboutProxy = null;
+		}
+	}
+	
+	private void disconnectFromAboutIconProxy()
+	{
+		if (aboutIconProxy != null)
+		{
+			aboutIconProxy = null;
+		}
+	}
 	
 	private String getAboutInterfacePathFromAnnouncement()
 	{
@@ -822,7 +687,7 @@ public class AboutTestSuite
 					aboutPath = busObjectDescription.path;
 				}
 			}
-			logger.info("BusObjectDescription: " + busObjectDescription.path + " supports " + Arrays.toString(busObjectDescription.interfaces));
+			logger.info("BusObjectDescription: %s supports %s", busObjectDescription.path, Arrays.toString(busObjectDescription.interfaces));
 		}
 		return aboutPath;
 	}
@@ -856,7 +721,6 @@ public class AboutTestSuite
 			if (!supportedLanguage.equals(defaultLanguage))
 			{
 				logger.info("Calling getAbout on About interface with language " + supportedLanguage);
-				//Map<String, Object> aboutMapSupportedLanguage = aboutClient.getAbout(supportedLanguage);
 				aboutProxy = serviceHelper.connectAboutProxy(deviceAboutAnnouncement);
 				Map<String, Variant> aboutMapSupportedLanguage = null;
 
@@ -884,39 +748,42 @@ public class AboutTestSuite
 		verifyFieldIsPresent(AboutKeys.ABOUT_APP_ID, aboutData);
 		
 		verifyFieldIsPresent(AboutKeys.ABOUT_DEFAULT_LANGUAGE, aboutData);
-		compareAbout(AboutKeys.ABOUT_DEFAULT_LANGUAGE,ixit.get("IXITCO_DefaultLanguage"),aboutData.get(AboutKeys.ABOUT_DEFAULT_LANGUAGE).getObject(String.class),"");
+		compareAbout(AboutKeys.ABOUT_DEFAULT_LANGUAGE,ixitList.IXITCO_DefaultLanguage,aboutData.get(AboutKeys.ABOUT_DEFAULT_LANGUAGE).getObject(String.class),"");
 
-		if(ics.get("ICSCO_DeviceName")) {
+		if(icsList.ICSCO_DeviceName) {
 			verifyFieldIsPresent(AboutKeys.ABOUT_DEVICE_NAME, aboutData);
-			compareAbout(AboutKeys.ABOUT_DEVICE_NAME,ixit.get("IXITCO_DeviceName"),aboutData.get(AboutKeys.ABOUT_DEVICE_NAME).getObject(String.class),"");
+			compareAbout(AboutKeys.ABOUT_DEVICE_NAME,ixitList.IXITCO_DeviceName,aboutData.get(AboutKeys.ABOUT_DEVICE_NAME).getObject(String.class),"");
 		} //JTF: Need to add case ICSCO_DeviceName is false and field is present
 
 		verifyFieldIsPresent(AboutKeys.ABOUT_DEVICE_ID, aboutData);
-		compareAbout(AboutKeys.ABOUT_DEVICE_ID,ixit.get("IXITCO_DeviceId"),(String) aboutData.get(AboutKeys.ABOUT_DEVICE_ID).getObject(String.class),"");
+		compareAbout(AboutKeys.ABOUT_DEVICE_ID,ixitList.IXITCO_DeviceId,(String) aboutData.get(AboutKeys.ABOUT_DEVICE_ID).getObject(String.class),"");
 
 		verifyFieldIsPresent(AboutKeys.ABOUT_APP_NAME, aboutData);
-		compareAbout(AboutKeys.ABOUT_APP_NAME,ixit.get("IXITCO_AppName"), aboutData.get(AboutKeys.ABOUT_APP_NAME).getObject(String.class),"");
+		compareAbout(AboutKeys.ABOUT_APP_NAME,ixitList.IXITCO_AppName, aboutData.get(AboutKeys.ABOUT_APP_NAME).getObject(String.class),"");
 
 		verifyFieldIsPresent(AboutKeys.ABOUT_MANUFACTURER, aboutData);
-		compareAbout(AboutKeys.ABOUT_MANUFACTURER,ixit.get("IXITCO_Manufacturer"), aboutData.get(AboutKeys.ABOUT_MANUFACTURER).getObject(String.class),"");
+		compareAbout(AboutKeys.ABOUT_MANUFACTURER,ixitList.IXITCO_Manufacturer, aboutData.get(AboutKeys.ABOUT_MANUFACTURER).getObject(String.class),"");
 
 		verifyFieldIsPresent(AboutKeys.ABOUT_MODEL_NUMBER, aboutData);
-		compareAbout(AboutKeys.ABOUT_MODEL_NUMBER,ixit.get("IXITCO_ModelNumber"), aboutData.get(AboutKeys.ABOUT_MODEL_NUMBER).getObject(String.class),"");
+		compareAbout(AboutKeys.ABOUT_MODEL_NUMBER,ixitList.IXITCO_ModelNumber, aboutData.get(AboutKeys.ABOUT_MODEL_NUMBER).getObject(String.class),"");
 	}
 	
 	private void verifyFieldIsPresent(String key, Map<String, Variant> aboutData) throws BusException
 	{
-		//assertNotNull(key + " is a required field", aboutData.get(key));
-		if(aboutData.get(key)==null) {
-
-			fail(key + " is a required field" );
-
-		}else{
-			if(key.equals(AboutKeys.ABOUT_APP_ID)) {
-				logger.info(key+" is present and matches IXIT: "+ ixit.get("IXITCO_AppId"));
+		if (aboutData.get(key) == null)
+		{
+			fail(String.format("%s is a required field", key));
+		}
+		else
+		{
+			if (key.equals(AboutKeys.ABOUT_APP_ID))
+			{
+				logger.info("%s is present and matches IXIT %s", key, ixitList.IXITCO_AppId);
 				logger.info("Partial Verdict: PASS");
-			} else {	
-				logger.info(key+" is present and is: "+ aboutData.get(key).getObject(String.class));
+			}
+			else
+			{	
+				logger.info("%s is present and is %s", key, aboutData.get(key).getObject(String.class));
 				logger.info("Partial Verdict: PASS");
 			}
 		}
@@ -927,10 +794,13 @@ public class AboutTestSuite
 		checkForNull(aboutMap, language);
 		validateSignature(aboutMap, language);
 
-		if(ics.get("ICSCO_DateOfManufacture")) { //[AT4] Added ICS checking
+		if (icsList.ICSCO_DateOfManufacture) //[AT4] Added ICS checking
+		{ 
 			validateDateOfManufacture(aboutMap, language);
 		}
-		if(ics.get("ICSCO_SupportUrl")) { //[AT4] Added ICS checking
+		
+		if (icsList.ICSCO_SupportUrl) //[AT4] Added ICS checking
+		{ 
 			validateSupportUrl(aboutMap, language);
 		}
 	}
@@ -947,40 +817,58 @@ public class AboutTestSuite
 		checkForNull(aboutMap, AboutKeys.ABOUT_DESCRIPTION, language);
 		checkForNull(aboutMap, AboutKeys.ABOUT_SOFTWARE_VERSION, language);
 		checkForNull(aboutMap, AboutKeys.ABOUT_AJ_SOFTWARE_VERSION, language);
-		if(ics.get("ICSCO_DateOfManufacture")) checkForNull(aboutMap, AboutKeys.ABOUT_DATE_OF_MANUFACTURE, language); //[AT4]
-		if(ics.get("ICSCO_HardwareVersion")) checkForNull(aboutMap, AboutKeys.ABOUT_HARDWARE_VERSION, language); //[AT4]
-		if(ics.get("ICSCO_SupportUrl")) checkForNull(aboutMap, AboutKeys.ABOUT_SUPPORT_URL, language); //[AT4]
+		if (icsList.ICSCO_DateOfManufacture) checkForNull(aboutMap, AboutKeys.ABOUT_DATE_OF_MANUFACTURE, language); //[AT4]
+		if (icsList.ICSCO_HardwareVersion) checkForNull(aboutMap, AboutKeys.ABOUT_HARDWARE_VERSION, language); //[AT4]
+		if (icsList.ICSCO_SupportUrl) checkForNull(aboutMap, AboutKeys.ABOUT_SUPPORT_URL, language); //[AT4]
 	}
 	
 	private void checkForNull(Map<String, Variant> aboutMap, String fieldName, String language)
 	{
-		//assertNotNull(fieldName + " is a required field for language " +language, aboutMap.get(fieldName));
-		if(aboutMap.get(fieldName)==null)
+		if (aboutMap.get(fieldName) == null)
 		{
-			fail(fieldName + " is a required field for language: "+language);
-		} else {
-			logger.info(fieldName+" is present");
-			if(language==ixit.get("IXITCO_DefaultLanguage")) {
-				try {
-					if(fieldName==AboutKeys.ABOUT_SUPPORTED_LANGUAGES) {
-						//compareAbout(fieldName,ixit.get("IXITCO_"+fieldName),(String) aboutMap.get(fieldName).getObject(String.class),"");
-					} else {
-						logger.info(String.format("Checking if received %s is equal to IXITCO_%s", fieldName, fieldName));
-						compareAbout(fieldName,ixit.get("IXITCO_"+fieldName),(String) aboutMap.get(fieldName).getObject(String.class),"");
+			fail(String.format("%s is a required field for language %s", fieldName, language));
+		}
+		else
+		{
+			logger.info("%s is present", fieldName);
+			
+			if (language == defaultLanguage)
+			{
+				try
+				{
+					if (fieldName == AboutKeys.ABOUT_SUPPORTED_LANGUAGES)
+					{
+						//TODO supported languages checking
 					}
-				} catch (BusException e) {
+					else
+					{
+						logger.info("Checking if received %s is equal to IXITCO_%s", fieldName, fieldName);
+						
+						if (fieldName == AboutKeys.ABOUT_APP_ID)
+						{
+							compareAbout(fieldName, ((UUID) ixitList.get("IXITCO_" + fieldName)).toString(), 
+									CommonUtils.getUuidFromByteArray(((byte[]) aboutMap.get(fieldName).getObject(byte[].class))).toString(), "");
+						}
+						else
+						{
+							compareAbout(fieldName, (String) ixitList.get("IXITCO_" + fieldName), (String) aboutMap.get(fieldName).getObject(String.class), "");
+						}
+					}
+				}
+				catch (BusException e)
+				{
 					logger.error(e.getMessage());
-				} catch (Exception e) {
+				}
+				catch (Exception e)
+				{
 					logger.error(e.getMessage());
 				}
 			}
 		}
 	}
 	
-	//private void validateSignature(Map<String, Object> aboutMap, String language) throws AnnotationBusException
 	private void validateSignature(Map<String, Variant> aboutMap, String language) throws AnnotationBusException
 	{
-		//Map<String, Variant> aboutVariantMap = TransportUtil.toVariantMap(aboutMap);
 		Map<String, Variant> aboutVariantMap = aboutMap;
 		validateSignature(aboutVariantMap, AboutKeys.ABOUT_APP_ID, "ay", language);
 		validateSignature(aboutVariantMap, AboutKeys.ABOUT_DEFAULT_LANGUAGE, "s", language);
@@ -1020,11 +908,13 @@ public class AboutTestSuite
 	
 	private void validateSignature(Map<String, Variant> aboutVariantMap, String fieldName, String signature, String language) throws AnnotationBusException
 	{
-		if(!signature.equals(aboutVariantMap.get(fieldName).getSignature()))
+		if (!signature.equals(aboutVariantMap.get(fieldName).getSignature()))
 		{
-			fail("Signature does not match for required field: "+fieldName+" for language "+language);
-		} else {
-			logger.info("Signature matches for required field "+fieldName+" for language "+language);
+			fail(String.format("Signature does not match for required field: %s for language %s", fieldName, language));
+		}
+		else
+		{
+			logger.info(String.format("Signature matches for required field %s for language %s", fieldName, language));
 			logger.info("Partial Verdict: PASS");
 		}
 	}
@@ -1036,12 +926,11 @@ public class AboutTestSuite
 			simpleDateFormat = new SimpleDateFormat(DATE_FORMAT);
 			simpleDateFormat.setLenient(false);
 
-			//String dateOfManufacture = aboutMap.get(AboutKeys.ABOUT_DATE_OF_MANUFACTURE).toString();
 			String dateOfManufacture = aboutMap.get(AboutKeys.ABOUT_DATE_OF_MANUFACTURE).getObject(String.class );
-			logger.info("Validating Date Of Manufacture: "+dateOfManufacture);
+			logger.info("Validating Date Of Manufacture: %s", dateOfManufacture);
 
-            //assertTrue(String.format("DateOfManufacture field value %s does not match expected date pattern YYYY-MM-DD", dateOfManufacture), isValidDate(dateOfManufacture));
-			if(!isValidDate(dateOfManufacture)){
+			if (!isValidDate(dateOfManufacture))
+			{
 				fail(String.format("DateOfManufacture field value %s does not match expected date pattern YYYY-MM-DD", dateOfManufacture));
 			}
 		}
@@ -1051,11 +940,11 @@ public class AboutTestSuite
 	{
 		if (aboutMap.containsKey(AboutKeys.ABOUT_SUPPORT_URL))
 		{
-			logger.info("Validating Support Url: "+aboutMap.get(AboutKeys.ABOUT_SUPPORT_URL).getObject(String.class));
-			//String supportUrl = aboutMap.get(AboutKeys.ABOUT_SUPPORT_URL).toString();
+			logger.info("Validating Support Url: %s", aboutMap.get(AboutKeys.ABOUT_SUPPORT_URL).getObject(String.class));
+
 			String supportUrl = aboutMap.get(AboutKeys.ABOUT_SUPPORT_URL).getObject(String.class);
-			//assertTrue(String.format("%s is not a valid URL", supportUrl), isValidUrl(supportUrl));
-			if(!isValidUrl(supportUrl))
+
+			if (!isValidUrl(supportUrl))
 			{
 				fail(String.format("%s is not a valid URL", supportUrl));
 			}
@@ -1123,13 +1012,15 @@ public class AboutTestSuite
 	
 	private void compareAbout(String fieldName, String expectedAboutFieldValue, String aboutFieldValue, String language) throws Exception
 	{
-		String assertionFailureResponse = prepareAssertionFailureResponse(fieldName,expectedAboutFieldValue,aboutFieldValue, language);
+		String assertionFailureResponse = prepareAssertionFailureResponse(fieldName, expectedAboutFieldValue, aboutFieldValue, language);
 		
-		if(language.equals("")) {
-			language="unspecified language";
+		if (language.equals(""))
+		{
+			language = "unspecified language";
 		}
 
-		if(expectedAboutFieldValue.equals(aboutFieldValue)) {
+		if (expectedAboutFieldValue.equals(aboutFieldValue))
+		{
 			logger.info("Both fields are equal");
 		}
 		
@@ -1139,10 +1030,11 @@ public class AboutTestSuite
 	private void compareAbout(String fieldName, Class<? extends Variant> class1,
 			Class<? extends Variant> class2, String language)
 	{
-		String assertionFailureResponse = prepareAssertionFailureResponse(fieldName, language);
-		assertEquals(assertionFailureResponse, class1, class2);
-		if(class1.equals(class2)){
-			logger.info(fieldName+" is the same for the default language and the localized field");
+		assertEquals(String.format("%s value returned from the GetAbout for language %s does not match default language value", fieldName, language), class1, class2);
+		
+		if (class1.equals(class2))
+		{
+			logger.info("%s is the same for the default language and the localized field", fieldName);
 		}
 	} //[AT4]
 	
@@ -1202,7 +1094,7 @@ public class AboutTestSuite
 		String msg = ERROR_MSG_BUS_INTROSPECTION;
 		if (e instanceof ErrorReplyBusException && DBUS_ERROR_SERVICE_UNKNOWN.equals(((ErrorReplyBusException) e).getErrorName()))
 		{
-			msg = new StringBuilder("AboutAnnouncement has the path ").append(path).append(", but it is not found on the Bus Intropsection.").toString();
+			msg = new StringBuilder("AboutAnnouncement has the path ").append(path).append(", but it is not found on the Bus Introspection.").toString();
 		}
 
 		fail(msg);
@@ -1222,7 +1114,6 @@ public class AboutTestSuite
 	
 	protected ServiceHelper getServiceHelper()
 	{
-		//return new ServiceHelper(new AndroidLogger());
 		return new ServiceHelper(logger);
 	}
 	
@@ -1266,20 +1157,20 @@ public class AboutTestSuite
 	{
 		
 		logger.info(String.format("Testing Object Path: '%s'", objectPath));
-		/*ProxyBusObject proxyObj = serviceHelper.getProxyBusObject(aboutClient, objectPath, new Class<?>[]
-		        { AllSeenIntrospectable.class });*/
+
 		ProxyBusObject proxyObj = serviceHelper.getProxyBusObject(deviceAboutAnnouncement, objectPath,
 				new Class<?>[]{AllSeenIntrospectable.class});
 		String[] descLangs = getDescriptionLanguages(proxyObj, objectPath);
-		if ( descLangs.length == 0 )
+		
+		if (descLangs.length == 0)
 		{
-			
 			logger.warn("No description languages found for the Object Path: '%s'. Introspecting child objects with NO_LANGUAGE", objectPath);
 
 			String introXML = getIntrospectionXML(proxyObj, objectPath, "NO_LANGUAGE");
-			assertNotNull("Introspection XML is NULL Object Path: '" + objectPath + "'", introXML);
+			assertNotNull(String.format("Introspection XML is NULL Object Path: '%s'", objectPath), introXML);
 			return testChildrenObjectValidity(objectPath, introXML);
 		}
+		
 		return testObjectValidityPerLanguages(proxyObj, objectPath, descLangs);
 	}
 	
@@ -1301,7 +1192,6 @@ public class AboutTestSuite
 
 		try
 		{
-			
 			introspectNode = new EvAcIntrospectionNode(parentObjectPath);
 			introspectNode.parse(parentIntroXML);
 		}
@@ -1310,7 +1200,7 @@ public class AboutTestSuite
 			
 			logger.error("Failed to parse the introspection XML, object path: "+ parentObjectPath);
 			logger.error("Error", e);
-			//fail();
+
 			fail("Failed to parse the introspection XML, object path: "+ parentObjectPath);
 		}
 
@@ -1321,7 +1211,6 @@ public class AboutTestSuite
 
 		if (childrenNodes == null || childrenNodes.size() == 0)
 		{
-			
 			logger.warn("The object '%s' doesn't have any child object", parentObjectPath);
 			return false;
 		}
@@ -1333,9 +1222,9 @@ public class AboutTestSuite
 			String logMsg = descFoundChild ? "contains a description tag" : "doesn't contain any description tag";
 
 			logger.info("The object or its offspring: '%s' %s", childNode.getPath(), logMsg);
-			if ( !descFoundBroth )
+			
+			if (!descFoundBroth)
 			{
-				
 				descFoundBroth = descFoundChild;
 			}
 		}
@@ -1379,10 +1268,6 @@ public class AboutTestSuite
 
 			String currentXML = getIntrospectionXML(proxyObj, parentObjectPath, lang);
 			assertNotNull("Introspection XML is NULL Object Path: '" + parentObjectPath + "'", currentXML);
-			
-			// Print the introspection XML
-            // logger.debug("The introspection XML, the lang: '%s': '%s'", lang,
-            // currentXML);
 
 			currentXML = removeXMLDesc(currentXML);
 
@@ -1390,9 +1275,6 @@ public class AboutTestSuite
 
 			if ( firstLangXML == null )
 			{
-
-				//boolean isXmlDescPresent = xmlDescPresent.matcher(currentXML).find();
-				
 				assertTrue("The description tag wasn't found in the XML for the description language: '" + lang + "', " +
 						"Object Path: '" + parentObjectPath + "'", currentXML.contains(INTROSPECTION_XML_DESC_EXPECTED));
 
@@ -1400,7 +1282,6 @@ public class AboutTestSuite
 
 				if (descLangs.length == 1)
 				{
-
 					logger.info("The object '%s' supports a single description language: '%s'", parentObjectPath, lang);
 					return true;
 				}
@@ -1413,17 +1294,10 @@ public class AboutTestSuite
 
 			logger.info("Test identity of the XMLs in the first language: '%s' and the current language: '%s', " + "Object Path: '%s'", firstLang, lang, parentObjectPath);
 
-			// Print the intospection XML in the first language and in the
-            // current language
-            // logger.debug("The expected XML in the first lang: '%s': '%s'",
-            // firstLang, firstLangXML);
-            // logger.debug("The tested XML in the current lang: '%s': '%s'",
-            // lang, currentXML);
-
-            // If current language is not a first language, compare current
+			// If current language is not a first language, compare current
             // language XML with the first language XML
-			assertEquals("The XML in the first language: '" + firstLang + "' is not identical to the XML in the current language: '" + lang + "', object path: '" 
-						+ parentObjectPath + "'", firstLangXML, currentXML);
+			assertEquals(String.format("The XML in the first language: '%s' is not identical to the XML in the current language '%s',"
+					+ "object path: '%s", firstLang, lang, parentObjectPath), firstLangXML, currentXML);
 
 			logger.info("The XMLs in the first language: '%s' and the current language: '%s', " + "Object Path: '%s' are identical", firstLang, lang, parentObjectPath);
 		}// for :: descLangs
@@ -1444,17 +1318,14 @@ public class AboutTestSuite
 		List<String> retList  = new ArrayList<String>();
 		String introIfaceName = getIntrospectableInterfaceName();
 
-		//BusObjectDescription[] objDescs = deviceAboutAnnouncement.getObjectDescriptions();
 		AboutObjectDescription[] objDescs = deviceAboutAnnouncement.getObjectDescriptions();
-		//for (BusObjectDescription bod : objDescs)
+
 		for (AboutObjectDescription bod : objDescs)
 		{
-			
 			String path = bod.path;
 
 			for (String iface : bod.interfaces)
 			{
-				
 				// The AllSeenIntrospectable interface was found => add the path
                 // to the returned list
 				if (iface.equals(introIfaceName))
@@ -1489,7 +1360,6 @@ public class AboutTestSuite
      */
 	private String[] getDescriptionLanguages(ProxyBusObject proxyObj, String objectPath)
 	{
-
 		String[] langs = new String[]
 		{};
 
@@ -1499,11 +1369,7 @@ public class AboutTestSuite
 		}
 		catch (BusException be)
 		{
-
-			logger.error("Failed to call GetDescriptionLanguages for the Object Path: "+ objectPath);
-			logger.error("Error", be);
-			//fail();
-			fail("Failed to call GetDescriptionLanguages for the Object Path: "+ objectPath);
+			fail(String.format("Failed to call GetDescriptionLanguages for the Object Path: %s", objectPath));
 		}
 		
 		return langs;
@@ -1531,11 +1397,7 @@ public class AboutTestSuite
 		}
 		catch (BusException be)
 		{
-
-			logger.error("Failed to call IntrospectWithDescription for the Object Path: "+ objectPath);
-			logger.error("Error", be);
-			//fail();
-			fail("Failed to call IntrospectWithDescription for the Object Path: "+ objectPath);
+			fail(String.format("Failed to call IntrospectWithDescription for the Object Path: %s", objectPath));
 		}
 		return introXML;
 	}
@@ -1564,54 +1426,84 @@ public class AboutTestSuite
 
 	private void assertEquals(String errorMessage, int first, int second)
 	{
-		if (first != second) {
+		if (first != second) 
+		{
 			fail(errorMessage);
-		} else {
+		}
+		else
+		{
 			logger.info("Partial Verdict: PASS");
 		}
 	}
 	
 	private void assertEquals(String errorMessage, String first, String second)
 	{
-		if (!first.equals(second)) {
+		if (!first.equals(second))
+		{
 			fail(errorMessage);
-		} else {
+		}
+		else
+		{
 			logger.info("Partial Verdict: PASS");
 		}
 	}
 
 	private void assertEquals(String errorMessage, Class<? extends Variant> first, Class<? extends Variant> second)
 	{
-		if (!first.equals(second)) {
+		if (!first.equals(second))
+		{
 			fail(errorMessage);
-		} else {
+		}
+		else
+		{
 			logger.info("Partial Verdict: PASS");
 		}
 	}
 
 	private void assertTrue(String errorMessage, boolean condition)
 	{
-		if (!condition) {
+		if (!condition)
+		{
 			fail(errorMessage);
-		} else {
+		}
+		else
+		{
 			logger.info("Partial Verdict: PASS");
 		}
 	}
 
 	private void assertFalse(String errorMessage, boolean condition)
 	{
-		if (condition) {
+		if (condition)
+		{
 			fail(errorMessage);
-		} else {
+		}
+		else
+		{
+			logger.info("Partial Verdict: PASS");
+		}
+	}
+	
+	private void assertNull(String errorMessage, Object object)
+	{
+		if (object != null)
+		{
+			fail(errorMessage);
+		}
+		else
+		{
 			logger.info("Partial Verdict: PASS");
 		}
 	}
 	
 	private void assertNotNull(String errorMessage, Object object)
 	{
-		if (object == null) {
+		if (object == null)
+		{
 			fail(errorMessage);
-		} else {
+		}
+		else
+		{
 			logger.info("Partial Verdict: PASS");
 		}
 	}
@@ -1633,13 +1525,17 @@ public class AboutTestSuite
 
 	public String getFinalVerdict()
 	{
-		if (inconcluse) {
+		if (inconcluse)
+		{
 			return "INCONC";
 		}
 		
-		if (pass) {
+		if (pass)
+		{
 			return "PASS";
-		} else {
+		}
+		else
+		{
 			return "FAIL";
 		}
 	}

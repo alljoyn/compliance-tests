@@ -37,6 +37,9 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.introspection.BusIntrospector;
 import com.at4wireless.alljoyn.core.introspection.bean.InterfaceDetail;
 import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionInterface;
+import com.at4wireless.alljoyn.testcases.parameter.GeneralParameter;
+import com.at4wireless.alljoyn.testcases.parameter.Ics;
+import com.at4wireless.alljoyn.testcases.parameter.Ixit;
 
 public class GWAgentTestSuite implements ServiceAvailabilityListener
 //public class GWAgentTestSuite
@@ -76,39 +79,16 @@ public class GWAgentTestSuite implements ServiceAvailabilityListener
 	 * 
 	 * */
 	boolean pass = true;
-    Map<String, Boolean> ics;
-    Map<String, String> ixit;
+	boolean inconc = false;
+	private Ics icsList;
+    private Ixit ixitList;
 
-	public GWAgentTestSuite(String testCase,
-			boolean iCSG_GatewayServiceFramework,
-			boolean iCSG_ProfileManagementInterface,
-			boolean iCSG_AppAccessInterface,
-			boolean iCSG_AppManagementInterface, String iXITCO_AppId,
-			String iXITCO_DeviceId, String iXITCO_DefaultLanguage,
-			String iXITG_AppMgmtVersion, String iXITG_CtrlAppVersion,
-			String iXITG_CtrlAccessVersion, String iXITG_CtrlAclVersion,
-			String iXITG_ConnAppVersion, String gPCO_AnnouncementTimeout,
-			String gPG_SessionClose)
+	public GWAgentTestSuite(String testCase, Ics icsList, Ixit ixitList, GeneralParameter gpList)
 	{
+		this.icsList = icsList;
+		this.ixitList = ixitList;
 
-		ics = new HashMap<String, Boolean>();
-		ixit = new HashMap<String, String>();
-		
-		ics.put("ICS_GatewayServiceFramework", iCSG_GatewayServiceFramework);
-		ics.put("ICSG_ProfileManagementInterface", iCSG_ProfileManagementInterface);
-		ics.put("ICSG_AppAccessInterface", iCSG_AppAccessInterface);
-		ics.put("ICSG_AppManagementInterface", iCSG_AppManagementInterface);
-
-		ixit.put("IXITCO_AppId", iXITCO_AppId);
-		ixit.put("IXITCO_DeviceId", iXITCO_DeviceId);
-		ixit.put("IXITCO_DefaultLanguage", iXITCO_DefaultLanguage);
-		ixit.put("IXITG_AppMgmtVersion", iXITG_AppMgmtVersion);
-		ixit.put("IXITG_CtrlAppVersion", iXITG_CtrlAppVersion);
-		ixit.put("IXITG_CtrlAccessVersion", iXITG_CtrlAccessVersion);
-		ixit.put("IXITG_CtrlAclVersion", iXITG_CtrlAclVersion);
-		ixit.put("IXITG_ConnAppVersion", iXITG_ConnAppVersion);
-
-		ANNOUNCEMENT_TIMEOUT_IN_SECONDS = Integer.parseInt(gPCO_AnnouncementTimeout);
+		ANNOUNCEMENT_TIMEOUT_IN_SECONDS = gpList.GPCO_AnnouncementTimeout;
 		//SESSION_CLOSE_TIMEOUT_IN_SECONDS = Integer.parseInt(gPG_SessionClose);
 
 		try
@@ -117,29 +97,41 @@ public class GWAgentTestSuite implements ServiceAvailabilityListener
 		}
 		catch (Exception e)
 		{
-			if (e.getMessage().equals("Timed out waiting for About announcement"))
-			{
-				fail("Timed out waiting for About announcement");
-			}
-			else
-			{
-				fail("Exception: "+e.toString());
-			}
+			inconc = true;
 		}
 	}
 
 	public void runTestCase(String testCase) throws Exception
 	{	
 		setUp();
-		logger.info("Running testcase: "+testCase);
 		
-		if (testCase.equals("GWAgent-v1-01"))
+		try
 		{
-			testGWAgent_v1_01_ValiateCtrlAppMgmtInterfaces();
+			logger.info("Running testcase: "+testCase);
+			
+			if (testCase.equals("GWAgent-v1-01"))
+			{
+				testGWAgent_v1_01_ValiateCtrlAppMgmtInterfaces();
+			}
+			else
+			{
+				fail("Test Case not valid");
+			}
 		}
-		else
+		catch (Exception exception)
 		{
-			fail("Test Case not valid");
+			logger.error("Exception executing Test Case: %s", exception.getMessage()); //[AT4]
+			
+			try 
+			{
+				tearDown();
+			} 
+			catch (Exception newException) 
+			{
+				logger.error("Exception releasing resources: %s", newException.getMessage());
+			}
+			
+			throw exception;
 		}
 
 		tearDown();
@@ -156,10 +148,10 @@ public class GWAgentTestSuite implements ServiceAvailabilityListener
 		{
 			//appUnderTestDetails = getValidationTestContext().getAppUnderTestDetails();
 			//dutDeviceId = appUnderTestDetails.getDeviceId();
-			dutDeviceId = ixit.get("IXITCO_DeviceId");
+			dutDeviceId = ixitList.IXITCO_DeviceId;
 			logger.info(String.format("Running GWAgent test case against Device ID: %s", dutDeviceId));
 			//dutAppId = appUnderTestDetails.getAppId();
-			dutAppId = UUID.fromString(ixit.get("IXITCO_AppId"));
+			dutAppId = ixitList.IXITCO_AppId;
 			logger.info(String.format("Running GWAgent test case against App ID: %s", dutAppId));
 			//keyStorePath = getValidationTestContext().getKeyStorePath();
 			logger.info(String.format("Running GWAgent test case using KeyStorePath: %s", keyStorePath));

@@ -70,6 +70,9 @@ import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionInterface;
 import com.at4wireless.alljoyn.core.introspection.bean.IntrospectionNode;
 import com.at4wireless.alljoyn.core.introspection.bean.NodeDetail;
 import com.at4wireless.alljoyn.core.time.Pair;
+import com.at4wireless.alljoyn.testcases.parameter.GeneralParameter;
+import com.at4wireless.alljoyn.testcases.parameter.Ics;
+import com.at4wireless.alljoyn.testcases.parameter.Ixit;
 
 public class TimeTestSuite {
  	private final String INTROSPECTABLE_INTERFACE_NAME = "org.allseen.Introspectable";
@@ -108,59 +111,27 @@ public class TimeTestSuite {
 	 * */
 	
  	Boolean pass=true;
-	private Map<String, Boolean> ics;
-	private Map<String, String> ixit;
+ 	boolean inconc = false;
+ 	private Ics icsList;
+	private Ixit ixitList;
 
-	public TimeTestSuite(String testCase, boolean iCST_TimeServiceFramework,
-			boolean iCST_ClockInterface, boolean iCST_Date,
-			boolean iCST_Milliseconds, boolean iCST_TimeAuthorityInterface,
-			boolean iCST_AlarmFactoryInterface, boolean iCST_AlarmInterface,
-			boolean iCST_TimerFactoryInterface, boolean iCST_TimerInterface,
-			String iXITCO_AppId, String iXITCO_DeviceId,
-			String iXITCO_DefaultLanguage, String iXITT_ClockVersion,
-			String iXITT_TimeAuthorityVersion,
-			String iXITT_AlarmFactoryVersion, String iXITT_AlarmVersion,
-			String iXITT_TimerFactoryVersion, String iXITT_TimerVersion,
-			String gPCO_AnnouncementTimeout) {
-		
+	public TimeTestSuite(String testCase, Ics icsList, Ixit ixitList, GeneralParameter gpList)
+	{
 		/** 
 		 * [AT4] Attributes initialization
 		 * */
+		this.icsList = icsList;
+		this.ixitList = ixitList;
 
-		ics = new HashMap<String,Boolean>();
-		ixit = new HashMap<String,String>();
-		
-		ics.put("ICST_TimeServiceFramework", iCST_TimeServiceFramework);
-		ics.put("ICST_ClockInterface", iCST_ClockInterface);
-		ics.put("ICST_Date", iCST_Date);
-		ics.put("ICST_Milliseconds", iCST_Milliseconds);
-		ics.put("ICST_TimeAuthorityInterface", iCST_TimeAuthorityInterface);
-		ics.put("ICST_AlarmFactoryInterface", iCST_AlarmFactoryInterface);
-		ics.put("ICST_AlarmInterface", iCST_AlarmInterface);
-		ics.put("ICST_TimerFactoryInterface", iCST_TimerFactoryInterface);
-		ics.put("ICST_TimerInterface", iCST_TimerInterface);
-		
-		ixit.put("IXITCO_AppId", iXITCO_AppId);
-		ixit.put("IXITCO_DeviceId", iXITCO_DeviceId);
-		ixit.put("IXITCO_DefaultLanguage", iXITCO_DefaultLanguage);
-		ixit.put("IXITT_ClockVersion", iXITT_ClockVersion);
-		ixit.put("IXITT_TimeAuthorityVersion", iXITT_TimeAuthorityVersion);
-		ixit.put("IXITT_AlarmFactoryVersion", iXITT_AlarmFactoryVersion);
-		ixit.put("IXITT_AlarmVersion", iXITT_AlarmVersion);
-		ixit.put("IXITT_TimerFactoryVersion", iXITT_TimerFactoryVersion);
-		ixit.put("IXITT_TimerVersion", iXITT_TimerVersion);
-	
-		ANNOUNCEMENT_TIMEOUT_IN_SECONDS = Integer.parseInt(gPCO_AnnouncementTimeout);
+		ANNOUNCEMENT_TIMEOUT_IN_SECONDS = gpList.GPCO_AnnouncementTimeout;
 
-		try {
+		try
+		{
 			runTestCase(testCase);
-		} catch(Exception e) {
-			
-			//if(e.getMessage().equals("Timed out waiting for About announcement")){
-				//fail("Timed out waiting for About announcement");
-			//}else{
-				fail("Exception: "+e.toString());
-			//}
+		}
+		catch(Exception e)
+		{
+			inconc = true;
 		}
 	}
 	
@@ -174,16 +145,34 @@ public class TimeTestSuite {
 		
 		setUp();		
 		
-		if (testCase.equals("TimeService-v1-01")) {
-			testTime_v1_01_GetObjectDescription();
-		} else if (testCase.equals("TimeService-v1-02")) {
-			testTime_v1_02_VerifyClocks();
-		} else if (testCase.equals("TimeService-v1-03")) {
-			testTime_v1_03_VerifyTimers();
-		} else if (testCase.equals("TimeService-v1-04")) {
-			testTime_v1_04_VerifyAlarms();
-		} else {
-			fail("Test Case not valid");
+		try
+		{
+			if (testCase.equals("TimeService-v1-01")) {
+				testTime_v1_01_GetObjectDescription();
+			} else if (testCase.equals("TimeService-v1-02")) {
+				testTime_v1_02_VerifyClocks();
+			} else if (testCase.equals("TimeService-v1-03")) {
+				testTime_v1_03_VerifyTimers();
+			} else if (testCase.equals("TimeService-v1-04")) {
+				testTime_v1_04_VerifyAlarms();
+			} else {
+				fail("Test Case not valid");
+			}
+		}
+		catch (Exception exception)
+		{
+			logger.error("Exception executing Test Case: %s", exception.getMessage()); //[AT4]
+			
+			try 
+			{
+				tearDown();
+			} 
+			catch (Exception newException) 
+			{
+				logger.error("Exception releasing resources: %s", newException.getMessage());
+			}
+			
+			throw exception;
 		}
 		
 		tearDown();
@@ -195,11 +184,11 @@ public class TimeTestSuite {
 		logger.info("test setUp started");
 
 		try {
-			logger.info("Running Time Service test case against Device ID: "+ ixit.get("IXITCO_DeviceId"));
-			logger.info("Running Time Service test case against App ID: "+ UUID.fromString(ixit.get("IXITCO_AppId")));
+			logger.info("Running Time Service test case against Device ID: "+ ixitList.IXITCO_DeviceId);
+			logger.info("Running Time Service test case against App ID: "+ ixitList.IXITCO_AppId);
 
 			serviceHelper = getServiceHelper();
-			serviceHelper.initialize(BUS_APPLICATION_NAME, ixit.get("IXITCO_DeviceId"), UUID.fromString(ixit.get("IXITCO_AppId")));
+			serviceHelper.initialize(BUS_APPLICATION_NAME, ixitList.IXITCO_DeviceId, ixitList.IXITCO_AppId);
 
 			//deviceAboutAnnouncement = serviceHelper.waitForNextDeviceAnnouncement(ANNOUCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
 			deviceAboutAnnouncement = serviceHelper.waitForNextDeviceAnnouncement(ANNOUNCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
@@ -691,7 +680,7 @@ public class TimeTestSuite {
 	private  void handleIntrospectionBusException(String path, BusException e) throws Exception {
 		String msg = ERROR_MSG_BUS_INTROSPECTION;
 		if (e instanceof ErrorReplyBusException && DBUS_ERROR_SERVICE_UNKNOWN.equals(((ErrorReplyBusException) e).getErrorName())) {
-			msg = new StringBuilder("AboutAnnouncement has the path ").append(path).append(", but it is not found on the Bus Intropsection.").toString();
+			msg = new StringBuilder("AboutAnnouncement has the path ").append(path).append(", but it is not found on the Bus Introspection.").toString();
 		}
 		logger.error(msg, e);
 		throw new Exception(msg, e);
