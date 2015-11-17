@@ -37,6 +37,9 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.onboarding.OnboardingHelper;
 import com.at4wireless.alljoyn.core.onboarding.SoftAPValidator;
 import com.at4wireless.alljoyn.core.onboarding.WifiNetworkConfig;
+import com.at4wireless.alljoyn.testcases.parameter.GeneralParameter;
+import com.at4wireless.alljoyn.testcases.parameter.Ics;
+import com.at4wireless.alljoyn.testcases.parameter.Ixit;
 
 public class OnboardingTestSuite
 {
@@ -98,56 +101,27 @@ public class OnboardingTestSuite
 	
 	private Boolean pass = true;
 	private Boolean inconc = false;
-
-	private Map<String, Boolean> ics;
-	private Map<String, String> ixit;
 	private int TIME_TO_WAIT_FOR_SCAN_RESULTS_IN_SECONDS;
 
-	public OnboardingTestSuite(String testCase,
-			boolean iCSON_OnboardingServiceFramework,
-			boolean iCSON_OnboardingInterface, boolean iCSON_ChannelSwitching,
-			boolean iCSON_GetScanInfoMethod, String iXITCO_AppId,
-			String iXITCO_DeviceId, String iXITCO_DefaultLanguage,
-			String iXITON_OnboardingVersion, String iXITON_SoftAP,
-			String iXITON_SoftAPAuthType, String iXITON_SoftAPpassphrase,
-			String iXITON_PersonalAP, String iXITON_PersonalAPAuthType,
-			String iXITON_PersonalAPpassphrase,
-			String gPCO_AnnouncementTimeout, String gPON_WaitSoftAP,
-			String gPON_ConnectSoftAP, String gPON_WaitSoftAPAfterOffboard,
-			String gPON_ConnectPersonalAP, String gPON_Disconnect,
-			String gPON_NextAnnouncement, String gPON_TimeToWaitForScanResults)
+	private Ics icsList;
+	private Ixit ixitList;
+
+	public OnboardingTestSuite(String testCase, Ics icsList, Ixit ixitList, GeneralParameter gpList)
 	{
 		/** 
 		 * [AT4] Attributes initialization
 		 * */
-
-		ics = new HashMap<String,Boolean>();
-		ixit = new HashMap<String,String>();
-		
-		ics.put("ICSON_OnboardingServiceFramework", iCSON_OnboardingServiceFramework);
-		ics.put("ICSON_OnboardingInterface", iCSON_OnboardingInterface);
-		ics.put("ICSON_ChannelSwitching", iCSON_ChannelSwitching);
-		ics.put("ICSON_GetScanInfoMethod", iCSON_GetScanInfoMethod);
-		
-		ixit.put("IXITCO_AppId", iXITCO_AppId);
-		ixit.put("IXITCO_DeviceId", iXITCO_DeviceId);
-		ixit.put("IXITCO_DefaultLanguage", iXITCO_DefaultLanguage);
-		ixit.put("IXITON_OnboardingVersion", iXITON_OnboardingVersion);
-		ixit.put("IXITON_SoftAP", iXITON_SoftAP);
-		ixit.put("IXITON_SoftAPAuthType", iXITON_SoftAPAuthType);
-		ixit.put("IXITON_SoftAPpassphrase", iXITON_SoftAPpassphrase);
-		ixit.put("IXITON_PersonalAP", iXITON_PersonalAP);
-		ixit.put("IXITON_PersonalAPAuthType", iXITON_PersonalAPAuthType);
-		ixit.put("IXITON_PersonalAPpassphrase", iXITON_PersonalAPpassphrase);
+		this.icsList = icsList;
+		this.ixitList = ixitList;
 	
-		ANNOUNCEMENT_TIMEOUT_IN_SECONDS = Integer.parseInt(gPCO_AnnouncementTimeout);
-		TIME_TO_WAIT_FOR_SOFT_AP_IN_MS_SHORT = Integer.parseInt(gPON_WaitSoftAP);
-		TIME_TO_WAIT_TO_CONNECT_TO_SOFT_AP_IN_MS = Integer.parseInt(gPON_ConnectSoftAP);
-		TIME_TO_WAIT_FOR_SOFT_AP_AFTER_OFFBOARD = Integer.parseInt(gPON_WaitSoftAPAfterOffboard);
-		TIME_TO_WAIT_TO_CONNECT_TO_PERSONAL_AP_IN_MS = Integer.parseInt(gPON_ConnectPersonalAP);
-		TIME_TO_WAIT_FOR_DISCONNECT_IN_MS = Integer.parseInt(gPON_Disconnect);
-		TIME_TO_WAIT_FOR_NEXT_DEVICE_ANNOUNCEMENT_IN_MS = Integer.parseInt(gPON_NextAnnouncement);
-		TIME_TO_WAIT_FOR_SCAN_RESULTS_IN_SECONDS = Integer.parseInt(gPON_TimeToWaitForScanResults);
+		ANNOUNCEMENT_TIMEOUT_IN_SECONDS = gpList.GPCO_AnnouncementTimeout;
+		TIME_TO_WAIT_FOR_SOFT_AP_IN_MS_SHORT = gpList.GPON_WaitSoftAP;
+		TIME_TO_WAIT_TO_CONNECT_TO_SOFT_AP_IN_MS = gpList.GPON_ConnectSoftAP;
+		TIME_TO_WAIT_FOR_SOFT_AP_AFTER_OFFBOARD = gpList.GPON_WaitSoftAPAfterOffboard;
+		TIME_TO_WAIT_TO_CONNECT_TO_PERSONAL_AP_IN_MS = gpList.GPON_ConnectPersonalAP;
+		TIME_TO_WAIT_FOR_DISCONNECT_IN_MS = gpList.GPON_Disconnect;
+		TIME_TO_WAIT_FOR_NEXT_DEVICE_ANNOUNCEMENT_IN_MS = gpList.GPON_NextAnnouncement;
+		TIME_TO_WAIT_FOR_SCAN_RESULTS_IN_SECONDS = gpList.GPON_TimeToWaitForScanResults;
 
 		try
 		{
@@ -155,52 +129,60 @@ public class OnboardingTestSuite
 		}
 		catch (Exception e)
 		{
-			if ((e.getMessage() != null) && (e.getMessage().equals("Timed out waiting for About announcement")))
-			{
-				//fail("Timed out waiting for About announcement");
-			}
-			else
-			{
-				String errorMsg = "Exception: "+e.toString();
-				logger.error(errorMsg);
-				//fail(errorMsg);
-			}
 			inconc = true;
-			tearDown();
 		}
 	}
 
-	public void runTestCase(String testCase) throws Exception {
-		
+	public void runTestCase(String testCase) throws Exception
+	{
 		setUp();
-		//logger.info("Running testcase: "+testCase);
 		
-		if (testCase.equals("Onboarding-v1-01")) {
-			testOnboarding_v1_01_OffboardDevice();
-		} else if(testCase.equals("Onboarding-v1-02")) {
-			testOnboarding_v1_02_OnboardDevice();
-		} else if(testCase.equals("Onboarding-v1-03")) {
-			testOnboarding_v1_03_ConnectivityOverSoftAP();
-		} else if(testCase.equals("Onboarding-v1-04")) {
-			testOnboarding_v1_04_ConfigureWiFiWithOutOfRangeValue();
-		} else if(testCase.equals("Onboarding-v1-05")) {
-			testOnboarding_v1_05_ConfigureWiFiWithWrongSSID();
-		} else if(testCase.equals("Onboarding-v1-06")) {
-			testOnboarding_v1_06_ConfigureWiFiWithWrongPassword();
-		} else if(testCase.equals("Onboarding-v1-07")) {
-			testOnboarding_v1_07_ConfigureWiFiAuthTypeOfAny();
-		} else if(testCase.equals("Onboarding-v1-08")) {
-			testOnboarding_v1_08_GetScanInfo();
-		} else if(testCase.equals("Onboarding-v1-09")) {
-			testOnboarding_v1_09_WrongPasscode();
-		} else if(testCase.equals("Onboarding-v1-10")) {
-			testOnboarding_v1_10_AuthenticateAfterChangingPasscode();
-		} else if(testCase.equals("Onboarding-v1-11")) {
-			testOnboarding_v1_11_FactoryResetClearsConfiguration();
-		} else if(testCase.equals("Onboarding-v1-12")) {
-			testOnboarding_v1_12_FactoryResetResetsPasscode();
-		} else {
-			fail("Test Case not valid");
+		try
+		{
+			logger.info("Running testcase: "+testCase);
+			
+			if (testCase.equals("Onboarding-v1-01")) {
+				testOnboarding_v1_01_OffboardDevice();
+			} else if(testCase.equals("Onboarding-v1-02")) {
+				testOnboarding_v1_02_OnboardDevice();
+			} else if(testCase.equals("Onboarding-v1-03")) {
+				testOnboarding_v1_03_ConnectivityOverSoftAP();
+			} else if(testCase.equals("Onboarding-v1-04")) {
+				testOnboarding_v1_04_ConfigureWiFiWithOutOfRangeValue();
+			} else if(testCase.equals("Onboarding-v1-05")) {
+				testOnboarding_v1_05_ConfigureWiFiWithWrongSSID();
+			} else if(testCase.equals("Onboarding-v1-06")) {
+				testOnboarding_v1_06_ConfigureWiFiWithWrongPassword();
+			} else if(testCase.equals("Onboarding-v1-07")) {
+				testOnboarding_v1_07_ConfigureWiFiAuthTypeOfAny();
+			} else if(testCase.equals("Onboarding-v1-08")) {
+				testOnboarding_v1_08_GetScanInfo();
+			} else if(testCase.equals("Onboarding-v1-09")) {
+				testOnboarding_v1_09_WrongPasscode();
+			} else if(testCase.equals("Onboarding-v1-10")) {
+				testOnboarding_v1_10_AuthenticateAfterChangingPasscode();
+			} else if(testCase.equals("Onboarding-v1-11")) {
+				testOnboarding_v1_11_FactoryResetClearsConfiguration();
+			} else if(testCase.equals("Onboarding-v1-12")) {
+				testOnboarding_v1_12_FactoryResetResetsPasscode();
+			} else {
+				fail("Test Case not valid");
+			}
+		}
+		catch (Exception exception)
+		{
+			logger.error("Exception executing Test Case: %s", exception.getMessage()); //[AT4]
+			
+			try 
+			{
+				tearDown();
+			} 
+			catch (Exception newException) 
+			{
+				logger.error("Exception releasing resources: %s", newException.getMessage());
+			}
+			
+			throw exception;
 		}
 
 		tearDown();
@@ -217,10 +199,10 @@ public class OnboardingTestSuite
 		{
 			//appUnderTestDetails = getValidationTestContext().getAppUnderTestDetails();
             //dutDeviceId = appUnderTestDetails.getDeviceId();
-			dutDeviceId = ixit.get("IXITCO_DeviceId");
+			dutDeviceId = ixitList.IXITCO_DeviceId;
 			logger.info(String.format("Running Onboarding test case against Device ID: %s", dutDeviceId));
 			//dutAppId = appUnderTestDetails.getAppId();
-			dutAppId = UUID.fromString(ixit.get("IXITCO_AppId"));
+			dutAppId = ixitList.IXITCO_AppId;
 			logger.info(String.format("Running Onboarding test case against App ID: %s", dutAppId));
 			//String keyStorePath = getValidationTestContext().getKeyStorePath();
 			String keyStorePath = "/KeyStore";
@@ -229,22 +211,22 @@ public class OnboardingTestSuite
 			onboardingHelper = getOnboardingHelper();
 			
 			//short personalApSecurity = getPersonalApSecurity();
-			short personalApSecurity = Short.parseShort(ixit.get("IXITON_PersonalAPAuthType"));
+			short personalApSecurity = Short.parseShort(ixitList.IXITON_PersonalAPAuthType);
 			logger.info(String.format("Running Onboarding test case using PersonalApSecurity: %s", personalApSecurity));
 			//String personalApSsid = getPersonalApSsid();
-			String personalApSsid = ixit.get("IXITON_PersonalAP");
+			String personalApSsid = ixitList.IXITON_PersonalAP;
 			logger.info(String.format("Running Onboarding test case using PersonalApSsid: %s", personalApSsid));
 			//String personalApPassphrase = getPersonalApPassphrase();
-			String personalApPassphrase = ixit.get("IXITON_PersonalAPpassphrase");
+			String personalApPassphrase = ixitList.IXITON_PersonalAPpassphrase;
 			logger.info(String.format("Running Onboarding test case using PersonalApPassphrase: %s", personalApPassphrase));
 			//String onboardeeSoftApSsid = getOnboardeeSoftApSsid();
-			String onboardeeSoftApSsid = ixit.get("IXITON_SoftAP");
+			String onboardeeSoftApSsid = ixitList.IXITON_SoftAP;
 			logger.info(String.format("Running Onboarding test case against onboardeeSoftApSsid: %s", onboardeeSoftApSsid));
 			//String onboardeeSoftApPassphrase = getOnboardeeSoftApPassphrase();
-			String onboardeeSoftApPassphrase = ixit.get("IXITON_SoftAPpassphrase");
+			String onboardeeSoftApPassphrase = ixitList.IXITON_SoftAPpassphrase;
 			logger.info(String.format("Running Onboarding test case against OnboardeeSoftApPassphrase: %s", onboardeeSoftApPassphrase));
 			//String onboardeeSoftApSecurityType = getOnboardeeSoftApSecurityType();
-			short onboardeeSoftApSecurityType = Short.parseShort(ixit.get("IXITON_SoftAPAuthType"));
+			short onboardeeSoftApSecurityType = Short.parseShort(ixitList.IXITON_SoftAPAuthType);
 			logger.info(String.format("Running Onboarding test case against OnboardeeSoftApSecurityType: %s", onboardeeSoftApSecurityType));
 
 			String authTypeString = onboardingHelper.mapAuthTypeToAuthTypeString(personalApSecurity);
@@ -305,7 +287,7 @@ public class OnboardingTestSuite
 		logger.info("Checking Onboarding interface version property");
 		short version = onboardingHelper.retrieveVersionProperty();
 		//assertEquals("Onboarding interface version mismatch", 1, version);
-		assertEquals("Onboarding interface version mismatchs IXITON_OnboardingVersion", Short.parseShort(ixit.get("IXITON_OnboardingVersion")), version);
+		assertEquals("Onboarding interface version mismatchs IXITON_OnboardingVersion", ixitList.IXITON_OnboardingVersion, version);
 
 		placeDUTInOffboardState();
 		

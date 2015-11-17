@@ -40,6 +40,9 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.introspection.BusIntrospector;
 import com.at4wireless.alljoyn.core.notification.NotificationValidator;
 import com.at4wireless.alljoyn.core.notification.NotificationValidator.NotificationValidationExceptionHandler;
+import com.at4wireless.alljoyn.testcases.parameter.GeneralParameter;
+import com.at4wireless.alljoyn.testcases.parameter.Ics;
+import com.at4wireless.alljoyn.testcases.parameter.Ixit;
 
 /**
  * Notification Service conformance test cases
@@ -114,47 +117,19 @@ public class NotificationTestSuite
 	
 	Boolean pass=true;
 	boolean inconc=false;
-	Map<String,Boolean> ics;
-	Map<String,String> ixit;
+	private Ics icsList;
+	private Ixit ixitList;
 	private long ANNOUNCEMENT_TIMEOUT_IN_SECONDS;
 
-	public NotificationTestSuite(String testCase,
-			boolean iCSN_NotificationServiceFramework,
-			boolean iCSN_NotificationInterface, boolean iCSN_RichIconUrl,
-			boolean iCSN_RichAudioUrl, boolean iCSN_RespObjectPath,
-			boolean iCSN_NotificationProducerInterface,
-			boolean iCSN_DismisserInterface, boolean iCSN_NotificationConsumer,
-			String iXITCO_AppId,
-			String iXITCO_DeviceId, String iXITCO_DefaultLanguage,
-			String iXITN_NotificationVersion, String iXITN_TTL,
-			String iXITN_NotificationProducerVersion,
-			String iXITN_NotificationDismisserVersion,
-			String gPCO_AnnouncementTimeout)
+	public NotificationTestSuite(String testCase, Ics icsList, Ixit ixitList, GeneralParameter gpList)
 	{
 		/** 
 		 * [AT4] Attributes initialization
 		 * */
+		this.icsList = icsList;
+		this.ixitList = ixitList;
 		
-		ics = new HashMap<String,Boolean>();
-		ics.put("ICSN_NotificationServiceFramework", iCSN_NotificationServiceFramework);
-		ics.put("ICSN_NotificationInterface", iCSN_NotificationInterface);
-		ics.put("ICSN_RichIconUrl", iCSN_RichIconUrl);
-		ics.put("ICSN_RichAudioUrl", iCSN_RichAudioUrl);
-		ics.put("ICSN_RespObjectPath", iCSN_RespObjectPath);
-		ics.put("ICSN_NotificationProducerInterface", iCSN_NotificationProducerInterface);
-		ics.put("ICSN_DismisserInterface", iCSN_DismisserInterface);
-		ics.put("ICSN_NotificationConsumer", iCSN_NotificationConsumer);
-		
-		ixit = new HashMap<String,String>();
-		ixit.put("IXITCO_AppId", iXITCO_AppId);
-		ixit.put("IXITCO_DeviceId", iXITCO_DeviceId);
-		ixit.put("IXITCO_DefaultLanguage", iXITCO_DefaultLanguage);
-		ixit.put("IXITN_NotificationVersion", iXITN_NotificationVersion);
-		ixit.put("IXITN_TTL", iXITN_TTL);
-		ixit.put("IXITN_NotificationProducerVersion", iXITN_NotificationProducerVersion);
-		ixit.put("IXITN_NotificationDismisserVersion", iXITN_NotificationDismisserVersion);
-		
-		ANNOUNCEMENT_TIMEOUT_IN_SECONDS = Integer.parseInt(gPCO_AnnouncementTimeout);
+		ANNOUNCEMENT_TIMEOUT_IN_SECONDS = gpList.GPCO_AnnouncementTimeout;
 
 		try
 		{
@@ -163,71 +138,78 @@ public class NotificationTestSuite
 		catch (Exception e)
 		{
 			inconc = true;
-			if (e != null)
-			{
-				if (e.getMessage().equals("Timed out waiting for About announcement"))
-				{
-					fail("Timed out waiting for About announcement");
-				}
-				else
-				{
-					fail("Exception: "+e.toString());
-				}
-			}
 		}
 	}
 
 	public void runTestCase(String testCase) throws Exception
 	{
-		if (testCase.equals("Notification-Consumer-v1-01"))
+		if (testCase.equals("Notification-v1-01"))
 		{
-			setUp();
-			logger.info(String.format("Running testcase: %s", testCase));
-			testNotification_Consumer_v1_01();
-		}
-		else if (testCase.equals("Notification-Consumer-v1-02"))
-		{
-			setUp();
-			logger.info(String.format("Running testcase: %s", testCase));
-			testNotification_Consumer_v1_02();
-		/*} else if (testCase.equals("Notification-Consumer-v1-03")) {
-			setUp();
-			logger.info(String.format("Running testcase: %s", testCase));
-			testNotification_Consumer_v1_03();*/
-		}
-		else if(testCase.equals("Notification-Consumer-v1-04"))
-		{
-			setUp();
-			logger.info(String.format("Running testcase: %s", testCase));
-			testNotification_Consumer_v1_04();
-		}
-		else if(testCase.equals("Notification-Consumer-v1-05"))
-		{
-			setUp();
-			logger.info(String.format("Running testcase: %s", testCase));
-			testNotification_Consumer_v1_05();
-		}
-		else if(testCase.equals("Notification-Consumer-v1-06"))
-		{
-			setUp();
-			logger.info(String.format("Running testcase: %s", testCase));
-			testNotification_Consumer_v1_06();
-		}
-		else if(testCase.equals("Notification-v1-01"))
-		{	
 			setUpReceiver();
-			logger.info(String.format("Running testcase: %s", testCase));
-			testNotificationsReceived();
 		}
 		else
 		{
-			fail("Test Case not valid");
+			setUp();
+		}
+		
+		try
+		{
+			logger.info(String.format("Running testcase: %s", testCase));
+			
+			if (testCase.equals("Notification-Consumer-v1-01"))
+			{
+				testNotification_Consumer_v1_01();
+			}
+			else if (testCase.equals("Notification-Consumer-v1-02"))
+			{
+				testNotification_Consumer_v1_02();
+			/*}
+			else if (testCase.equals("Notification-Consumer-v1-03"))
+			{
+				testNotification_Consumer_v1_03();*/
+			}
+			else if(testCase.equals("Notification-Consumer-v1-04"))
+			{
+				testNotification_Consumer_v1_04();
+			}
+			else if(testCase.equals("Notification-Consumer-v1-05"))
+			{
+				testNotification_Consumer_v1_05();
+			}
+			else if(testCase.equals("Notification-Consumer-v1-06"))
+			{
+				testNotification_Consumer_v1_06();
+			}
+			else if(testCase.equals("Notification-v1-01"))
+			{	
+				testNotificationsReceived();
+			}
+			else
+			{
+				fail("Test Case not valid");
+			}
+		}
+		catch (Exception exception)
+		{
+			logger.error("Exception executing Test Case: %s", exception.getMessage()); //[AT4]
+			
+			try 
+			{
+				tearDown();
+			} 
+			catch (Exception newException) 
+			{
+				logger.error("Exception releasing resources: %s", newException.getMessage());
+			}
+			
+			throw exception;
 		}
 		
 		if (testCase.equals("Notification-v1-01"))
 		{
 			tearDownReceiver();
-		} else
+		}
+		else
 		{
 			tearDown();
 		}
@@ -240,8 +222,8 @@ public class NotificationTestSuite
 			logger.noTag("====================================================");
 			logger.info("test setUp started");
 			
-			logger.info(String.format("Running test case against Device ID: %s", ixit.get("IXITCO_DeviceId")));
-			logger.info(String.format("Running test case against App ID: %s", UUID.fromString(ixit.get("IXITCO_AppId"))));
+			logger.info(String.format("Running test case against Device ID: %s", ixitList.IXITCO_DeviceId));
+			logger.info(String.format("Running test case against App ID: %s", ixitList.IXITCO_AppId));
 
 			propertyStore = getPropertyStoreImpl();
 
@@ -522,8 +504,8 @@ public class NotificationTestSuite
 		PropertyStoreImpl propertyStoreImpl = new PropertyStoreImpl();
 		propertyStoreImpl.setValue(AboutKeys.ABOUT_DEVICE_NAME, "NotificationConsumerTest", "");
 		propertyStoreImpl.setValue(AboutKeys.ABOUT_APP_NAME, "NotificationConsumerTest", "");
-		propertyStoreImpl.setValue(AboutKeys.ABOUT_APP_ID, UUID.fromString(ixit.get("IXITCO_AppId")), "");
-		propertyStoreImpl.setValue(AboutKeys.ABOUT_DEVICE_ID, ixit.get("IXITCO_DeviceId"), "");
+		propertyStoreImpl.setValue(AboutKeys.ABOUT_APP_ID, ixitList.IXITCO_AppId, "");
+		propertyStoreImpl.setValue(AboutKeys.ABOUT_DEVICE_ID, ixitList.IXITCO_DeviceId, "");
 
 		return propertyStoreImpl;
 	}
@@ -554,8 +536,8 @@ public class NotificationTestSuite
         dutAppId = appUnderTestDetails.getAppId();
         logger.debug(String.format("Running NotificationProducer test case against App ID: %s", dutAppId)); */
 		
-		logger.info(String.format("Running test case against Device ID: %s", ixit.get("IXITCO_DeviceId"))); //[AT4] Added IXIT
-		logger.info(String.format("Running test case against App ID: %s", UUID.fromString(ixit.get("IXITCO_AppId")))); //[AT4] Added IXIT
+		logger.info(String.format("Running test case against Device ID: %s", ixitList.IXITCO_DeviceId)); //[AT4] Added IXIT
+		logger.info(String.format("Running test case against App ID: %s", ixitList.IXITCO_AppId)); //[AT4] Added IXIT
 		
 		waitingforUserInputThread = Thread.currentThread();
 
@@ -565,11 +547,11 @@ public class NotificationTestSuite
 		{
 			serviceHelper = getServiceHelper();
 
-			serviceHelper.initialize(BUS_APPLICATION_NAME, ixit.get("IXITCO_DeviceId"), UUID.fromString(ixit.get("IXITCO_AppId"))); //[AT4] Added IXITs
+			serviceHelper.initialize(BUS_APPLICATION_NAME, ixitList.IXITCO_DeviceId, ixitList.IXITCO_AppId); //[AT4] Added IXITs
 
 			notificationValidator = getNotificationValidator();
-			notificationValidator.setTestParameters(ics.get("ICSN_RichIconUrl"), ics.get("ICSN_RichAudioUrl"),
-					ics.get("ICSN_RespObjectPath"), ixit.get("IXITN_NotificationVersion")); //[AT4] Added method to set IXIT values for the testcase
+			notificationValidator.setTestParameters(icsList.ICSN_RichIconUrl, icsList.ICSN_RichAudioUrl,
+					icsList.ICSN_RespObjectPath, ixitList.IXITN_NotificationVersion); //[AT4] Added method to set IXIT values for the testcase
 			serviceHelper.initNotificationReceiver(notificationValidator);
 
 			//deviceAboutAnnouncement = serviceHelper.waitForNextDeviceAnnouncement(determineAboutAnnouncementTimeout(), TimeUnit.SECONDS);
@@ -597,7 +579,7 @@ public class NotificationTestSuite
 	
 	protected NotificationValidator getNotificationValidator()
 	{
-		return new NotificationValidator(ixit.get("IXITCO_DeviceId"), UUID.fromString(ixit.get("IXITCO_AppId")));
+		return new NotificationValidator(ixitList.IXITCO_DeviceId, ixitList.IXITCO_AppId);
 	}
 	
 	/*protected ServiceHelper getServiceHelper()

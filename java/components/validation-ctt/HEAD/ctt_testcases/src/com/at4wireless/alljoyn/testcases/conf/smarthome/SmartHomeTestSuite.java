@@ -29,6 +29,9 @@ import org.alljoyn.smarthome.centralizedmanagement.client.SmartHomeClient;
 import com.at4wireless.alljoyn.core.about.AboutAnnouncementDetails;
 import com.at4wireless.alljoyn.core.commons.ServiceHelper;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
+import com.at4wireless.alljoyn.testcases.parameter.GeneralParameter;
+import com.at4wireless.alljoyn.testcases.parameter.Ics;
+import com.at4wireless.alljoyn.testcases.parameter.Ixit;
 
 public class SmartHomeTestSuite
 {
@@ -59,35 +62,18 @@ public class SmartHomeTestSuite
 	 * 
 	 * */
 	boolean pass = true;
-	Map<String, Boolean> ics;
-	Map<String, String> ixit;
+	boolean inconc = false;
 	private long ANNOUNCEMENT_TIMEOUT_IN_SECONDS = 30;
+	private Ics icsList;
+	private Ixit ixitList;
 
-	public SmartHomeTestSuite(String testCase,
-			boolean iCSSH_SmartHomeServiceFramework,
-			boolean iCSSH_CentralizedManagementInterface, String iXITCO_AppId,
-			String iXITCO_DeviceId, String iXITCO_DefaultLanguage,
-			String iXITSH_CentralizedManagementVersion,
-			String iXITSH_WellKnownName, String iXITSH_UniqueName,
-			String iXITSH_DeviceId, String iXITSH_HeartBeatInterval,
-			String gPCO_AnnouncementTimeout, String gPSH_Signal)
+	public SmartHomeTestSuite(String testCase, Ics icsList, Ixit ixitList, GeneralParameter gpList)
 	{
-		ics = new HashMap<String, Boolean>();
-		ixit = new HashMap<String,String>();
+		this.icsList = icsList;
+		this.ixitList = ixitList;
 		
-		ics.put("ICSSH_SmartHomeServiceFramework", iCSSH_SmartHomeServiceFramework);
-		ics.put("ICSSH_CentralizedManagementInterface", iCSSH_CentralizedManagementInterface);
-
-		ixit.put("IXITCO_AppId", iXITCO_AppId);
-		ixit.put("IXITCO_DeviceId", iXITCO_DeviceId);
-		ixit.put("IXITSH_CentralizedManagementVersion", iXITSH_CentralizedManagementVersion);
-		ixit.put("IXITSH_WellKnownName", iXITSH_WellKnownName);
-		ixit.put("IXITSH_UniqueName", iXITSH_UniqueName);
-		ixit.put("IXITSH_DeviceId", iXITSH_DeviceId);
-		ixit.put("IXITSH_HeartBeatInterval", iXITSH_HeartBeatInterval);
-		
-		ANNOUNCEMENT_TIMEOUT_IN_SECONDS = Integer.parseInt(gPCO_AnnouncementTimeout);
-		SIGNAL_TIMEOUT_IN_SECONDS = Integer.parseInt(gPSH_Signal);
+		ANNOUNCEMENT_TIMEOUT_IN_SECONDS = gpList.GPCO_AnnouncementTimeout;
+		SIGNAL_TIMEOUT_IN_SECONDS = gpList.GPSH_Signal;
 		
 		try
 		{
@@ -95,14 +81,7 @@ public class SmartHomeTestSuite
 		}
 		catch (Exception e)
 		{
-			if (e.getMessage().equals("Timed out waiting for About announcement"))
-			{
-				fail("Timed out waiting for About announcement");
-			}
-			else
-			{
-				fail("Exception: "+e.toString());
-			}
+			inconc = true;
 		}
 	}
 
@@ -110,29 +89,47 @@ public class SmartHomeTestSuite
 	{
 		setUp();
 
-		if (testCase.equals("SmartHome-v1-01"))
+		try
 		{
-			testSmartHome_v1_01();
+			if (testCase.equals("SmartHome-v1-01"))
+			{
+				testSmartHome_v1_01();
+			}
+			else if (testCase.equals("SmartHome-v1-02"))
+			{
+				testSmartHome_v1_02();
+			}
+			else if (testCase.equals("SmartHome-v1-03"))
+			{
+				testSmartHome_v1_03();
+			}
+			else if (testCase.equals("SmartHome-v1-04"))
+			{
+				testSmartHome_v1_04();
+			}
+			else if (testCase.equals("SmartHome-v1-05"))
+			{
+				testSmartHome_v1_05();
+			}
+			else
+			{
+				fail("TestCase not valid");
+			}
 		}
-		else if (testCase.equals("SmartHome-v1-02"))
+		catch (Exception exception)
 		{
-			testSmartHome_v1_02();
-		}
-		else if (testCase.equals("SmartHome-v1-03"))
-		{
-			testSmartHome_v1_03();
-		}
-		else if (testCase.equals("SmartHome-v1-04"))
-		{
-			testSmartHome_v1_04();
-		}
-		else if (testCase.equals("SmartHome-v1-05"))
-		{
-			testSmartHome_v1_05();
-		}
-		else
-		{
-			fail("TestCase not valid");
+			logger.error("Exception executing Test Case: %s", exception.getMessage()); //[AT4]
+			
+			try 
+			{
+				tearDown();
+			} 
+			catch (Exception newException) 
+			{
+				logger.error("Exception releasing resources: %s", newException.getMessage());
+			}
+			
+			throw exception;
 		}
 
 		tearDown();
@@ -146,9 +143,9 @@ public class SmartHomeTestSuite
 			logger.info("test setUp started");
 
 
-			dutDeviceId = ixit.get("iXITCO_DeviceId");
+			dutDeviceId = ixitList.IXITCO_DeviceId;
 			logger.info(String.format("Running ControlPanel test case against Device ID: %s", dutDeviceId));
-			dutAppId = UUID.fromString(ixit.get("iXITCO_AppId"));
+			dutAppId = ixitList.IXITCO_AppId;
 			logger.info(String.format("Running ControlPanel test case against App ID: %s", dutAppId));
 
 			serviceHelper = getServiceHelper();
@@ -207,7 +204,7 @@ public class SmartHomeTestSuite
 		}
 
 		assertEquals("Centralized Management service interface version does not match", 
-				Integer.parseInt(ixit.get("IXITSH_CentralizedManagementVersion")), interfaceVersion);
+				ixitList.IXITSH_CentralizedManagementVersion, interfaceVersion);
 	}
 
 	private void testSmartHome_v1_02() throws Exception
@@ -216,8 +213,8 @@ public class SmartHomeTestSuite
 				new Class[] { SmartHomeClient.class });
 
 
-		proxy.getInterface(SmartHomeClient.class).ApplianceRegistration(ixit.get("IXITSH_WellKnownName"), 
-				ixit.get("IXITSH_UniqueName"), ixit.get("IXITSH_DeviceId"));
+		proxy.getInterface(SmartHomeClient.class).ApplianceRegistration(ixitList.IXITSH_WellKnownName, 
+				ixitList.IXITSH_UniqueName, ixitList.IXITSH_DeviceId);
 
 		CountDownLatch countDownLatch = new CountDownLatch(1);
 		ReturnValueHandler signalHandler=new ReturnValueHandler(countDownLatch);
@@ -227,7 +224,7 @@ public class SmartHomeTestSuite
 
 
 		//TODO Continue with the implementation of the test cases, 
-		//now we don´t have the correct interface
+		//now we donï¿½t have the correct interface
 		// proxy.getInterface(SmartHomeClient.class).
 
 

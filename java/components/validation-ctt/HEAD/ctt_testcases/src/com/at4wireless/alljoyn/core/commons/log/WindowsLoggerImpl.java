@@ -25,7 +25,7 @@ public class WindowsLoggerImpl implements Logger
     public WindowsLoggerImpl(String tag)
     {
     	this.tag = tag;
-        if (tag.length() > 23)
+        if (tag.length() > 30)
         {
             throw new RuntimeException("Tag too long");
         }
@@ -34,69 +34,66 @@ public class WindowsLoggerImpl implements Logger
     @Override
     public void error(String format, Object... args)
     {
-    	 Print("E/"+tag+"("+getPID()+"):"+format);
-        
+    	printLog("ERROR", tag, getLineNumber(), getMessage(format, args));
     }
 
     @Override
     public void warn(String format, Object... args)
     {
-    	 Print("W/"+tag+"("+getPID()+"):"+format);
+    	printLog("WARN", tag, getLineNumber(), getMessage(format, args));
     }
 
     @Override
     public void info(String format, Object... args)
     {
-    	 Print("I/"+tag+"("+getPID()+"):"+format);
+    	printLog("INFO", tag, getLineNumber(), getMessage(format, args));
     }
 
     @Override
     public void debug(String format, Object... args)
     {
-    	 Print("D/"+tag+"("+getPID()+"):"+format);	 
+    	printLog("DEBUG", tag, getLineNumber(), getMessage(format, args));
+    }
+    
+    @Override
+	public void raw(String format, Object... args)
+    {
+    	System.out.println(getMessage(format, args));
+	}
+    
+    private String getMessage(String format, Object[] args)
+    {
+        String msg = format;
+        if (args.length > 0)
+        {
+            msg = String.format(format, args);
+        }
+        return msg;
     }
 
     @Override
     public void error(String message, Throwable t)
     {
-    	 Print("D/"+tag+"("+getPID()+"):"+message);
+    	printLog("ERROR", tag, getLineNumber(), String.format("%s: %s", message, t.getMessage()));
     }
 
     @Override
     public void warn(String message, Throwable t)
     {
-    	 Print("W/"+tag+"("+getPID()+"):"+message);
+    	printLog("WARN", tag, getLineNumber(), String.format("%s: %s", message, t.getMessage()));
     }
 
     @Override
     public void info(String message, Throwable t)
     {
-    	 Print("I/"+tag+"("+getPID()+"):"+message);
+    	printLog("INFO", tag, getLineNumber(), String.format("%s: %s", message, t.getMessage()));
     }
 
     @Override
     public void debug(String message, Throwable t)
     {
-    	 Print("D/"+tag+"("+getPID()+"):"+message);
+    	printLog("DEBUG", tag, getLineNumber(), String.format("%s: %s", message, t.getMessage()));
     }
-
-	@Override
-	public void pass(String format)
-	{
-		System.out.println(tag+"("+getPID()+"): PASS: "+format);
-	}
-
-	@Override
-	public void fail(String format)
-	{
-		Print("F/"+format);
-	}
-	
-	@Override
-	public void addNote(String format)
-	{
-		Print("D/"+tag+"("+getPID()+"):Note added:"+format);
-	}
 	
 	public void noTag(String format)
 	{
@@ -108,10 +105,9 @@ public class WindowsLoggerImpl implements Logger
 		System.out.println(format);
 	}
 	
-	private void Print(String string)
+	private void printLog(String level, String tag, int lineNumber, String message)
 	{
-		String str = getTimeStamp()+":"+string;
-		System.out.println(str);
+		System.out.println(String.format("%s %s %s(%d) : %s", getTimeStamp(), level, tag, lineNumber, message));
 	}
 
 	public String getTimeStamp()
@@ -125,11 +121,8 @@ public class WindowsLoggerImpl implements Logger
 		return timeStamp;
 	}
 	
-	public static long getPID()
+	public static int getLineNumber()
 	{
-	    String processName = 
-	    		java.lang.management.ManagementFactory.getRuntimeMXBean().getName();
-	    return Long.parseLong(processName.split("@")[0]);
+	    return Thread.currentThread().getStackTrace()[3].getLineNumber();
 	}
 }
-

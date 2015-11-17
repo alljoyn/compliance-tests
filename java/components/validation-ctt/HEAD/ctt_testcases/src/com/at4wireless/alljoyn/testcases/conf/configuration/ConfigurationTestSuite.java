@@ -39,6 +39,9 @@ import com.at4wireless.alljoyn.core.commons.log.Logger;
 import com.at4wireless.alljoyn.core.commons.log.LoggerFactory;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.introspection.BusIntrospector;
+import com.at4wireless.alljoyn.testcases.parameter.GeneralParameter;
+import com.at4wireless.alljoyn.testcases.parameter.Ics;
+import com.at4wireless.alljoyn.testcases.parameter.Ixit;
 
 public class ConfigurationTestSuite
 {
@@ -91,50 +94,25 @@ public class ConfigurationTestSuite
 	/** The dut app id. */
 	private  UUID dutAppId;
 
-	/** The ics. */
-	Map<String,Boolean> ics;
-	
-	/** The ixit. */
-	Map<String,String> ixit;
+	Ics icsList;
+	Ixit ixitList;
 
-	public ConfigurationTestSuite(String testCase,
-			boolean iCSCF_ConfigurationServiceFramework,
-			boolean iCSCF_ConfigurationInterface,
-			boolean iCSCF_FactoryResetMethod, String iXITCO_AppId,
-			String iXITCO_DeviceId, String iXITCO_DefaultLanguage,
-			String iXITCF_ConfigVersion, String iXITCF_Passcode,
-			String gPCO_AnnouncementTimeout, String gPCF_SessionLost,
-			String gPCF_SessionClose)
+	public ConfigurationTestSuite(String testCase, Ics icsList, Ixit ixitList, GeneralParameter gpList)
 	{
-		ics = new HashMap<String,Boolean>();
-		ixit = new HashMap<String,String>();
-		
-		ics.put("ICSCF_ConfigurationServiceFramework",iCSCF_ConfigurationServiceFramework);
-		ics.put("ICSCF_ConfigurationInterface",iCSCF_ConfigurationInterface);
-		ics.put("ICSCF_FactoryResetMethod",iCSCF_FactoryResetMethod);
-		
-		ixit.put("IXITCO_AppId",iXITCO_AppId);
-		//ixit.put("IXITCO_DefaultLanguage",iXITCO_DefaultLanguage);
-		ixit.put("IXITCO_DeviceId",iXITCO_DeviceId);
-		ixit.put("IXITCF_ConfigVersion",iXITCF_ConfigVersion);
-		ixit.put("IXITCF_Passcode", iXITCF_Passcode);
+		this.icsList = icsList;
+		this.ixitList = ixitList;
 
-		aboutAnnouncementTimeout = Integer.parseInt(gPCO_AnnouncementTimeout);
-		SESSION_LOST_TIMEOUT_IN_SECONDS = Integer.parseInt(gPCF_SessionLost);
-		SESSION_CLOSE_TIMEOUT_IN_SECONDS = Integer.parseInt(gPCF_SessionClose);
+		aboutAnnouncementTimeout = gpList.GPCO_AnnouncementTimeout;
+		SESSION_LOST_TIMEOUT_IN_SECONDS = gpList.GPCF_SessionLost;
+		SESSION_CLOSE_TIMEOUT_IN_SECONDS = gpList.GPCF_SessionClose;
 
-		try {
+		try
+		{
 			runTestCase(testCase);
-		} catch(Exception e) {
-			if(e!=null){				
-				if(e.getMessage().equals("Timed out waiting for About announcement")){
-					fail("Timed out waiting for About announcement");
-					logger.error("Timed out waiting for About announcement");
-				}else{
-					String errorMsg = "Exception: "+e.toString();
-					inconc(errorMsg);
-				}
-			}
+		}
+		catch (Exception e)
+		{
+			inconc = true;
 		}
 	}
 
@@ -147,74 +125,93 @@ public class ConfigurationTestSuite
 	public void runTestCase(String testCase) throws Exception
 	{
 		setUp();
-		logger.info("Running testcase: "+testCase);
 		
-		if (testCase.equals("Config-v1-01")) {
-			testConfig_v1_01AppIdEqualsDeviceId();
-		} else if (testCase.equals("Config-v1-02")) {
-			testConfig_v1_02ConnectWithWrongPasscode();
-		/*} else if (testCase.equals("Config-v1-03")) {
-			testConfig_v1_03_ValidateVersion();*/
-		} else if (testCase.equals("Config-v1-04")) {
-			testConfig_v1_04GetConfigurationsWithDefaultLanguage();
-		} else if (testCase.equals("Config-v1-05")) {
-			testConfig_v1_05UnspecifiedLanguage();
-		} else if (testCase.equals("Config-v1-06")) {
-			testConfig_v1_06LangConsistence();
-		} else if (testCase.equals("Config-v1-07")) {
-			testConfig_v1_07UnsupportedLanguage();
-		} else if (testCase.equals("Config-v1-08")) {
-			testConfig_v1_08UpdateConfigurationsWithANewDeviceName();
-		/*} else if (testCase.equals("Config-v1-09")) {
-			testConfig_v1_09UpdateConfigurationsMaxLengthEqDeviceName();
-		} else if (testCase.equals("Config-v1-10")) {
-			testConfig_v1_10DeviceNameExceedsMaxLength();
-		} else if (testCase.equals("Config-v1-11")) {
-			testConfig_v1_11ChangeDeviceNametoEmpty();*/
-		} else if (testCase.equals("Config-v1-12")) {
-			testConfig_v1_12DeviceNameSpecial();
-		} else if (testCase.equals("Config-v1-13")) {
-			testConfig_v1_13UpdateUnsupportedLanguage();
-		} else if (testCase.equals("Config-v1-14")) {
-			testConfig_v1_14UpdateDefaultLang();
-		} else if (testCase.equals("Config-v1-15")) {
-			testConfig_v1_15UpdateDefaultLanguageToUnsupportedLanguage();
-		} else if (testCase.equals("Config-v1-16")) {
-			testConfig_v1_16TestChangetoUnspecifiedLanguage();
-		/*} else if (testCase.equals("Config-v1-18")) {
-			testConfig_v1_18TestUpdateReadOnlyField();*/
-		} else if (testCase.equals("Config-v1-19")) {
-			testConfig_v1_19TestUpdateInvalidField();
-		} else if (testCase.equals("Config-v1-20")) {
-			testConfig_v1_20TestResetDeviceName();
-		} else if (testCase.equals("Config-v1-21")) {
-			testConfig_v1_21ResetDefaultLanguage();
-		} else if (testCase.equals("Config-v1-22")) {
-			testConfig_v1_22ResetDefaultMultiLanguage();		
-		} else if (testCase.equals("Config-v1-24")) {
-			testConfig_v1_24FailResetUnsupportedLang();
-		} else if (testCase.equals("Config-v1-25")) {
-			testConfig_v1_25FailResetInvalidField();
-		} else if (testCase.equals("Config-v1-26")) {
-			testConfig_v1_26DeviceRestart();
-		} else if (testCase.equals("Config-v1-27")) {
-			testConfig_v1_27DeviceRestartRememberConfData();
-		} else if (testCase.equals("Config-v1-29")) {
-			testConfig_v1_29PasscodeChanged();
-		} else if (testCase.equals("Config-v1-30")) {
-			testConfig_v1_30PasscodeChangedSingleChar();
-		} else if (testCase.equals("Config-v1-31")) {
-			testConfig_v1_31PasscodeChangedSpecialChars();
-		} else if (testCase.equals("Config-v1-32")) {
-			testConfig_v1_32PasscodeChangedPersistOnRestart();
-		} else if (testCase.equals("Config-v1-33")) {
-			testConfig_v1_33FactoryResetNoUpdateConfiguratins();
-		/*} else if (testCase.equals("Config-v1-34")) {
-			testConfig_v1_34FactoryResetAfterUpdateConfigurations();
-		} else if (testCase.equals("Config-v1-35")) {
-			testConfig_v1_35FactoryResetResetsPasscode();*/
-		} else {
-			fail("Test Case not valid");
+		try
+		{
+			logger.info("Running testcase: "+testCase);
+			
+			if (testCase.equals("Config-v1-01")) {
+				testConfig_v1_01AppIdEqualsDeviceId();
+			} else if (testCase.equals("Config-v1-02")) {
+				testConfig_v1_02ConnectWithWrongPasscode();
+			/*} else if (testCase.equals("Config-v1-03")) {
+				testConfig_v1_03_ValidateVersion();*/
+			} else if (testCase.equals("Config-v1-04")) {
+				testConfig_v1_04GetConfigurationsWithDefaultLanguage();
+			} else if (testCase.equals("Config-v1-05")) {
+				testConfig_v1_05UnspecifiedLanguage();
+			} else if (testCase.equals("Config-v1-06")) {
+				testConfig_v1_06LangConsistence();
+			} else if (testCase.equals("Config-v1-07")) {
+				testConfig_v1_07UnsupportedLanguage();
+			} else if (testCase.equals("Config-v1-08")) {
+				testConfig_v1_08UpdateConfigurationsWithANewDeviceName();
+			/*} else if (testCase.equals("Config-v1-09")) {
+				testConfig_v1_09UpdateConfigurationsMaxLengthEqDeviceName();
+			} else if (testCase.equals("Config-v1-10")) {
+				testConfig_v1_10DeviceNameExceedsMaxLength();
+			} else if (testCase.equals("Config-v1-11")) {
+				testConfig_v1_11ChangeDeviceNametoEmpty();*/
+			} else if (testCase.equals("Config-v1-12")) {
+				testConfig_v1_12DeviceNameSpecial();
+			} else if (testCase.equals("Config-v1-13")) {
+				testConfig_v1_13UpdateUnsupportedLanguage();
+			} else if (testCase.equals("Config-v1-14")) {
+				testConfig_v1_14UpdateDefaultLang();
+			} else if (testCase.equals("Config-v1-15")) {
+				testConfig_v1_15UpdateDefaultLanguageToUnsupportedLanguage();
+			} else if (testCase.equals("Config-v1-16")) {
+				testConfig_v1_16TestChangetoUnspecifiedLanguage();
+			/*} else if (testCase.equals("Config-v1-18")) {
+				testConfig_v1_18TestUpdateReadOnlyField();*/
+			} else if (testCase.equals("Config-v1-19")) {
+				testConfig_v1_19TestUpdateInvalidField();
+			} else if (testCase.equals("Config-v1-20")) {
+				testConfig_v1_20TestResetDeviceName();
+			} else if (testCase.equals("Config-v1-21")) {
+				testConfig_v1_21ResetDefaultLanguage();
+			} else if (testCase.equals("Config-v1-22")) {
+				testConfig_v1_22ResetDefaultMultiLanguage();		
+			} else if (testCase.equals("Config-v1-24")) {
+				testConfig_v1_24FailResetUnsupportedLang();
+			} else if (testCase.equals("Config-v1-25")) {
+				testConfig_v1_25FailResetInvalidField();
+			} else if (testCase.equals("Config-v1-26")) {
+				testConfig_v1_26DeviceRestart();
+			} else if (testCase.equals("Config-v1-27")) {
+				testConfig_v1_27DeviceRestartRememberConfData();
+			} else if (testCase.equals("Config-v1-29")) {
+				testConfig_v1_29PasscodeChanged();
+			} else if (testCase.equals("Config-v1-30")) {
+				testConfig_v1_30PasscodeChangedSingleChar();
+			} else if (testCase.equals("Config-v1-31")) {
+				testConfig_v1_31PasscodeChangedSpecialChars();
+			} else if (testCase.equals("Config-v1-32")) {
+				testConfig_v1_32PasscodeChangedPersistOnRestart();
+			} else if (testCase.equals("Config-v1-33")) {
+				testConfig_v1_33FactoryResetNoUpdateConfiguratins();
+			/*} else if (testCase.equals("Config-v1-34")) {
+				testConfig_v1_34FactoryResetAfterUpdateConfigurations();
+			} else if (testCase.equals("Config-v1-35")) {
+				testConfig_v1_35FactoryResetResetsPasscode();*/
+			} else {
+				fail("Test Case not valid");
+			}
+		}
+		catch (Exception exception)
+		{
+			logger.error("Exception executing Test Case: %s", exception.getMessage()); //[AT4]
+			
+			try 
+			{
+				tearDown();
+			} 
+			catch (Exception newException) 
+			{
+				logger.error("Exception releasing resources: %s", newException.getMessage());
+			}
+			
+			throw exception;
 		}
 		
 		tearDown();
@@ -229,10 +226,10 @@ public class ConfigurationTestSuite
 		{
 			//appUnderTestDetails = getValidationTestContext().getAppUnderTestDetails(); //[AT4] Not needed
 			//dutDeviceId = appUnderTestDetails.getDevideId();
-			dutDeviceId = ixit.get("IXITCO_DeviceId");
+			dutDeviceId = ixitList.IXITCO_DeviceId;
 			logger.info(String.format("Running Config test case against Device ID: %s", dutDeviceId));
 			//dutAppId = appUnderTestDetails.getAppId();
-			dutAppId = UUID.fromString(ixit.get("IXITCO_AppId"));
+			dutAppId = ixitList.IXITCO_AppId;
 			logger.info(String.format("Running Config test case against App ID: %s", dutAppId));
 			//keyStorePath = getValidationTestContext().getKeyStorePath();
 			keyStorePath="/KeyStore";
@@ -352,7 +349,7 @@ public class ConfigurationTestSuite
 		}
 		else
 		{
-            logger.addNote(String.format("System App AppId: %s is not equal to DeviceId: %s", dutAppId.toString(), dutDeviceId));
+            logger.info(String.format("System App AppId: %s is not equal to DeviceId: %s", dutAppId.toString(), dutDeviceId));
 		}
 	}
 
@@ -392,7 +389,7 @@ public class ConfigurationTestSuite
 	{
 		short version = callGetVersionOnConfig();
 		assertEquals("Config version does not match", 1, version);
-		assertEquals("Config version does not match", ixit.get("IXITCF_ConfigVersion"), version);
+		assertEquals("Config version does not match", ixitList.IXITCF_ConfigVersion"), version);
 	}*/
 
 	public void testConfig_v1_04GetConfigurationsWithDefaultLanguage() throws Exception
@@ -440,7 +437,7 @@ public class ConfigurationTestSuite
 		else
 		{
 			//getValidationTestContext().addNote("Only one language is supported");
-			logger.addNote("Only one language is supported");
+			logger.info("Only one language is supported");
 		}
 	}
 
@@ -623,7 +620,7 @@ public class ConfigurationTestSuite
 		else
 		{
 			//getValidationTestContext().addNote("Only one language is supported");
-			logger.addNote("Only one language is supported");
+			logger.info("Only one language is supported");
 		}
 	}
 	
@@ -849,7 +846,7 @@ public class ConfigurationTestSuite
 		else
 		{
 			//getValidationTestContext().addNote("Only one language is supported");
-			logger.addNote("Only one language is supported");
+			logger.info("Only one language is supported");
 		}
 	}
 	
@@ -1045,7 +1042,7 @@ public class ConfigurationTestSuite
 		if (deviceAboutAnnouncement.supportsInterface(OnboardingTransport.INTERFACE_NAME))
 		{
 			//getValidationContext().addNote("The device supports Onboarding so this Test Case is Not Applicable");
-			logger.addNote("The device supports Onboarding so this Test Case is Not Applicable");
+			logger.info("The device supports Onboarding so this Test Case is Not Applicable");
 		}
 		else
 		{

@@ -18,7 +18,7 @@ package com.at4wireless.alljoyn.core.commons.log;
 public class WindowsLoggerProvider implements LoggerProvider
 {
     @Override
-    public WindowsLoggerImpl getLogger(String tag)
+    public Logger getLogger(String tag)
     {
         return new WindowsLoggerImpl(tag);
     }

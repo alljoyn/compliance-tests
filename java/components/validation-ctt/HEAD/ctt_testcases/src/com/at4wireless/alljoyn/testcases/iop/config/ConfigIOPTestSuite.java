@@ -40,6 +40,7 @@ import javax.swing.table.TableModel;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.iop.CategoryKeys;
 import com.at4wireless.alljoyn.core.iop.IOPMessage;
+import com.at4wireless.alljoyn.testcases.parameter.Ics;
 
 public class ConfigIOPTestSuite
 {
@@ -55,10 +56,10 @@ public class ConfigIOPTestSuite
 	Boolean ICSON_OnboardingServiceFramework = false;
 	String name = null;
 	
-	public ConfigIOPTestSuite(String testCase, Map<String, List<String>> goldenUnits, boolean iCSON_OnboardingServiceFramework)
+	public ConfigIOPTestSuite(String testCase, Map<String, List<String>> goldenUnits, Ics icsList)
 	{
 		this.goldenUnits = goldenUnits;
-		ICSON_OnboardingServiceFramework = iCSON_OnboardingServiceFramework;
+		ICSON_OnboardingServiceFramework = icsList.ICSON_OnboardingServiceFramework;
 		
 		try
 		{
@@ -115,7 +116,7 @@ public class ConfigIOPTestSuite
 	{
 		String msg = "Step 1) The passcode for the DUT is set to the default passcode \"000000\"."
 				+ "\nStep 2) The AllJoyn devices of the Test Bed used will register an AuthListener with the "
-				+ "AllJoyn framework that provides the default passcode (“000000”)\n when "
+				+ "AllJoyn framework that provides the default passcode (ï¿½000000ï¿½)\n when "
 				+ "authentication is requested (unless anything else is defined in a test case)."
 				+ "\nStep 3) The SSID of the soft access point (Soft AP) advertised by the DUT follows the "
 				+ "proper format such that it ends with the first seven digits of the deviceId."
@@ -206,7 +207,7 @@ public class ConfigIOPTestSuite
 				+ "between the DUT and all the Golden Units if is not established "
 				+ "automatically.");
 		message.showMessage("Test Procedure", String.format("Step 5) Command %s to display the "
-				+ "values of the parameters ‘DeviceName’ and ‘DefaultLanguage’"
+				+ "values of the parameters ï¿½DeviceNameï¿½ and ï¿½DefaultLanguageï¿½"
 				+ " in the DUT About Announcement.", testBed));
 		
 		int step = 6;
@@ -224,14 +225,14 @@ public class ConfigIOPTestSuite
 			}
 			
 			message.showMessage("Test Procedure", String.format("Step %d) Command %s to obtain "
-					+ "the DUT configuration data (‘DeviceName’ and ‘DefaultLanguage’ "
-					+ "parameters) on the Config bus object using ‘GetConfigurations’ "
+					+ "the DUT configuration data (ï¿½DeviceNameï¿½ and ï¿½DefaultLanguageï¿½ "
+					+ "parameters) on the Config bus object using ï¿½GetConfigurationsï¿½ "
 					+ "method \n(check that the values are obtained using Configuration "
 					+ "Service and not About Announcement).", step, testBed));
 			step++;
 			
 			int response = message.showQuestion("Pass/Fail Criteria", String.format("Are the values of the parameters"
-					+ " ‘DeviceName’ and ‘DefaultLanguage’ in the DUT About Announcement"
+					+ " ï¿½DeviceNameï¿½ and ï¿½DefaultLanguageï¿½ in the DUT About Announcement"
 					+ " the same than the values obtained in step %d?", step-i));
 
 			if (response != 0) //1==NO
@@ -307,37 +308,37 @@ public class ConfigIOPTestSuite
 			}
 			
 			message.showMessage("Test Procedure", String.format("Step %d) Command %s to obtain "
-					+ "the DUT configuration ‘DeviceName’ parameter value on the "
+					+ "the DUT configuration ï¿½DeviceNameï¿½ parameter value on the "
 					+ "Config bus object using GetConfigurations method.", step, testBed)); 
 			step++;
 			message.showMessage("Test Procedure", String.format("Step %d) Command %s to update "
-					+ "‘DeviceName’ parameter (change DeviceName to DeviceName%d "
+					+ "ï¿½DeviceNameï¿½ parameter (change DeviceName to DeviceName%d "
 					+ "value).", step, testBed, i));
 			step++;
 			message.showMessage("Test Procedure", String.format("Step %d) Command %s to get the "
-					+ "value of ‘DeviceName’ parameter using ‘GetConfigurations’ "
+					+ "value of ï¿½DeviceNameï¿½ parameter using ï¿½GetConfigurationsï¿½ "
 					+ "method of the Config interface.", step, testBed));
 			step++;
 
-			int response = message.showQuestion("Pass/Fail Criteria", String.format("Is ‘DeviceName’ parameter "
+			int response = message.showQuestion("Pass/Fail Criteria", String.format("Is ï¿½DeviceNameï¿½ parameter "
 					+ "value DeviceName%d?", i));
 
 			if (response != 0) //1==NO
 			{
-				fail(String.format("‘DeviceName’ parameter value is not DeviceName%d", i));
+				fail(String.format("ï¿½DeviceNameï¿½ parameter value is not DeviceName%d", i));
 				return;
 			}
 			
 			message.showMessage("Test Procedure", String.format("Step %d) Command %s to display the "
-					+ "values of the ‘DeviceName’ parameter in the DUT About Announcement.", step, TBAD_A));
+					+ "values of the ï¿½DeviceNameï¿½ parameter in the DUT About Announcement.", step, TBAD_A));
 			step++;
 
-			response = message.showQuestion("Pass/Fail Criteria", String.format("DeviceName’ parameter "
+			response = message.showQuestion("Pass/Fail Criteria", String.format("DeviceNameï¿½ parameter "
 					+ "value displayed in the About Announcement is DeviceName%d?", i));
 
 			if (response != 0) //1==NO
 			{
-				fail(String.format("‘DeviceName’ parameter value displayed in the About "
+				fail(String.format("ï¿½DeviceNameï¿½ parameter value displayed in the About "
 						+ "Announcement is not DeviceName%d.", i));
 				return;
 			}
@@ -365,41 +366,41 @@ public class ConfigIOPTestSuite
 					+ "automatically.", step));
 			step++;
 			message.showMessage("Test Procedure", String.format("Step %d) Command %s to obtain "
-					+ "the DUT configuration ‘DeviceName’ parameter value on the "
+					+ "the DUT configuration ï¿½DeviceNameï¿½ parameter value on the "
 					+ "Config bus object using GetConfigurations method.", step, testBed)); 
 			step++;
 
-			response = message.showQuestion("Pass/Fail Criteria", String.format("Is ‘DeviceName’ parameter value "
+			response = message.showQuestion("Pass/Fail Criteria", String.format("Is ï¿½DeviceNameï¿½ parameter value "
 					+ "DeviceName%d?", i));
 
 			if (response != 0) //1==NO
 			{
-				fail(String.format("‘DeviceName’ parameter value is not DeviceName%d.", i));						
+				fail(String.format("ï¿½DeviceNameï¿½ parameter value is not DeviceName%d.", i));						
 				return;
 			}
 
 			message.showMessage("Test Procedure", String.format("Step %d) Command %s to display "
-					+ "the values of the ‘DeviceName’ parameter response in the "
+					+ "the values of the ï¿½DeviceNameï¿½ parameter response in the "
 					+ "DUT About Announcement.", step, TBAD_A));
 			step++;
 
-			response=message.showQuestion("Pass/Fail Criteria", String.format("Is ‘DeviceName’ parameter value "
+			response=message.showQuestion("Pass/Fail Criteria", String.format("Is ï¿½DeviceNameï¿½ parameter value "
 					+ "displayed in the About Announcement DeviceName%d?", i));
 
 			if (response != 0) //1==NO
 			{
-				fail(String.format("‘DeviceName’ parameter value displayed in the About "
+				fail(String.format("ï¿½DeviceNameï¿½ parameter value displayed in the About "
 						+ "Announcement is not DeviceName%d.", i));						
 				return;
 			}
 
-			response=  message.showQuestion("Pass/Fail Criteria", String.format("‘DeviceName’ parameter value"
+			response=  message.showQuestion("Pass/Fail Criteria", String.format("ï¿½DeviceNameï¿½ parameter value"
 					+ " read in the Config interface is and in About Announcement"
 					+ " is DeviceName%d at the end of the step?", i));
 
 			if (response != 0) //1==NO
 			{
-				fail(String.format("‘DeviceName’ parameter value"
+				fail(String.format("ï¿½DeviceNameï¿½ parameter value"
 						+ " read in the Config interface is and in About Announcement"
 						+ " is not DeviceName%d at the end of the step.", i));						
 				return;
@@ -472,11 +473,11 @@ public class ConfigIOPTestSuite
 			}
 			
 			message.showMessage("Test Procedure", String.format("Step %d) Command %s to obtain "
-					+ "the DUT configuration ‘DefaultLanguage’ parameter value "
+					+ "the DUT configuration ï¿½DefaultLanguageï¿½ parameter value "
 					+ "on the Config bus object using GetConfigurations method.", step, testBed));
 			step++;
 			message.showMessage("Test Procedure", String.format("Step %d) Command %s to display the "
-					+ "values of the ‘SupportedLanguages’ parameter in the DUT "
+					+ "values of the ï¿½SupportedLanguagesï¿½ parameter in the DUT "
 					+ "About Announcement.", step, TBAD_A));
 			step++;
 			
@@ -491,7 +492,7 @@ public class ConfigIOPTestSuite
 			}
 
 			message.showMessage("Test Procedure", String.format("Step %d) Command  %s to update "
-					+ "‘DefaultLanguage’ parameter (change DefaultLanguage to "
+					+ "ï¿½DefaultLanguageï¿½ parameter (change DefaultLanguage to "
 					+ "any of the DUT supported languages obtained in step %d "
 					+ "which is not the current value obtained in step %d).", step, testBed, step - 1, step -2));
 			
@@ -499,11 +500,11 @@ public class ConfigIOPTestSuite
 			step++;
 
 			message.showMessage("Test Procedure", String.format("Step %d) Command %s to get the "
-					+ "value of ‘DefaultLanguage’ parameter using "
-					+ "‘GetConfigurations’ method of the Config interface.", step, testBed));
+					+ "value of ï¿½DefaultLanguageï¿½ parameter using "
+					+ "ï¿½GetConfigurationsï¿½ method of the Config interface.", step, testBed));
 			step++;
 			
-			response = message.showQuestion("Pass/Fail Criteria", String.format("Is ‘DefaultLanguage’ "
+			response = message.showQuestion("Pass/Fail Criteria", String.format("Is ï¿½DefaultLanguageï¿½ "
 					+ "parameter value the DefaultLanguage value updated in step %d?", step7));
 
 			if (response != 0) //1==NO
@@ -514,10 +515,10 @@ public class ConfigIOPTestSuite
 			}
 
 			message.showMessage("Test Procedure", String.format("Step %d) Command %s to display the "
-					+ "value of the ‘DefaultLanguage’ parameter in the DUT About Announcement.", step, TBAD_A));
+					+ "value of the ï¿½DefaultLanguageï¿½ parameter in the DUT About Announcement.", step, TBAD_A));
 			step++;
 			
-			response = message.showQuestion("Pass/Fail Criteria", String.format("Is ‘DefaultLanguage’ "
+			response = message.showQuestion("Pass/Fail Criteria", String.format("Is ï¿½DefaultLanguageï¿½ "
 					+ "parameter value displayed in the About Announcement "
 					+ "the value updated in step %d?", step7));
 
@@ -551,11 +552,11 @@ public class ConfigIOPTestSuite
 					+ "automatically.", step));
 			step++;
 			message.showMessage("Test Procedure","Step "+step+") Command "+testBed+" to obtain "
-					+ "the DUT configuration ‘DefaultLanguage’ parameter value "
+					+ "the DUT configuration ï¿½DefaultLanguageï¿½ parameter value "
 					+ "on the Config bus object using GetConfigurations method.");
 			step++;
 			
-			response = message.showQuestion("Pass/Fail Criteria", String.format("Is ‘DefaultLanguage’ "
+			response = message.showQuestion("Pass/Fail Criteria", String.format("Is ï¿½DefaultLanguageï¿½ "
 					+ "parameter value the DefaultLanguage value updated in step %d?", step7));
 
 			if (response != 0) //1==NO
@@ -566,11 +567,11 @@ public class ConfigIOPTestSuite
 			}
 
 			message.showMessage("Test Procedure", String.format("Step %d) Command %s to display "
-					+ "the values of the ‘DefaultLanguage’ parameter response "
+					+ "the values of the ï¿½DefaultLanguageï¿½ parameter response "
 					+ "in the DUT About Announcement.", step, TBAD_A));
 			step++;
 			
-			response = message.showQuestion("Pass/Fail Criteria", String.format("Is ‘DefaultLanguage’ "
+			response = message.showQuestion("Pass/Fail Criteria", String.format("Is ï¿½DefaultLanguageï¿½ "
 					+ "parameter value displayed in the About Announcement"
 					+ " the value updated in step %d?", step7));
 
@@ -582,7 +583,7 @@ public class ConfigIOPTestSuite
 				return;
 			}
 
-			response = message.showQuestion("Pass/Fail Criteria", String.format("Is ‘DefaultLanguage’ "
+			response = message.showQuestion("Pass/Fail Criteria", String.format("Is ï¿½DefaultLanguageï¿½ "
 					+ "parameter value read in the Config interface and in About Announcement at the end of the step the "
 					+ "value updated in the sub-step %d for the corresponding %s?", step7, testBed));
 
@@ -652,31 +653,31 @@ public class ConfigIOPTestSuite
 			}
 			
 			message.showMessage("Test Procedure", String.format("Step %d) Command %s to obtain "
-					+ "the DUT configuration data (‘DeviceName’ and ‘DefaultLanguage’ parameters) on the Config bus object "
-					+ "using ‘GetConfigurations’ method.", step, testBed));
+					+ "the DUT configuration data (ï¿½DeviceNameï¿½ and ï¿½DefaultLanguageï¿½ parameters) on the Config bus object "
+					+ "using ï¿½GetConfigurationsï¿½ method.", step, testBed));
 			step++;
 			message.showMessage("Test Procedure",String.format("Step %d) Modify DUT configuration "
-					+ "to be different from default factory configuration. For example modify ‘DeviceName’ to ‘InteropTestDeviceName’ "
+					+ "to be different from default factory configuration. For example modify ï¿½DeviceNameï¿½ to ï¿½InteropTestDeviceNameï¿½ "
 					+ "value.", step));
 			step++;
 			message.showMessage("Test Procedure", String.format("Step %d) Command %s to perform a"
-					+ " ‘FactoryReset’ in the DUT using the Config interface.", step, testBed));
+					+ " ï¿½FactoryResetï¿½ in the DUT using the Config interface.", step, testBed));
 			step++;
 			message.showMessage("Test Procedure", String.format("Step %d) Command %s to obtain "
-					+ "the DUT configuration data (‘DeviceName’ and "
-					+ "‘DefaultLanguage’ parameters) on the Config \n bus "
-					+ "object using ‘GetConfigurations’ method and verify "
+					+ "the DUT configuration data (ï¿½DeviceNameï¿½ and "
+					+ "ï¿½DefaultLanguageï¿½ parameters) on the Config \n bus "
+					+ "object using ï¿½GetConfigurationsï¿½ method and verify "
 					+ "that the DUT configuration has been set to the factory "
 					+ "default values.", step, testBed));
 			step++;
 			
 			int response = message.showQuestion("Pass/Fail Criteria", "Is Configuration data "
-					+ "(‘DeviceName’ and ‘DefaultLanguage’) the DUT factory default configuration data?");
+					+ "(ï¿½DeviceNameï¿½ and ï¿½DefaultLanguageï¿½) the DUT factory default configuration data?");
 
 			if (response != 0) //1==NO
 			{
-				fail("Configuration data (‘DeviceName’ and ‘DefaultLanguage’) read with every "
-						+ "TBAD after invoking ‘FactoryReset’ Configuration method is not the DUT factory default configuration data");						
+				fail("Configuration data (ï¿½DeviceNameï¿½ and ï¿½DefaultLanguageï¿½) read with every "
+						+ "TBAD after invoking ï¿½FactoryResetï¿½ Configuration method is not the DUT factory default configuration data");						
 				return;
 			}
 		}
@@ -735,7 +736,7 @@ public class ConfigIOPTestSuite
 			}
 				
 			message.showMessage("Test Procedure", String.format("Step %d) Command %s to modify "
-					+ "the DUT DeviceName parameter with ‘MyTestDeviceName’ "
+					+ "the DUT DeviceName parameter with ï¿½MyTestDeviceNameï¿½ "
 					+ "value using the Config interface.", step, testBed));
 			step++;
 			message.showMessage("Test Procedure",String.format("Step %d) Command %s to call Restart "
@@ -755,27 +756,27 @@ public class ConfigIOPTestSuite
 					+ " AllJoyn connection between the DUT and %s.", step, testBed, testBed));
 			step++;
 			message.showMessage("Test Procedure", String.format("Step %d) Command %s to obtain "
-					+ "the DUT configuration data (‘DeviceName’ and ‘DefaultConfiguration’ parameters) using the Config "
+					+ "the DUT configuration data (ï¿½DeviceNameï¿½ and ï¿½DefaultConfigurationï¿½ parameters) using the Config "
 					+ "interface.", step, testBed));
 			step++;
 
-			response = message.showQuestion("Pass/Fail Criteria", "Has Value of ‘DeviceName’ "
-					+ "parameter changed to ‘MyTestDeviceName’?");
+			response = message.showQuestion("Pass/Fail Criteria", "Has Value of ï¿½DeviceNameï¿½ "
+					+ "parameter changed to ï¿½MyTestDeviceNameï¿½?");
 
 			if (response != 0) //1==NO
 			{
-				fail("Value of ‘DeviceName’ parameter has not changed to ‘MyTestDeviceName’");						
+				fail("Value of ï¿½DeviceNameï¿½ parameter has not changed to ï¿½MyTestDeviceNameï¿½");						
 				return;
 			}
 			
 			message.showMessage("Test Procedure", String.format("Step %d) Command %s to modify the "
-					+ "DUT ‘DeviceName’ parameter with the original ‘DeviceName’ value using the Config interface.", step, testBed));
+					+ "DUT ï¿½DeviceNameï¿½ parameter with the original ï¿½DeviceNameï¿½ value using the Config interface.", step, testBed));
 			step++;
 			message.showMessage("Test Procedure", String.format("Step %d) Command %s to get DUT "
-					+ "‘DeviceName’ using the Config interface.", step, testBed));
+					+ "ï¿½DeviceNameï¿½ using the Config interface.", step, testBed));
 			step++;
 			
-			response = message.showQuestion("Pass/Fail Criteria", "Has Value of ‘DeviceName’"
+			response = message.showQuestion("Pass/Fail Criteria", "Has Value of ï¿½DeviceNameï¿½"
 					+ " parameter changed to its original value?");
 
 			if (response != 0) //1==NO
@@ -844,35 +845,35 @@ public class ConfigIOPTestSuite
 				}
 				
 				message.showMessage("Test Procedure", String.format("Step %d) Command %s to modify "
-						+ "the DUT DeviceName parameter with ’MyTestDeviceName’ value using the Config interface.", step, testBed));
+						+ "the DUT DeviceName parameter with ï¿½MyTestDeviceNameï¿½ value using the Config interface.", step, testBed));
 				step++;
 				message.showMessage("Test Procedure", String.format("Step %d) Command %s to obtain the DUT "
-						+ "‘DeviceName’ parameter value.", step, testBed));
+						+ "ï¿½DeviceNameï¿½ parameter value.", step, testBed));
 				step++;
 				
-				int response = message.showQuestion("Pass/Fail Criteria", "Has value of ‘DeviceName’ "
-						+ "parameter changed to ’MyTestDeviceName’ value?");
+				int response = message.showQuestion("Pass/Fail Criteria", "Has value of ï¿½DeviceNameï¿½ "
+						+ "parameter changed to ï¿½MyTestDeviceNameï¿½ value?");
 
 				if (response != 0) //1==NO
 				{
-					fail("Value of ‘DeviceName’ parameter has not changed to 'MyTestDeviceName' value");						
+					fail("Value of ï¿½DeviceNameï¿½ parameter has not changed to 'MyTestDeviceName' value");						
 					return;
 				}
 
 				message.showMessage("Test Procedure", String.format("Step %d) Command %s to call the "
-						+ "Config interface ‘ResetConfigurations’ method to reset ‘DeviceName’ parameter.", step, testBed));
+						+ "Config interface ï¿½ResetConfigurationsï¿½ method to reset ï¿½DeviceNameï¿½ parameter.", step, testBed));
 				step++;
 
 				message.showMessage("Test Procedure", String.format("Step %d) Command %s to obtain"
-						+ " the DUT ‘DeviceName’ parameter value.", step, testBed));
+						+ " the DUT ï¿½DeviceNameï¿½ parameter value.", step, testBed));
 				step++;
 
-				response = message.showQuestion("Pass/Fail Criteria", "Has Value of ‘DeviceName’ "
+				response = message.showQuestion("Pass/Fail Criteria", "Has Value of ï¿½DeviceNameï¿½ "
 						+ "parameter changed to its factory value?");
 
 				if (response != 0) //1==NO
 				{
-					fail("Value of ‘DeviceName’ parameter has not changed to its factory value");						
+					fail("Value of ï¿½DeviceNameï¿½ parameter has not changed to its factory value");						
 					return;
 				}
 			}
@@ -937,7 +938,7 @@ public class ConfigIOPTestSuite
 			step++;
 			message.showMessage("Test Procedure", String.format("Step %d) Command %s to modify DUT "
 					+ "passcode (calling the SetPasscode method on the Config bus "
-					+ "object with the newPasscode parameter) to “111111”.", step, testBed));
+					+ "object with the newPasscode parameter) to ï¿½111111ï¿½.", step, testBed));
 			step++;
 			
 			int response = message.showQuestion("Pass/Fail Criteria", "Is an error message "
@@ -959,22 +960,22 @@ public class ConfigIOPTestSuite
 					+ "session with the DUT application after receiving an "
 					+ "About Announcement  and register an AuthListener with\n"
 					+ "the AllJoyn framework that provides the new passcode "
-					+ "(“111111”) when authentication is requested.", step, testBed));
+					+ "(ï¿½111111ï¿½) when authentication is requested.", step, testBed));
 			step++;
 			
 			response = message.showQuestion("Pass/Fail Criteria", String.format("Does %s join a session "
-					+ "with DUT using the passcode “111111”?", testBed));
+					+ "with DUT using the passcode ï¿½111111ï¿½?", testBed));
 
 			if (response != 0) //1==NO
 			{
-				fail(String.format("%s does not join a session with DUT using the passcode “111111”.", testBed));						
+				fail(String.format("%s does not join a session with DUT using the passcode ï¿½111111ï¿½.", testBed));						
 				return;
 			}
 
 			message.showMessage("Test Procedure", String.format("Step %d) Command %s to modify the "
-					+ "passcode (calling the ‘SetPasscode’ method on the Config "
+					+ "passcode (calling the ï¿½SetPasscodeï¿½ method on the Config "
 					+ "bus object) with the newPasscode parameter set to default "
-					+ "value “000000”.", step, testBed));
+					+ "value ï¿½000000ï¿½.", step, testBed));
 			step++;
 			message.showMessage("Test Procedure", String.format("Step %d) Command %s to leave the "
 					+ "session.", step, testBed));
@@ -985,16 +986,16 @@ public class ConfigIOPTestSuite
 			message.showMessage("Test Procedure", String.format("Step %d) Operate %s to join a session "
 					+ "with the DUT application after receiving an About "
 					+ "Announcement and register an AuthListener with \nthe "
-					+ "AllJoyn framework that provides the new passcode(“000000”) "
+					+ "AllJoyn framework that provides the new passcode(ï¿½000000ï¿½) "
 					+ "when authentication is requested.", step, testBed));
 			step++;
 			
 			response = message.showQuestion("Pass/Fail Criteria", String.format("Does %s join a "
-					+ "session with DUT using the passcode “000000”?", testBed));
+					+ "session with DUT using the passcode ï¿½000000ï¿½?", testBed));
 
 			if (response != 0) //1==NO
 			{
-				fail(String.format("%s does not join a session with DUT using the passcode “000000”.", testBed));						
+				fail(String.format("%s does not join a session with DUT using the passcode ï¿½000000ï¿½.", testBed));						
 				return;
 			}
 		}

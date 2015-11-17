@@ -150,15 +150,15 @@ public class InterfaceValidator
             if (isVersionPropertyMissing(expectedIntrospectionInterface, propertyValidationResult))
             {
                 logger.warn(String.format("Ignoring interface property match comparison: %s", propertyValidationResult.getFailureReason()));
-                logger.addNote(String.format("Interface definition does not match for %s - %s", standardizedIntrospectionInterface.getName(),
-                        propertyValidationResult.getFailureReason()));
+                /*logger.addNote(String.format("Interface definition does not match for %s - %s", standardizedIntrospectionInterface.getName(),
+                        propertyValidationResult.getFailureReason()));*/
                 valid = true;
             }
             if (isUndefinedMethodPresentForConfigInterface(expectedIntrospectionInterface, methodValidationResult))
             {
                 logger.warn(String.format("Ignoring interface method match comparison: %s", methodValidationResult.getFailureReason()));
-                logger.addNote(String.format("Interface definition does not match for %s - %s", standardizedIntrospectionInterface.getName(),
-                        methodValidationResult.getFailureReason()));
+                /*logger.addNote(String.format("Interface definition does not match for %s - %s", standardizedIntrospectionInterface.getName(),
+                        methodValidationResult.getFailureReason()));*/
                 valid = true;
             }
             if (isAnnotationMissingForPeerAuthenticationInterface(expectedIntrospectionInterface, annotationValidationResult))

@@ -41,6 +41,7 @@ import javax.swing.table.TableModel;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 import com.at4wireless.alljoyn.core.iop.CategoryKeys;
 import com.at4wireless.alljoyn.core.iop.IOPMessage;
+import com.at4wireless.alljoyn.testcases.parameter.Ics;
 
 public class AboutIOPTestSuite
 {
@@ -56,10 +57,10 @@ public class AboutIOPTestSuite
 	Boolean ICSON_OnboardingServiceFramework = false;
 	String name = null;
 
-	public AboutIOPTestSuite(String testCase, Map<String, List<String>> goldenUnits, boolean iCSON_OnboardingServiceFramework)
+	public AboutIOPTestSuite(String testCase, Map<String, List<String>> goldenUnits, Ics icsList)
 	{		
 		this.goldenUnits = goldenUnits;
-		ICSON_OnboardingServiceFramework = iCSON_OnboardingServiceFramework;
+		ICSON_OnboardingServiceFramework = icsList.ICSON_OnboardingServiceFramework;
 		
 		try
 		{
@@ -214,7 +215,7 @@ public class AboutIOPTestSuite
 		}
 
 		message.showMessage("Test Procedure", String.format("Step 5) Command %s to introspect the DUT "
-				+ "application’s message bus and display the set of bus objects and their interfaces.", testBed));
+				+ "applicationï¿½s message bus and display the set of bus objects and their interfaces.", testBed));
 
 		response = message.showQuestion("Pass/Fail Criteria", "Do the set of bus objects and their "
 				+ "interfaces include at least the set of paths and interfaces displayed in step 4?");
@@ -269,9 +270,9 @@ public class AboutIOPTestSuite
 				+ "the values obtained in the About Announcement before joining the session.", testBed));
 
 		message.showMessage("Test Procedure", String.format("Step 5) Command %s to get DUT available "
-				+ "metadata fields by using ‘GetAboutData’ method (using default language as languageTag input parameter).", testBed));
+				+ "metadata fields by using ï¿½GetAboutDataï¿½ method (using default language as languageTag input parameter).", testBed));
 
-		response = message.showQuestion("Pass/Fail Criteria", "Do DUT provide available metadata fields after invoking ’GetAboutData’ method?");
+		response = message.showQuestion("Pass/Fail Criteria", "Do DUT provide available metadata fields after invoking ï¿½GetAboutDataï¿½ method?");
 
 		if (response != 0) //1==NO
 		{
@@ -297,7 +298,7 @@ public class AboutIOPTestSuite
 		}
 
 		message.showMessage("Test Procedure","Step 6) Repeat step 5 once for each supported "
-				+ "language received in the ‘GetAboutData’, using each supported language as languageTag parameter");
+				+ "language received in the ï¿½GetAboutDataï¿½, using each supported language as languageTag parameter");
 
 		response = message.showQuestion("Pass/Fail Criteria","Are the values obtained in step 6 for "
 				+ "any language the same that the values obtained in step 5 (only differences related to language texts)?");
@@ -474,7 +475,7 @@ public class AboutIOPTestSuite
 	{
 		String msg = "Step 1) The passcode for the DUT is set to the default passcode \"000000\"."
 				+ "\nStep 2) The AllJoyn devices of the Test Bed used will register an AuthListener with the "
-				+ "AllJoyn framework that provides the default passcode (“000000”)\n when "
+				+ "AllJoyn framework that provides the default passcode (ï¿½000000ï¿½)\n when "
 				+ "authentication is requested (unless anything else is defined in a test case)."
 				+ "\nStep 3) The SSID of the soft access point (Soft AP) advertised by the DUT follows the "
 				+ "proper format such that it ends with the first seven digits of the deviceId."
