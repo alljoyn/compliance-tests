@@ -15,7 +15,6 @@
  *******************************************************************************/
 package com.at4wireless.alljoyn.core.about;
 
-import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;

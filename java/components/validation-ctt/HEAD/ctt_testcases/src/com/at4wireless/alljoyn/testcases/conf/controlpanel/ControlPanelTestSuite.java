@@ -130,7 +130,6 @@ public class ControlPanelTestSuite
 		}
 		catch(Exception e)
 		{
-			logger.error(String.format("Exception: %s", e.toString()));
 			inconc = true;
 		}
 	}
@@ -138,51 +137,70 @@ public class ControlPanelTestSuite
 	public void runTestCase(String testCase) throws Exception
 	{
 		setUp();
-		logger.info(String.format("Running testcase: %s", testCase));
 		
-		if (testCase.equals("ControlPanel-v1-01"))
+		try
 		{
-			testControlPanel_v1_01_ValidateControlPanelBusObjects();
+			logger.info(String.format("Running testcase: %s", testCase));
+		
+			if (testCase.equals("ControlPanel-v1-01"))
+			{
+				testControlPanel_v1_01_ValidateControlPanelBusObjects();
+			}
+			else if(testCase.equals("ControlPanel-v1-02"))
+			{
+				testControlPanel_v1_02_ValidateContainerBusObjects();
+			}
+			else if(testCase.equals("ControlPanel-v1-03"))
+			{
+				testControlPanel_v1_03_ValidatePropertyBusObjects();
+			}
+			else if(testCase.equals("ControlPanel-v1-04"))
+			{
+				testControlPanel_v1_04_ValidateLabelPropertyBusObjects();
+			}
+			else if(testCase.equals("ControlPanel-v1-05"))
+			{
+				testControlPanel_v1_05_ValidateActionBusObjects();
+			}
+			else if(testCase.equals("ControlPanel-v1-06"))
+			{
+				testControlPanel_v1_06_ValidateDialogBusObjects();
+			}
+			else if(testCase.equals("ControlPanel-v1-07"))
+			{
+				testControlPanel_v1_07_ValidateListPropertyBusObjects();
+			}
+			else if(testCase.equals("ControlPanel-v1-08"))
+			{
+				testControlPanel_v1_08_ValidateNotificationActionBusObjects();
+			}
+			else if(testCase.equals("ControlPanel-v1-09"))
+			{
+				testControlPanel_v1_09_ValidateHttpControlBusObjects();
+			}
+			else if(testCase.equals("ControlPanel-v1-10"))
+			{
+				testControlPanel_v1_10_ValidateSecuredControlPanelBusObjects();
+			}
+			else
+			{
+				fail("Test Case not valid");
+			}
 		}
-		else if(testCase.equals("ControlPanel-v1-02"))
+		catch (Exception exception)
 		{
-			testControlPanel_v1_02_ValidateContainerBusObjects();
-		}
-		else if(testCase.equals("ControlPanel-v1-03"))
-		{
-			testControlPanel_v1_03_ValidatePropertyBusObjects();
-		}
-		else if(testCase.equals("ControlPanel-v1-04"))
-		{
-			testControlPanel_v1_04_ValidateLabelPropertyBusObjects();
-		}
-		else if(testCase.equals("ControlPanel-v1-05"))
-		{
-			testControlPanel_v1_05_ValidateActionBusObjects();
-		}
-		else if(testCase.equals("ControlPanel-v1-06"))
-		{
-			testControlPanel_v1_06_ValidateDialogBusObjects();
-		}
-		else if(testCase.equals("ControlPanel-v1-07"))
-		{
-			testControlPanel_v1_07_ValidateListPropertyBusObjects();
-		}
-		else if(testCase.equals("ControlPanel-v1-08"))
-		{
-			testControlPanel_v1_08_ValidateNotificationActionBusObjects();
-		}
-		else if(testCase.equals("ControlPanel-v1-09"))
-		{
-			testControlPanel_v1_09_ValidateHttpControlBusObjects();
-		}
-		else if(testCase.equals("ControlPanel-v1-10"))
-		{
-			testControlPanel_v1_10_ValidateSecuredControlPanelBusObjects();
-		}
-		else
-		{
-			fail("Test Case not valid");
+			logger.error("Exception executing Test Case: %s", exception.getMessage()); //[AT4]
+			
+			try 
+			{
+				tearDown();
+			} 
+			catch (Exception newException) 
+			{
+				logger.error("Exception releasing resources: %s", newException.getMessage());
+			}
+			
+			throw exception;
 		}
 
 		tearDown();
