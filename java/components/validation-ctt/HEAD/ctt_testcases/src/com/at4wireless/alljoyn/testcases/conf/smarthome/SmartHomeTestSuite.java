@@ -78,7 +78,6 @@ public class SmartHomeTestSuite
 		}
 		catch(Exception e)
 		{
-			logger.error(String.format("Exception: %s", e.toString()));
 			inconc = true;
 		}
 	}
@@ -87,29 +86,47 @@ public class SmartHomeTestSuite
 	{
 		setUp();
 
-		if (testCase.equals("SmartHome-v1-01"))
+		try
 		{
-			testSmartHome_v1_01();
+			if (testCase.equals("SmartHome-v1-01"))
+			{
+				testSmartHome_v1_01();
+			}
+			else if (testCase.equals("SmartHome-v1-02"))
+			{
+				testSmartHome_v1_02();
+			}
+			else if (testCase.equals("SmartHome-v1-03"))
+			{
+				testSmartHome_v1_03();
+			}
+			else if (testCase.equals("SmartHome-v1-04"))
+			{
+				testSmartHome_v1_04();
+			}
+			else if (testCase.equals("SmartHome-v1-05"))
+			{
+				testSmartHome_v1_05();
+			}
+			else
+			{
+				fail("TestCase not valid");
+			}
 		}
-		else if (testCase.equals("SmartHome-v1-02"))
+		catch (Exception exception)
 		{
-			testSmartHome_v1_02();
-		}
-		else if (testCase.equals("SmartHome-v1-03"))
-		{
-			testSmartHome_v1_03();
-		}
-		else if (testCase.equals("SmartHome-v1-04"))
-		{
-			testSmartHome_v1_04();
-		}
-		else if (testCase.equals("SmartHome-v1-05"))
-		{
-			testSmartHome_v1_05();
-		}
-		else
-		{
-			fail("TestCase not valid");
+			logger.error("Exception executing Test Case: %s", exception.getMessage()); //[AT4]
+			
+			try 
+			{
+				tearDown();
+			} 
+			catch (Exception newException) 
+			{
+				logger.error("Exception releasing resources: %s", newException.getMessage());
+			}
+			
+			throw exception;
 		}
 
 		tearDown();
