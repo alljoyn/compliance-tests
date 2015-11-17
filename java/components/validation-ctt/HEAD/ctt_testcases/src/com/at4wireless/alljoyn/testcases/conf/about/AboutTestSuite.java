@@ -147,7 +147,6 @@ public class AboutTestSuite
 		}
 		catch(Exception e)
 		{
-			logger.error("Exception: ", e);
 			inconcluse = true;
 		}
 	}
@@ -157,58 +156,77 @@ public class AboutTestSuite
 		setUp();
 		logger.info("Running testcase: %s", test);
 		
-		if (test.equals("About-v1-01"))
+		try
 		{
-			testAbout_v1_01_AboutAnnouncement();
+			if (test.equals("About-v1-01"))
+			{
+				testAbout_v1_01_AboutAnnouncement();
+			}
+			else if (test.equals("About-v1-02"))
+			{
+				testAbout_v1_02_AboutVersion();
+			}
+			else if (test.equals("About-v1-03"))
+			{
+				testAbout_v1_03_GetObjectDescription();
+			}
+			else if (test.equals("About-v1-04"))
+			{
+				testAbout_v1_04_AboutAnnouncementConsistentWithBusObjects();
+			}
+			else if (test.equals("About-v1-05"))
+			{
+				testAbout_v1_05_StandardizedInterfacesMatchDefinitions();
+			}
+			else if (test.equals("About-v1-06"))
+			{
+				testAbout_v1_06_GetAboutForDefaultLanguage();
+			}
+			else if (test.equals("About-v1-07"))
+			{
+				testAbout_v1_07_GetAboutForSupportedLanguages();
+			}
+			else if (test.equals("About-v1-08"))
+			{
+				testAbout_v1_08_GetAboutForUnspecifiedLanguage();
+			}
+			else if (test.equals("About-v1-09"))
+			{
+				testAbout_v1_09_GetAboutForUnsupportedLanguage();
+			}
+			else if (test.equals("About-v1-10"))
+			{
+				testAbout_v1_10_GetAboutIcon();
+			}
+			else if (test.equals("About-v1-11"))
+			{
+				testAbout_v1_11_GetAboutIconValidUrl();
+			}
+			else if (test.equals("EventsActions-v1-01"))
+			{
+				testEventsActions_v1_01();
+			}
+			else
+			{
+				fail("Test Case not valid");
+			}
 		}
-		else if (test.equals("About-v1-02"))
+		catch (Exception exception)
 		{
-			testAbout_v1_02_AboutVersion();
+			logger.error("Exception executing Test Case: %s", exception.getMessage()); //[AT4]
+			
+			try 
+			{
+				tearDown();
+			} 
+			catch (Exception newException) 
+			{
+				logger.error("Exception releasing resources: %s", newException.getMessage());
+			}
+			
+			throw exception;
 		}
-		else if (test.equals("About-v1-03"))
-		{
-			testAbout_v1_03_GetObjectDescription();
-		}
-		else if (test.equals("About-v1-04"))
-		{
-			testAbout_v1_04_AboutAnnouncementConsistentWithBusObjects();
-		}
-		else if (test.equals("About-v1-05"))
-		{
-			testAbout_v1_05_StandardizedInterfacesMatchDefinitions();
-		}
-		else if (test.equals("About-v1-06"))
-		{
-			testAbout_v1_06_GetAboutForDefaultLanguage();
-		}
-		else if (test.equals("About-v1-07"))
-		{
-			testAbout_v1_07_GetAboutForSupportedLanguages();
-		}
-		else if (test.equals("About-v1-08"))
-		{
-			testAbout_v1_08_GetAboutForUnspecifiedLanguage();
-		}
-		else if (test.equals("About-v1-09"))
-		{
-			testAbout_v1_09_GetAboutForUnsupportedLanguage();
-		}
-		else if (test.equals("About-v1-10"))
-		{
-			testAbout_v1_10_GetAboutIcon();
-		}
-		else if (test.equals("About-v1-11"))
-		{
-			testAbout_v1_11_GetAboutIconValidUrl();
-		}
-		else if (test.equals("EventsActions-v1-01"))
-		{
-			testEventsActions_v1_01();
-		}
-		else
-		{
-			fail("Test Case not valid");
-		}
+		
 		tearDown();
 	}
 
