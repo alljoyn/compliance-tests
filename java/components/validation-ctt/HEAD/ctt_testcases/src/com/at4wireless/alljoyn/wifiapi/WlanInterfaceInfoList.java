@@ -70,7 +70,15 @@ public class WlanInterfaceInfoList extends Structure
     	super(p);
     	//dwNumberOfItems = p.getInt(0);
     	//dwIndex = p.getInt(4);
-    	InterfaceInfo = new WlanInterfaceInfo[p.getInt(0)];
+    	
+    	if (p.getInt(0) > 0)
+    	{
+    		InterfaceInfo = new WlanInterfaceInfo[p.getInt(0)];
+    	}
+    	else
+    	{
+    		InterfaceInfo = new WlanInterfaceInfo[1];
+    	}
     	read();
     }
     

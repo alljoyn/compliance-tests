@@ -1,23 +1,31 @@
-CTT Test Cases Package Version 15.09.00_R4 (TestCases_Package_v15.09.00_R4.jar) Release Notes
-=============================================================================================
+CTT Test Cases Package Version 15.09.00a_R1 (TestCases_Package_v15.09.00a_R1.jar) Release Notes
+===============================================================================================
  
 Fully Validated Platforms
 -------------------------
  1) Windows 7 (64 bit)
  2) Java 8 (64 bits)
 
-Features added in Version v15.09.00_R4
+Features added in Version 15.09.00a_R1 
 --------------------------------------
  1) 
  
-Issues Addressed in Version v15.09.00_R4
+Issues Addressed in Version 15.09.00a_R1 
 ----------------------------------------
- ASACOMP-133  CTT Local Agent - Control Panel - Error in a partial verdict
+ ASACOMP-147  CTT Local Agent / To add TestCases Package Release version in the logs
+ ASACOMP-140  CTT Local Agent / About-v1-04. Spelling error in log
+ ASACOMP-139  CTT Local Agent / About-v1-03. TearDown with additional partial verdicts
+ ASACOMP-138  CTT Local Agent / Onboarding-v1-10. Fail during WiFi scanning
+ ASACOMP-137  CTT Local Agent / Onboarding-v1-08. To add additional partial verdicts
+ ASACORE-2539 keyExchanger use-after-free in AllJoynPeerObj
+ ASACORE-2575 Time-out when changing security configuration of SecureDoor sample
+ ASACORE-2588 apps built in Release mode cannot interop with Core libs built in Debug mode
+ ASACORE-2590 Local time conversion on Linux is not thread safe  
    
  For a complete list of fixed issues:
  https://jira.allseenalliance.org/browse/ASACOMP-63?jql=project%20%3D%20ASACOMP%20AND%20issuetype%20in%20standardIssueTypes()%20AND%20status%20in%20(Resolved%2C%20Closed) 
  
-Known Issues in Version v15.09.00_R4
+Known Issues in Version 15.09.00a_R1 
 ------------------------------------
  ASACOMP-129  About-v1-05 Test failure with TestCases_Package_v15.09.00_R2.jar
  ASACOMP-104  C&C test infrastructure assumes PIN and requires use of a specific PIN code    
@@ -33,6 +41,13 @@ Known Issues in Version v15.09.00_R4
 
 Change history
 --------------
+ [20151116] - 15.09.00a_R1 - Core(15.09a) Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 147,140,139,138,137. ASACOREs: 2539,2575,2588,2590.
+ [20151116] - 15.09.00_R5  - Core(15.09)  Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 147,140,139,138,137. ASACOREs: 2539,2575,2588,2590.
+ [20151116] - 15.04.00b_R7 - Core(15.04b) Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 147,140,139,138,137. ASACOREs: 2539,2575,2588,2590.
+ [20151116] - 15.04.00a_R13- Core(15.04a) Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 147,140,139,138,137. ASACOREs: 2539,2575,2588,2590.
+ [20151116] - 15.04.00_R11 - Core(15.04)  Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 147,140,139,138,137. ASACOREs: 2539,2575,2588,2590.
+ [20151116] - 14.12.00b_R7 - Core(14.12b) Base(14.12) Gateway(14.12) - Bug fixes: ASACOMPs: 147,140,139,138,137. ASACOREs: 2539,2575,2588,2590.
+ [20151022] - 15.04.00_R10 - Core(15.04)  Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 136.
  [20151016] - 15.09.00_R4  - Core(15.09)  Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 133.
  [20151016] - 15.04.00b_R6 - Core(15.04b) Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 133.
  [20151016] - 15.04.00a_R12- Core(15.04a) Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 133.
@@ -48,7 +63,7 @@ Change history
  [20151006] - 15.04.00b_R4 - Core(15.04b) Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 121.
  [20151006] - 15.04.00a_R10- Core(15.04a) Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 121.
  [20151006] - 15.04.00_R7  - Core(15.04)  Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 121.
- [20151001] - 15.09.00_R1  - Core(15.09)  Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 100,102,105,113,114,115,116. ASACOREs: 2561,2559,2529,2531,2509,2524,2548,2519,2081,2362,2545,2467,2530,2462,2528,2401,2518,181,2460,2411,2469,2443,2510. 
+ [20151001] - 15.09.00_R1  - Core(15.09)  Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 100,102,105,113,114,115,116. ASACOREs: 2561,2559,2529,2531,2509,2524,2548,2519,2081,2362,2545,2467,2530,2462,2528,2401,2518,181,2460,2411,2469,2443,2510,1394,1865,1886,1904. 
  [20151001] - 15.04.00b_R3 - Core(15.04b) Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 100,102,105,114,115,116.
  [20151001] - 15.04.00a_R9 - Core(15.04a) Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 100,102,105,114,115,116.
  [20151001] - 15.04.00_R6  - Core(15.04)  Base(15.04) Gateway(14.12) - Bug fixes: ASACOMPs: 100,102,105,114,115,116.
