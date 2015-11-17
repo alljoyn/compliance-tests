@@ -131,7 +131,6 @@ public class TimeTestSuite {
 		}
 		catch(Exception e)
 		{
-			logger.error(String.format("Exception: %s", e.toString()));
 			inconc = true;
 		}
 	}
@@ -146,25 +145,43 @@ public class TimeTestSuite {
 		
 		setUp();		
 		
-		if (testCase.equals("TimeService-v1-01"))
+		try
 		{
-			testTime_v1_01_GetObjectDescription();
+			if (testCase.equals("TimeService-v1-01"))
+			{
+				testTime_v1_01_GetObjectDescription();
+			}
+			else if (testCase.equals("TimeService-v1-02"))
+			{
+				testTime_v1_02_VerifyClocks();
+			}
+			else if (testCase.equals("TimeService-v1-03"))
+			{
+				testTime_v1_03_VerifyTimers();
+			}
+			else if (testCase.equals("TimeService-v1-04"))
+			{
+				testTime_v1_04_VerifyAlarms();
+			}
+			else
+			{
+				fail("Test Case not valid");
+			}
 		}
-		else if (testCase.equals("TimeService-v1-02"))
+		catch (Exception exception)
 		{
-			testTime_v1_02_VerifyClocks();
-		}
-		else if (testCase.equals("TimeService-v1-03"))
-		{
-			testTime_v1_03_VerifyTimers();
-		}
-		else if (testCase.equals("TimeService-v1-04"))
-		{
-			testTime_v1_04_VerifyAlarms();
-		}
-		else
-		{
-			fail("Test Case not valid");
+			logger.error("Exception executing Test Case: %s", exception.getMessage()); //[AT4]
+			
+			try 
+			{
+				tearDown();
+			} 
+			catch (Exception newException) 
+			{
+				logger.error("Exception releasing resources: %s", newException.getMessage());
+			}
+			
+			throw exception;
 		}
 		
 		tearDown();
@@ -672,7 +689,7 @@ public class TimeTestSuite {
 	private  void handleIntrospectionBusException(String path, BusException e) throws Exception {
 		String msg = ERROR_MSG_BUS_INTROSPECTION;
 		if (e instanceof ErrorReplyBusException && DBUS_ERROR_SERVICE_UNKNOWN.equals(((ErrorReplyBusException) e).getErrorName())) {
-			msg = new StringBuilder("AboutAnnouncement has the path ").append(path).append(", but it is not found on the Bus Intropsection.").toString();
+			msg = new StringBuilder("AboutAnnouncement has the path ").append(path).append(", but it is not found on the Bus Introspection.").toString();
 		}
 		logger.error(msg, e);
 		throw new Exception(msg, e);

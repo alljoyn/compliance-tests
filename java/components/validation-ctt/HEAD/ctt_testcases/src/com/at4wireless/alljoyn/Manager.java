@@ -57,7 +57,7 @@ import com.at4wireless.alljoyn.testcases.conf.audio.AudioTestSuite;
 import com.at4wireless.alljoyn.testcases.conf.configuration.ConfigurationTestSuite;
 import com.at4wireless.alljoyn.testcases.conf.controlpanel.ControlPanelTestSuite;
 import com.at4wireless.alljoyn.testcases.conf.gateway.GWAgentTestSuite;
-import com.at4wireless.alljoyn.testcases.conf.lighting.LightingTestSuite;
+import com.at4wireless.alljoyn.testcases.conf.lighting.LSF_LampTestSuite;
 import com.at4wireless.alljoyn.testcases.conf.lightingcontroller.LightingControllerTestSuite;
 import com.at4wireless.alljoyn.testcases.conf.notification.NotificationTestSuite;
 import com.at4wireless.alljoyn.testcases.conf.onboarding.OnboardingTestSuite;
@@ -197,10 +197,11 @@ public class Manager extends Thread
 	{	
 		if (loadTestCaseInfo())
 		{
-			System.out.println("====================================================");
-			System.out.println(String.format("Test Name: %s", testName));
-			System.out.println(String.format("Description: %s", descriptionKey));
-			System.out.println("====================================================");
+			logger.raw("====================================================");
+			logger.raw("Test Name: %s", testName);
+			logger.raw("Description: %s", descriptionKey);
+			logger.raw("%s", getJarFile());
+			logger.raw("====================================================");
 			
 			Timestamp timeStamp = new Timestamp(new java.util.Date().getTime());
 			loadParameters();
@@ -213,6 +214,19 @@ public class Manager extends Thread
 		{
 			logger.error("Test Case not existent or not selected in project configuration");
 		}
+	}
+	
+	private String getJarFile()
+	{
+	    String path = Manager.class.getResource(Manager.class.getSimpleName() + ".class").getFile();
+	    
+	    if (path.startsWith("/"))
+	    {
+	        return "Running in debug mode";
+	    }
+	    path = ClassLoader.getSystemClassLoader().getResource(path).getFile();
+
+	    return new File(path.substring(0, path.lastIndexOf('!'))).getName();
 	}
 	
 	private void loadParameters()
@@ -303,7 +317,7 @@ public class Manager extends Thread
 		else if (testName.startsWith("LSF_Lamp"))
 		{
 			printParameters("L");
-			LightingTestSuite lightingTest = new LightingTestSuite(testName, icsList, ixitList, gpList);
+			LSF_LampTestSuite lightingTest = new LSF_LampTestSuite(testName, icsList, ixitList, gpList);
 			verdictKey = lightingTest.getFinalVerdict();
 		}
 		else if (testName.startsWith("LSF_Controller"))
@@ -394,7 +408,7 @@ public class Manager extends Thread
 	
 	private void printParameters(String serviceFramework)
 	{
-		System.out.println("====================================================");
+		logger.raw("====================================================");
 		icsList.printIcsValues("ICS" + serviceFramework);
 		ixitList.printIxitValues("IXIT" + serviceFramework);
 		gpList.printGpValues("GP" + serviceFramework);
@@ -420,8 +434,8 @@ public class Manager extends Thread
 				String goldenUnitCategory = getValue("Type", element);
 				int num = i + 1;
 				
-				System.out.println(String.format("Golden Unit %d name: %s", num, goldenUnitName));
-				System.out.println(String.format("Golden Unit %d type: %s", num, goldenUnitCategory));
+				logger.raw("Golden Unit %d name: %s", num, goldenUnitName);
+				logger.raw("Golden Unit %d type: %s", num, goldenUnitCategory);
 				
 				List<String> gu = goldenUnits.get(goldenUnitCategory);
 				
