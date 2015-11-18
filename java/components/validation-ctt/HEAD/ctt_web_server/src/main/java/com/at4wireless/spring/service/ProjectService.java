@@ -33,7 +33,7 @@ public interface ProjectService {
 	 * @param 	p	project information to be stored
 	 * @return		true if project is successfully stored, false if project exists
 	 */
-	public boolean create(Project p);
+	public Project create(Project p);
 	
 	/**
 	 * Returns data of a given user formatted to be displayed in table
@@ -58,7 +58,7 @@ public interface ProjectService {
 	 * @param 	p	project information to be updated
 	 * @return		true if project is successfully updated, false otherwise
 	 */
-	public boolean update(Project p);
+	public Project update(Project p);
 	
 	/**
 	 * Deletes a project

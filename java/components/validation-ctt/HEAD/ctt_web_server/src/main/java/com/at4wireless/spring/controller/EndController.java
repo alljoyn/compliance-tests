@@ -31,6 +31,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.at4wireless.spring.service.EndService;
 import com.at4wireless.spring.service.ProjectService;
@@ -108,16 +109,23 @@ public class EndController
 	 * @return				target view
 	 */
 	@RequestMapping(value="/save", method=RequestMethod.POST)
-	public String save(HttpServletRequest request)
+	public ModelAndView save(HttpServletRequest request)
 	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		
 		if (!(auth instanceof AnonymousAuthenticationToken))
 		{
-			String url = endService.createXML(auth.getName(), request.getParameterMap());
-			projectService.configProject(request.getParameter("data[idProject]"), url);
+			if (request.getParameter("data[isConfigured]").equals("true"))
+			{
+				endService.modifyXML(auth.getName(), request.getParameterMap());
+			}
+			else
+			{
+				String url = endService.createXML(auth.getName(), request.getParameterMap());
+				projectService.configProject(request.getParameter("data[idProject]"), url);
+			}
 		}
 
-		return "redirect:/end";
+		return new ModelAndView("redirect:/project");
 	}
 }

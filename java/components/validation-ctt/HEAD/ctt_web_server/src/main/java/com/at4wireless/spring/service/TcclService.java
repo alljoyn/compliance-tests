@@ -70,4 +70,6 @@ public interface TcclService {
 	public List<Tccl> listByCR(int idCertRel);
 	
 	public void addCertificationReleaseIfNotExists(String certificationRelease, String packageVersion, String description) throws Exception;
+	
+	public String getTcclName(int idTccl);
 }

@@ -36,4 +36,6 @@ public interface CertificationReleaseService {
 	public List<CertificationRelease> listReleaseVersions();
 	
 	public String getCertificationReleaseDescription(String certificationRelease);
+	
+	public String getCertificationReleaseName(int certificationReleaseId);
 }

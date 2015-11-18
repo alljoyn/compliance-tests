@@ -42,6 +42,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.at4wireless.security.FileEncryption;
 import com.at4wireless.spring.model.Project;
@@ -79,7 +80,7 @@ public class ResultsController
      * @return 				target view
      */
 	@RequestMapping(method = RequestMethod.GET)
-	public String results(Model model, @ModelAttribute("newProject") Project newProject)
+	public ModelAndView results(Model model, @ModelAttribute("newProject") Project newProject)
 	{
 		String projectName = "";
 		List<TestCaseResult> listTCResult = new ArrayList<TestCaseResult>();
@@ -95,9 +96,8 @@ public class ResultsController
 			listTCResult = resultService.getResults(p);
 		}
 		
-		model.addAttribute("projectName", projectName);
 		model.addAttribute("listTCResult", listTCResult);
-		return "results";
+		return new ModelAndView("dynamic-results");
 	}
 	
 	/**

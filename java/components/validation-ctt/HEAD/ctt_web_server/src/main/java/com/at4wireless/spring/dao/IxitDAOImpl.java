@@ -54,4 +54,17 @@ public class IxitDAOImpl implements IxitDAO {
 		return listIxit;
 	}
 
+	@Override
+	public void add(Ixit ixit)
+	{
+		sessionFactory.getCurrentSession().save(ixit);
+	}
+	
+	@Override
+	public void update(Ixit ixit)
+	{
+		sessionFactory.getCurrentSession().createQuery("update Ixit set name = '"+ixit.getName()
+		+"', serviceGroup = '"+ixit.getServiceGroup()+"', value = '"+ixit.getValue()
+		+"', description = '"+ixit.getDescription()+"' where idIxit = '"+ixit.getIdIxit()+"'").executeUpdate();
+	}
 }

@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.at4wireless.spring.model.Ics;
 import com.at4wireless.spring.model.Project;
@@ -64,7 +65,7 @@ public class IcsController
      * @return 				target view
      */
 	@RequestMapping(method = RequestMethod.GET)
-	public String ics(Model model, @ModelAttribute("newProject") Project newProject)
+	public ModelAndView ics(Model model, @ModelAttribute("newProject") Project newProject)
 	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		
@@ -84,11 +85,11 @@ public class IcsController
 			model.addAttribute("icsList", listIcs);
 			model.addAttribute("serviceList", listService);
 
-			return "ics";
+			return new ModelAndView("dynamic-ics");
 		}
 		else
 		{
-			return "redirect:/login";
+			return new ModelAndView("redirect:/login");
 		}
 	}
 	

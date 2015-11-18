@@ -16,10 +16,10 @@
 
 package com.at4wireless.spring.service;
 
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
+import com.at4wireless.spring.model.Project;
 import com.at4wireless.spring.model.TestCase;
 
 /**
@@ -31,13 +31,11 @@ public interface TestCaseService {
 	/**
 	 * Returns applicable testcases of a certain project
 	 * 
-	 * @param 	services	project services
+	 * @param 	p			project
 	 * @param 	map			map that contains ICS configuration
-	 * @param 	type		project type
-	 * @param 	idTccl		applied TCCL
 	 * @return				applicable testcases
 	 */
-	public List<TestCase> load(List<BigInteger> services, Map<String,String[]> map, String type, int idTccl);
+	public List<TestCase> load(Project p, Map<String,String[]> map);
 	
 	/**
 	 * Returns all testcases of a certain service framework
@@ -113,4 +111,8 @@ public interface TestCaseService {
 	 * @return				last execution
 	 */
 	public String lastExecution(String tcName, String results);
+	
+	public List<Integer> getConfigured(Project p);
+	
+	public String add(TestCase testCase);
 }

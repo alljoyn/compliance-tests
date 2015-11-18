@@ -179,4 +179,24 @@ public class IcsServiceImpl implements IcsService {
 		return listString;
 	}
 
+	@Override
+	@Transactional
+	public String add(Ics ics)
+	{		
+		String name = ics.getName();
+		for (Ics i : icsDao.list())
+		{
+			if (i.getName().equals(name))
+			{
+				ics.setId(i.getId());
+				icsDao.update(ics);
+				return String.format("%s already existed. It was successfully updated", name);
+			}
+		}
+		
+		icsDao.add(ics);
+		
+		return String.format("%s successfully added to database", ics.getName());
+	}
+
 }

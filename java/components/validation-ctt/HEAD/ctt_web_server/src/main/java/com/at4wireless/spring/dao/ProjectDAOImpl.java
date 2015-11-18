@@ -109,15 +109,19 @@ public class ProjectDAOImpl implements ProjectDAO {
 	@Override
 	public void configProject(String idProject, String url) {
 		
-		int configured = 0;
-		if (url!=null) {
-			configured = 1;
-		} else {
-			url="";
+		String query;
+		if (url != null)
+		{
+			query = String.format("update Project set configuration='%s', isConfigured=1 where idProject='%s'", url, idProject);
 		}
-		sessionFactory.getCurrentSession().createQuery("update Project set configuration = '"
-				+url+"', isConfigured = '"+configured+
-				"' where idProject = '"+idProject+"'").executeUpdate();
+		else
+		{
+			query = String.format("update Project set configuration=null, isConfigured=0 where idProject='%s'", idProject);
+		}
+		
+		System.out.println(query);
+		int result = sessionFactory.getCurrentSession().createQuery(query).executeUpdate();
+		System.out.println(result);
 	}
 	
 	@Override
@@ -129,10 +133,12 @@ public class ProjectDAOImpl implements ProjectDAO {
 	
 	@Override
 	public void saveChanges(Project project) {
+		
+		String carIdToSave = project.getCarId() != null ? "'"+project.getCarId()+"'" : null;
 		sessionFactory.getCurrentSession().createQuery("update Project set name = '"+project.getName()
 				+"', modifiedDate = '"+project.getModifiedDate()+"', idCertrel = '"+project.getIdCertrel()
-				+"', type = '"+project.getType()+"', carId = '"+project.getCarId()
-				+"', idTccl = '"+project.getIdTccl()
+				+"', type = '"+project.getType()+"', carId = "+carIdToSave
+				+", idTccl = '"+project.getIdTccl()
 				+"' where idProject = '"+project.getIdProject()+"'").executeUpdate();
 		
 		sessionFactory.getCurrentSession().createSQLQuery("delete from project_services where id_project="

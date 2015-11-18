@@ -33,6 +33,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -41,10 +42,16 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.at4wireless.spring.common.ConfigParam;
 import com.at4wireless.spring.model.CertificationRelease;
+import com.at4wireless.spring.model.Ics;
+import com.at4wireless.spring.model.Ixit;
+import com.at4wireless.spring.model.ServiceFramework;
 import com.at4wireless.spring.model.Tccl;
 import com.at4wireless.spring.model.TestCase;
 import com.at4wireless.spring.model.TestCaseTccl;
 import com.at4wireless.spring.service.CertificationReleaseService;
+import com.at4wireless.spring.service.IcsService;
+import com.at4wireless.spring.service.IxitService;
+import com.at4wireless.spring.service.ServiceFrameworkService;
 import com.at4wireless.spring.service.TcclService;
 import com.at4wireless.spring.service.TestCaseService;
 
@@ -59,9 +66,15 @@ public class AdminController
 	private static final String descriptionParameterName = "description";
 	
 	@Autowired
+	private ServiceFrameworkService sfService;
+	@Autowired
 	private TcclService tcclService;
 	@Autowired
 	private CertificationReleaseService crService;
+	@Autowired
+	private IcsService icsService;
+	@Autowired
+	private IxitService ixitService;
 	@Autowired
 	private TestCaseService tcService;
 	
@@ -79,6 +92,9 @@ public class AdminController
 			model.addAttribute("tcclList", tcclService.list());
 			model.addAttribute("tcList", tcService.list());
 			model.addAttribute("newTccl", new Tccl());
+			model.addAttribute("newIcs", new Ics());
+			model.addAttribute("newIxit", new Ixit());
+			model.addAttribute("newTestCase", new TestCase());
 			
 			return "admin";
 		}
@@ -415,5 +431,35 @@ public class AdminController
 		{
 			this.packageVersion = packageVersion;
 		}
+	}
+	
+	@RequestMapping(value="/loadServiceFrameworks", method = RequestMethod.GET)
+	public @ResponseBody List<ServiceFramework> loadServiceFrameworks(HttpServletRequest request)
+	{
+		return sfService.list();
+	}
+	
+	@RequestMapping(value="/loadCertificationReleases", method = RequestMethod.GET)
+	public @ResponseBody List<CertificationRelease> loadCertificationReleases(HttpServletRequest request)
+	{
+		return crService.list();
+	}
+	
+	@RequestMapping(value="/saveIcs", method = RequestMethod.POST)
+	public @ResponseBody String saveNewIcs(@ModelAttribute("newIcs") Ics newIcs)
+	{
+		return icsService.add(newIcs);
+	}
+	
+	@RequestMapping(value="/saveIxit", method = RequestMethod.POST)
+	public @ResponseBody String saveNewIxit(@ModelAttribute("newIxit") Ixit newIxit)
+	{
+		return ixitService.add(newIxit);
+	}
+	
+	@RequestMapping(value="/saveTc", method = RequestMethod.POST)
+	public @ResponseBody String saveNewTestCase(@ModelAttribute("newTestCase") TestCase newTestCase)
+	{
+		return tcService.add(newTestCase);
 	}
 }

@@ -17,6 +17,8 @@ public interface EndService {
 	 */
 	public String createXML(String username, Map<String,String[]> map);
 	
+	public void modifyXML(String username, Map<String, String[]> map);
+	
 	/**
 	 * Returns the newest version of the Local Agent stored in server
 	 * 

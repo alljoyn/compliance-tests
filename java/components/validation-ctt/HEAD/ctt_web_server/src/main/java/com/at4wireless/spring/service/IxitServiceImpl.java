@@ -145,4 +145,24 @@ public class IxitServiceImpl implements IxitService {
 		return listString;
 	}
 
+	@Override
+	@Transactional
+	public String add(Ixit ixit)
+	{
+		String name = ixit.getName();
+		for (Ixit i : ixitDao.list())
+		{
+			if (i.getName().equals(name))
+			{
+				ixit.setIdIxit(i.getIdIxit());
+				ixitDao.update(ixit);
+				return String.format("%s already existed. It was successfully updated", name);
+			}
+		}
+		
+		ixitDao.add(ixit);
+		
+		return String.format("%s successfully added to database", ixit.getName());
+	}
+
 }

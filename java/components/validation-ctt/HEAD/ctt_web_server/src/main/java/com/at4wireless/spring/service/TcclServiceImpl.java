@@ -202,4 +202,11 @@ public class TcclServiceImpl implements TcclService
 			}
 		}
 	}
+	
+	@Override
+	@Transactional
+	public String getTcclName(int idTccl)
+	{
+		return tcclDao.getTcclName(idTccl);
+	}
 }

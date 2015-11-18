@@ -53,4 +53,18 @@ public class IcsDAOImpl implements IcsDAO {
 
 		return listIcs;
 	}
+
+	@Override
+	public void add(Ics ics)
+	{
+		sessionFactory.getCurrentSession().saveOrUpdate(ics);
+	}
+
+	@Override
+	public void update(Ics ics)
+	{
+		sessionFactory.getCurrentSession().createQuery("update Ics set name = '"+ics.getName()
+		+"', serviceGroup = '"+ics.getServiceGroup()+"', scrExpression = '"+ics.getScrExpression()
+		+"', description = '"+ics.getDescription()+"' where id = '"+ics.getId()+"'").executeUpdate();
+	}
 }
