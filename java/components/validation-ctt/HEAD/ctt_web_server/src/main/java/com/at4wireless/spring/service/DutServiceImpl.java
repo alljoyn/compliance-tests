@@ -74,18 +74,18 @@ public class DutServiceImpl implements DutService
 	
 	@Override
 	@Transactional
-	public boolean update(Dut d)
+	public Dut update(Dut d)
 	{
 		if (dutDao.getDut(d.getUser(), d.getIdDut()) != null)
 		{
 			java.sql.Timestamp date = new java.sql.Timestamp(new java.util.Date().getTime());
 			d.setModifiedDate(date);
 			dutDao.saveChanges(d);
-			return true;
+			return d;
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 	}
 
@@ -176,5 +176,12 @@ public class DutServiceImpl implements DutService
 		}
 		
 		return true;
+	}
+	
+	@Override
+	@Transactional
+	public int getDutId(String username, String dutName)
+	{
+		return dutDao.getDutByName(username, dutName).getIdDut();
 	}
 }

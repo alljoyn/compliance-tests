@@ -15,6 +15,7 @@
  *******************************************************************************/
 package com.at4wireless.spring.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,10 +33,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.at4wireless.spring.common.DataTablesData;
 import com.at4wireless.spring.model.CertificationRelease;
 import com.at4wireless.spring.model.Project;
+import com.at4wireless.spring.model.ServiceFramework;
 import com.at4wireless.spring.model.Tccl;
+import com.at4wireless.spring.model.dto.ProjectDT;
 import com.at4wireless.spring.service.CertificationReleaseService;
 import com.at4wireless.spring.service.DutService;
 import com.at4wireless.spring.service.ProjectService;
@@ -76,22 +81,14 @@ public class ProjectController
      * @return target view
      */
 	@RequestMapping(method = RequestMethod.GET)
-	public String project(Model model,
+	public ModelAndView project(Model model,
 			@RequestParam(value = "error", required = false) String error)
 	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		
 		if (!(auth instanceof AnonymousAuthenticationToken))
 		{
-			String username = auth.getName();
-
-			model.addAttribute("projectList", 
-					ControllerCommons.dataToHtml(projectService.getTableData(username)));
 			model.addAttribute("newProject", new Project());
-			model.addAttribute("certrelList", crService.list());
-			model.addAttribute("tcclList", tcclService.list());
-			model.addAttribute("serviceList", sfService.list());
-			model.addAttribute("dutList", ControllerCommons.dataToHtml(dutService.getTableData(username)));
 			
 			if (error != null)
 			{
@@ -108,12 +105,35 @@ public class ProjectController
 					model.addAttribute("error", "Project name cannot be empty");
 				}
 			}
-			return "project";
+			return new ModelAndView("dynamic-project");
 		}
 		else
 		{
-			return "redirect:/login";
+			return new ModelAndView("redirect:/login");
 		}
+	}
+	
+	@RequestMapping(value = "/dataTable", method = RequestMethod.GET)
+	public @ResponseBody DataTablesData dataTable()
+	{
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		DataTablesData dtData = new DataTablesData();
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
+			List<ProjectDT> listOfDataTablesProjects = new ArrayList<ProjectDT>();
+
+			for (Project p : projectService.getTableData(auth.getName()))
+			{
+				listOfDataTablesProjects.add(new ProjectDT(p, crService.getCertificationReleaseName(p.getIdCertrel()),
+						tcclService.getTcclName(p.getIdTccl()), p.getIdDut() != 0 ? dutService.getFormData(auth.getName(), p.getIdDut()).getName() : "Not selected"));
+			}
+			
+			dtData.data = listOfDataTablesProjects;
+		}
+		
+		
+		return dtData;
 	}
 
 	/**
@@ -125,7 +145,7 @@ public class ProjectController
      * @return 				target view
      */
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public String add(@Valid @ModelAttribute("newProject") Project newProject, BindingResult result)
+	public @ResponseBody ProjectDT add(@Valid @ModelAttribute("newProject") Project newProject, BindingResult result)
 	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		
@@ -133,23 +153,25 @@ public class ProjectController
 		{
 			if (result.hasErrors())
 			{
-				return "redirect:/project?error=name";
+				return null;
 			}
 			else
 			{
-				if(projectService.create(newProject))
+				Project parsedProject = projectService.create(newProject);
+				if(parsedProject != null)
 				{
-					return "redirect:/project";
+					return new ProjectDT(parsedProject, crService.getCertificationReleaseName(parsedProject.getIdCertrel()),
+							tcclService.getTcclName(parsedProject.getIdTccl()), parsedProject.getIdDut() != 0 ? dutService.getFormData(auth.getName(), parsedProject.getIdDut()).getName() : "Not selected");
 				}
 				else
 				{
-					return "redirect:/project?error=exists";
+					return null;
 				}
 			}
 		}
 		else
 		{
-			return "redirect:/login";
+			return null;
 		}
 	}
 
@@ -182,7 +204,7 @@ public class ProjectController
      * @return 				target view
      */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(@Valid @ModelAttribute("newProject") Project newProject, BindingResult result)
+	public @ResponseBody ProjectDT save(@Valid @ModelAttribute("newProject") Project newProject, BindingResult result)
 	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		
@@ -190,17 +212,25 @@ public class ProjectController
 		{
 			if (result.hasErrors())
 			{
-				return "redirect:/project?error=name";
+				return null;
 			}
 			else
 			{
-				projectService.update(newProject);
-				return "redirect:/project";
+				Project parsedProject = projectService.update(newProject);
+				if(parsedProject != null)
+				{
+					return new ProjectDT(parsedProject, crService.getCertificationReleaseName(parsedProject.getIdCertrel()),
+							tcclService.getTcclName(parsedProject.getIdTccl()), parsedProject.getIdDut() != 0 ? dutService.getFormData(auth.getName(), parsedProject.getIdDut()).getName() : "Not selected");
+				}
+				else
+				{
+					return null;
+				}
 			}
 		}
 		else
 		{
-			return "redirect:/login";
+			return null;
 		}
 	}
 
@@ -291,5 +321,11 @@ public class ProjectController
 		{
 			return crService.listReleaseVersions();
 		}
+	}
+	
+	@RequestMapping(value="/loadServiceFrameworks", method = RequestMethod.GET)
+	public @ResponseBody List<ServiceFramework> loadServiceFrameworks(HttpServletRequest request)
+	{
+		return sfService.list();
 	}
 }

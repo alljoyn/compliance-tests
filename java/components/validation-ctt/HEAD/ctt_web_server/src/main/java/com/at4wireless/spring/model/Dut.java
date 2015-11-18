@@ -70,8 +70,7 @@ public class Dut {
 	@Transient
 	private String hwVer;
 	
-	@NotEmpty
-	@Length(min=1, max=255)
+	@Length(max=255)
 	@Column(name="description")
 	private String description;
 	

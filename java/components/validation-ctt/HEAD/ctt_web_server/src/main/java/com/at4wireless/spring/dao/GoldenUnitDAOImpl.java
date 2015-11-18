@@ -121,4 +121,10 @@ public class GoldenUnitDAOImpl implements GoldenUnitDAO {
 		
 		return guList;
 	}
+
+	@Override
+	public void deleteProjectGus(int idProject)
+	{
+		sessionFactory.getCurrentSession().createSQLQuery("delete from project_golden where id_project="+idProject).executeUpdate();
+	}
 }

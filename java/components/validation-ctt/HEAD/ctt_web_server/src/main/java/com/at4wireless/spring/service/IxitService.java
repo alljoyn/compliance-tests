@@ -52,4 +52,6 @@ public interface IxitService {
 	 * @return					data to include in Test Report
 	 */
 	public List<String> pdfData(String configuration);
+	
+	public String add(Ixit ixit);
 }

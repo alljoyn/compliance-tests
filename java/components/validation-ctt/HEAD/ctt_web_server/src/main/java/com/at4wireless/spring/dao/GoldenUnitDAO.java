@@ -72,4 +72,6 @@ public interface GoldenUnitDAO {
 	 * @return				list of GU
 	 */
 	public List<GoldenUnit> getGuList(int idProject);
+	
+	public void deleteProjectGus(int idProject);
 }

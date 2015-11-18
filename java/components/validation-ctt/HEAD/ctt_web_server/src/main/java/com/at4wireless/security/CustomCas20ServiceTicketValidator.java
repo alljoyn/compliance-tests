@@ -142,10 +142,16 @@ public class CustomCas20ServiceTicketValidator implements TicketValidator {
 		if(userService.exists(principal)) {
 			String role = null;
 
-			if(attributes.get("drupal_roles").equalsIgnoreCase("authenticated user")) {
+			if (attributes.containsKey("group"))
+			{
+				if (attributes.get("group").equalsIgnoreCase("asa-testtool-admin"))
+				{
+					role = "ROLE_ADMIN";
+				}
+			}
+			else if (attributes.get("drupal_roles").equalsIgnoreCase("authenticated user"))
+			{
 				role = "ROLE_USER";
-			} else if(attributes.get("drupal_roles").equalsIgnoreCase("asa-testtool-admin")) {
-				role = "ROLE_ADMIN";
 			}
 			
 			/*if (!userService.hasCipherKey(principal)) {
@@ -165,10 +171,16 @@ public class CustomCas20ServiceTicketValidator implements TicketValidator {
 			u.setUser(principal);
 			u.setPassword("");
 			u.setRepPassword("");
-			if(attributes.get("drupal_roles").equalsIgnoreCase("authenticated user")) {
+			if (attributes.containsKey("group"))
+			{
+				if (attributes.get("group").equalsIgnoreCase("asa-testtool-admin"))
+				{
+					u.setRole("ROLE_ADMIN");
+				}
+			}
+			else if (attributes.get("drupal_roles").equalsIgnoreCase("authenticated user"))
+			{
 				u.setRole("ROLE_USER");
-			} else if(attributes.get("drupal_roles").equalsIgnoreCase("asa-testtool-admin")) {
-				u.setRole("ROLE_ADMIN");
 			}
 			
 			try {

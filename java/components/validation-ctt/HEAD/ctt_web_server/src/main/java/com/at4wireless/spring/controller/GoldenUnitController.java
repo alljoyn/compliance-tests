@@ -15,6 +15,9 @@
  *******************************************************************************/
 package com.at4wireless.spring.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -30,9 +33,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.at4wireless.spring.common.DataTablesData;
 import com.at4wireless.spring.model.GoldenUnit;
 import com.at4wireless.spring.model.Project;
+import com.at4wireless.spring.model.dto.GoldenUnitDT;
 import com.at4wireless.spring.service.GoldenUnitService;
 import com.at4wireless.spring.service.ProjectService;
 
@@ -58,7 +64,7 @@ public class GoldenUnitController
      * @return 			target view
      */
 	@RequestMapping(method = RequestMethod.GET)
-	public String gu(Model model, @RequestParam(value = "error", required = false) String error)
+	public ModelAndView gu(Model model, @RequestParam(value = "error", required = false) String error)
 	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		
@@ -66,7 +72,7 @@ public class GoldenUnitController
 		{
 			String username = auth.getName();
 			
-			model.addAttribute("guList", guService.getTableData(username));
+			//model.addAttribute("guList", guService.getTableData(username));
 			model.addAttribute("categoryList", guService.getCategories());
 			model.addAttribute("newProject", new Project());
 			model.addAttribute("newGu", new GoldenUnit());
@@ -86,12 +92,34 @@ public class GoldenUnitController
 					model.addAttribute("error", "GU name cannot be empty");
 				}
 			}
-			return "gu";
+			return new ModelAndView("dynamic-gu");
 		}
 		else
 		{
-			return "redirect:/login";
+			return new ModelAndView("redirect:/login");
 		}
+	}
+	
+	@RequestMapping(value = "/dataTable", method = RequestMethod.GET)
+	public @ResponseBody DataTablesData dataTable()
+	{
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		DataTablesData dtData = new DataTablesData();
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
+			List<GoldenUnitDT> listOfDataTablesGoldenUnits = new ArrayList<GoldenUnitDT>();
+
+			for (GoldenUnit gu : guService.getTableData(auth.getName()))
+			{
+				listOfDataTablesGoldenUnits.add(new GoldenUnitDT(gu, guService.getCategoryById(gu.getCategory()).getName()));
+			}
+			
+			dtData.data = listOfDataTablesGoldenUnits;
+		}
+		
+		
+		return dtData;
 	}
 	
 	/**
@@ -103,7 +131,7 @@ public class GoldenUnitController
      * @return 				target view
      */
 	@RequestMapping(value="/add", method=RequestMethod.POST)
-	public String addGu(@Valid @ModelAttribute("newGu") GoldenUnit newGu,
+	public @ResponseBody GoldenUnitDT addGu(@Valid @ModelAttribute("newGu") GoldenUnit newGu,
 			BindingResult result)
 	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -112,23 +140,27 @@ public class GoldenUnitController
 		{		
 			if (result.hasErrors())
 			{
-				return "redirect:/gu?error=name";
+				//return "redirect:/gu?error=name";
+				return null;
 			}
 			else
 			{
-				if(guService.create(newGu))
+				/*if(guService.create(newGu))
 				{
 					return "redirect:/gu";
 				}
 				else
 				{
 					return "redirect:/gu?error=exists";
-				}
+				}*/
+				GoldenUnit savedGu = guService.create(newGu);
+				return new GoldenUnitDT(savedGu, guService.getCategoryById(savedGu.getCategory()).getName());
 			}
 		}
 		else
 		{
-			return "redirect:/login";
+			//return "redirect:/login";
+			return null;
 		}
 	}
 	
@@ -159,7 +191,7 @@ public class GoldenUnitController
      * @return 				target view
      */
 	@RequestMapping(value="/edit", method=RequestMethod.POST)
-	public String saveChanges(@Valid @ModelAttribute("newGu") GoldenUnit newGu, BindingResult result)
+	public @ResponseBody GoldenUnitDT saveChanges(@Valid @ModelAttribute("newGu") GoldenUnit newGu, BindingResult result)
 	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		
@@ -167,17 +199,20 @@ public class GoldenUnitController
 		{
 			if (result.hasErrors())
 			{
-				return "redirect:/gu?error=name";
+				//return "redirect:/gu?error=name";
+				return null;
 			}
 			else
 			{
-				guService.update(newGu);
-				return "redirect:/gu";
+				GoldenUnit savedGu = guService.update(newGu);
+				return new GoldenUnitDT(savedGu, guService.getCategoryById(savedGu.getCategory()).getName());
+				//return "redirect:/gu";
 			}
 		}
 		else
 		{
-			return "redirect:/login";
+			//return "redirect:/login";
+			return null;
 		}
 	}
 	
@@ -213,18 +248,18 @@ public class GoldenUnitController
 	 * @return				target view
 	 */
 	@RequestMapping(value="/save", method=RequestMethod.POST)
-	public String save(Model model, @ModelAttribute("newProject") Project newProject)
+	public @ResponseBody ModelAndView save(Model model, @ModelAttribute("newProject") Project newProject)
 	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		
 		if (!(auth instanceof AnonymousAuthenticationToken))
 		{
 			projectService.setGu(auth.getName(), newProject);
-			return "redirect:/ics?idProject=" + newProject.getIdProject();
+			return new ModelAndView("redirect:/ics?idProject=" + newProject.getIdProject());
 		}
 		else
 		{
-			return "redirect:/login";
+			return new ModelAndView("redirect:/login");
 		}
 	}
 	

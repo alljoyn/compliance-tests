@@ -9,32 +9,14 @@
 		<jsp:include page="/WEB-INF/views/page_head.jsp"/>
     </head>
     <body>
-	    <div id="wrap">
-		  	<div id="main" class="container clear-top">
-		  		<!-- CSRT for logout -->
-		    	<c:url value="/j_spring_security_logout" var="logoutUrl" />
-		 
-				<form action="${logoutUrl}" method="post" id="logoutForm">
-				  <input type="hidden" 
-					name="${_csrf.parameterName}"
-					value="${_csrf.token}" />
-				</form>
-				
+	    <div id="wrap">			
 				<!-- Main -->
-		    	<div class="container">
+		    	<div id="main" class="container-fluid">
 		    		<jsp:include page="/WEB-INF/views/header.jsp"/>
-				    
-				    <div class="row" align="right">
-				    	<c:if test="${pageContext.request.userPrincipal.name != null}">
-							<h4>
-								Welcome : ${pageContext.request.userPrincipal.name} | <a
-								href="javascript:admin.logout()"> Logout</a>
-							</h4>
-						</c:if>
-				    </div>
-				    
+				    		    
 				    <!-- Test Cases Control List panel -->
-				    <div class="row" align="left">
+				    <div class="row" align="left" style="margin-top: 25px;">
+				    	<div class="col-xs-12">
 						<div class="panel panel-default">
 				        	<div class="panel-heading">
 				        		<h4 class="panel-title">
@@ -76,18 +58,20 @@
 							       	
 							       	<!-- Action buttons -->
 									<div align="left">
-							        	<button id="newTcclButton" class="btn btn-default btn-lg" data-toggle="modal" data-target="#newTcclModal">New TCCL</button>
-							        	<button id="viewButton" disabled class="btn btn-default btn-lg disabled" data-toggle="modal" data-target="#viewTcclModal">View TCCL</button>
-							        	<button id="editButton" disabled class="btn btn-default btn-lg disabled" data-toggle="modal" data-target="#editTcclModal">Edit TCCL</button>
-							        	<button id="deleteButton" disabled class="btn btn-default btn-lg disabled" data-toggle="modal" data-target="#delTcclModal">Delete TCCL</button>
+							        	<button id="newTcclButton" class="btn btn-default" data-toggle="modal" data-target="#newTcclModal"><span class="glyphicon glyphicon-plus"></span> New TCCL</button>
+							        	<button id="viewButton" disabled class="btn btn-default disabled" data-toggle="modal" data-target="#viewTcclModal"><span class="glyphicon glyphicon-eye-open"></span> View TCCL</button>
+							        	<button id="editButton" disabled class="btn btn-default disabled" data-toggle="modal" data-target="#editTcclModal"><span class="glyphicon glyphicon-pencil"></span> Edit TCCL</button>
+							        	<button id="deleteButton" disabled class="btn btn-default disabled" data-toggle="modal" data-target="#delTcclModal"><span class="glyphicon glyphicon-trash"></span> Delete TCCL</button>
 							        </div>
 							    </div>
 						    </div>
+						</div>
 						</div>
 					</div>
 				
 			        <!-- Test Cases Packages panel -->
 			        <div class="row" align="left">
+			        	<div class="col-xs-12">
 						<div class="panel panel-default">
 							<div class="panel-heading">
 				        		<h4 class="panel-title">
@@ -111,7 +95,7 @@
 												<div class="form-group">
 													<input type="file" name="testCasesPackage" id="testCasesPackage" accept=".jar">
 												</div>
-												<button type="submit" disabled class="btn btn-sm btn-custom disabled" id="uploadPackageButton">Upload file</button>
+												<button type="submit" disabled class="btn btn-sm btn-custom disabled" id="uploadPackageButton"><span class="glyphicon glyphicon-upload"></span> Upload file</button>
 											</div>
 											<div class="form-group">
 												<label for="tcDescription" class="control-label">Update package description</label>
@@ -127,10 +111,12 @@
 								</div>
 							</div>
 						</div>
+						</div>
 			        </div>
 			        
 			        <!-- Local Agent Installers panel -->
 			        <div class="row" align="left">
+			        	<div class="col-xs-12">
 						<div class="panel panel-default">
 							<div class="panel-heading">
 				        		<h4 class="panel-title">
@@ -145,7 +131,7 @@
 										<div class="tree" id="laInstallers">
 										</div>
 									</div>
-									<div>
+									<div class="col-md-6">
 										<!-- Standard Form -->
 										<h4>Select file from your computer</h4>
 										<h6> Uploading an already existing installer will cause overriding</h6>
@@ -154,7 +140,7 @@
 												<div class="form-group">
 													<input type="file" name="localAgentInstaller" id="localAgentInstaller" accept=".exe">
 												</div>
-												<button type="submit" disabled class="btn btn-sm btn-custom disabled" id="uploadInstallerButton">Upload file</button>
+												<button type="submit" disabled class="btn btn-sm btn-custom disabled" id="uploadInstallerButton"><span class="glyphicon glyphicon-upload"></span> Upload file</button>
 											</div>
 										</form>
 																
@@ -167,8 +153,164 @@
 							</div>
 						</div>
 			        </div>
+			        </div>
+			        
+			        <!-- ICS Management Panel -->
+				    <div class="row" align="left">
+				    	<div class="col-xs-12">
+						<div class="panel panel-default">
+				        	<div class="panel-heading">
+				        		<h4 class="panel-title">
+				        			<a data-toggle="collapse" class="collapsed" data-target="#collapseIcsManagement">ICS Management</a>
+				        		</h4>
+				        	</div>
+				        	<div id="collapseIcsManagement" class="panel-collapse collapse">
+								<div class="panel-body">
+									<div class="row">
+									<div class="col-md-6">
+									<form:form method="POST" id="newIcsForm" action="admin/saveIcs" modelAttribute="newIcs">
+										<div class="form-group col-md-6">
+											<label for="ics-name" class="control-label">Name (*)</label>
+											<form:input path="name" type="text" class="form-control" id="ics-name"/>
+										</div>
+										<div class="form-group col-md-6">
+											<label for="ics-service-group" class="control-label">Service Group (*)</label>
+											<form:select path="serviceGroup" class="form-control" id="ics-service-group"></form:select>
+										</div>
+										<div class="form-group col-md-12">
+											<label for="ics-scr" class="control-label">SCR Expression</label>
+											<form:input path="scrExpression" class="form-control" id="ics-scr"></form:input>
+										</div>
+										<div class="form-group col-md-12">
+											<label for="ics-description" class="control-label">Description (*)</label>
+											<form:input path="description" type="text" class="form-control" id="ics-description"/>
+										</div>
+									</form:form>
+									<p>(*) This is a mandatory field</p>
+									<button id="addIcs" type="submit" class="btn btn-custom"><span class="glyphicon glyphicon-ok"></span> Save ICS</button>
+									</div>
+									<div class="col-md-6">
+										<!-- ICS Saving Status -->
+							        	<h4>Status</h4>
+							        	<div class="list-group" id="icsSavingResults">
+							         	</div>
+									</div>
+									</div>
+							    </div>
+						    </div>
+						</div>
+						</div>
+					</div>
+					
+					<!-- IXIT Management Panel -->
+				    <div class="row" align="left">
+				    	<div class="col-xs-12">
+						<div class="panel panel-default">
+				        	<div class="panel-heading">
+				        		<h4 class="panel-title">
+				        			<a data-toggle="collapse" class="collapsed" data-target="#collapseIxitManagement">IXIT Management</a>
+				        		</h4>
+				        	</div>
+				        	<div id="collapseIxitManagement" class="panel-collapse collapse">
+								<div class="panel-body">
+									<div class="row">
+									<div class="col-md-6">
+									<form:form method="POST" id="newIxitForm" action="admin/saveIxit" modelAttribute="newIxit">
+										<div class="form-group col-md-6">
+											<label for="ixit-name" class="control-label">Name (*)</label>
+											<form:input path="name" type="text" class="form-control" id="ixit-name"/>
+										</div>
+										<div class="form-group col-md-6">
+											<label for="ixit-service-group" class="control-label">Service Group (*)</label>
+											<form:select path="serviceGroup" class="form-control" id="ixit-service-group"></form:select>
+										</div>
+										<div class="form-group col-md-12">
+											<label for="ixit-value" class="control-label">Default Value</label>
+											<form:input path="value" class="form-control" id="ixit-value"></form:input>
+										</div>
+										<div class="form-group col-md-12">
+											<label for="ixit-description" class="control-label">Description (*)</label>
+											<form:input path="description" type="text" class="form-control" id="ixit-description"/>
+										</div>
+									</form:form>
+									<p>(*) This is a mandatory field</p>
+									<button id="addIxit" type="submit" class="btn btn-custom"><span class="glyphicon glyphicon-ok"></span> Save IXIT</button>
+									</div>
+									<div class="col-md-6">
+										<!-- IXIT Saving Status -->
+							        	<h4>Status</h4>
+							        	<div class="list-group" id="ixitSavingResults">
+							         	</div>
+									</div>
+									</div>
+							    </div>
+						    </div>
+						</div>
+						</div>
+					</div>
+			        
+			        <!-- Test Cases Management Panel -->
+				    <div class="row" align="left">
+				    	<div class="col-xs-12">
+						<div class="panel panel-default">
+				        	<div class="panel-heading">
+				        		<h4 class="panel-title">
+				        			<a data-toggle="collapse" class="collapsed" data-target="#collapseTcManagement">Test Cases Management</a>
+				        		</h4>
+				        	</div>
+				        	<div id="collapseTcManagement" class="panel-collapse collapse">
+								<div class="panel-body">
+									<div class="row">
+									<div class="col-md-6">
+									<form:form method="POST" id="newTcForm" action="admin/saveTc" modelAttribute="newTestCase">
+										<div class="form-group col-md-6">
+											<label for="tc-name" class="control-label">Name (*)</label>
+											<form:input path="name" type="text" class="form-control" id="tc-name"/>
+										</div>
+										<div class="form-group col-md-6">
+											<label for="tc-type" class="control-label">Type (*)</label>
+											<form:select path="type" class="form-control" id="tc-type">
+												<option value="Conformance">Conformance</option>
+												<option value="Interoperability">Interoperability</option>
+											</form:select>
+										</div>
+										<div class="form-group col-md-6">
+											<label for="tc-service-group" class="control-label">Service Group (*)</label>
+											<form:select path="serviceGroup" class="form-control" id="tc-service-group"></form:select>
+										</div>
+										<form:input type="hidden" id="supportedCrs" name="supportedCrs" path="supportedCrs" value=""/>
+										<div class="form-group col-md-6">
+											<label for="tc-certification-releases" class="control-label">Supported Certification Releases (*)</label>
+											<select id="tc-certification-releases" class="form-control" multiple>
+											</select>
+										</div>
+										<div class="form-group col-md-12">
+											<label for="tc-applicability" class="control-label">Applicability</label>
+											<form:input path="applicability" class="form-control" id="tc-applicability"></form:input>
+										</div>
+										
+										<div class="form-group col-md-12">
+											<label for="tc-description" class="control-label">Description (*)</label>
+											<form:input path="description" type="text" class="form-control" id="tc-description"/>
+										</div>
+									</form:form>
+									<p>(*) This is a mandatory field</p>
+									<button id="addTc" type="submit" class="btn btn-custom"><span class="glyphicon glyphicon-ok"></span> Save Test Case</button>
+									</div>
+									<div class="col-md-6">
+										<!-- Test Case Saving Status -->
+							        	<h4>Status</h4>
+							        	<div class="list-group" id="tcSavingResults">
+							         	</div>
+									</div>
+									</div>
+							    </div>
+						    </div>
+						</div>
+						</div>
+					</div>
 		        </div>
-		        
+		            
 		        <!-- Modal forms -->
 		        <div>
 			        <!-- Select tccl certification release form -->
@@ -180,23 +322,13 @@
 			        					<div class="form-group">
 			        						<label path="idCertrel" for="tccl-certrel" class="control-label">Certification Release</label>
 			        						<form:select path="idCertrel" class="form-control" id="tccl-certrel">
-			        							<!--<c:forEach var="certrel" items="${certrelList}" varStatus="status">
-													<c:choose>
-														<c:when test="${not status.last}">
-															<option value="${certrel.idCertrel}">${certrel.name}</option>
-														</c:when>
-														<c:otherwise>
-															<option value="${certrel.idCertrel}" selected>${certrel.name}</option>
-														</c:otherwise>
-													</c:choose>
-												</c:forEach> -->
 			        						</form:select>
 			        					</div>			
 			        				</form:form>
 			        			</div>
 			        			<div class="modal-footer">
-			        				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-			        				<button id="createContinue" type="submit" class="btn btn-custom" data-dismiss="modal" data-toggle="modal" data-target="#testCasesModal">Continue</button>
+			        				<button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+			        				<button id="createContinue" type="submit" class="btn btn-custom" data-dismiss="modal" data-toggle="modal" data-target="#testCasesModal"><span class="glyphicon glyphicon-ok"></span> Continue</button>
 			        			</div>
 			        		</div>
 			        	</div>
@@ -208,8 +340,6 @@
 			        		<div class="modal-content">
 			        			<div class="modal-body">
 			        				<table id="tcTable" class="table table-hover">
-			        					<!-- <thead class="scroll-thead">
-			        						<tr class="scroll-tr">  -->
 			        					<thead>
 			        						<tr>
 			        							<th class="hide">Test Case ID</th>
@@ -219,14 +349,13 @@
 			        							<th width="10%">Enable</th>
 			        						</tr>
 			        					</thead>
-			        					<!-- <tbody id="tcBody" class="scroll-tbody">  -->
 			        					<tbody id="tcBody">
 			        					</tbody>
 			        				</table>
 			        			</div>
 			        			<div class="modal-footer">
-			        				<button id="tcBack" class="btn btn-default" data-dismiss="modal" data-toggle="modal" data-target="#newTcclModal">Back</button>
-			        				<button id="createTccl" class="btn btn-custom">Create TCCL</button>
+			        				<button id="tcBack" class="btn btn-default" data-dismiss="modal" data-toggle="modal" data-target="#newTcclModal"><span class="glyphicon glyphicon-remove"></span> Back</button>
+			        				<button id="createTccl" class="btn btn-custom"><span class="glyphicon glyphicon-ok"></span> Create TCCL</button>
 			        			</div>
 			        		</div>
 			        	</div>
@@ -238,8 +367,6 @@
 			        		<div class="modal-content">
 			        			<div class="modal-body">
 			        				<table id="viewTcTable" class="table table-hover">
-			        					<!-- <thead class="scroll-thead">
-			        						<tr class="scroll-tr">  -->
 			        					<thead>
 			        						<tr>
 			        							<th class="hide">Test Case ID</th>
@@ -249,13 +376,12 @@
 			        							<th width="10%">Enable</th>
 			        						</tr>
 			        					</thead>
-			        					<!-- <tbody id="viewTcBody" class="scroll-tbody">  -->
 			        					<tbody id="viewTcBody">
 			        					</tbody>
 			        				</table>
 			        			</div>
 			        			<div class="modal-footer">
-			        				<button id="tcBack" class="btn btn-default" data-dismiss="modal">Back</button>
+			        				<button id="tcBack" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-chevron-left"></span> Back</button>
 			        			</div>
 			        		</div>
 			        	</div>
@@ -267,8 +393,6 @@
 			        		<div class="modal-content">
 			        			<div class="modal-body">
 			        				<table id="editTcTable" class="table table-hover">
-			        					<!-- <thead class="scroll-thead">
-			        						<tr class="scroll-tr">  -->
 			        					<thead>
 			        						<tr>
 			        							<th class="hide">Test Case ID</th>
@@ -278,14 +402,13 @@
 			        							<th width="10%">Enable</th>
 			        						</tr>
 			        					</thead>
-			        					<!-- <tbody id="editTcBody" class="scroll-tbody">  -->
 			        					<tbody id="editTcBody">
 			        					</tbody>
 			        				</table>
 			        			</div>
 			        			<div class="modal-footer">
-			        				<button id="tcBack" class="btn btn-default" data-dismiss="modal">Back</button>
-			        				<button id="editConfirm" class="btn btn-custom">Save Changes</button>
+			        				<button id="tcBack" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+			        				<button id="editConfirm" class="btn btn-custom"><span class="glyphicon glyphicon-ok"></span> Save Changes</button>
 			        			</div>
 			        		</div>
 			        	</div>
@@ -299,8 +422,8 @@
 			        				<h4>Are you sure you want to delete this Test Case Control List?</h4>
 			        			</div>
 			        			<div class="modal-footer">
-			        				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-			        				<button id="deleteConfirm" type="button" class="btn btn-custom" data-dismiss="modal">Delete TCCL</button>
+			        				<button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+			        				<button id="deleteConfirm" type="button" class="btn btn-custom" data-dismiss="modal"><span class="glyphicon glyphicon-ok"></span> Delete TCCL</button>
 			        			</div>
 			        		</div>
 			        	</div>
@@ -325,11 +448,11 @@
 					</div>
 		        </div>
 	  		</div>
-		</div>
         
         <jsp:include page="/WEB-INF/views/footer.jsp"/>
         
         <script src="resources/js/admin.js"></script>
+        <script src="resources/js/common.js"></script>
 	
 		<!-- Initialization script -->
 		<script>

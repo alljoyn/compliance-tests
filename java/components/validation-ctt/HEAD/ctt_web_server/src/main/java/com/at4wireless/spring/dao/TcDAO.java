@@ -57,4 +57,8 @@ public interface TcDAO {
 	public List<TestCase> getServiceWithRestriction(String type, int idService, List<Integer> intList);
 	
 	public void assignTestCasesToCertificationRelease(int certificationReleaseId);
+	
+	public void add(TestCase testCase);
+	
+	public void update(TestCase testCase);
 }

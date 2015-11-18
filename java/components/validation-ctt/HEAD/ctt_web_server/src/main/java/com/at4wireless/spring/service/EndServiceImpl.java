@@ -1,6 +1,7 @@
 package com.at4wireless.spring.service;
 
 import java.io.File;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -9,9 +10,13 @@ import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
@@ -21,6 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import com.at4wireless.spring.dao.CategoryDAO;
 import com.at4wireless.spring.model.GoldenUnit;
@@ -32,8 +39,8 @@ import com.at4wireless.spring.model.Sample;
 import com.at4wireless.spring.model.TestCase;
 
 @Service
-public class EndServiceImpl implements EndService {
-	
+public class EndServiceImpl implements EndService
+{
 	@Autowired
 	private ProjectService projectService;
 	
@@ -58,10 +65,12 @@ public class EndServiceImpl implements EndService {
 	@Autowired
 	private CategoryDAO categoryDao;
 	
+	private static final String USERS_PATH = File.separator + "Allseen" + File.separator + "Users" + File.separator;
+	
 	@Override
 	@Transactional
-	public String createXML(String username, Map<String, String[]> map) {
-		
+	public String createXML(String username, Map<String, String[]> map)
+	{
 		DocumentBuilderFactory cfFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder cfBuilder;
 		List<Ics> icsList = new ArrayList<Ics>();
@@ -69,23 +78,16 @@ public class EndServiceImpl implements EndService {
 		List<TestCase> tcList = new ArrayList<TestCase>();
 		List<Sample> sampleList = new ArrayList<Sample>();
 		String url = "";
-		String folder="";
+		String folder = "";
 		
 		Project p = projectService.getFormData(username, Integer.parseInt(map.get("data[idProject]")[0]));
 		
-		for (BigInteger bi : projectService.getServicesData(p.getIdProject())) {
-			icsList.addAll(icsService.getService(bi.intValue()));
-			ixitList.addAll(ixitService.getService(bi.intValue()));
-			if(p.getType().equals("Conformance")||p.getType().equals("Interoperability")) {
-				tcList.addAll(tcService.getService(p.getType(),bi.intValue()));
-			} else {
-				tcList.addAll(tcService.getService("Interoperability",bi.intValue()));
-				tcList.addAll(tcService.getService("Conformance",bi.intValue()));
-			}
-		}
+		loadAvailableConfiguration(p, icsList, ixitList, tcList);
+		
 		sampleList.addAll(dutService.getSampleData(p.getIdDut()));
 		
-		try {
+		try
+		{
 			cfBuilder = cfFactory.newDocumentBuilder();
 			Document doc = cfBuilder.newDocument();
 			
@@ -94,7 +96,8 @@ public class EndServiceImpl implements EndService {
 			
 			Ics ics;
 			Iterator<Ics> iter = icsList.iterator();
-			while(iter.hasNext()) {
+			while (iter.hasNext())
+			{
 				ics = iter.next();
 				mainRootElement.appendChild(getNode(doc, "Ics", ics.getId(), ics.getName(), 
 						map.get("data["+ics.getName()+"]")[0]));
@@ -102,7 +105,8 @@ public class EndServiceImpl implements EndService {
 			
 			Ixit ixit;
 			Iterator<Ixit> iter2 = ixitList.iterator();
-			while(iter2.hasNext()) {
+			while (iter2.hasNext())
+			{
 				ixit = iter2.next();
 				mainRootElement.appendChild(getNode(doc, "Ixit", ixit.getIdIxit(), ixit.getName(), 
 						map.get("data["+ixit.getName()+"]")[0]));
@@ -113,27 +117,33 @@ public class EndServiceImpl implements EndService {
 			
 			TestCase tc;
 			Iterator<TestCase> iter3 = tcList.iterator();
-			while(iter3.hasNext()) {
+			while (iter3.hasNext())
+			{
 				tc = iter3.next();
-				try{
+				try
+				{
 					if (map.get("data["+tc.getName()+"]")[0].equals("true")) {
 						mainRootElement.appendChild(getTestCase(doc, tc.getIdTC(), tc.getName(), tc.getDescription()));
 					}
-				} catch (Exception e) {
+				}
+				catch (Exception e)
+				{
 					
 				}
 			}
 			
 			Sample s;
 			Iterator<Sample> iter4 = sampleList.iterator();
-			while(iter4.hasNext()) {
+			while (iter4.hasNext())
+			{
 				s = iter4.next();
 				mainRootElement.appendChild(getSample(doc, s));
 			}
 			
 			Parameter param;
 			Iterator<Parameter> iter5 = parameterService.list().iterator();
-			while(iter5.hasNext()) {
+			while (iter5.hasNext())
+			{
 				param = iter5.next();
 				mainRootElement.appendChild(getNode(doc, "Parameter", param.getIdParam()
 						, param.getName(), map.get("data["+param.getName()+"]")[0]));
@@ -171,11 +181,328 @@ public class EndServiceImpl implements EndService {
 					+File.separator+File.separator+map.get("data[idProject]")[0]
 					+File.separator+File.separator+"configuration.xml";
 			
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 		
 		return url;
+	}
+	
+	public void modifyXML(String username, Map<String, String[]> map)
+	{
+		String folder = USERS_PATH + username + File.separator + map.get("data[idProject]")[0];
+		String filename = folder + File.separator + "configuration.xml";
+		List<Ics> icsList = new ArrayList<Ics>();
+		List<Ixit> ixitList = new ArrayList<Ixit>();
+		List<TestCase> tcList = new ArrayList<TestCase>();
+		
+		Project p = projectService.getFormData(username, Integer.parseInt(map.get("data[idProject]")[0]));
+		
+		loadAvailableConfiguration(p, icsList, ixitList, tcList);
+		
+		// -----------------------------------------------------------------------
+		// OPEN XML
+		// -----------------------------------------------------------------------
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		
+		DocumentBuilder db = null;
+		try
+		{
+			db = dbf.newDocumentBuilder();
+		}
+		catch (ParserConfigurationException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		Document doc = null;
+		try
+		{
+			doc = db.parse(new File(filename));
+		}
+		catch (SAXException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		Node projectNode = doc.getFirstChild();
+		
+		boolean modifiedDut;
+		try
+		{
+			modifiedDut = Boolean.parseBoolean(map.get("data[modifiedDut]")[0]);
+		}
+		catch (NullPointerException e)
+		{
+			modifiedDut = false;
+		}
+		
+		boolean modifiedGus;
+		try
+		{
+			modifiedGus = Boolean.parseBoolean(map.get("data[modifiedGus]")[0]);
+		}
+		catch (NullPointerException e)
+		{
+			modifiedGus = false;
+		}
+		
+		boolean modifiedIcs;
+		try
+		{
+			modifiedIcs = Boolean.parseBoolean(map.get("data[modifiedIcs]")[0]);
+		}
+		catch (NullPointerException e)
+		{
+			modifiedIcs = false;
+		}
+		
+		boolean modifiedIxit;
+		try
+		{
+			modifiedIxit = Boolean.parseBoolean(map.get("data[modifiedIxit]")[0]);
+		}
+		catch (NullPointerException e)
+		{
+			modifiedIxit = false;
+		}
+		
+		boolean modifiedParameters;
+		try
+		{
+			modifiedParameters = Boolean.parseBoolean(map.get("data[modifiedParameters]")[0]);
+		}
+		catch (NullPointerException e)
+		{
+			modifiedParameters = false;
+		}
+		
+		int numberOfApplicableTestCases;
+		try
+		{
+			numberOfApplicableTestCases = Integer.parseInt(map.get("data[applyTC]")[0]);
+		}
+		catch (NullPointerException e)
+		{
+			numberOfApplicableTestCases = 0;
+		}
+		
+		// -----------------------------------------------------------------------
+		// MODIFY CONFIGURATION
+		// -----------------------------------------------------------------------
+		NodeList childNodes = projectNode.getChildNodes();
+		for (int i = 0; i != childNodes.getLength(); ++i)
+		{
+		    Node child = childNodes.item(i);
+		    if (!(child instanceof Element))
+		        continue;
+		    
+		    if (modifiedDut)
+		    {
+		    	if (child.getNodeName().equals("Sample"))
+		    	{
+		    		projectNode.removeChild(child);
+		    	}
+		    }
+		    
+		    if (modifiedGus)
+		    {
+		    	if (child.getNodeName().equals("GoldenUnit"))
+		    	{
+		    		projectNode.removeChild(child);
+		    		guService.deleteProjectGus(p.getIdProject());
+		    	}
+		    }
+		    if (modifiedIcs)
+		    {
+		    	if (child.getNodeName().equals("Ics"))
+		    	{
+		    		projectNode.removeChild(child);
+		    	}
+		    }
+		    
+		    if (modifiedIxit)
+		    {
+		    	if (child.getNodeName().equals("Ixit"))
+		    	{
+		    		projectNode.removeChild(child);
+		    	}
+		    }
+		    
+		    if (modifiedParameters)
+		    {
+		    	if (child.getNodeName().equals("Parameter"))
+		    	{
+		    		projectNode.removeChild(child);
+		    	}
+		    }
+
+		    if (numberOfApplicableTestCases > 0)
+		    {
+			    if (child.getNodeName().equals("ApplyTC"))
+			    {
+			        child.getFirstChild().setNodeValue(map.get("data[applyTC]")[0]);
+			    }
+			    else if (child.getNodeName().equals("TestCase"))
+			    {
+			        projectNode.removeChild(child);
+			    }
+		    }
+		}
+		
+		if (modifiedDut)
+		{
+			Sample s;
+			Iterator<Sample> iter4 = dutService.getSampleData(p.getIdDut()).iterator();
+			while (iter4.hasNext())
+			{
+				s = iter4.next();
+				projectNode.appendChild(getSample(doc, s));
+			}
+		}
+		
+		if (modifiedGus)
+		{
+			if (!p.getType().equalsIgnoreCase("Conformance")) {
+				GoldenUnit gu;
+				List<GoldenUnit> guList = guService.getGuList(p.getIdProject());
+				
+				if (!guList.isEmpty())
+				{
+					Iterator<GoldenUnit> iter6 = guService.getGuList(p.getIdProject()).iterator();
+					while(iter6.hasNext()) {
+						gu = iter6.next();
+						projectNode.appendChild(getGu(doc,gu.getName(),categoryDao.getCategoryById(gu.getCategory()).getName()));
+					}
+				}
+			}
+		}
+		
+		if (modifiedIcs)
+		{
+			Ics ics;
+			Iterator<Ics> iter = icsList.iterator();
+			while (iter.hasNext())
+			{
+				ics = iter.next();
+				projectNode.appendChild(getNode(doc, "Ics", ics.getId(), ics.getName(), 
+						map.get("data["+ics.getName()+"]")[0]));
+			}
+		}
+		
+		if (modifiedIxit)
+		{
+			Ixit ixit;
+			Iterator<Ixit> iter2 = ixitList.iterator();
+			while (iter2.hasNext())
+			{
+				ixit = iter2.next();
+				projectNode.appendChild(getNode(doc, "Ixit", ixit.getIdIxit(), ixit.getName(), 
+						map.get("data["+ixit.getName()+"]")[0]));
+			}
+		}
+		
+		if (modifiedParameters)
+		{
+			Parameter param;
+			Iterator<Parameter> iter5 = parameterService.list().iterator();
+			while (iter5.hasNext())
+			{
+				param = iter5.next();
+				projectNode.appendChild(getNode(doc, "Parameter", param.getIdParam()
+						, param.getName(), map.get("data["+param.getName()+"]")[0]));
+			}
+		}
+		
+		if (numberOfApplicableTestCases > 0)
+		{
+			TestCase tc;
+			Iterator<TestCase> iter3 = tcList.iterator();
+			while (iter3.hasNext())
+			{
+				tc = iter3.next();
+				try
+				{
+					if (map.get("data[" + tc.getName() + "]")[0].equals("true"))
+					{
+						projectNode.appendChild(getTestCase(doc, tc.getIdTC(), tc.getName(), tc.getDescription()));
+					}
+				}
+				catch (Exception e)
+				{
+					//Nothing will be done if a non-configured Test Case is searched
+				}
+			}
+		}
+		
+		// -----------------------------------------------------------------------
+		// SAVE XML
+		// -----------------------------------------------------------------------
+		saveXml(doc, filename);
+	}
+	
+	private void saveXml(Document doc, String path)
+	{
+		Transformer transformer = null;
+		
+		try
+		{
+			transformer = TransformerFactory.newInstance().newTransformer();
+		}
+		catch (TransformerConfigurationException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (TransformerFactoryConfigurationError e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		DOMSource source = new DOMSource(doc);
+		StreamResult console = new StreamResult(new File(path));
+		
+		try
+		{
+			transformer.transform(source, console);
+		}
+		catch (TransformerException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println("\nXML DOM Created Successfully..");
+	}
+	
+	private void loadAvailableConfiguration(Project p, List<Ics> icsList, List<Ixit> ixitList, List<TestCase> tcList)
+	{	
+		for (BigInteger bi : projectService.getServicesData(p.getIdProject()))
+		{
+			icsList.addAll(icsService.getService(bi.intValue()));
+			ixitList.addAll(ixitService.getService(bi.intValue()));
+			
+			if (p.getType().equals("Conformance") || p.getType().equals("Interoperability"))
+			{
+				tcList.addAll(tcService.getService(p.getType(),bi.intValue()));
+			}
+			else
+			{
+				tcList.addAll(tcService.getService("Interoperability",bi.intValue()));
+				tcList.addAll(tcService.getService("Conformance",bi.intValue()));
+			}
+		}
 	}
 	
 	/**

@@ -63,4 +63,6 @@ public interface IcsService {
 	 * @return					data to include in Test Report
 	 */
 	public List<String> pdfData(String configuration);
+	
+	public String add(Ics ics);
 }

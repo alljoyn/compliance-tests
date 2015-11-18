@@ -40,4 +40,8 @@ public interface IxitDAO {
 	 * @return				list of IXIT
 	 */
 	public List<Ixit> getService(int idService);
+	
+	public void add(Ixit ixit);
+	
+	public void update(Ixit ixit);
 }

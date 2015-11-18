@@ -35,7 +35,7 @@ var admin = (function()
 	// TITLE
 	//-------------------------------------------------
 	var adminTitle = jQuery('#title');
-	var titleText = "ADMINISTRATION TASKS";
+	var titleText = "Administration Tasks";
 	//-------------------------------------------------
 	// TCCL TABLE AND BUTTONS
 	//-------------------------------------------------
@@ -79,19 +79,37 @@ var admin = (function()
 	var uploadInstallerButton = jQuery('#uploadInstallerButton');
 	var laUploadResults = jQuery('#laUploadResults');
 	//-------------------------------------------------
+	// ICS MANAGEMENT PANEL
+	//-------------------------------------------------
+	var newIcsForm = jQuery('#newIcsForm');
+	var newIcsServiceGroup = jQuery('#ics-service-group');
+	var addIcs = jQuery('#addIcs');
+	var icsNews = jQuery('#icsSavingResults');
+	//-------------------------------------------------
+	// IXIT MANAGEMENT PANEL
+	//-------------------------------------------------
+	var newIxitForm = jQuery('#newIxitForm');
+	var newIxitServiceGroup = jQuery('#ixit-service-group');
+	var addIxit = jQuery('#addIxit');
+	var ixitNews = jQuery('#ixitSavingResults');
+	//-------------------------------------------------
+	// TEST CASES MANAGEMENT PANEL
+	//-------------------------------------------------
+	var newTcForm = jQuery('#newTcForm');
+	var newTcServiceGroup = jQuery('#tc-service-group');
+	var newTcCertificationReleases = jQuery('#tc-certification-releases');
+	var newTcSupportedCrs = jQuery('#supportedCrs');
+	var addTc = jQuery('#addTc');
+	var tcNews = jQuery('#tcSavingResults');
+	//-------------------------------------------------
 	// POST REQUEST TOKEN AND HEADER
 	//-------------------------------------------------
 	var token = $("meta[name='_csrf']").attr("content");
 	var header = $("meta[name='_csrf_header']").attr("content");
-	//-------------------------------------------------
-	// LOGOUT FORM
-	//-------------------------------------------------
-	var logoutForm = jQuery('#logoutForm');
 	
 	var init = function()
 	{
 		adminTitle.text(titleText);
-		
 		initTcclTable();
 		
 		onChangeFunctions();
@@ -100,6 +118,9 @@ var admin = (function()
 		
 		loadUploadedFiles(testCasesPackagesUrl, tcPackages);
 		loadUploadedFiles(localAgentInstallersUrl, laInstallers);
+		loadServiceFrameworks();
+		
+		loadCertificationReleases();
 	};
 	
 	var initTcclTable = function()
@@ -145,6 +166,7 @@ var admin = (function()
 		
 		onClickTcclButtons();
 		onClickUploadButtons();
+		onClickSaveButtons();
 	}
 	
 	var onClickTcclTableRow = function(clickedRow)
@@ -609,6 +631,42 @@ var admin = (function()
 		});
 	};
 	
+	var onClickSaveButtons = function()
+	{
+		onClickSave(addIcs, newIcsForm, icsNews);
+		onClickSave(addIxit, newIxitForm, ixitNews);
+		onClickSave(addTc, newTcForm, tcNews);
+	}
+	
+	var onClickSave = function(button, form, results)
+	{
+		button.on('click', function()
+		{
+			if (button.is(addTc))
+			{
+				var text = "";
+		    	
+		    	newTcCertificationReleases.find('option:selected').each(function (index)
+		    	{
+		    		text += $(this).val() + ".";
+		    	});
+		    	alert(text);
+		    	newTcSupportedCrs.val(text);
+			}
+			
+			$.ajax({
+	            url: form.attr('action'),
+	            type: 'POST',
+	            data: form.serialize(),
+	            success: function(response)
+	            {
+	            	results.append('<a class=\"list-group-item list-group-item-success\"><span class=\"badge alert-success pull-right\">Success</span>'+response+'</a>');
+	            	form.trigger("reset");
+	            }
+	        });
+		});
+	}
+	
 	var compareTcPackages = function(a, b)
 	{
 		alert(a);
@@ -698,15 +756,51 @@ var admin = (function()
 			});
 		});
 	}
-
-	var logoutFormSubmit = function()
+	
+	var loadServiceFrameworks = function()
 	{
-		logoutForm.submit();
-	};
+		$.ajax({
+			cache: false,
+			type: 'GET',
+			url: 'admin/loadServiceFrameworks',
+			success: function(data)
+			{
+				var text = "";
+				$.each(data, function(i, serviceFramework)
+				{
+					text += "<option value=\""+serviceFramework.idService+"\">"+serviceFramework.name+"</option>";
+				});
+				
+				newIcsServiceGroup.append(text);
+				newIxitServiceGroup.append(text);
+				newTcServiceGroup.append(text);
+			}
+		})
+	}
+	
+	var loadCertificationReleases = function()
+	{	
+		newTcCertificationReleases.empty();
+		$.ajax({
+			cache: false,
+			type: 'GET',
+			url: 'admin/loadCertificationReleases',
+			success: function(data)
+			{
+				text = "";
+				$.each(data, function(i, certificationRelease)
+				{
+					text += "<option value=\""+certificationRelease.idCertrel+"\">"+certificationRelease.name+"</option>";
+				});
+				
+				newTcCertificationReleases.append(text);
+				newTcCertificationReleases.selectpicker();
+			}
+		});
+	}
 	
 	return {
 		init : init,
-		logout : logoutFormSubmit
 	};
 	
 })(admin);

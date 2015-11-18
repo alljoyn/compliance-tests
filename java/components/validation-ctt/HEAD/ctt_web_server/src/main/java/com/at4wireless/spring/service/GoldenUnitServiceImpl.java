@@ -38,17 +38,17 @@ public class GoldenUnitServiceImpl implements GoldenUnitService {
 	
 	@Override
 	@Transactional
-	public boolean create(GoldenUnit gu) {
+	public GoldenUnit create(GoldenUnit gu) {
 		java.sql.Timestamp date = new java.sql.Timestamp(new java.util.Date().getTime());
 		
 		gu.setCreatedDate(date);
 		gu.setModifiedDate(date);
 
 		if(guDao.getGuByName(gu.getUser(), gu.getName())!=null) {
-			return false;
+			return null;
 		} else {
 			guDao.addGu(gu);
-			return true;
+			return gu;
 		}
 	}
 
@@ -66,14 +66,14 @@ public class GoldenUnitServiceImpl implements GoldenUnitService {
 
 	@Override
 	@Transactional
-	public boolean update(GoldenUnit gu) {
+	public GoldenUnit update(GoldenUnit gu) {
 		if(guDao.getGu(gu.getUser(), gu.getIdGolden())!=null) {
 			java.sql.Timestamp date = new java.sql.Timestamp(new java.util.Date().getTime());
 			gu.setModifiedDate(date);
 			guDao.saveChanges(gu);
-			return true;
+			return gu;
 		} else {
-			return false;
+			return null;
 		}
 	}
 
@@ -111,5 +111,19 @@ public class GoldenUnitServiceImpl implements GoldenUnitService {
 			return false;
 		}
 		return true;
+	}
+	
+	@Override
+	@Transactional
+	public Category getCategoryById(int idCategory)
+	{
+		return categoryDao.getCategoryById(idCategory);
+	}
+
+	@Override
+	@Transactional
+	public void deleteProjectGus(int idProject)
+	{
+		guDao.deleteProjectGus(idProject);
 	}
 }

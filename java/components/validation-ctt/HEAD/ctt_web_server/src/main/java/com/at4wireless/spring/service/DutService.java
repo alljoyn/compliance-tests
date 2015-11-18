@@ -58,7 +58,7 @@ public interface DutService {
 	 * @param 	d	DUT information to be updated
 	 * @return		true if DUT is successfully updated, false otherwise
 	 */
-	public boolean update(Dut d);
+	public Dut update(Dut d);
 	
 	/**
 	 * Deletes a DUT
@@ -118,5 +118,7 @@ public interface DutService {
 	 */
 	public void setValues(String username, int idDut, List<Ixit> listIxit);
 	
-	public boolean exists(String username, String name, int id);	
+	public boolean exists(String username, String name, int id);
+	
+	public int getDutId(String username, String dutName);
 }

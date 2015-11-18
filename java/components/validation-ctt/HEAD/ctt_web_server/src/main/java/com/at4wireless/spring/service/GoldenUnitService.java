@@ -32,7 +32,7 @@ public interface GoldenUnitService {
 	 * @param 	gu	Golden Unit information to be stored
 	 * @return		true if GU is successfully stored, false if GU exists
 	 */
-	public boolean create(GoldenUnit gu);
+	public GoldenUnit create(GoldenUnit gu);
 	
 	/**
 	 * Returns data of a given user formatted to be displayed in table
@@ -57,7 +57,7 @@ public interface GoldenUnitService {
 	 * @param 	gu	Golden Unit information to be updated
 	 * @return		true if Golden Unit is successfully updated, false otherwise
 	 */
-	public boolean update(GoldenUnit gu);
+	public GoldenUnit update(GoldenUnit gu);
 	
 	/**
 	 * Deletes a Golden Unit
@@ -91,4 +91,8 @@ public interface GoldenUnitService {
 	 * @return				true if exists, false otherwise
 	 */
 	public boolean exists(String username, String name, int id);
+	
+	public Category getCategoryById(int idCategory);
+	
+	public void deleteProjectGus(int idProject);
 }
