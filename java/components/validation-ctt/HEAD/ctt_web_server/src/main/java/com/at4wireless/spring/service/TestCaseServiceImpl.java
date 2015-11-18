@@ -13,7 +13,6 @@
  *      ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  *      OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *******************************************************************************/
-
 package com.at4wireless.spring.service;
 
 import java.io.FileInputStream;
@@ -46,11 +45,15 @@ import com.at4wireless.spring.dao.IcsDAO;
 import com.at4wireless.spring.dao.TcDAO;
 import com.at4wireless.spring.dao.TcclDAO;
 import com.at4wireless.spring.model.Ics;
+import com.at4wireless.spring.model.Project;
 import com.at4wireless.spring.model.TestCase;
 
 @Service
-public class TestCaseServiceImpl implements TestCaseService {
-		
+public class TestCaseServiceImpl implements TestCaseService
+{
+	@Autowired
+	private ProjectService projectService;
+	
 	@Autowired
 	private IcsDAO icsDao;
 	
@@ -65,72 +68,163 @@ public class TestCaseServiceImpl implements TestCaseService {
 	
 	@Override
 	@Transactional
-	public List<TestCase> load(List<BigInteger> services, Map<String,String[]> map, String type,
-			int idCertRel) {
-
+	public List<TestCase> load(Project p, Map<String,String[]> map)
+	{
+		String type = p.getType();
 		List<Ics> listIcs = new ArrayList<Ics>();
 		List<TestCase> listTC = new ArrayList<TestCase>();
 		
-		for (BigInteger bi : services) {
+		for (BigInteger bi : projectService.getServicesData(p.getIdProject()))
+		{
 			listIcs.addAll(icsDao.getService(bi.intValue()));
-			if(bi.intValue()==3) {
+			
+			if (bi.intValue() == 3)
+			{
 				listIcs.addAll(icsDao.getService(5)); //JTF: Change to a generic way
 			}
-			List<Integer> intList = crDao.getIds(idCertRel);
-			if(type.equals("Development")||type.equals("Conformance and Interoperability")) {
+			List<Integer> intList = crDao.getIds(p.getIdCertrel());
+			
+			if (type.equals("Development") || type.equals("Conformance and Interoperability"))
+			{
 				listTC.addAll(tcDao.getServiceWithRestriction("Conformance", bi.intValue(), intList));
 				listTC.addAll(tcDao.getServiceWithRestriction("Interoperability", bi.intValue(), intList));
-			} else {
+			}
+			else
+			{
 				listTC.addAll(tcDao.getServiceWithRestriction(type, bi.intValue(), intList));
 			}
 		}
-		return checkApplicability(listTC, listIcs, map);
+		return checkApplicability(p, listTC, listIcs, map);
 	}
 	
-	private List<TestCase> checkApplicability(List<TestCase> listTC, List<Ics> listIcs, 
-			Map<String, String[]> map) {
-		
+	private List<TestCase> checkApplicability(Project p, List<TestCase> listTC, List<Ics> listIcs, 
+			Map<String, String[]> map)
+	{
 		String condition = new String();
 		List<TestCase> applyTC = new ArrayList<TestCase>();
 		boolean b = false;
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("JavaScript");
+		boolean setIcs = map.containsKey("data[setIcs]") ? Boolean.parseBoolean(map.get("data[setIcs]")[0]) : false;
+		List<String> configuredIcs = null;
 		
-		for (Ics i : listIcs) {
-
-			if(map.containsKey("data["+i.getName()+"]")) {
-				b = Boolean.parseBoolean(map.get("data["+i.getName()+"]")[0]);
-					try {
-						if (b) engine.eval(i.getName()+" = 1");
-						else engine.eval(i.getName()+" = 0");
-					} catch (ScriptException e) {
+		if (!setIcs)
+		{
+			configuredIcs = loadFromXml(p);
+		}
+		
+		for (Ics i : listIcs)
+		{
+			if (setIcs)
+			{
+				if (map.containsKey("data[" + i.getName() + "]"))
+				{
+					b = Boolean.parseBoolean(map.get("data[" + i.getName() + "]")[0]);
+					
+					try
+					{
+						if (b) engine.eval(i.getName() + " = 1");
+						else engine.eval(i.getName() + " = 0");
+					}
+					catch (ScriptException e)
+					{
 						e.printStackTrace();
 					}
-			} else {
-				try {
-					engine.eval(i.getName()+" = 0");
-				} catch (ScriptException e) {
+				}
+				else
+				{
+					try
+					{
+						engine.eval(i.getName() + " = 0");
+					}
+					catch (ScriptException e)
+					{
+						e.printStackTrace();
+					}
+				}
+			}
+			else
+			{
+				int state = configuredIcs.contains(i.getName()) ? 1 : 0;
+				try
+				{
+					engine.eval(i.getName() + " = " + state);
+				}
+				catch (ScriptException e)
+				{
 					e.printStackTrace();
 				}
 			}
 		}
 		
-		for (TestCase tc : listTC) {
-			
+		for (TestCase tc : listTC)
+		{
 			condition = tc.getApplicability();
 
-			if (!condition.isEmpty()) {
-				try {
-					if ((Integer)engine.eval(condition)==1.0) {
+			if (!condition.isEmpty())
+			{
+				try
+				{
+					if ((Integer)engine.eval(condition)==1.0)
+					{
 						applyTC.add(tc);
 					}
-				} catch (ScriptException e) {
+				}
+				catch (ScriptException e)
+				{
 					e.printStackTrace();
 				}
-			} else {
+			}
+			else
+			{
 				applyTC.add(tc);
 			}
 		}
 		return applyTC;
+	}
+	
+	private List<String> loadFromXml(Project p)
+	{
+		DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = null;
+		List<String> listEnabledIcs = new ArrayList<String>();
+		
+		try
+		{
+			builder = builderFactory.newDocumentBuilder();
+			Document source = builder.parse(new FileInputStream(p.getConfiguration()));
+			
+			XPath xPath = XPathFactory.newInstance().newXPath();	
+			String expression = "/Project/Ics/Name";
+			NodeList nodeList = (NodeList) xPath.compile(expression).evaluate(source, XPathConstants.NODESET);
+			String expression2 = "/Project/Ics/Value";
+			NodeList nodeList2 = (NodeList) xPath.compile(expression2).evaluate(source, XPathConstants.NODESET);
+			
+			for (int i = 0; i < nodeList.getLength(); i++)
+			{
+				if (Boolean.parseBoolean(nodeList2.item(i).getFirstChild().getNodeValue()))
+				{
+					listEnabledIcs.add(nodeList.item(i).getFirstChild().getNodeValue());
+				}
+			}
+		}
+		catch (ParserConfigurationException e)
+		{
+			e.printStackTrace();
+		}
+		catch (SAXException e)
+		{
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		catch (XPathExpressionException e)
+		{
+			e.printStackTrace();
+		}
+		
+		return listEnabledIcs;
 	}
 
 	@Override
@@ -335,5 +429,56 @@ public class TestCaseServiceImpl implements TestCaseService {
 		}
 		
 		return true;
+	}
+
+	@Override
+	public List<Integer> getConfigured(Project p)
+	{
+		DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = null;
+		List<Integer> configuredTc = new ArrayList<Integer>();
+		
+		try {
+			builder = builderFactory.newDocumentBuilder();
+			Document source = builder.parse(new FileInputStream(p.getConfiguration()));
+			
+			XPath xPath = XPathFactory.newInstance().newXPath();	
+			String expression = "/Project/TestCase/Id";
+			NodeList nodeList = (NodeList) xPath.compile(expression).evaluate(source, XPathConstants.NODESET);
+			
+			for (int i = 0; i < nodeList.getLength(); i++) {
+				configuredTc.add(Integer.parseInt(nodeList.item(i).getFirstChild().getNodeValue()));
+			}
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+		
+		return configuredTc;
+	}
+
+	@Override
+	@Transactional
+	public String add(TestCase testCase)
+	{
+		String name = testCase.getName();
+		for (TestCase tc : tcDao.list())
+		{
+			if (tc.getName().equals(name))
+			{
+				testCase.setIdTC(tc.getIdTC());
+				tcDao.update(testCase);
+				return String.format("%s already existed. It was successfully updated", name);
+			}
+		}
+		
+		tcDao.add(testCase);
+		
+		return String.format("%s successfully added to database", testCase.getName());
 	}
 }

@@ -16,18 +16,15 @@
         
 		<!-- Bootstrap -->
 		<link rel="stylesheet" type="text/css" href="resources/bootstrap/css/bootstrap.min.css"/>
-    	<link rel="stylesheet" type="text/css" href="resources/bootstrap/css/custom.css">
+    	<link rel="stylesheet" type="text/css" href="resources/css/custom.css">
 		
     </head>
     <body>
    		<div id="wrap">
-		  	<div id="main" class="container clear-top">
-		    	<!-- Main -->
-		        <div class="container">
-					<jsp:include page="/WEB-INF/views/header.jsp"/>
-				    
-					<!-- Login panel -->
-					<div id="login-box" class="col-sm-6 col-md-4 col-md-offset-4">
+		  	<div id="main" class="container">
+				<!-- Login panel -->
+				<div class="row">
+					<div id="login-box" class="col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4 asa-login-box">
 						<div class="panel panel-default">
 							<!-- Panel header -->
 							<div class="panel-heading">
@@ -35,12 +32,10 @@
 							</div>
 							<!-- Panel body -->
 							<div class="panel-body">
-							
 								<div class="text-center">
-									<img class="img-circle" src="resources/img/login.png"
+									<img class="img-circle asa-login-logo" src="resources/img/alljoyn_bug_logo_color_rgb.jpg"
 											width="120" height="120"></img>
-								</div>
-												 
+								</div>				 
 								<form name='loginForm' class="form-signin"
 										action="<c:url value='j_spring_security_check' />" method='POST'>
 										 
@@ -61,7 +56,6 @@
 								</div>
 							</div>
 						</c:if>
-						
 						<!-- Session expired alert -->
 						<c:if test="${not empty session_expired}">
 							<div class="alert alert-info" align="center">
@@ -80,9 +74,9 @@
 		<script src="resources/bootstrap/js/bootstrap.min.js"></script>
 		
 		<script>
-			$(document).ready(function() {
-				$('#title').text("MEMBERS LOGIN");
-				setTimeout("location.reload(true);",300000);
+			$(document).ready(function()
+			{
+				setTimeout("location.reload(true);", 300000);
 			});
 		</script>
     </body>

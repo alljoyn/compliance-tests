@@ -48,4 +48,11 @@ public class CertificationReleaseServiceImpl implements CertificationReleaseServ
 	public String getCertificationReleaseDescription(String certificationRelease) {
 		return certRelDao.getCertificationReleaseDescription(certificationRelease);
 	}
+	
+	@Override
+	@Transactional
+	public String getCertificationReleaseName(int certificationReleaseId)
+	{
+		return certRelDao.getName(certificationReleaseId);
+	}
 }

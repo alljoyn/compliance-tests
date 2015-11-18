@@ -16,8 +16,8 @@
 
 package com.at4wireless.spring.controller;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -30,9 +30,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.at4wireless.spring.common.DataTablesData;
 import com.at4wireless.spring.model.Project;
 import com.at4wireless.spring.model.TestCase;
+import com.at4wireless.spring.model.dto.TestCaseDT;
 import com.at4wireless.spring.service.ProjectService;
 import com.at4wireless.spring.service.TestCaseService;
 
@@ -56,16 +59,15 @@ public class TestCaseController
      * @return 				target view
      */
 	@RequestMapping(method = RequestMethod.GET)
-	public String testcase(Model model)
+	public @ResponseBody ModelAndView testcase(Model model)
 	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		
 		if (!(auth instanceof AnonymousAuthenticationToken))
 		{
-			model.addAttribute("tcList", new ArrayList<TestCase>());
 			model.addAttribute("newProject", new Project());
 		}
-		return "testcase";
+		return new ModelAndView("dynamic-testcase");
 	}
 	
 	/**
@@ -74,22 +76,45 @@ public class TestCaseController
      * @param 	request		servlet request with the ICS configuration
      * @return 				target view
      */
-	@RequestMapping(value="load", method=RequestMethod.GET)
-	public @ResponseBody List<TestCase> load(HttpServletRequest request)
+	@RequestMapping(value="dataTable", method=RequestMethod.GET)
+	public @ResponseBody DataTablesData load(HttpServletRequest request)
 	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		DataTablesData dtData = new DataTablesData();
 		
 		if (!(auth instanceof AnonymousAuthenticationToken))
 		{
 			Project p = projectService.getFormData(auth.getName(), Integer.parseInt(request.getParameter("data[idProject]")));
 			
-			return tcService.load(projectService.getServicesData(p.getIdProject()),
-					request.getParameterMap(), p.getType(), p.getIdCertrel());
+			List<TestCase> tcList = tcService.load(p, request.getParameterMap());
+			List<TestCaseDT> tcListDt = new ArrayList<TestCaseDT>();
+			List<Integer> configuredTc = new ArrayList<Integer>();
+			
+			if (p.isIsConfigured())
+			{
+				configuredTc = tcService.getConfigured(p);
+				
+				for (TestCase tc : tcList)
+				{
+					tcListDt.add(new TestCaseDT(tc, configuredTc.contains(tc.getIdTC())));
+				}
+			}
+			else
+			{
+				for (TestCase tc : tcList)
+				{
+					tcListDt.add(new TestCaseDT(tc, true));
+				}
+			}
+			
+			dtData.data = tcListDt;
 		}
 		else
 		{
-			return new ArrayList<TestCase>();
+			dtData.data = new ArrayList<TestCaseDT>();
 		}
+		
+		return dtData;
 	}
 	
 	/**

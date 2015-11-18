@@ -39,4 +39,8 @@ public interface IcsDAO {
 	 * @return				list of ICS
 	 */
 	public List<Ics> getService(int idService);
+	
+	public void add(Ics ics);
+	
+	public void update(Ics ics);
 }

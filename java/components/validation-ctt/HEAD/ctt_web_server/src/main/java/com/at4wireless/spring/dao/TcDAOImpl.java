@@ -89,4 +89,42 @@ public class TcDAOImpl implements TcDAO {
 		sessionFactory.getCurrentSession().createSQLQuery("insert into testcases_certrel(id_test,id_certrel)"
 				+" values "+values+";").executeUpdate();
 	}
+	
+	@Override
+	public void add(TestCase testCase)
+	{
+		sessionFactory.getCurrentSession().save(testCase);
+		
+		String[] var = testCase.getSupportedCrs().split("[\\.]+");
+		StringBuilder str = new StringBuilder("values ");
+		for (int i=0; i<var.length; i++) {
+			str.append("("+Integer.toString(testCase.getIdTC())+","+var[i]+")");
+			if(i!=(var.length-1)) str.append(",");
+			else str.append(";");
+		}
+		sessionFactory.getCurrentSession().createSQLQuery("insert into testcases_certrel (id_test,id_certrel) "
+				+str.toString()).executeUpdate();
+	}
+	
+	@Override
+	public void update(TestCase testCase)
+	{
+		sessionFactory.getCurrentSession().createQuery("update TestCase set name = '"+testCase.getName()
+		+"', type = '"+testCase.getType()+"', applicability = '"+testCase.getApplicability()
+		+"', serviceGroup = '"+testCase.getServiceGroup()+"', description = '"+testCase.getDescription()
+		+"' where idTC = '"+testCase.getIdTC()+"'").executeUpdate();
+		
+		sessionFactory.getCurrentSession().createSQLQuery("delete from testcases_certrel where id_test="
+				+testCase.getIdTC()+";").executeUpdate();
+		
+		String[] var = testCase.getSupportedCrs().split("[\\.]+");
+		StringBuilder str = new StringBuilder("values ");
+		for (int i=0; i<var.length; i++) {
+			str.append("("+Integer.toString(testCase.getIdTC())+","+var[i]+")");
+			if(i!=(var.length-1)) str.append(",");
+			else str.append(";");
+		}
+		sessionFactory.getCurrentSession().createSQLQuery("insert into testcases_certrel (id_test,id_certrel) "
+				+str.toString()).executeUpdate();
+	}
 }

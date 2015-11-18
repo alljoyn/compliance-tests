@@ -16,6 +16,7 @@
 
 package com.at4wireless.spring.service;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,7 +62,7 @@ public class ParameterServiceImpl implements ParameterService {
 			
 			try {
 				builder = builderFactory.newDocumentBuilder();
-				Document source = builder.parse(new FileInputStream(configuration));
+				Document source = builder.parse(new File(configuration));
 				
 				XPath xPath = XPathFactory.newInstance().newXPath();	
 				String expression = "/Project/Parameter/Value";

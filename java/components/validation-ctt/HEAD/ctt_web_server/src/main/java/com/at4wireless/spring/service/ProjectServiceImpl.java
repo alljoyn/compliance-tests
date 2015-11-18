@@ -16,22 +16,48 @@
 package com.at4wireless.spring.service;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import com.at4wireless.spring.dao.CertificationReleaseDAO;
 import com.at4wireless.spring.dao.DutDAO;
 import com.at4wireless.spring.dao.ProjectDAO;
+import com.at4wireless.spring.dao.SampleDAO;
 import com.at4wireless.spring.dao.ServiceFrameworkDAO;
 import com.at4wireless.spring.dao.TcclDAO;
 import com.at4wireless.spring.model.CertificationRelease;
+import com.at4wireless.spring.model.Dut;
 import com.at4wireless.spring.model.Project;
 import com.at4wireless.spring.model.RestProject;
+import com.at4wireless.spring.model.Sample;
 import com.at4wireless.spring.model.Tccl;
 
 @Service
@@ -44,13 +70,15 @@ public class ProjectServiceImpl implements ProjectService
 	@Autowired
 	private DutDAO dutDao;
 	@Autowired
+	private SampleDAO sampleDao;
+	@Autowired
 	private TcclDAO tcclDao;
 	@Autowired
 	private ServiceFrameworkDAO serviceDao;
 	
 	@Override
 	@Transactional
-	public boolean create(Project p)
+	public Project create(Project p)
 	{
 		java.sql.Timestamp date = new java.sql.Timestamp(
 				new java.util.Date().getTime());
@@ -60,18 +88,21 @@ public class ProjectServiceImpl implements ProjectService
 
 		if (projectDao.getProjectByName(p.getUser(), p.getName()) != null)
 		{
-			return false;
+			return null;
 		}
 		else
 		{
 			projectDao.addProject(p);
-			return true;
+			checkTcclContent(p);
+			parseSupportedServices(p);
+			parseGoldenUnits(p);
+			return p;
 		}
 	}
 	
 	private void checkTcclContent(Project p)
 	{
-		if (tcclDao.getTcclName(p.getIdTccl()) == null)
+		if ((!p.getType().equals("Development")) && (tcclDao.getTcclName(p.getIdTccl()) == null))
 		{
 			if (tcclDao.getNumber(crDao.getName(p.getIdCertrel()).substring(1)) > 0)
 			{
@@ -172,7 +203,7 @@ public class ProjectServiceImpl implements ProjectService
 	
 	@Override
 	@Transactional
-	public boolean update(Project p)
+	public Project update(Project p)
 	{
 		Project saved = projectDao.getProject(p.getUser(), p.getIdProject());
 		
@@ -182,19 +213,19 @@ public class ProjectServiceImpl implements ProjectService
 			p.setModifiedDate(date);
 			String[] var = p.getSupportedServices().split("[\\.]+");
 			List<BigInteger> listServices = serviceDao.getServices(saved.getIdProject());
-			boolean equals=(var.length==listServices.size());
-			int i=0;
+			boolean equals = (var.length == listServices.size());
+			int i = 0;
 			
-			while ((equals) && (i<var.length))
+			while ((equals) && (i < var.length))
 			{
-				equals = (Integer.parseInt(var[i])==listServices.get(i).intValue());
+				equals = (Integer.parseInt(var[i]) == listServices.get(i).intValue());
 				i++;
 			}
 			
 			if ((saved.getIdCertrel() != p.getIdCertrel()) || (!(saved.getType().equals(p.getType())))
 					|| (!equals))
 			{
-				if (saved.isIsConfigured())
+				/*if (saved.isIsConfigured())
 				{	
 					try
 					{
@@ -215,14 +246,19 @@ public class ProjectServiceImpl implements ProjectService
 						e.printStackTrace();
 					}
 					projectDao.configProject(Integer.toString(saved.getIdProject()), null);
-				}
+				}*/
 			}
 			projectDao.saveChanges(p);
-			return true;
+
+			checkTcclContent(p);
+			parseSupportedServices(p);
+			parseGoldenUnits(p);
+			p.setIsConfigured(saved.isIsConfigured());
+			return p;
 		}
 		else
 		{
-			return false;
+			return null;
 		}
 	}
 	
@@ -293,7 +329,7 @@ public class ProjectServiceImpl implements ProjectService
 		{
 			if ((p.getIdDut() != 0) && (p.isIsConfigured()) && (project.getIdDut() != p.getIdDut()))
 			{
-				try
+				/*try
 				{
 					String cfg = p.getConfiguration();
 					
@@ -310,11 +346,135 @@ public class ProjectServiceImpl implements ProjectService
 				{
 					e.printStackTrace();
 				}
-				projectDao.configProject(Integer.toString(project.getIdProject()), null);
+				projectDao.configProject(Integer.toString(project.getIdProject()), null);*/
+				modifyIxit(p.getConfiguration(), dutDao.getDut(username, p.getIdDut()));
 			}
 			projectDao.setDut(project);
 		}
 		return p.getType();
+	}
+	
+	private void modifyIxit(String configuration, Dut dut)
+	{
+		DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = null;
+		
+		Sample s = sampleDao.list(dut.getIdDut()).get(0);
+		
+		Document source = null;
+		
+		try {
+			builder = builderFactory.newDocumentBuilder();
+			source = builder.parse(new FileInputStream(configuration));
+			
+			XPath xPath = XPathFactory.newInstance().newXPath();	
+			String expression = "/Project/Ixit/Name";
+			NodeList nodeList = (NodeList) xPath.compile(expression).evaluate(source, XPathConstants.NODESET);
+			String expression2 = "/Project/Ixit/Value";
+			NodeList nodeList2 = (NodeList) xPath.compile(expression2).evaluate(source, XPathConstants.NODESET);
+			
+			
+			for (int i = 0; i < nodeList.getLength(); i++)
+			{
+				Node currentNode = nodeList.item(i).getFirstChild();
+				Node currentNode2 = nodeList2.item(i).getFirstChild();
+				
+				if (currentNode.getNodeValue().equals("IXITCO_AppId"))
+				{
+					currentNode2.setNodeValue(s.getAppId());
+				}
+				else if (currentNode.getNodeValue().equals("IXITCO_DeviceName"))
+				{
+					currentNode2.setNodeValue(dut.getName());
+				}
+				else if (currentNode.getNodeValue().equals("IXITCO_DeviceId"))
+				{
+					currentNode2.setNodeValue(s.getDeviceId());
+				}
+				else if (currentNode.getNodeValue().equals("IXITCO_Manufacturer"))
+				{
+					currentNode2.setNodeValue(dut.getManufacturer());
+				}
+				else if (currentNode.getNodeValue().equals("IXITCO_ModelNumber"))
+				{
+					currentNode2.setNodeValue(dut.getModel());
+				}
+				else if (currentNode.getNodeValue().equals("IXITCO_SoftwareVersion"))
+				{
+					currentNode2.setNodeValue(s.getSwVer());
+				}
+				else if (currentNode.getNodeValue().equals("IXITCO_HardwareVersion"))
+				{
+					String value;
+					
+					try
+					{
+						value = s.getHwVer();
+					}
+					catch (NullPointerException e)
+					{
+						value = "";
+					}
+
+					if (currentNode2 != null)
+					{
+						currentNode2.setNodeValue(value);
+					}
+					else
+					{
+						Element node = source.createElement("Value");
+						node.appendChild(source.createTextNode(value));
+						currentNode2 = node;
+					}
+				}
+			}
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+		
+		saveXml(source, configuration);
+	}
+	
+	private void saveXml(Document doc, String path)
+	{
+		Transformer transformer = null;
+		
+		try
+		{
+			transformer = TransformerFactory.newInstance().newTransformer();
+		}
+		catch (TransformerConfigurationException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (TransformerFactoryConfigurationError e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		DOMSource source = new DOMSource(doc);
+		StreamResult console = new StreamResult(new File(path));
+		
+		try
+		{
+			transformer.transform(source, console);
+		}
+		catch (TransformerException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println("\nXML DOM Created Successfully..");
 	}
 
 	@Override
@@ -383,6 +543,7 @@ public class ProjectServiceImpl implements ProjectService
 		{
 			for (Project p : projectDao.getProjectByDut(username, idDut))
 			{
+				System.out.println(p.isIsConfigured());
 				if (p.isIsConfigured())
 				{	
 					try
@@ -405,8 +566,10 @@ public class ProjectServiceImpl implements ProjectService
 					}
 					projectDao.configProject(Integer.toString(p.getIdProject()), null);
 				}
-				p.setIdDut(0);
-				projectDao.setDut(p);
+				Project p2 = new Project();
+				p2.setIdProject(p.getIdProject());
+				p2.setIdDut(0);
+				projectDao.setDut(p2);
 			}
 			return true;
 		}

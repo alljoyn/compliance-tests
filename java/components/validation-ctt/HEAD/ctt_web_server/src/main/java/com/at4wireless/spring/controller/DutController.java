@@ -27,12 +27,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.at4wireless.spring.model.Dut;
 import com.at4wireless.spring.model.Project;
@@ -62,7 +62,7 @@ public class DutController
      * @return 			target view
      */
 	@RequestMapping(method = RequestMethod.GET)
-	public String dut(Model model, @RequestParam(value = "error", required = false) String error,
+	public ModelAndView dut(Model model, @RequestParam(value = "error", required = false) String error,
 			@RequestParam(value = "field", required = false) String field)
 	{  
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -93,11 +93,11 @@ public class DutController
 					model.addAttribute("error", "Invalid " + field + " field length");
 				}
 			}
-			return "dut";
+			return new ModelAndView("dynamic-dut");
 		}
 		else
 		{
-			return "redirect:/login";
+			return new ModelAndView("redirect:/login");
 		}
 	}
 	
@@ -109,7 +109,7 @@ public class DutController
      * @param 	result 		validation result
      * @return 				target view
      */
-	@RequestMapping(value="/add", method=RequestMethod.POST)
+	/*@RequestMapping(value="/add", method=RequestMethod.POST)
 	public String addDut(@Valid @ModelAttribute("newDut") Dut newDut, BindingResult result)
 	{	
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -138,6 +138,28 @@ public class DutController
 		else
 		{
 			return "redirect:/login";
+		}
+	}*/
+	
+	@RequestMapping(value="/add", method=RequestMethod.POST)
+	public @ResponseBody Dut addDut(@Valid @ModelAttribute("newDut") Dut newDut, BindingResult result)
+	{	
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{		
+			if(dutService.create(newDut))
+			{
+				return newDut;
+			}
+			else
+			{
+				return null;
+			}
+		}
+		else
+		{
+			return null;
 		}
 	}
 	
@@ -168,7 +190,7 @@ public class DutController
      * @return 				target view
      */
 	@RequestMapping(value="/edit", method=RequestMethod.POST)
-	public String saveChanges(@Valid @ModelAttribute("newDut") Dut newDut, BindingResult result)
+	public @ResponseBody Dut saveChanges(@Valid @ModelAttribute("newDut") Dut newDut, BindingResult result)
 	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		
@@ -176,19 +198,21 @@ public class DutController
 		{
 			if (result.hasErrors())
 			{
-				List<ObjectError> errorList = result.getAllErrors();
+				/*List<ObjectError> errorList = result.getAllErrors();
 				String[] str2 = errorList.get(0).getCodes()[1].split("[\\.]+");
-				return "redirect:/dut?error=" + str2[0] + "&field=" + str2[1];
+				return "redirect:/dut?error=" + str2[0] + "&field=" + str2[1];*/
+				return null;
 			}
 			else
 			{
-				dutService.update(newDut);
-				return "redirect:/dut";
+				return dutService.update(newDut);
+				//return "redirect:/dut";
 			}
 		}
 		else
 		{
-			return "redirect:/login";
+			//return "redirect:/login";
+			return null;
 		}
 	}
 	
@@ -222,7 +246,7 @@ public class DutController
 	 * @return				target view
 	 */
 	@RequestMapping(value="/save", method=RequestMethod.POST)
-	public String save(Model model, @ModelAttribute("newProject") Project newProject)
+	public @ResponseBody ModelAndView save(Model model, @ModelAttribute("newProject") Project newProject)
 	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		
@@ -230,16 +254,16 @@ public class DutController
 		{
 			if(!projectService.setDut(auth.getName(),newProject).equals("Conformance"))
 			{
-				return "redirect:/gu";
+				return new ModelAndView("redirect:/gu");
 			}
 			else
 			{
-				return "redirect:/ics?idProject="+newProject.getIdProject();
+				return new ModelAndView("redirect:/ics?idProject="+newProject.getIdProject());
 			}
 		}
 		else
 		{
-			return "redirect:/login";
+			return new ModelAndView("redirect:/login");
 		}
 	}
 	
@@ -283,10 +307,11 @@ public class DutController
 	 * @return				target view
 	 */
 	@RequestMapping(value="/samples/add", method=RequestMethod.POST)
-	public String addSample(@ModelAttribute("newSample") Sample newSample)
+	public @ResponseBody Sample addSample(@ModelAttribute("newSample") Sample newSample)
 	{	
 		dutService.createSample(newSample);
-		return "redirect:/dut";
+		return newSample;
+		//return "redirect:/dut";
 	}
 	
 	/**
@@ -331,7 +356,7 @@ public class DutController
      * @return 				target view
      */
 	@RequestMapping(value="/samples/edit", method=RequestMethod.POST)
-	public String saveSampleChanges(@Valid @ModelAttribute("newSample") Sample newSample,
+	public @ResponseBody Sample saveSampleChanges(@Valid @ModelAttribute("newSample") Sample newSample,
 			BindingResult result)
 	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -340,17 +365,35 @@ public class DutController
 		{
 			if(result.hasErrors())
 			{
-				return "redirect:/dut?error=name";
+				//return "redirect:/dut?error=name";
+				return null;
 			}
 			else
 			{
 				dutService.updateSample(newSample);
-				return "redirect:/dut";
+				//return "redirect:/dut";
+				return newSample;
 			}
 		}
 		else
 		{
-			return "redirect:/login";
+			//return "redirect:/login";
+			return null;
+		}
+	}
+	
+	@RequestMapping(value="/getId", method=RequestMethod.GET)
+	public @ResponseBody Integer getDutId(HttpServletRequest request)
+	{
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
+			return dutService.getDutId(auth.getName(), request.getParameter("dutName"));
+		}
+		else
+		{
+			return null;
 		}
 	}
 }

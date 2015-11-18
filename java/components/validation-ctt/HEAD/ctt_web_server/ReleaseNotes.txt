@@ -1,4 +1,4 @@
-CTT Web Server Version v1.4.0 Release Notes
+CTT Web Server Version v1.5.0 Release Notes
 ===========================================
  
 Fully Validated Platforms
@@ -7,21 +7,21 @@ Fully Validated Platforms
  2) Windows 7 (64 bit); Google Chrome version 42.0.2311.90
  3) Windows 7 (64 bit); Firefox version 37.0.2
 
-Features added in v1.4.0
+Features added in v1.5.0
 ------------------------
- 1) CTT Web Server v1.4.0 works with CTT Local Agent v1.6.0, v1.7.0 and v1.8.0.
- 2) CTT Web Server v1.4.0 works with Java 8 and Tomcat 8.
+ 1) CTT Web Server v1.5.0 works with CTT Local Agent v1.6.0, v1.7.0, v1.8.0 and v1.9.0.
+ 2) CTT Web Server v1.5.0 has a new web site organization and new logos according to new AllJoyn Certified program.
   
-Issues Addressed in v1.4.0
+Issues Addressed in v1.5.0
 --------------------------
- ASACOMP-128  CTT Web Server / Change in TCCL Id makes the project unstable
- ASACOMP-127  CTT Web Server / Admin module. Fail to upload TCs with two digits in R
- ASACOMP-81   java 7 reached end of life April 2015, ctt should work with java 8
+ ASACOMP-135  CTT Web Server / Direct access from Step 1 to every Step
+ ASACOMP-134  CTT Web Server / Maintain testing project configuration after edit it.
+ ASACOMP-131  CTT Web Server / Change "Test Report" to "Test Results" and "Send Test..."
   
  For a complete list of fixed issues:
  https://jira.allseenalliance.org/browse/ASACOMP-63?jql=project%20%3D%20ASACOMP%20AND%20issuetype%20in%20standardIssueTypes()%20AND%20status%20in%20(Resolved%2C%20Closed) 
  
-Known Issues in v1.4.0
+Known Issues in v1.5.0
 ----------------------
  ASACOMP-119  IOP - GUs in the Test Report
  ASACOMP-117  IOP - GU Selection
@@ -36,3 +36,4 @@ Change history
  [20150702] - v1.2.0 - Works with CTT Local Agent v1.3.0 	    - Bug fixes:
  [20150917] - v1.3.0 - Works with CTT Local Agent v1.6.0 	    - Bug fixes: ASACOMP-109, ASACOMP-108, ASACOMP-106, ASACOMP-99, ASACOMP-98, ASACOMP-91, ASACOMP-90, ASACOMP-89, ASACOMP-87, ASACOMP-83, ASACOMP-71.
  [20151009] - v1.4.0 - Works with CTT Local Agent v1.6.0, v1.7.0, v1.8.0 - Bug fixes: ASACOMP-128,127,81.
+ [20151116] - v1.5.0 - Works with CTT Local Agent v1.6.0, v1.7.0, v1.8.0, v1.9.0 - Bug fixes: ASACOMP-135,134,131.

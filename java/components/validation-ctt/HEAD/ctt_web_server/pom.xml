@@ -81,7 +81,7 @@
 		<dependency>
 			<groupId>org.springframework.security.oauth</groupId>
 			<artifactId>spring-security-oauth2</artifactId>
-			<version>1.0.0.RELEASE</version>
+			<version>1.0.5.RELEASE</version>
 		</dependency>
 		
 		<!-- Hibernate -->
@@ -123,14 +123,6 @@
     		<artifactId>mysql-connector-java</artifactId>
     		<version>5.1.30</version>		
 		</dependency>
-		
-		<!-- AspectJ -->
-		<!-- <dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjrt</artifactId>
-			<version>${aspectj.version}</version>
-		</dependency> -->
-		
 		<!-- Log4j -->
 		<dependency>
 	        <groupId>org.apache.logging.log4j</groupId>
@@ -203,16 +195,6 @@
 			<artifactId>pdfbox</artifactId>
 			<version>1.8.9</version>
 		</dependency>
-		
-		<!-- CAS client -->
-		<!-- <dependency>
-			<groupId>org.jasig.cas.client</groupId>
-			<artifactId>cas-client-core</artifactId>
-			<version>3.3.3</version>
-			<scope>runtime</scope>
-			<type>jar</type>
-		</dependency> -->
-		
 	</dependencies>
     <build>
         <plugins>

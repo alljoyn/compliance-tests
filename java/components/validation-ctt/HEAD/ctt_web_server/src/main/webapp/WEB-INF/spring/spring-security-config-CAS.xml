@@ -10,7 +10,7 @@
 	http://www.springframework.org/schema/security
 	http://www.springframework.org/schema/security/spring-security-3.2.xsd">
  
- 	<security:http disable-url-rewriting="true" use-expressions="true" auto-config="false" path-type="ant" entry-point-ref="casEntryPoint">
+ 	<security:http disable-url-rewriting="true" use-expressions="true" auto-config="false" request-matcher="ant" entry-point-ref="casEntryPoint">
  		<security:custom-filter before="CAS_FILTER" ref="casSingleSignOutFilter"/>
  		<security:custom-filter before="LOGOUT_FILTER" ref="requestSingleLogoutFilter" />
  		<security:custom-filter after="CAS_FILTER" ref="casFilter"/>

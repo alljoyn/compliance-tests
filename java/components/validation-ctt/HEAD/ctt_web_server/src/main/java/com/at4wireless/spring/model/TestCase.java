@@ -21,6 +21,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name="testcases")
@@ -53,6 +54,9 @@ public class TestCase {
 	
 	@Column(name="description")
 	private String description;
+	
+	@Transient
+	private String supportedCrs;
 	
 	public int getIdTC() {
 		return idTC;
@@ -108,6 +112,10 @@ public class TestCase {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-	
+	public String getSupportedCrs() {
+		return supportedCrs;
+	}
+	public void setSupportedCrs(String supportedCrs) {
+		this.supportedCrs = supportedCrs;
+	}
 }

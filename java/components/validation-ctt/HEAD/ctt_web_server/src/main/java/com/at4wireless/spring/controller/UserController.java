@@ -51,7 +51,7 @@ public class UserController
 		{
 			if(!request.isUserInRole("ROLE_ADMIN"))
 			{
-				return "forward:/project";
+				return "forward:/common";
 			}
 			else
 			{
