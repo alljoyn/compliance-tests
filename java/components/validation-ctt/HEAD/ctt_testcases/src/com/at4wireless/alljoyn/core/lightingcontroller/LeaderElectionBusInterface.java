@@ -36,10 +36,21 @@ public interface LeaderElectionBusInterface
 
     public enum BlobType
     {
-        LSF_PRESET,
+    	LSF_PRESET,
         LSF_LAMP_GROUP,
         LSF_SCENE,
-        LSF_MASTER_SCENE
+        LSF_MASTER_SCENE,
+        LSF_TRANSITION_EFFECT,
+        LSF_PULSE_EFFECT,
+        LSF_PRESET_UPDATE,
+        LSF_LAMP_GROUP_UPDATE,
+        LSF_SCENE_UPDATE,
+        LSF_MASTER_SCENE_UPDATE,
+        LSF_TRANSITION_EFFECT_UPDATE,
+        LSF_PULSE_EFFECT_UPDATE,
+        LSF_SCENE_ELEMENT,
+        LSF_SCENE_2,
+        LSF_BLOB_TYPE_LAST_VALUE
     }
 
     /*

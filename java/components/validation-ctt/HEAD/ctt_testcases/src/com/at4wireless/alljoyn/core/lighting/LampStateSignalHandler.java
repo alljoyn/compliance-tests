@@ -19,7 +19,7 @@ import org.alljoyn.bus.annotation.BusSignalHandler;
 
 import com.at4wireless.alljoyn.core.commons.log.Logger;
 import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
-import com.at4wireless.alljoyn.testcases.conf.lighting.LightingTestSuite;
+import com.at4wireless.alljoyn.testcases.conf.lighting.LSF_LampTestSuite;
 
 public class LampStateSignalHandler
 {
@@ -30,7 +30,7 @@ public class LampStateSignalHandler
 	}
 	
 	/* Interface variables */
-	private LightingTestSuite updateListener;
+	private LSF_LampTestSuite updateListener;
 	
 	private static final Logger logger = new WindowsLoggerImpl(LampStateSignalHandler.class.getSimpleName());
 	boolean signalReceived = false;
@@ -40,7 +40,7 @@ public class LampStateSignalHandler
 		//Empty Constructor
 	}
 	
-	public void setUpdateListener(LightingTestSuite listener)
+	public void setUpdateListener(LSF_LampTestSuite listener)
 	{
 		updateListener = listener;
 	}
