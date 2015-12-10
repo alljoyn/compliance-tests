@@ -39,6 +39,7 @@ public class WifiManager
 	{
 		private boolean connected = false;
 		private boolean disconnected = false;
+		private boolean scanCompleted = false;
 		
 		public boolean isConnected()
 		{
@@ -48,6 +49,17 @@ public class WifiManager
 		public boolean isDisconnected()
 		{
 			return disconnected;
+		}
+		
+		public boolean isScanCompleted()
+		{
+			if (scanCompleted)
+			{
+				scanCompleted = false;
+				return true;
+			}
+			
+			return scanCompleted;
 		}
 		
 		@Override
@@ -60,9 +72,11 @@ public class WifiManager
 				switch (pNotifData.NotificationSource)
 				{
 					case 8: //wlan_notification_source_acm
-						//print some notifications as examples
 						switch (pNotifData.NotificationCode)
 						{
+							case 7: //wlan_notification_acm_scan_complete
+								scanCompleted = true;
+								break;
 							case 10: //wlan_notification_acm_connection_complete
 								if (pNotifData.dwDataSize < pNotifData.size())
 								{
@@ -177,9 +191,11 @@ public class WifiManager
 		return pInterfaceInfoList;
 	}
 	
-	private void scan()
+	private void scan(long startTime, long timeToWaitInMs) throws InterruptedException
 	{
 		int dwError;
+		
+		registerNotification();
 		
 		dwError = WlanApi.INSTANCE.WlanScan(
 				hClient.getValue(),
@@ -188,6 +204,13 @@ public class WifiManager
 				null,
 				null
 				);
+		
+		while (!notificationCallback.isScanCompleted() && (System.currentTimeMillis() < startTime + timeToWaitInMs))
+		{
+			Thread.sleep(100);
+		}
+		
+		unregisterNotification();
 	}
 	
 	//get the list of visible wireless networks
@@ -450,7 +473,10 @@ public class WifiManager
 		List<ScanResult> scanResults = null;
 		long timeToWaitInMs = TimeUnit.MILLISECONDS.convert(timeout, unit);
 		long startTime = System.currentTimeMillis();
-		scan();
+		
+		scan(startTime, timeToWaitInMs);
+		//scan();
+		
 		while ((scanResults == null) && (System.currentTimeMillis() < startTime + timeToWaitInMs))
 		{
 			scanResults = getVisibleNetworkList();
@@ -493,13 +519,16 @@ public class WifiManager
 		{
 			return currentSsid;
 		}
-		scan();
-		registerNotification();
-		
-		connect("adhoc", ssid);
 		
 		long timeToWaitInMs = TimeUnit.MILLISECONDS.convert(timeout, unit);
 		long startTime = System.currentTimeMillis();
+		
+		scan(startTime, timeToWaitInMs);
+		//scan();
+		
+		registerNotification();
+		
+		connect("adhoc", ssid);
 		
 		while ((!notificationCallback.isConnected()) && (System.currentTimeMillis() < startTime + timeToWaitInMs))
 		{

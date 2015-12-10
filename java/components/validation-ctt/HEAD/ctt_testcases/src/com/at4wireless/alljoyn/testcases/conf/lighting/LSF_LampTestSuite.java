@@ -104,8 +104,6 @@ public class LSF_LampTestSuite
 	public static final int LAMP_DETAILS_INTERFACE_VERSION = 1;
 
 	public static final int LAMP_SERVICE_VERSION = 1;
-
-	//private  Short PORT = 91;
 	
 	/** 
 	 * [AT4] Added attributes to perform the test cases
@@ -145,7 +143,7 @@ public class LSF_LampTestSuite
 		
 		try
 		{
-			logger.info("Running testcase: "+testCase);
+			logger.info("Running testcase: %s", testCase);
 			
 			if (testCase.equals("LSF_Lamp-v1-01"))
 			{
@@ -753,9 +751,9 @@ public class LSF_LampTestSuite
 		lampStateSignalHandler = new LampStateSignalHandler();
 		lampStateSignalHandler.setUpdateListener(this);
 		ajMan.registerSignalHandler(lampStateSignalHandler);
-		//serviceHelper.registerSignalHandler(lampStateSignalHandler);
-		/// See if we are able to recieve that signal
 		ajMan.createAllJoynSession(deviceAboutAnnouncement.getServiceName(), AllJoynManager.LAMP_SERVICE_PORT);
+		
+		Thread.sleep(1000);
 
 		boolean onOffValue = true;
 		int brightnessValue = 10;

@@ -58,7 +58,7 @@ import com.at4wireless.alljoyn.testcases.conf.configuration.ConfigurationTestSui
 import com.at4wireless.alljoyn.testcases.conf.controlpanel.ControlPanelTestSuite;
 import com.at4wireless.alljoyn.testcases.conf.gateway.GWAgentTestSuite;
 import com.at4wireless.alljoyn.testcases.conf.lighting.LSF_LampTestSuite;
-import com.at4wireless.alljoyn.testcases.conf.lightingcontroller.LightingControllerTestSuite;
+import com.at4wireless.alljoyn.testcases.conf.lightingcontroller.LSF_ControllerTestSuite;
 import com.at4wireless.alljoyn.testcases.conf.notification.NotificationTestSuite;
 import com.at4wireless.alljoyn.testcases.conf.onboarding.OnboardingTestSuite;
 import com.at4wireless.alljoyn.testcases.conf.smarthome.SmartHomeTestSuite;
@@ -323,7 +323,7 @@ public class Manager extends Thread
 		else if (testName.startsWith("LSF_Controller"))
 		{
 			printParameters("LC");
-			LightingControllerTestSuite lightingControllerService = new LightingControllerTestSuite(testName, icsList, ixitList, gpList);
+			LSF_ControllerTestSuite lightingControllerService = new LSF_ControllerTestSuite(testName, icsList, ixitList, gpList);
 			verdictKey = lightingControllerService.getFinalVerdict();
 		}
 		else if (testName.startsWith("TimeService"))

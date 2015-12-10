@@ -1,4 +1,4 @@
-<!--  Copyright (c) 2013 - 2014, AllSeen Alliance. All rights reserved.
+<!--  Copyright (c) AllSeen Alliance. All rights reserved.
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose with or without fee is hereby granted, provided that the above
@@ -366,6 +366,184 @@
             <arg name="presetsIDs" type="as" direction="out" />
         </signal>
     </interface>
+    <interface name="org.allseen.LSF.ControllerService.TransitionEffect">
+        <annotation name="org.alljoyn.Bus.Secure" value="off"/>
+        <property name="Version" type="u" access="read">
+            <annotation name="" value="" />
+            <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+        </property>
+        <method name="GetAllTransitionEffectIDs">
+            <arg name="responseCode" type="u" direction="out"/>
+            <arg name="transitionEffectIDs" type="as" direction="out"/>
+        </method>
+        <method name="GetTransitionEffectName">
+            <arg name="transitionEffectID" type="s" direction="in"/>
+            <arg name="language" type="s" direction="in"/>
+            <arg name="responseCode" type="u" direction="out"/>
+            <arg name="transitionEffectID" type="s" direction="out"/>
+            <arg name="language" type="s" direction="out"/>
+            <arg name="transitionEffectName" type="s" direction="out"/>
+        </method>
+        <method name="SetTransitionEffectName">
+            <arg name="transitionEffectID" type="s" direction="in"/>
+            <arg name="transitionEffectName" type="s" direction="in"/>
+            <arg name="language" type="s" direction="in"/>
+            <arg name="responseCode" type="u" direction="out"/>
+            <arg name="transitionEffectID" type="s" direction="out"/>
+            <arg name="language" type="s" direction="out"/>
+        </method>
+        <method name="CreateTransitionEffect">
+            <arg name="lampState" type="a{sv}" direction="in"/>
+            <arg name="presetID" type="s" direction="in"/>
+            <arg name="transitionPeriod" type="u" direction="in"/>
+            <arg name="transitionEffectName" type="s" direction="in"/>
+            <arg name="language" type="s" direction="in"/>
+            <arg name="responseCode" type="u" direction="out"/>
+            <arg name="transitionEffectID" type="s" direction="out"/>
+        </method>
+        <method name="UpdateTransitionEffect">
+            <arg name="transitionEffectID" type="s" direction="in"/>
+            <arg name="lampState" type="a{sv}" direction="in"/>
+            <arg name="presetID" type="s" direction="in"/>
+            <arg name="transitionPeriod" type="u" direction="in"/>
+            <arg name="responseCode" type="u" direction="out"/>
+            <arg name="transitionEffectID" type="s" direction="out"/>
+        </method>
+        <method name="DeleteTransitionEffect">
+            <arg name="transitionEffectID" type="s" direction="in"/>
+            <arg name="responseCode" type="u" direction="out"/>
+            <arg name="transitionEffectID" type="s" direction="out"/>
+        </method>
+        <method name="GetTransitionEffect">
+            <arg name="transitionEffectID" type="s" direction="in"/>
+            <arg name="responseCode" type="u" direction="out"/>
+            <arg name="transitionEffectID" type="s" direction="out"/>
+            <arg name="lampState" type="a{sv}" direction="out"/>
+            <arg name="presetID" type="s" direction="out"/>
+            <arg name="transitionPeriod" type="u" direction="out"/>
+        </method>
+        <method name="ApplyTransitionEffectOnLamps">
+            <arg name="transitionEffectID" type="s" direction="in"/>
+            <arg name="lampIDs" type="as" direction="in"/>
+            <arg name="responseCode" type="u" direction="out"/>
+            <arg name="transitionEffectID" type="s" direction="out"/>
+            <arg name="lampIDs" type="as" direction="out"/>
+        </method>
+        <method name="ApplyTransitionEffectOnLampGroups">
+            <arg name="transitionEffectID" type="s" direction="in"/>
+            <arg name="lampGroupIDs" type="as" direction="in"/>
+            <arg name="responseCode" type="u" direction="out"/>
+            <arg name="transitionEffectID" type="s" direction="out"/>
+            <arg name="lampGroupIDs" type="as" direction="out"/>
+        </method>
+        <signal name="TransitionEffectsNameChanged" sessioncast="true">
+            <arg name="transitionEffectIDs" type="as" direction="out"/>
+        </signal>
+        <signal name="TransitionEffectsCreated" sessioncast="true">
+            <arg name="transitionEffectsIDs" type="as" direction="out"/>
+        </signal>
+        <signal name="TransitionEffectsUpdated" sessioncast="true">
+            <arg name="transitionEffectsIDs" type="as" direction="out"/>
+        </signal>
+        <signal name="TransitionEffectsDeleted" sessioncast="true">
+            <arg name="transitionEffectsIDs" type="as" direction="out"/>
+        </signal>
+    </interface>
+    <interface name='org.allseen.LSF.ControllerService.PulseEffect'>
+        <annotation name='org.alljoyn.Bus.Secure' value='off'/>
+        <property name='Version' type='u' access='read'>
+            <annotation name="" value="" />
+            <annotation name='org.freedesktop.DBus.Property.EmitsChangedSignal' value='true'/>
+        </property>
+        <method name='GetAllPulseEffectIDs'>
+            <arg name='responseCode' type='u' direction='out'/>
+            <arg name='pulseEffectIDs' type='as' direction='out'/>
+        </method>
+        <method name='GetPulseEffectName'>
+            <arg name='pulseEffectID' type='s' direction='in'/>
+            <arg name='language' type='s' direction='in'/>
+            <arg name='responseCode' type='u' direction='out'/>
+            <arg name='pulseEffectID' type='s' direction='out'/>
+            <arg name='language' type='s' direction='out'/>
+            <arg name='pulseEffectName' type='s' direction='out'/>
+        </method>
+        <method name='SetPulseEffectName'>
+            <arg name='pulseEffectID' type='s' direction='in'/>
+            <arg name='pulseEffectName' type='s' direction='in'/>
+            <arg name='language' type='s' direction='in'/>
+            <arg name='responseCode' type='u' direction='out'/>
+            <arg name='pulseEffectID' type='s' direction='out'/>
+            <arg name='language' type='s' direction='out'/>
+        </method>
+        <method name='CreatePulseEffect'>
+            <arg name='toLampState' type='a{sv}' direction='in'/>
+            <arg name='pulsePeriod' type='u' direction='in'/>
+            <arg name='pulseDuration' type='u' direction='in'/>
+            <arg name='numPulses' type='u' direction='in'/>
+            <arg name='fromLampState' type='a{sv}' direction='in'/>
+            <arg name='toPresetID' type='s' direction='in'/>
+            <arg name='fromPresetID' type='s' direction='in'/>
+            <arg name='pulseEffectName' type='s' direction='in'/>
+            <arg name='language' type='s' direction='in'/>
+            <arg name='responseCode' type='u' direction='out'/>
+            <arg name='pulseEffectID' type='s' direction='out'/>
+        </method>
+        <method name='UpdatePulseEffect'>
+            <arg name='pulseEffectID' type='s' direction='in'/>
+            <arg name='toLampState' type='a{sv}' direction='in'/>
+            <arg name='pulsePeriod' type='u' direction='in'/>
+            <arg name='pulseDuration' type='u' direction='in'/>
+            <arg name='numPulses' type='u' direction='in'/>
+            <arg name='fromLampState' type='a{sv}' direction='in'/>
+            <arg name='toPresetID' type='s' direction='in'/>
+            <arg name='fromPresetID' type='s' direction='in'/>
+            <arg name='responseCode' type='u' direction='out'/>
+            <arg name='pulseEffectID' type='s' direction='out'/>
+        </method>
+        <method name='DeletePulseEffect'>
+            <arg name='pulseEffectID' type='s' direction='in'/>
+            <arg name='responseCode' type='u' direction='out'/>
+            <arg name='pulseEffectID' type='s' direction='out'/>
+        </method>
+        <method name='GetPulseEffect'>
+            <arg name='pulseEffectID' type='s' direction='in'/>
+            <arg name='responseCode' type='u' direction='out'/>
+            <arg name='pulseEffectID' type='s' direction='out'/>
+            <arg name='toLampState' type='a{sv}' direction='out'/>
+            <arg name='pulsePeriod' type='u' direction='out'/>
+            <arg name='pulseDuration' type='u' direction='out'/>
+            <arg name='numPulses' type='u' direction='out'/>
+            <arg name='fromLampState' type='a{sv}' direction='out'/>
+            <arg name='toPresetID' type='s' direction='out'/>
+            <arg name='fromPresetID' type='s' direction='out'/>
+        </method>
+        <method name='ApplyPulseEffectOnLamps'>
+            <arg name='pulseEffectID' type='s' direction='in'/>
+            <arg name='lampIDs' type='as' direction='in'/>
+            <arg name='responseCode' type='u' direction='out'/>
+            <arg name='pulseEffectID' type='s' direction='out'/>
+            <arg name='lampIDs' type='as' direction='out'/>
+        </method>
+        <method name='ApplyPulseEffectOnLampGroups'>
+            <arg name='pulseEffectID' type='s' direction='in'/>
+            <arg name='lampGroupIDs' type='as' direction='in'/>
+            <arg name='responseCode' type='u' direction='out'/>
+            <arg name='pulseEffectID' type='s' direction='out'/>
+            <arg name='lampGroupIDs' type='as' direction='out'/>
+        </method>
+        <signal name='PulseEffectsNameChanged'>
+            <arg name='pulseEffectIDs' type='as' direction='out'/>
+        </signal>
+        <signal name='PulseEffectsCreated'>
+            <arg name='pulseEffectsIDs' type='as' direction='out'/>
+        </signal>
+        <signal name='PulseEffectsUpdated'>
+            <arg name='pulseEffectsIDs' type='as' direction='out'/>
+        </signal>
+        <signal name='PulseEffectsDeleted'>
+            <arg name='pulseEffectsIDs' type='as' direction='out'/>
+        </signal>
+    </interface>
     <interface name="org.allseen.LSF.ControllerService.Scene">
         <property name="Version" type="u" access="read" />
         <method name="GetAllSceneIDs">
@@ -442,6 +620,109 @@
             <arg name="sceneIDs" type="as" direction="out" />
         </signal>
     </interface>
+    <interface name="org.allseen.LSF.ControllerService.SceneWithSceneElements">
+        <annotation name="org.alljoyn.Bus.Secure" value="off"/>
+        <property name="Version" type="u" access="read">
+            <annotation name="" value="" />
+            <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+        </property>
+        <method name="CreateSceneWithSceneElements">
+            <arg name="sceneElementIDs" type="as" direction="in"/>
+            <arg name="sceneName" type="s" direction="in"/>
+            <arg name="language" type="s" direction="in"/>
+            <arg name="responseCode" type="u" direction="out"/>
+            <arg name="sceneID" type="s" direction="out"/>
+        </method>
+        <method name="UpdateSceneWithSceneElements">
+            <arg name="sceneID" type="s" direction="in"/>
+            <arg name="sceneElementIDs" type="as" direction="in"/>
+            <arg name="responseCode" type="u" direction="out"/>
+            <arg name="sceneID" type="s" direction="out"/>
+        </method>
+        <method name="GetSceneWithSceneElements">
+            <arg name="sceneID" type="s" direction="in"/>
+            <arg name="responseCode" type="u" direction="out"/>
+            <arg name="sceneID" type="s" direction="out"/>
+            <arg name="sceneElementIDs" type="as" direction="out"/>
+        </method>
+    </interface>
+    <interface name="org.allseen.LSF.ControllerService.SceneElement">
+        <annotation name="org.alljoyn.Bus.Secure" value="off"/>
+        <property name="Version" type="u" access="read">
+            <annotation name="" value="" />
+            <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+        </property>
+        <method name="GetAllSceneElementIDs">
+            <arg name="responseCode" type="u" direction="out"/>
+            <arg name="sceneElementIDs" type="as" direction="out"/>
+        </method>
+        <method name="GetSceneElementName">
+            <arg name="sceneElementID" type="s" direction="in"/>
+            <arg name="language" type="s" direction="in"/>
+            <arg name="responseCode" type="u" direction="out"/>
+            <arg name="sceneElementID" type="s" direction="out"/>
+            <arg name="language" type="s" direction="out"/>
+            <arg name="sceneElementName" type="s" direction="out"/>
+        </method>
+        <method name="SetSceneElementName">
+            <arg name="sceneElementID" type="s" direction="in"/>
+            <arg name="sceneElementName" type="s" direction="in"/>
+            <arg name="language" type="s" direction="in"/>
+            <arg name="responseCode" type="u" direction="out"/>
+            <arg name="sceneElementID" type="s" direction="out"/>
+            <arg name="language" type="s" direction="out"/>
+        </method>
+        <method name="CreateSceneElement">
+            <arg name="lampIDs" type="as" direction="in"/>
+            <arg name="lampGroupIDs" type="as" direction="in"/>
+            <arg name="effectID" type="s" direction="in"/>
+            <arg name="sceneElementName" type="s" direction="in"/>
+            <arg name="language" type="s" direction="in"/>
+            <arg name="responseCode" type="u" direction="out"/>
+            <arg name="sceneElementID" type="s" direction="out"/>
+        </method>
+        <method name="UpdateSceneElement">
+            <arg name="sceneElementID" type="s" direction="in"/>
+            <arg name="lampIDs" type="as" direction="in"/>
+            <arg name="lampGroupIDs" type="as" direction="in"/>
+            <arg name="effectID" type="s" direction="in"/>
+            <arg name="responseCode" type="u" direction="out"/>
+            <arg name="sceneElementID" type="s" direction="out"/>
+        </method>
+        <method name="DeleteSceneElement">
+            <arg name="sceneElementID" type="s" direction="in"/>
+            <arg name="responseCode" type="u" direction="out"/>
+            <arg name="sceneElementID" type="s" direction="out"/>
+        </method>
+        <method name="GetSceneElement">
+            <arg name="sceneElementID" type="s" direction="in"/>
+            <arg name="responseCode" type="u" direction="out"/>
+            <arg name="sceneElementID" type="s" direction="out"/>
+            <arg name="lampIDs" type="as" direction="out"/>
+            <arg name="lampGroupIDs" type="as" direction="out"/>
+            <arg name="effectID" type="s" direction="out"/>
+        </method>
+        <method name="ApplySceneElement">
+            <arg name="sceneElementID" type="s" direction="in"/>
+            <arg name="responseCode" type="u" direction="out"/>
+            <arg name="sceneElementID" type="s" direction="out"/>
+        </method>
+        <signal name="SceneElementsNameChanged" sessioncast="true">
+            <arg name="sceneElementIDs" type="as" direction="out"/>
+        </signal>
+        <signal name="SceneElementsCreated" sessioncast="true">
+            <arg name="sceneElementIDs" type="as" direction="out"/>
+        </signal>
+        <signal name="SceneElementsUpdated" sessioncast="true">
+            <arg name="sceneElementIDs" type="as" direction="out"/>
+        </signal>
+        <signal name="SceneElementsDeleted" sessioncast="true">
+            <arg name="sceneElementIDs" type="as" direction="out"/>
+        </signal>
+        <signal name="SceneElementsApplied" sessioncast="true">
+            <arg name="sceneElementIDs" type="as" direction="out"/>
+        </signal>
+    </interface>
     <interface name="org.allseen.LSF.ControllerService.MasterScene">
         <property name="Version" type="u" access="read" />
         <method name="GetAllMasterSceneIDs">
@@ -508,5 +789,23 @@
         <signal name="MasterScenesApplied">
             <arg name="masterSceneIDs" type="as" direction="out" />
         </signal>
+    </interface>
+    <interface name="org.allseen.LSF.ControllerService.DataSet">
+        <annotation name="org.alljoyn.Bus.Secure" value="off"/>
+        <property name="Version" type="u" access="read">
+            <annotation name="org.freedesktop.DBus.Property.EmitsChangedSignal" value="true"/>
+            <annotation name="" value="" />
+        </property>
+        <method name="GetLampDataSet">
+            <arg name="lampID" type="s" direction="in"/>
+            <arg name="language" type="s" direction="in"/>
+            <arg name="responseCode" type="u" direction="out"/>
+            <arg name="lampID" type="s" direction="out"/>
+            <arg name="language" type="s" direction="out"/>
+            <arg name="lampName" type="s" direction="out"/>
+            <arg name="lampDetails" type="a{sv}" direction="out"/>
+            <arg name="lampState" type="a{sv}" direction="out"/>
+            <arg name="lampParameters" type="a{sv}" direction="out"/>
+        </method>
     </interface>
 </node>

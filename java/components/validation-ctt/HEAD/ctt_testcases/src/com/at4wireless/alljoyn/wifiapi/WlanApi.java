@@ -47,6 +47,9 @@ public interface WlanApi extends Library
     	boolean isConnected();
     	
     	boolean isDisconnected();
+
+		//Boolean isScanCompleted();
+    	boolean isScanCompleted();
     }
 
     /**
