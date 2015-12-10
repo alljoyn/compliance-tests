@@ -277,7 +277,7 @@ public class OnboardingHelper
        
         while ((!foundMatch) && (System.currentTimeMillis() < startTime + timeToWaitInMs))
         {
-            deviceAboutAnnouncement = waitForNextAboutAnnouncementFromDevice(1000);
+            deviceAboutAnnouncement = waitForNextAboutAnnouncementFromDevice(1000); //[AT4]
             if (deviceAboutAnnouncement != null)
             {
                 foundMatch = true;
