@@ -116,7 +116,8 @@ public class ServiceHelper
         deviceAnnouncementHandler = getDeviceAnnouncementHandler(deviceId, appId);
         aboutService.addAnnouncementHandler(deviceAnnouncementHandler, null);*/
        
-	    if (aboutListener) {
+	    if (aboutListener)
+	    {
 	    	logger.info("Adding AboutListener for About announcements");
 	        deviceAnnouncementHandler = getDeviceAnnouncementHandler(deviceId, appId);
 	        busAttachmentMgr.getBusAttachment().registerAboutListener(deviceAnnouncementHandler);
