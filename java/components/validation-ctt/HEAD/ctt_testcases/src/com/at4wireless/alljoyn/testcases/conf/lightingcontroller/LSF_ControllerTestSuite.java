@@ -40,6 +40,9 @@ import com.at4wireless.alljoyn.core.introspection.bean.InterfaceDetail;
 import com.at4wireless.alljoyn.core.lightingcontroller.ControllerInterfaceValidator;
 import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceBusInterface;
 import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceBusObject;
+import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceDataSetBusInterface;
+import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceDataSetBusInterface.GetLampDataSetValues;
+import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceDataSetBusObject;
 import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceHelper;
 import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceLampBusInterface;
 import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceLampBusInterface.GetAllLampIDsValues;
@@ -84,6 +87,17 @@ import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServicePresetBu
 import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServicePresetBusInterface.PresetValues;
 import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServicePresetBusObject;
 import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServicePresetSignalHandler;
+import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServicePulseEffectBusInterface;
+import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServicePulseEffectBusInterface.GetAllPulseEffectIDsValues;
+import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServicePulseEffectBusInterface.GetPulseEffectNameValues;
+import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServicePulseEffectBusInterface.GetPulseEffectValues;
+import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServicePulseEffectBusInterface.PulseEffectValues;
+import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServicePulseEffectBusObject;
+import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServicePulseEffectSignalHandler;
+import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceSWSEBusInterface;
+import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceSWSEBusInterface.GetSceneWithSceneElementsValues;
+import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceSWSEBusInterface.SceneWithSceneElementsValues;
+import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceSWSEBusObject;
 import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceSceneBusInterface;
 import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceSceneBusInterface.CreateScenePulselampsLampGroupsWithPreset;
 import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceSceneBusInterface.CreateScenePulselampsLampGroupsWithState;
@@ -94,9 +108,23 @@ import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceSceneBus
 import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceSceneBusInterface.GetSceneValues;
 import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceSceneBusInterface.SceneValues;
 import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceSceneBusObject;
+import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceSceneElementBusInterface;
+import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceSceneElementBusInterface.GetAllSceneElementIDsValues;
+import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceSceneElementBusInterface.GetSceneElementNameValues;
+import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceSceneElementBusInterface.GetSceneElementValues;
+import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceSceneElementBusInterface.SceneElementValues;
+import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceSceneElementBusObject;
+import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceSceneElementSignalHandler;
 import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceSceneSignalHandler;
 import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceSignalHandler;
 import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceSignalListener;
+import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceTransitionEffectBusInterface;
+import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceTransitionEffectBusInterface.GetAllTransitionEffectIDsValues;
+import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceTransitionEffectBusInterface.GetTransitionEffectNameValues;
+import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceTransitionEffectBusInterface.GetTransitionEffectValues;
+import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceTransitionEffectBusInterface.TransitionEffectValues;
+import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceTransitionEffectBusObject;
+import com.at4wireless.alljoyn.core.lightingcontroller.ControllerServiceTransitionEffectSignalHandler;
 import com.at4wireless.alljoyn.core.lightingcontroller.LeaderElectionBusInterface;
 import com.at4wireless.alljoyn.core.lightingcontroller.LeaderElectionBusInterface.BlobValues;
 import com.at4wireless.alljoyn.core.lightingcontroller.LeaderElectionBusInterface.ChecksumAndTimestampValues;
@@ -106,15 +134,14 @@ import com.at4wireless.alljoyn.testcases.parameter.GeneralParameter;
 import com.at4wireless.alljoyn.testcases.parameter.Ics;
 import com.at4wireless.alljoyn.testcases.parameter.Ixit;
 
-public class LightingControllerTestSuite
+public class LSF_ControllerTestSuite
 {
-	private static final Logger logger = new WindowsLoggerImpl("LControllerTestSuite");
+	// Logging constants
+	private static final Logger logger = new WindowsLoggerImpl(LSF_ControllerTestSuite.class.getSimpleName());
 
 	// AJ testing constants
 	private static final String BUS_APPLICATION_NAME = "ControllerTestSuite";
-	//private static final long ANNOUNCEMENT_TIMEOUT_IN_SECONDS = 30;
 	private long ANNOUNCEMENT_TIMEOUT_IN_SECONDS = 30;
-	//private static final long SESSION_CLOSE_TIMEOUT_IN_SECONDS = 5;
 	private long SESSION_CLOSE_TIMEOUT_IN_SECONDS = 5;
 
 	// Controller service constants
@@ -127,6 +154,11 @@ public class LightingControllerTestSuite
 	private static final String SCENE_INTERFACE_NAME                = "org.allseen.LSF.ControllerService.Scene";
 	private static final String MASTERSCENE_INTERFACE_NAME          = "org.allseen.LSF.ControllerService.MasterScene";
 	private static final String LEADER_ELECTION_INTERFACE_NAME      = "org.allseen.LeaderElectionAndStateSync";
+	private static final String TRANSITION_EFFECT_INTERFACE_NAME            = "org.allseen.LSF.ControllerService.TransitionEffect";
+    private static final String PULSE_EFFECT_INTERFACE_NAME                 = "org.allseen.LSF.ControllerService.PulseEffect";
+    private static final String SCENE_WITH_SCENE_ELEMENTS_INTERFACE_NAME    = "org.allseen.LSF.ControllerService.SceneWithSceneElements";
+    private static final String SCENE_ELEMENT_INTERFACE_NAME                = "org.allseen.LSF.ControllerService.SceneElement";
+    private static final String DATA_SET_INTERFACE_NAME                     = "org.allseen.LSF.ControllerService.DataSet";
 	
 	// Ivars
     private ControllerServiceHelper serviceHelper;
@@ -171,6 +203,29 @@ public class LightingControllerTestSuite
     private LeaderElectionSignalHandler leaderElectionSignalHandler;
     private LeaderElectionBusInterface leaderElectionIface;
     
+    // Object for org.allseen.LSF.ControllerService.TransitionEffect
+    private ControllerServiceTransitionEffectBusObject transitionEffectBusObject;
+    private ControllerServiceTransitionEffectSignalHandler transitionEffectSignalHandler;
+    private ControllerServiceTransitionEffectBusInterface transitionEffectIface;
+
+    // Object for org.allseen.LSF.ControllerService.PulseEffect
+    private ControllerServicePulseEffectBusObject pulseEffectBusObject;
+    private ControllerServicePulseEffectSignalHandler pulseEffectSignalHandler;
+    private ControllerServicePulseEffectBusInterface pulseEffectIface;
+
+    // Object for org.allseen.LSF.ControllerService.SceneElement
+    private ControllerServiceSceneElementBusObject sceneElementBusObject;
+    private ControllerServiceSceneElementSignalHandler sceneElementSignalHandler;
+    private ControllerServiceSceneElementBusInterface sceneElementIface;
+
+    // Object for org.allseen.LSF.ControllerService.SceneWithSceneElements
+    private ControllerServiceSWSEBusObject swseBusObject;
+    private ControllerServiceSWSEBusInterface swseIface;
+
+    //Object for org.allseen.LSF.ControllerService.DataSet
+    private ControllerServiceDataSetBusObject dataSetBusObject;
+    private ControllerServiceDataSetBusInterface dataSetIface;
+    
 	/** 
 	 * [AT4] Added attributes to perform the test cases
 	 * 
@@ -184,7 +239,7 @@ public class LightingControllerTestSuite
 	private Ics icsList;
 	private Ixit ixitList;
 
-	public LightingControllerTestSuite(String testCase, Ics icsList, Ixit ixitList, GeneralParameter gpList)
+	public LSF_ControllerTestSuite(String testCase, Ics icsList, Ixit ixitList, GeneralParameter gpList)
 	{
 		this.icsList = icsList;
 		this.ixitList = ixitList;
@@ -196,7 +251,7 @@ public class LightingControllerTestSuite
 		{
 			runTestCase(testCase);
 		}
-		catch(Exception e)
+		catch (Exception e)
 		{
 			inconc = true;
 		}
@@ -208,7 +263,7 @@ public class LightingControllerTestSuite
 		
 		try
 		{
-			logger.info("Running testcase: "+testCase);
+			logger.info("Running testcase: %s", testCase);
 	
 			if (testCase.equals("LSF_Controller-v1-01"))
 			{
@@ -342,6 +397,86 @@ public class LightingControllerTestSuite
 			{
 				testLSF_Controller_v1_33_LeaderElectionOverthrow();
 			}
+			else if (testCase.equals("LSF_Controller-v1-34"))
+			{
+				testLSF_Controller_v1_34_TransitionEffectCreateWithLampState();
+			}
+			else if (testCase.equals("LSF_Controller-v1-35"))
+			{
+				testLSF_Controller_v1_35_TransitionEffectCreateWithPreset();
+			}
+			else if (testCase.equals("LSF_Controller-v1-36"))
+			{
+				testLSF_Controller_v1_36_TransitionEffectUpdateDelete();
+			}
+			else if (testCase.equals("LSF_Controller-v1-37"))
+			{
+				testLSF_Controller_v1_37_TransitionEffectName();
+			}
+			else if (testCase.equals("LSF_Controller-v1-38"))
+			{
+				testLSF_Controller_v1_38_TransitionEffectApplyLamp();
+			}
+			else if (testCase.equals("LSF_Controller-v1-39"))
+			{
+				testLSF_Controller_v1_39_TransitionEffectApplyLampGroup();
+			}
+			else if (testCase.equals("LSF_Controller-v1-40"))
+			{
+				testLSF_Controller_v1_40_PulseEffectCreateWithLampState();
+			}
+			else if (testCase.equals("LSF_Controller-v1-41"))
+			{
+				testLSF_Controller_v1_41_PulseEffectCreateWithPreset();
+			}
+			else if (testCase.equals("LSF_Controller-v1-42"))
+			{
+				testLSF_Controller_v1_42_PulseEffectUpdateDelete();
+			}
+			else if (testCase.equals("LSF_Controller-v1-43"))
+			{
+				testLSF_Controller_v1_43_PulseEffectName();
+			}
+			else if (testCase.equals("LSF_Controller-v1-44"))
+			{
+				testLSF_Controller_v1_44_PulseEffectApplyLamp();
+			}
+			else if (testCase.equals("LSF_Controller-v1-45"))
+			{
+				testLSF_Controller_v1_45_PulseEffectApplyLampGroup();
+			}
+			else if (testCase.equals("LSF_Controller-v1-46"))
+			{
+				testLSF_Controller_v1_46_SceneElementCreate();
+			}
+			else if (testCase.equals("LSF_Controller-v1-47"))
+			{
+				testLSF_Controller_v1_47_SceneElementUpdateDelete();
+			}
+			else if (testCase.equals("LSF_Controller-v1-48"))
+			{
+				testLSF_Controller_v1_48_SceneElementName();
+			}
+			else if (testCase.equals("LSF_Controller-v1-49"))
+			{
+				testLSF_Controller_v1_49_SceneElementApply();
+			}
+			else if (testCase.equals("LSF_Controller-v1-50"))
+			{
+				testLSF_Controller_v1_50_SceneWithSceneElementsCreate();
+			}
+			else if (testCase.equals("LSF_Controller-v1-51"))
+			{
+				testLSF_Controller_v1_51_SceneWithSceneElementsUpdateDelete();
+			}
+			else if (testCase.equals("LSF_Controller-v1-52"))
+			{
+				testLSF_Controller_v1_52_SceneWithSceneElementsApply();
+			}
+			else if (testCase.equals("LSF_Controller-v1-53"))
+			{
+				testLSF_Controller_v1_53_LampDataSetGet();
+			}
 			else
 			{
 				fail("Test Case not valid");
@@ -373,7 +508,7 @@ public class LightingControllerTestSuite
 	private void setUp() throws Exception
 	{
 		//super.setUp();
-		System.out.println("====================================================");
+		logger.raw("====================================================");
 		logger.info("setUp started");
 
 		try
@@ -394,23 +529,22 @@ public class LightingControllerTestSuite
 		}
 		catch (Exception e)
 		{
-			inconc = true;
-			logger.error("setUp thrown an exception: "+e.getMessage());
+			logger.error("setUp thrown an exception: ", e);
 			//releaseServiceHelper();
 			tearDown();
 			throw e;
 		}
-		System.out.println("====================================================");
+		logger.raw("====================================================");
 	} 
 	
 	protected void tearDown() throws Exception
 	{
-		System.out.println("====================================================");
+		logger.raw("====================================================");
 		logger.info("test tearDown started");
 		controllerIface.LightingResetControllerService(); // clean up Controller
 		releaseServiceHelper();
 		logger.info("test tearDown done");
-		System.out.println("====================================================");
+		logger.raw("====================================================");
 	}
 
 	private void initServiceHelper() throws BusException, Exception
@@ -448,28 +582,57 @@ public class LightingControllerTestSuite
 		leaderElectionBusObject = new LeaderElectionBusObject();
 		leaderElectionSignalHandler = new LeaderElectionSignalHandler();
 		leaderElectionSignalHandler.setUpdateListener(signalListener);
+		
+		transitionEffectBusObject = new ControllerServiceTransitionEffectBusObject();
+        transitionEffectSignalHandler = new ControllerServiceTransitionEffectSignalHandler();
+        transitionEffectSignalHandler.setUpdateListener(signalListener);
+
+        pulseEffectBusObject = new ControllerServicePulseEffectBusObject();
+        pulseEffectSignalHandler = new ControllerServicePulseEffectSignalHandler();
+        pulseEffectSignalHandler.setUpdateListener(signalListener);
+
+        sceneElementBusObject = new ControllerServiceSceneElementBusObject();
+        sceneElementSignalHandler = new ControllerServiceSceneElementSignalHandler();
+        sceneElementSignalHandler.setUpdateListener(signalListener);
+
+        swseBusObject = new ControllerServiceSWSEBusObject();
+
+        dataSetBusObject = new ControllerServiceDataSetBusObject();
 
 		// register bus objects and signal handlers with serviceHelper
 		serviceHelper.registerBusObject(controllerServiceBusObject, CONTROLLER_BUS_OBJECT_PATH);
 		serviceHelper.registerSignalHandler(controllerServiceSignalHandler);
 
-		serviceHelper.registerBusObject(lampBusObject, CONTROLLER_BUS_OBJECT_PATH+"/Lamp");
+		serviceHelper.registerBusObject(lampBusObject, CONTROLLER_BUS_OBJECT_PATH + "/Lamp");
 		serviceHelper.registerSignalHandler(lampSignalHandler);
 
-		serviceHelper.registerBusObject(lampGroupBusObject, CONTROLLER_BUS_OBJECT_PATH+"/LampGroup");
+		serviceHelper.registerBusObject(lampGroupBusObject, CONTROLLER_BUS_OBJECT_PATH + "/LampGroup");
 		serviceHelper.registerSignalHandler(lampGroupSignalHandler);
 
-		serviceHelper.registerBusObject(presetBusObject, CONTROLLER_BUS_OBJECT_PATH+"/Preset");
+		serviceHelper.registerBusObject(presetBusObject, CONTROLLER_BUS_OBJECT_PATH + "/Preset");
 		serviceHelper.registerSignalHandler(presetSignalHandler);
 
-		serviceHelper.registerBusObject(sceneBusObject, CONTROLLER_BUS_OBJECT_PATH+"/Scene");
+		serviceHelper.registerBusObject(sceneBusObject, CONTROLLER_BUS_OBJECT_PATH + "/Scene");
 		serviceHelper.registerSignalHandler(sceneSignalHandler);
 
-		serviceHelper.registerBusObject(masterSceneBusObject, CONTROLLER_BUS_OBJECT_PATH+"/MasterScene");
+		serviceHelper.registerBusObject(masterSceneBusObject, CONTROLLER_BUS_OBJECT_PATH + "/MasterScene");
 		serviceHelper.registerSignalHandler(masterSceneSignalHandler);
 
-		serviceHelper.registerBusObject(leaderElectionBusObject, LEADER_ELECTION_BUS_OBJECT_PATH+"/LeaderElection");
+		serviceHelper.registerBusObject(leaderElectionBusObject, LEADER_ELECTION_BUS_OBJECT_PATH + "/LeaderElection");
 		serviceHelper.registerSignalHandler(leaderElectionSignalHandler);
+		
+		serviceHelper.registerBusObject(transitionEffectBusObject, CONTROLLER_BUS_OBJECT_PATH + "/TransitionEffect");
+        serviceHelper.registerSignalHandler(transitionEffectSignalHandler);
+
+        serviceHelper.registerBusObject(pulseEffectBusObject, CONTROLLER_BUS_OBJECT_PATH + "/PulseEffect");
+        serviceHelper.registerSignalHandler(pulseEffectSignalHandler);
+
+        serviceHelper.registerBusObject(sceneElementBusObject, CONTROLLER_BUS_OBJECT_PATH + "/SceneElement");
+        serviceHelper.registerSignalHandler(sceneElementSignalHandler);
+
+        serviceHelper.registerBusObject(swseBusObject, CONTROLLER_BUS_OBJECT_PATH + "/SceneWithSceneElements");
+
+        serviceHelper.registerBusObject(dataSetBusObject, CONTROLLER_BUS_OBJECT_PATH + "/DataSet");
 
 		deviceAboutAnnouncement = waitForNextDeviceAnnouncement();
 		connectControllerService(deviceAboutAnnouncement);
@@ -513,6 +676,31 @@ public class LightingControllerTestSuite
 		proxy = serviceHelper.getProxyBusObject(LEADER_ELECTION_BUS_OBJECT_PATH,
 				new Class[] { LeaderElectionBusInterface.class });
 		leaderElectionIface = proxy.getInterface(LeaderElectionBusInterface.class);
+		
+		// org.allseen.LSF.ControllerService.TransitionEffect
+        proxy = serviceHelper.getProxyBusObject(CONTROLLER_BUS_OBJECT_PATH,
+            new Class[] { ControllerServiceTransitionEffectBusInterface.class });
+        transitionEffectIface = proxy.getInterface(ControllerServiceTransitionEffectBusInterface.class);
+
+        // org.allseen.LSF.ControllerService.PulseEffect
+        proxy = serviceHelper.getProxyBusObject(CONTROLLER_BUS_OBJECT_PATH,
+            new Class[] { ControllerServicePulseEffectBusInterface.class });
+        pulseEffectIface = proxy.getInterface(ControllerServicePulseEffectBusInterface.class);
+
+        // org.alseen.LSF.ControllerService.SceneElement
+        proxy = serviceHelper.getProxyBusObject(CONTROLLER_BUS_OBJECT_PATH,
+            new Class[] { ControllerServiceSceneElementBusInterface.class });
+        sceneElementIface = proxy.getInterface(ControllerServiceSceneElementBusInterface.class);
+
+        // org.allseen.LSF.ControllerService.SceneWithSceneElements
+        proxy = serviceHelper.getProxyBusObject(CONTROLLER_BUS_OBJECT_PATH,
+            new Class[] { ControllerServiceSWSEBusInterface.class });
+        swseIface = proxy.getInterface(ControllerServiceSWSEBusInterface.class);
+
+        // org.allseen.LSF.ControllerService.DataSet
+        proxy = serviceHelper.getProxyBusObject(CONTROLLER_BUS_OBJECT_PATH,
+            new Class[] { ControllerServiceDataSetBusInterface.class });
+        dataSetIface = proxy.getInterface(ControllerServiceDataSetBusInterface.class);
 	}
 
 	private void releaseServiceHelper()
@@ -609,8 +797,8 @@ public class LightingControllerTestSuite
 			// verify version from method on ControllerService interface
 			version = controllerIface.GetControllerServiceVersion();
 			logger.info(LEADER_ELECTION_INTERFACE_NAME + " MethodCall-Version: " + version);
-			assertEquals("The controller Service Preset Version does not match", version,
-					ixitList.IXITLC_ControllerServicePresetVersion);
+			assertEquals("The controller Service Leader Election Version does not match", version,
+					ixitList.IXITLC_LeaderElectionAndStateSyncVersion);
 
 		}
 		catch (Exception e)
@@ -681,9 +869,9 @@ public class LightingControllerTestSuite
 			GetLampNameValues getNameValues = lampIface.GetLampName(lampID, "en");
 			logger.info("Lamp name is " + getNameValues.lampName);
 			logger.info("Checking if lamp names match");
-			assertEquals("LampNames are not the same",lampName, getNameValues.lampName);
+			assertEquals("LampNames are not the same", lampName, getNameValues.lampName);
 
-			Thread.sleep(5000); // wait before checking signal is received //[AT4] Should this 5000 be a GP?
+			Thread.sleep(5000); // wait before checking signal is received
 			boolean signalReceived = signalListener.didLampNameChanged();
 			logger.info("Checking if LampNameChanged signal was received");
 			assertTrue("Signal for LampNameChanged was not received", signalReceived);
@@ -1366,7 +1554,7 @@ public class LightingControllerTestSuite
 
 			GetSceneNameValues getNameResponse = sceneIface.GetSceneName(pulseSceneID, "en");
 
-			assertEquals("Scene Name has not been changed",sceneName, getNameResponse.sceneName);
+			assertEquals("Scene Name has not been changed", sceneName, getNameResponse.sceneName);
 		}
 		catch (Exception e)
 		{
@@ -1466,7 +1654,7 @@ public class LightingControllerTestSuite
 
 			GetMasterSceneNameValues getNameResponse = masterSceneIface.GetMasterSceneName(masterSceneID, "en");
 
-			assertEquals("Master Scene Name has not been changed",masterSceneName, getNameResponse.masterSceneName);
+			assertEquals("Master Scene Name has not been changed", masterSceneName, getNameResponse.masterSceneName);
 		}
 		catch (Exception e)
 		{
@@ -1486,7 +1674,8 @@ public class LightingControllerTestSuite
 			{
 				logger.info("blobType: " + val.blobType);
 				BlobValues blobResponse = leaderElectionIface.GetBlob(val.blobType);
-				assertEquals("",val.checksum, blobResponse.checksum);
+				assertEquals("Checksum returned from calling GetBlob() is not consistent "
+						+ "with that returned by GetChecksumAndModificationTimestamp()", val.checksum, blobResponse.checksum);
 				logger.info("timestamp: " + blobResponse.timestamp);
 				logger.info("blob: " + blobResponse.blob);
 			}
@@ -1531,6 +1720,598 @@ public class LightingControllerTestSuite
 			fail(e.getMessage());
 		}
 	}
+	
+    public void testLSF_Controller_v1_34_TransitionEffectCreateWithLampState() throws Exception
+    {
+        try
+        {
+            // create TransitionEffect using LampState
+            Map<String, Variant> lampState = newLampState(true, 2147483648L, 739688812, 2061584302, 384286547);
+            TransitionEffectValues createResponse = transitionEffectIface.CreateTransitionEffect(lampState, new String(), 5000, "ControllerTransitionEffect", "en");
+
+            String transitionEffectID = createResponse.transitionEffectID;
+
+            // signal check -- TransitionEffectsCreated
+            Thread.sleep(500);
+            assertTrue("Did not receive signal TransitionEffectsCreated", signalListener.didTransitionEffectsCreated());
+
+            // get TransitionEffect
+            GetTransitionEffectValues getResponse = transitionEffectIface.GetTransitionEffect(transitionEffectID);
+            Type type = null;
+            for (String key : lampState.keySet())
+            {
+                logger.debug("Compare key " + key);
+                String expectedStateVal = lampState.get(key).getObject(type).toString();
+                String stateVal = getResponse.lampState.get(key).getObject(type).toString();
+                assertEquals("", expectedStateVal, stateVal);
+            }
+        }
+        catch (Exception e)
+        {
+            logger.info("Exception caught while trying to create Transition Effect with LampState");
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
+    public void testLSF_Controller_v1_35_TransitionEffectCreateWithPreset() throws Exception
+    {
+        try
+        {
+            // create preset
+            Map<String, Variant> presetState = newLampState(true, 2147483648L, 739688812, 2061584302, 384286547);
+            String presetName = "ControllerTest Preset";
+            PresetValues createPresetResponse = presetIface.CreatePreset(presetState, presetName, "en");
+            String presetID = createPresetResponse.presetID;
+
+            TransitionEffectValues createResponse = transitionEffectIface.CreateTransitionEffect(new HashMap<String, Variant>(), presetID, 5000, "ControllerTransitionEffect", "en");
+
+            String transitionEffectID = createResponse.transitionEffectID;
+
+            // signal check -- TransitionEffectCreated
+            Thread.sleep(500);
+            assertTrue("Did not receive signal TransitionEffectsCreated", signalListener.didTransitionEffectsCreated());
+
+            // get TransitionEffect
+            GetTransitionEffectValues getResponse = transitionEffectIface.GetTransitionEffect(transitionEffectID);
+            assertEquals("", presetID, getResponse.presetID);
+        }
+        catch (Exception e)
+        {
+            logger.info("Exception caught while trying to create Transition Effect with Preset");
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
+    public void testLSF_Controller_v1_36_TransitionEffectUpdateDelete() throws Exception
+    {
+        try
+        {
+            String transitionEffectID = createTransitionEffect();
+            GetTransitionEffectValues getTransitionEffectResponse = transitionEffectIface.GetTransitionEffect(transitionEffectID);
+
+            // change the TransitionEffect
+            getTransitionEffectResponse.lampState = newLampState(false, 2147483648L, 739688812, 2061584302, 384286547);
+
+            // do update
+            transitionEffectIface.UpdateTransitionEffect(transitionEffectID, getTransitionEffectResponse.lampState, new String(), 5000);
+            // signal check -- TransitionEffectsUpdated
+            Thread.sleep(500); // wait for signal
+            assertTrue("Did not receive signal TransitionEffectsUpdated", signalListener.didTransitionEffectsUpdated());
+
+            // do delete
+            transitionEffectIface.DeleteTransitionEffect(transitionEffectID);
+            // signal check -- TransitionEffectsDeleted
+            Thread.sleep(500); // wait for signal
+            assertTrue("Did not receive signal TransitionEffectsDeleted", signalListener.didTransitionEffectsDeleted());
+
+            // get all TransitionEffect == 0
+            GetAllTransitionEffectIDsValues getAllTransitionEffectsResponse = transitionEffectIface.GetAllTransitionEffectIDs();
+            assertEquals("", 0, getAllTransitionEffectsResponse.transitionEffectIDs.length);
+        }
+        catch (Exception e)
+        {
+            logger.info("Exception caught while trying to Update or Delete TransitionEffects");
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
+    public void testLSF_Controller_v1_37_TransitionEffectName() throws Exception
+    {
+        try
+        {
+            String transitionEffectID = createTransitionEffect();
+            String transitionEffectName = "ControllerTransitionEffect" + new Random().nextInt(31337);
+
+            transitionEffectIface.SetTransitionEffectName(transitionEffectID, transitionEffectName, "en");
+
+            // signal check -- TransitionEffectsNameChanged
+            Thread.sleep(500);
+            assertTrue("Did not receive signal TransitionEffectsNameChanged", signalListener.didTransitionEffectsNameChanged());
+
+            GetTransitionEffectNameValues getNameResponse = transitionEffectIface.GetTransitionEffectName(transitionEffectID, "en");
+            assertEquals("", transitionEffectName, getNameResponse.transitionEffectName);
+        }
+        catch (Exception e)
+        {
+            logger.info("Exception caught while trying to Get/SetTransitionEffectName");
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
+    public void testLSF_Controller_v1_38_TransitionEffectApplyLamp() throws Exception
+    {
+        try
+        {
+            String transitionEffectID = createTransitionEffect();
+            String[] lampIDs = { getConnectedLamp() };
+
+            transitionEffectIface.ApplyTransitionEffectOnLamps(transitionEffectID, lampIDs);
+            Thread.sleep(5000); // allow for scene to finish
+        }
+        catch (Exception e)
+        {
+            logger.info("Exception caught while trying to Apply TransitionEffect on Lamp");
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
+    public void testLSF_Controller_v1_39_TransitionEffectApplyLampGroup() throws Exception
+    {
+        try
+        {
+            String transitionEffectID = createTransitionEffect();
+            String[] groupIDs = { createGroup() };
+
+            transitionEffectIface.ApplyTransitionEffectOnLampGroups(transitionEffectID, groupIDs);
+            Thread.sleep(5000); // allow for scene to finish
+        }
+        catch (Exception e)
+        {
+            logger.info("Exception caught while trying to Apply TransitionEffect on LampGroup");
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
+    public void testLSF_Controller_v1_40_PulseEffectCreateWithLampState() throws Exception
+    {
+        try
+        {
+            // create PulseEffect using LampState
+            Map<String, Variant> toState = newLampState(true, 2147483648L, 1574821342, 2061584302, 384286547);
+            Map<String, Variant> fromState = newLampState(true, 2147483648L, 739688812, 2061584302, 384286547);
+
+            int period = 1000;
+            int duration = 500;
+            int numPulses = 5;
+
+            PulseEffectValues createResponse = pulseEffectIface.CreatePulseEffect(toState, period, duration, numPulses, fromState, new String(), new String(), "ControllerPulseEffect", "en");
+            String pulseEffectID = createResponse.pulseEffectID;
+
+            // signal check -- PulseEffectsCreated
+            Thread.sleep(500);
+            assertTrue("Did not receive signal PulseEffectsCreated", signalListener.didPulseEffectsCreated());
+
+            // get PulseEffect
+            GetPulseEffectValues getResponse = pulseEffectIface.GetPulseEffect(pulseEffectID);
+            Type type = null;
+
+            // test fromState
+            for (String key : fromState.keySet())
+            {
+                logger.debug("Compare key " + key);
+                String expectedStateVal = fromState.get(key).getObject(type).toString();
+                String stateVal = getResponse.fromLampState.get(key).getObject(type).toString();
+                assertEquals("", expectedStateVal, stateVal);
+            }
+
+            // test toState
+            for (String key : toState.keySet())
+            {
+                logger.debug("Compare key " + key);
+                String expectedStateVal = toState.get(key).getObject(type).toString();
+                String stateVal = getResponse.toLampState.get(key).getObject(type).toString();
+                assertEquals("", expectedStateVal, stateVal);
+            }
+        }
+        catch (Exception e)
+        {
+            logger.info("Exception caught while trying to create Pulse Effect with LampState");
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
+    public void testLSF_Controller_v1_41_PulseEffectCreateWithPreset() throws Exception
+    {
+        try
+        {
+            // create preset
+            Map<String, Variant> presetToState = newLampState(true, 2147483648L, 1574821342, 2061584302, 384286547);
+            Map<String, Variant> presetFromState = newLampState(true, 2147483648L, 739688812, 2061584302, 384286547);
+
+            String toPresetName = "ControllerTest toPreset";
+            PresetValues createPresetResponse = presetIface.CreatePreset(presetToState, toPresetName, "en");
+            String toPresetID = createPresetResponse.presetID;
+
+            String fromPresetName = "ControllerTest fromPreset";
+            createPresetResponse = presetIface.CreatePreset(presetFromState, fromPresetName, "en");
+            String fromPresetID = createPresetResponse.presetID;
+
+            int period = 1000;
+            int duration = 500;
+            int numPulses = 5;
+
+            PulseEffectValues createResponse = pulseEffectIface.CreatePulseEffect(new HashMap<String, Variant>(), period, duration, numPulses,
+                new HashMap<String, Variant>(), toPresetID, fromPresetID, "ControllerPulseEffect", "en");
+
+            String pulseEffectID = createResponse.pulseEffectID;
+
+            // signal check -- PulseEffectsCreated
+            Thread.sleep(500);
+            assertTrue("Did not receive signal PulseEffectsCreated", signalListener.didPulseEffectsCreated());
+
+            // get PulseEffect
+            GetPulseEffectValues getResponse = pulseEffectIface.GetPulseEffect(pulseEffectID);
+            assertEquals("", toPresetID, getResponse.toPresetID);
+            assertEquals("", fromPresetID, getResponse.fromPresetID);
+        }
+        catch (Exception e)
+        {
+            logger.info("Exception caught while trying to create Pulse Effect with Preset");
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
+    public void testLSF_Controller_v1_42_PulseEffectUpdateDelete() throws Exception
+    {
+        try
+        {
+            String pulseEffectID = createPulseEffect();
+            GetPulseEffectValues getPulseEffectResponse = pulseEffectIface.GetPulseEffect(pulseEffectID);
+
+            // change the PulseEffect
+            getPulseEffectResponse.toLampState = newLampState(false, 2147483648L, 1574821342, 2061584302, 384286547);
+            getPulseEffectResponse.fromLampState = newLampState(false, 2147483648L, 739688812, 2061584302, 384286547);
+
+            // do update
+            pulseEffectIface.UpdatePulseEffect(pulseEffectID, getPulseEffectResponse.toLampState, getPulseEffectResponse.pulsePeriod,
+                getPulseEffectResponse.pulseDuration, getPulseEffectResponse.numPulses, getPulseEffectResponse.fromLampState,
+                getPulseEffectResponse.toPresetID, getPulseEffectResponse.fromPresetID);
+
+            // signal check -- PulseEffectsUpdated
+            Thread.sleep(500); // wait for signal
+            assertTrue("Did not receive signal PulseEffectsUpdated", signalListener.didPulseEffectsUpdated());
+
+            // do delete
+            pulseEffectIface.DeletePulseEffect(pulseEffectID);
+
+            // signal check -- PulseEffectsDeleted
+            Thread.sleep(500); // wait for signal
+            assertTrue("Did not receive signal PulseEffectsDeleted", signalListener.didPulseEffectsDeleted());
+
+            // get all PulseEffecr == 0
+            GetAllPulseEffectIDsValues getAllPulseEffectsResponse = pulseEffectIface.GetAllPulseEffectIDs();
+            assertEquals("", 0, getAllPulseEffectsResponse.pulseEffectIDs.length);
+        }
+        catch (Exception e)
+        {
+            logger.info("Exception caught while trying to Update or Delete PulseEffects");
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
+    public void testLSF_Controller_v1_43_PulseEffectName() throws Exception
+    {
+        try
+        {
+            String pulseEffectID = createPulseEffect();
+            String pulseEffectName = "ControllerPulseEffect" + new Random().nextInt(31337);
+
+            pulseEffectIface.SetPulseEffectName(pulseEffectID, pulseEffectName, "en");
+
+            // signal check -- PulseEffectsNameChanged
+            Thread.sleep(500);
+            assertTrue("Did not receive signal PulseEffectsNameChanged", signalListener.didPulseEffectsNameChanged());
+
+            GetPulseEffectNameValues getNameResponse = pulseEffectIface.GetPulseEffectName(pulseEffectID, "en");
+            assertEquals("", pulseEffectName, getNameResponse.pulseEffectName);
+        }
+        catch (Exception e)
+        {
+            logger.info("Exception caught while trying to Get/SetPulseEffectName");
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
+    public void testLSF_Controller_v1_44_PulseEffectApplyLamp() throws Exception
+    {
+        try
+        {
+            String pulseEffectID = createPulseEffect();
+            String[] lampIDs = { getConnectedLamp() };
+
+            pulseEffectIface.ApplyPulseEffectOnLamps(pulseEffectID, lampIDs);
+            Thread.sleep(5000); // allow for scene to finish
+        }
+        catch (Exception e)
+        {
+            logger.info("Exception caught while trying to Apply PulseEffect on Lamp");
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
+    public void testLSF_Controller_v1_45_PulseEffectApplyLampGroup() throws Exception
+    {
+        try
+        {
+            String pulseEffectID = createPulseEffect();
+            String[] groupIDs = { createGroup() };
+            pulseEffectIface.ApplyPulseEffectOnLampGroups(pulseEffectID, groupIDs);
+            Thread.sleep(5000); // allow for scene to finish
+        }
+        catch (Exception e)
+        {
+            logger.info("Exception caught while trying to Apply PulseEffect on LampGroup");
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
+    public void testLSF_Controller_v1_46_SceneElementCreate() throws Exception
+    {
+        try
+        {
+            // create SceneElement
+            String effectID = createPulseEffect();
+            String[] lampIDs = { getConnectedLamp() };
+
+            SceneElementValues createResponse = sceneElementIface.CreateSceneElement(lampIDs, new String[] {}, effectID, "ControllerTestSceneElement", "en");
+            String sceneElementID = createResponse.sceneElementID;
+
+            // signal check -- SceneElementsCreated
+            Thread.sleep(500);
+            assertTrue("Did not receive signal SceneElementsCreated", signalListener.didSceneElementsCreated());
+
+            // get SceneElement
+            GetSceneElementValues getResponse = sceneElementIface.GetSceneElement(sceneElementID);
+
+            assertEquals("", effectID, getResponse.effectID);
+            assertEquals("", 1, getResponse.lampList.length);
+            assertEquals("", lampIDs[0], getResponse.lampList[0]);
+        }
+        catch (Exception e)
+        {
+            logger.info("Exception caught while trying to create Scene Element");
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
+    public void testLSF_Controller_v1_47_SceneElementUpdateDelete() throws Exception
+    {
+        try
+        {
+            String sceneElementID = createSceneElement();
+            GetSceneElementValues getSceneElementResponse = sceneElementIface.GetSceneElement(sceneElementID);
+
+            // change the SceneElement effect
+            getSceneElementResponse.effectID = createTransitionEffect();
+
+            // do update
+            sceneElementIface.UpdateSceneElement(sceneElementID, getSceneElementResponse.lampList, getSceneElementResponse.lampGroupList,
+                getSceneElementResponse.effectID);
+
+            // signal check -- SceneElementsUpdated
+            Thread.sleep(500); // wait for signal
+            assertTrue("Did not receive signal SceneElementsUpdated", signalListener.didSceneElementsUpdated());
+
+            // do delete
+            sceneElementIface.DeleteSceneElement(sceneElementID);
+
+            // signal check -- SceneElementsDeleted
+            Thread.sleep(500); // wait for signal
+            assertTrue("Did not receive signal SceneElementsDeleted", signalListener.didSceneElementsDeleted());
+
+            // get all SceneElement == 0
+            GetAllSceneElementIDsValues getAllSceneElementResponse = sceneElementIface.GetAllSceneElementIDs();
+            assertEquals("", 0, getAllSceneElementResponse.sceneElementIDs.length);
+        }
+        catch (Exception e)
+        {
+            logger.info("Exception caught while trying to Update or Delete SceneElements");
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
+    public void testLSF_Controller_v1_48_SceneElementName() throws Exception
+    {
+        try
+        {
+            String sceneElementID = createSceneElement();
+            String sceneElementName = "ControllerSceneElement" + new Random().nextInt(31337);
+
+            sceneElementIface.SetSceneElementName(sceneElementID, sceneElementName, "en");
+
+            Thread.sleep(500);
+            assertTrue("Did not receive signal SceneElementsNameChanged", signalListener.didSceneElementsNameChanged());
+
+            GetSceneElementNameValues getNameResponse = sceneElementIface.GetSceneElementName(sceneElementID, "en");
+            assertEquals("", sceneElementName, getNameResponse.sceneElementName);
+        }
+        catch (Exception e)
+        {
+            logger.info("Exception caught while trying to Get/SetSceneElementName");
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
+    public void testLSF_Controller_v1_49_SceneElementApply() throws Exception
+    {
+        try
+        {
+            String sceneElementID = createSceneElement();
+
+            sceneElementIface.ApplySceneElement(sceneElementID);
+            Thread.sleep(5000); // allow for scene to finish
+
+            // signal check -- SceneElementsApplied
+            assertTrue("Did not receive signal SceneElementsApplied", signalListener.didSceneElementsApplied());
+        }
+        catch (Exception e)
+        {
+            logger.info("Exception caught while trying to Apply SceneElement");
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
+    public void testLSF_Controller_v1_50_SceneWithSceneElementsCreate() throws Exception
+    {
+        try
+        {
+            // create SceneElement
+            String sceneElementID = createSceneElement();
+
+            SceneWithSceneElementsValues createResponse = swseIface.CreateSceneWithSceneElements(new String[] { sceneElementID }, "ControllerTestSWSE", "en");
+            String sceneID = createResponse.sceneWithSceneElementsID;
+
+            // signal check -- ScenesCreated
+            Thread.sleep(500);
+            assertTrue("Did not receive signal ScenesCreated", signalListener.didScenesCreated());
+
+            GetSceneWithSceneElementsValues getResponse = swseIface.GetSceneWithSceneElements(sceneID);
+
+            assertEquals("", 1, getResponse.sceneElementIDs.length);
+            assertEquals("", sceneElementID, getResponse.sceneElementIDs[0]);
+        }
+        catch (Exception e)
+        {
+            logger.info("Exception caught while trying to create SceneWithSceneElements");
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
+    public void testLSF_Controller_v1_51_SceneWithSceneElementsUpdateDelete() throws Exception
+    {
+        try
+        {
+            String sceneID = createSceneWithSceneElements();
+            GetSceneWithSceneElementsValues getSWSERespose = swseIface.GetSceneWithSceneElements(sceneID);
+
+            // change the SceneWithSceneElements
+            getSWSERespose.sceneElementIDs = new String[] { createSceneElement() };
+
+            // do update
+            swseIface.UpdateSceneWithSceneElements(sceneID, getSWSERespose.sceneElementIDs);
+
+            // signal check -- ScenesUpdated
+            Thread.sleep(500); // wait for signal
+            assertTrue("Did not receive signal ScenesUpdated", signalListener.didScenesUpdated());
+
+            // do delete
+            sceneIface.DeleteScene(sceneID);
+
+            // signal check -- ScenesDeleted
+            Thread.sleep(500); // wait for signal
+            assertTrue("Did not receive signal ScenesDeleted", signalListener.didScenesDeleted());
+
+            GetAllSceneIDsValues getAllScenesResponse = sceneIface.GetAllSceneIDs();
+            assertEquals("", 0, getAllScenesResponse.sceneIDs.length);
+        }
+        catch (Exception e)
+        {
+            logger.info("Exception caught while trying to Update or Delete SceneWithSceneElements");
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
+    public void testLSF_Controller_v1_52_SceneWithSceneElementsApply() throws Exception
+    {
+        try
+        {
+            String sceneID = createSceneWithSceneElements();
+
+            sceneIface.ApplyScene(sceneID);
+            Thread.sleep(5000); // allow for scene to finish
+
+            // signal check -- ScenesApplied
+            assertTrue("Did not receive signal ScenesApplied", signalListener.didScenesApplied());
+        }
+        catch (Exception e)
+        {
+            logger.info("Exception caught while trying to Apply SceneWithSceneElements");
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
+    public void testLSF_Controller_v1_53_LampDataSetGet() throws Exception
+    {
+        try
+        {
+            String lampID = getConnectedLamp();
+            GetLampDataSetValues dataSetResponse = dataSetIface.GetLampDataSet(lampID, "en");
+
+            // check LampName
+            logger.info("Verifying LampName");
+            GetLampNameValues lampNameResponse = lampIface.GetLampName(lampID, "en");
+            assertEquals("", lampNameResponse.lampName, dataSetResponse.lampName);
+
+
+            // check LampDetails
+            logger.info("Verifying LampDetails");
+            GetLampDetailsValues lampDetailsResponse = lampIface.GetLampDetails(lampID);
+            Type type = null;
+            for (String key : dataSetResponse.lampDetails.keySet())
+            {
+                logger.info(key + " : " + lampDetailsResponse.lampDetails.get(key).getObject(type).toString());
+                assertEquals("", lampDetailsResponse.lampDetails.get(key).getObject(type).toString(),
+                    dataSetResponse.lampDetails.get(key).getObject(type).toString());
+            }
+
+            // check LampState
+            logger.info("Verifying LampState");
+            GetLampStateValues lampStateResponse = lampIface.GetLampState(lampID);
+            for (String key : dataSetResponse.lampState.keySet())
+            {
+                logger.info(key + " : " + lampStateResponse.lampState.get(key).getObject(type).toString());
+                assertEquals("", lampStateResponse.lampState.get(key).getObject(type).toString(),
+                    dataSetResponse.lampState.get(key).getObject(type).toString());
+            }
+
+            // check LampParameters
+            logger.info("Verifying LampParameters");
+            GetLampParametersValues lampParametersResponse = lampIface.GetLampParameters(lampID);
+            for (String key : dataSetResponse.lampParameters.keySet())
+            {
+                logger.info(key + " : " + lampParametersResponse.lampParameters.get(key).getObject(type).toString());
+                assertEquals("", lampParametersResponse.lampParameters.get(key).getObject(type).toString(),
+                    dataSetResponse.lampParameters.get(key).getObject(type).toString());
+            }
+
+        }
+        catch (Exception e)
+        {
+            logger.info("Exception caught while trying to Get LampDataSet");
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+    }
+
 
 	/**************************************************************************
 	 * Utility Methods
@@ -1570,7 +2351,10 @@ public class LightingControllerTestSuite
 		// Ensure all expected interfaces were found that were supposed to be
 		List<String> expectedInterfaces = Arrays.asList(CONTROLLERSERVICE_INTERFACE_NAME, LAMP_INTERFACE_NAME,
 														LAMPGROUP_INTERFACE_NAME, PRESET_INTERFACE_NAME,
-														SCENE_INTERFACE_NAME, MASTERSCENE_INTERFACE_NAME);
+														SCENE_INTERFACE_NAME, MASTERSCENE_INTERFACE_NAME,
+														TRANSITION_EFFECT_INTERFACE_NAME, PULSE_EFFECT_INTERFACE_NAME,
+                                                        SCENE_WITH_SCENE_ELEMENTS_INTERFACE_NAME,
+                                                        SCENE_ELEMENT_INTERFACE_NAME, DATA_SET_INTERFACE_NAME);
 		for (String iface : expectedInterfaces)
 		{
 			if (!interfacesSeen.contains(iface))
@@ -1702,6 +2486,50 @@ public class LightingControllerTestSuite
 
 		return createResponse.masterSceneID;
 	}
+	
+	// Create a transition effect (v2)
+    private String createTransitionEffect() throws Exception
+    {
+        Map<String, Variant> lampState = newLampState(true, 2147483648L, 739688812, 2061584302, 384286547);
+        TransitionEffectValues createResponse = transitionEffectIface.CreateTransitionEffect(lampState, "", 5000, "ControllerTransitionEffect", "en");
+
+        return createResponse.transitionEffectID;
+    }
+
+    // Create a pulse effect (v2)
+    private String createPulseEffect() throws Exception
+    {
+        // create PulseEffect using LampState
+        Map<String, Variant> toState = newLampState(true, 2147483648L, 1574821342, 2061584302, 384286547);
+        Map<String, Variant> fromState = newLampState(true, 2147483648L, 739688812, 2061584302, 384286547);
+
+        int period = 1000;
+        int duration = 500;
+        int numPulses = 5;
+
+        PulseEffectValues createResponse = pulseEffectIface.CreatePulseEffect(toState, period, duration, numPulses, fromState, new String(), new String(), "ControllerPulseEffect", "en");
+
+        return createResponse.pulseEffectID;
+    }
+
+    // Create a scene element
+    private String createSceneElement() throws Exception
+    {
+        String effectID = createPulseEffect();
+        String[] lampIDs = { getConnectedLamp() };
+
+        SceneElementValues createResponse = sceneElementIface.CreateSceneElement(lampIDs, new String[] {}, effectID, "ControllerTestSceneElement", "en");
+        return createResponse.sceneElementID;
+    }
+
+    // Create scene with scene elements (scene v2)
+    private String createSceneWithSceneElements() throws Exception
+    {
+        String sceneElementID = createSceneElement();
+
+        SceneWithSceneElementsValues createResponse = swseIface.CreateSceneWithSceneElements(new String[] { sceneElementID }, "ControllerTestSWSE", "en");
+        return createResponse.sceneWithSceneElementsID;
+    }
 
 	/** 
 	 * [AT4] Added methods to emulate JUnit behaviour
@@ -1775,5 +2603,7 @@ public class LightingControllerTestSuite
 		{
 			return "FAIL";
 		}
+		
+		//return inconc ? "INCONC" : (pass ? "PASS" : "FAIL");
 	}
 }

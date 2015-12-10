@@ -651,9 +651,9 @@ public class OnboardingTestSuite
 
             //aboutMap = aboutClient.getAbout("");
             aboutMap = aboutProxy.getAboutData("");
-            logger.info(String.format("After factoryReset, the deviceName is: %s", aboutMap.get(AboutKeys.ABOUT_DEVICE_NAME).toString()));
+            logger.info(String.format("After factoryReset, the deviceName is: %s", aboutMap.get(AboutKeys.ABOUT_DEVICE_NAME).getObject(String.class)));
 
-            assertEquals("DeviceName not reset to default value", defaultDeviceName, aboutMap.get(AboutKeys.ABOUT_DEVICE_NAME).toString());
+            assertEquals("DeviceName not reset to default value", defaultDeviceName, aboutMap.get(AboutKeys.ABOUT_DEVICE_NAME).getObject(String.class));
 
             configMap = configClient.getConfig("");
             assertEquals("GetConfigurations() returns the same DeviceName as GetAboutData()", defaultDeviceName, configMap.get(AboutKeys.ABOUT_DEVICE_NAME).toString());

@@ -58,13 +58,11 @@ import com.at4wireless.alljoyn.testcases.parameter.GeneralParameter;
 import com.at4wireless.alljoyn.testcases.parameter.Ics;
 import com.at4wireless.alljoyn.testcases.parameter.Ixit;
 
-public class LightingTestSuite
+public class LSF_LampTestSuite
 {
-	private static final Logger logger = new WindowsLoggerImpl(LightingTestSuite.class.getSimpleName());
+	private static final Logger logger = new WindowsLoggerImpl(LSF_LampTestSuite.class.getSimpleName());
 	private static final String BUS_APPLICATION_NAME = "LSF_LampTestSuite";
-	//public static final long ANNOUCEMENT_TIMEOUT_IN_SECONDS = 30;
-	public long ANNOUCEMENT_TIMEOUT_IN_SECONDS = 30;
-    //private static final long SESSION_CLOSE_TIMEOUT_IN_SECONDS = 5;
+	public long ANNOUNCEMENT_TIMEOUT_IN_SECONDS = 30;
 	private long SESSION_CLOSE_TIMEOUT_IN_SECONDS = 5;
 	
 	private ServiceHelper serviceHelper;
@@ -106,8 +104,6 @@ public class LightingTestSuite
 	public static final int LAMP_DETAILS_INTERFACE_VERSION = 1;
 
 	public static final int LAMP_SERVICE_VERSION = 1;
-
-	//private  Short PORT = 91;
 	
 	/** 
 	 * [AT4] Added attributes to perform the test cases
@@ -123,12 +119,12 @@ public class LightingTestSuite
 	private Ics icsList;
 	private Ixit ixitList;
 
-	public LightingTestSuite(String testCase, Ics icsList, Ixit ixitList, GeneralParameter gpList)
+	public LSF_LampTestSuite(String testCase, Ics icsList, Ixit ixitList, GeneralParameter gpList)
 	{
 		this.icsList = icsList;
 		this.ixitList = ixitList;
 		
-		ANNOUCEMENT_TIMEOUT_IN_SECONDS = gpList.GPCO_AnnouncementTimeout;
+		ANNOUNCEMENT_TIMEOUT_IN_SECONDS = gpList.GPCO_AnnouncementTimeout;
 		SESSION_CLOSE_TIMEOUT_IN_SECONDS = gpList.GPL_SessionClose;
 
 		try
@@ -147,8 +143,8 @@ public class LightingTestSuite
 		
 		try
 		{
-			logger.info("Running testcase: "+testCase);
-		
+			logger.info("Running testcase: %s", testCase);
+			
 			if (testCase.equals("LSF_Lamp-v1-01"))
 			{
 				testLSF_Lamp_v1_01_InterfaceVersion();			
@@ -427,7 +423,7 @@ public class LightingTestSuite
 	private AboutAnnouncementDetails waitForNextDeviceAnnouncement() throws Exception
 	{
 		logger.info("Waiting for About announcement");
-		return serviceHelper.waitForNextDeviceAnnouncement(ANNOUCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS, true);
+		return serviceHelper.waitForNextDeviceAnnouncement(ANNOUNCEMENT_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS, true);
 	}
 	
 	private void waitForSessionToClose() throws Exception
@@ -755,9 +751,9 @@ public class LightingTestSuite
 		lampStateSignalHandler = new LampStateSignalHandler();
 		lampStateSignalHandler.setUpdateListener(this);
 		ajMan.registerSignalHandler(lampStateSignalHandler);
-		//serviceHelper.registerSignalHandler(lampStateSignalHandler);
-		/// See if we are able to recieve that signal
 		ajMan.createAllJoynSession(deviceAboutAnnouncement.getServiceName(), AllJoynManager.LAMP_SERVICE_PORT);
+		
+		Thread.sleep(1000);
 
 		boolean onOffValue = true;
 		int brightnessValue = 10;

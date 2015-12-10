@@ -57,8 +57,8 @@ import com.at4wireless.alljoyn.testcases.conf.audio.AudioTestSuite;
 import com.at4wireless.alljoyn.testcases.conf.configuration.ConfigurationTestSuite;
 import com.at4wireless.alljoyn.testcases.conf.controlpanel.ControlPanelTestSuite;
 import com.at4wireless.alljoyn.testcases.conf.gateway.GWAgentTestSuite;
-import com.at4wireless.alljoyn.testcases.conf.lighting.LightingTestSuite;
-import com.at4wireless.alljoyn.testcases.conf.lightingcontroller.LightingControllerTestSuite;
+import com.at4wireless.alljoyn.testcases.conf.lighting.LSF_LampTestSuite;
+import com.at4wireless.alljoyn.testcases.conf.lightingcontroller.LSF_ControllerTestSuite;
 import com.at4wireless.alljoyn.testcases.conf.notification.NotificationTestSuite;
 import com.at4wireless.alljoyn.testcases.conf.onboarding.OnboardingTestSuite;
 import com.at4wireless.alljoyn.testcases.conf.smarthome.SmartHomeTestSuite;
@@ -317,13 +317,13 @@ public class Manager extends Thread
 		else if (testName.startsWith("LSF_Lamp"))
 		{
 			printParameters("L");
-			LightingTestSuite lightingTest = new LightingTestSuite(testName, icsList, ixitList, gpList);
+			LSF_LampTestSuite lightingTest = new LSF_LampTestSuite(testName, icsList, ixitList, gpList);
 			verdictKey = lightingTest.getFinalVerdict();
 		}
 		else if (testName.startsWith("LSF_Controller"))
 		{
 			printParameters("LC");
-			LightingControllerTestSuite lightingControllerService = new LightingControllerTestSuite(testName, icsList, ixitList, gpList);
+			LSF_ControllerTestSuite lightingControllerService = new LSF_ControllerTestSuite(testName, icsList, ixitList, gpList);
 			verdictKey = lightingControllerService.getFinalVerdict();
 		}
 		else if (testName.startsWith("TimeService"))

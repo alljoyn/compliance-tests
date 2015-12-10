@@ -54,7 +54,20 @@ public class ControllerServiceSignalListener
         MASTER_SCENES_UPDATED,
         MASTER_SCENES_DELETED,
         MASTER_SCENES_APPLIED,
-        BLOB_CHANGED
+        BLOB_CHANGED,
+        TRANSITION_EFFECTS_NAME_CHANGED,
+        TRANSITION_EFFECTS_CREATED,
+        TRANSITION_EFFECTS_UPDATED,
+        TRANSITION_EFFECTS_DELETED,
+        PULSE_EFFECTS_NAME_CHANGED,
+        PULSE_EFFECTS_CREATED,
+        PULSE_EFFECTS_UPDATED,
+        PULSE_EFFECTS_DELETED,
+        SCENE_ELEMENTS_NAME_CHANGED,
+        SCENE_ELEMENTS_CREATED,
+        SCENE_ELEMENTS_UPDATED,
+        SCENE_ELEMENTS_DELETED,
+        SCENE_ELEMENTS_APPLIED
     }
 
     private String[] payload;
@@ -427,4 +440,186 @@ public class ControllerServiceSignalListener
     {
         return signalsReceived.contains(Signals.BLOB_CHANGED);
     }
+    
+    /******
+     * Signal: TransitionEffectsNameChanged
+     ******/
+     public void handleTransitionEffectsNameChanged(String[] transitionEffectIDs)
+     {
+         logger.info("TransitionEffectsNameChanged signal received");
+         signalsReceived.add(Signals.TRANSITION_EFFECTS_NAME_CHANGED);
+     }
+
+     public boolean didTransitionEffectsNameChanged()
+     {
+         return signalsReceived.contains(Signals.TRANSITION_EFFECTS_NAME_CHANGED);
+     }
+
+     /******
+     * Signal: TransitionEffectsCreated
+     ******/
+     public void handleTransitionEffectsCreated(String[] transitionEffectIDs)
+     {
+         logger.info("TransitionEffectsCreated signal received");
+         signalsReceived.add(Signals.TRANSITION_EFFECTS_CREATED);
+     }
+
+     public boolean didTransitionEffectsCreated()
+     {
+         return signalsReceived.contains(Signals.TRANSITION_EFFECTS_CREATED);
+     }
+
+     /******
+     * Signal: TransitionEffectsUpdated
+     ******/
+     public void handleTransitionEffectsUpdated(String[] transitionEffectIDs)
+     {
+         logger.info("TransitionEffectsUpdated signal received");
+         signalsReceived.add(Signals.TRANSITION_EFFECTS_UPDATED);
+     }
+
+     public boolean didTransitionEffectsUpdated()
+     {
+         return signalsReceived.contains(Signals.TRANSITION_EFFECTS_UPDATED);
+     }
+
+     /******
+     * Signal: TransitionEffectsDeleted
+     ******/
+     public void handleTransitionEffectsDeleted(String[] transitionEffectIDs)
+     {
+         logger.info("TransitionEffectsDeleted signal received");
+         signalsReceived.add(Signals.TRANSITION_EFFECTS_DELETED);
+     }
+
+     public boolean didTransitionEffectsDeleted()
+     {
+         return signalsReceived.contains(Signals.TRANSITION_EFFECTS_DELETED);
+     }
+
+     /******
+     * Signal: PulseEffectsNameChanged
+     ******/
+     public void handlePulseEffectsNameChanged(String[] pulseEffectIDs)
+     {
+         logger.info("PulseEffectsNameChanged signal received");
+         signalsReceived.add(Signals.PULSE_EFFECTS_NAME_CHANGED);
+     }
+
+     public boolean didPulseEffectsNameChanged()
+     {
+         return signalsReceived.contains(Signals.PULSE_EFFECTS_NAME_CHANGED);
+     }
+
+     /******
+     * Signal: PulseEffectsCreated
+     ******/
+     public void handlePulseEffectsCreated(String[] pulseEffectIDs)
+     {
+         logger.info("PulseEffectsCreated signal received");
+         signalsReceived.add(Signals.PULSE_EFFECTS_CREATED);
+     }
+
+     public boolean didPulseEffectsCreated()
+     {
+         return signalsReceived.contains(Signals.PULSE_EFFECTS_CREATED);
+     }
+
+     /******
+     * Signal: PulseEffectsUpdated
+     ******/
+     public void handlePulseEffectsUpdated(String[] pulseEffectIDs)
+     {
+         logger.info("PulseEffectsUpdated signal received");
+         signalsReceived.add(Signals.PULSE_EFFECTS_UPDATED);
+     }
+
+     public boolean didPulseEffectsUpdated()
+     {
+         return signalsReceived.contains(Signals.PULSE_EFFECTS_UPDATED);
+     }
+
+     /******
+     * Signal: PulseEffectsDeleted
+     ******/
+     public void handlePulseEffectsDeleted(String[] pulseEffectIDs)
+     {
+         logger.info("PulseEffectsDeleted signal received");
+         signalsReceived.add(Signals.PULSE_EFFECTS_DELETED);
+     }
+
+     public boolean didPulseEffectsDeleted()
+     {
+         return signalsReceived.contains(Signals.PULSE_EFFECTS_DELETED);
+     }
+
+     /******
+     * Signal: SceneElementsNameChanged
+     ******/
+     public void handleSceneElementsNameChanged(String[] sceneElementIDs)
+     {
+         logger.info("SceneElementsNameChanged signal received");
+         signalsReceived.add(Signals.SCENE_ELEMENTS_NAME_CHANGED);
+     }
+
+     public boolean didSceneElementsNameChanged()
+     {
+         return signalsReceived.contains(Signals.SCENE_ELEMENTS_NAME_CHANGED);
+     }
+
+     /******
+     * Signal: SceneElementsCreated
+     ******/
+     public void handleSceneElementsCreated(String[] sceneElementIDs)
+     {
+         logger.info("SceneElementsCreated signal received");
+         signalsReceived.add(Signals.SCENE_ELEMENTS_CREATED);
+     }
+
+     public boolean didSceneElementsCreated()
+     {
+         return signalsReceived.contains(Signals.SCENE_ELEMENTS_CREATED);
+     }
+
+     /******
+     * Signal: SceneElementsUpdated
+     ******/
+     public void handleSceneElementsUpdated(String[] sceneElementIDs)
+     {
+         logger.info("SceneElementsUpdated signal received");
+         signalsReceived.add(Signals.SCENE_ELEMENTS_UPDATED);
+     }
+
+     public boolean didSceneElementsUpdated()
+     {
+         return signalsReceived.contains(Signals.SCENE_ELEMENTS_UPDATED);
+     }
+
+     /******
+     * Signal: SceneElementsDeleted
+     ******/
+     public void handleSceneElementsDeleted(String[] sceneElementIDs)
+     {
+         logger.info("SceneElementsDeleted signal received");
+         signalsReceived.add(Signals.SCENE_ELEMENTS_DELETED);
+     }
+
+     public boolean didSceneElementsDeleted()
+     {
+         return signalsReceived.contains(Signals.SCENE_ELEMENTS_DELETED);
+     }
+
+     /******
+     * Signal: SceneElementsApplied
+     ******/
+     public void handleSceneElementsApplied(String[] sceneElementIDs)
+     {
+         logger.info("SceneElementsApplied signal received");
+         signalsReceived.add(Signals.SCENE_ELEMENTS_APPLIED);
+     }
+
+     public boolean didSceneElementsApplied()
+     {
+         return signalsReceived.contains(Signals.SCENE_ELEMENTS_APPLIED);
+     }
 }
