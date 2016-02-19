@@ -45,6 +45,7 @@ public class IntrospectionXmlParser
 
         SAXParser parser = saxParserFactory.newSAXParser();
         xmlReader = parser.getXMLReader();
+        xmlReader.setErrorHandler(new IntrospectionXmlErrorHandler());
         xmlReader.setContentHandler(testMetadataXmlHandler);
         xmlReader.parse(new InputSource(inputStream));
     }
