@@ -25,7 +25,8 @@
 	<target name="compile" depends="clean">
 		<javac srcdir="../src" 
 			destdir="../bin"
-			includes="**/*.java" target="1.7">
+			includes="**/*.java" target="1.8"
+			debug="true" debuglevel="lines" includeantruntime="true">
 			<classpath refid="classpath.base"/>
 		</javac>
 	</target>
