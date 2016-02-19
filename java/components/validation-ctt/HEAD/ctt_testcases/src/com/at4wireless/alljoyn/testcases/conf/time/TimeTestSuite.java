@@ -110,7 +110,7 @@ public class TimeTestSuite {
 	 * 
 	 * */
 	
- 	Boolean pass = true;
+ 	Boolean pass=true;
  	boolean inconc = false;
  	private Ics icsList;
 	private Ixit ixitList;
@@ -145,16 +145,34 @@ public class TimeTestSuite {
 		
 		setUp();		
 		
-		if (testCase.equals("TimeService-v1-01")) {
-			testTime_v1_01_GetObjectDescription();
-		} else if (testCase.equals("TimeService-v1-02")) {
-			testTime_v1_02_VerifyClocks();
-		} else if (testCase.equals("TimeService-v1-03")) {
-			testTime_v1_03_VerifyTimers();
-		} else if (testCase.equals("TimeService-v1-04")) {
-			testTime_v1_04_VerifyAlarms();
-		} else {
-			fail("Test Case not valid");
+		try
+		{
+			if (testCase.equals("TimeService-v1-01")) {
+				testTime_v1_01_GetObjectDescription();
+			} else if (testCase.equals("TimeService-v1-02")) {
+				testTime_v1_02_VerifyClocks();
+			} else if (testCase.equals("TimeService-v1-03")) {
+				testTime_v1_03_VerifyTimers();
+			} else if (testCase.equals("TimeService-v1-04")) {
+				testTime_v1_04_VerifyAlarms();
+			} else {
+				fail("Test Case not valid");
+			}
+		}
+		catch (Exception exception)
+		{
+			logger.error("Exception executing Test Case: %s", exception.getMessage()); //[AT4]
+			
+			try 
+			{
+				tearDown();
+			} 
+			catch (Exception newException) 
+			{
+				logger.error("Exception releasing resources: %s", newException.getMessage());
+			}
+			
+			throw exception;
 		}
 		
 		tearDown();
