@@ -21,12 +21,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.alljoyn.about.client.AboutClient;
 import org.alljoyn.about.AboutKeys;
+import org.alljoyn.about.client.AboutClient;
 import org.alljoyn.ns.NotificationMessageType;
 import org.alljoyn.ns.NotificationSender;
 import org.alljoyn.ns.NotificationText;
@@ -115,7 +114,7 @@ public class NotificationTestSuite
 	 *  
 	 *  */
 	
-	Boolean pass=true;
+    Boolean pass=true;
 	boolean inconc=false;
 	private Ics icsList;
 	private Ixit ixitList;
@@ -126,6 +125,7 @@ public class NotificationTestSuite
 		/** 
 		 * [AT4] Attributes initialization
 		 * */
+		
 		this.icsList = icsList;
 		this.ixitList = ixitList;
 		
@@ -143,73 +143,55 @@ public class NotificationTestSuite
 
 	public void runTestCase(String testCase) throws Exception
 	{
-		if (testCase.equals("Notification-v1-01"))
+		if (testCase.equals("Notification-Consumer-v1-01"))
 		{
+			setUp();
+			logger.info(String.format("Running testcase: %s", testCase));
+			testNotification_Consumer_v1_01();
+		}
+		else if (testCase.equals("Notification-Consumer-v1-02"))
+		{
+			setUp();
+			logger.info(String.format("Running testcase: %s", testCase));
+			testNotification_Consumer_v1_02();
+		/*} else if (testCase.equals("Notification-Consumer-v1-03")) {
+			setUp();
+			logger.info(String.format("Running testcase: %s", testCase));
+			testNotification_Consumer_v1_03();*/
+		}
+		else if(testCase.equals("Notification-Consumer-v1-04"))
+		{
+			setUp();
+			logger.info(String.format("Running testcase: %s", testCase));
+			testNotification_Consumer_v1_04();
+		}
+		else if(testCase.equals("Notification-Consumer-v1-05"))
+		{
+			setUp();
+			logger.info(String.format("Running testcase: %s", testCase));
+			testNotification_Consumer_v1_05();
+		}
+		else if(testCase.equals("Notification-Consumer-v1-06"))
+		{
+			setUp();
+			logger.info(String.format("Running testcase: %s", testCase));
+			testNotification_Consumer_v1_06();
+		}
+		else if(testCase.equals("Notification-v1-01"))
+		{	
 			setUpReceiver();
+			logger.info(String.format("Running testcase: %s", testCase));
+			testNotificationsReceived();
 		}
 		else
 		{
-			setUp();
-		}
-		
-		try
-		{
-			logger.info(String.format("Running testcase: %s", testCase));
-			
-			if (testCase.equals("Notification-Consumer-v1-01"))
-			{
-				testNotification_Consumer_v1_01();
-			}
-			else if (testCase.equals("Notification-Consumer-v1-02"))
-			{
-				testNotification_Consumer_v1_02();
-			/*}
-			else if (testCase.equals("Notification-Consumer-v1-03"))
-			{
-				testNotification_Consumer_v1_03();*/
-			}
-			else if(testCase.equals("Notification-Consumer-v1-04"))
-			{
-				testNotification_Consumer_v1_04();
-			}
-			else if(testCase.equals("Notification-Consumer-v1-05"))
-			{
-				testNotification_Consumer_v1_05();
-			}
-			else if(testCase.equals("Notification-Consumer-v1-06"))
-			{
-				testNotification_Consumer_v1_06();
-			}
-			else if(testCase.equals("Notification-v1-01"))
-			{	
-				testNotificationsReceived();
-			}
-			else
-			{
-				fail("Test Case not valid");
-			}
-		}
-		catch (Exception exception)
-		{
-			logger.error("Exception executing Test Case: %s", exception.getMessage()); //[AT4]
-			
-			try 
-			{
-				tearDown();
-			} 
-			catch (Exception newException) 
-			{
-				logger.error("Exception releasing resources: %s", newException.getMessage());
-			}
-			
-			throw exception;
+			fail("Test Case not valid");
 		}
 		
 		if (testCase.equals("Notification-v1-01"))
 		{
 			tearDownReceiver();
-		}
-		else
+		} else
 		{
 			tearDown();
 		}

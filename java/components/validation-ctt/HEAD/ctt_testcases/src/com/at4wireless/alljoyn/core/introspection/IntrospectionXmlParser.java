@@ -22,10 +22,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-
-
-
-
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -49,6 +45,7 @@ public class IntrospectionXmlParser
 
         SAXParser parser = saxParserFactory.newSAXParser();
         xmlReader = parser.getXMLReader();
+        xmlReader.setErrorHandler(new IntrospectionXmlErrorHandler());
         xmlReader.setContentHandler(testMetadataXmlHandler);
         xmlReader.parse(new InputSource(inputStream));
     }

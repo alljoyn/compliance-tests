@@ -89,47 +89,29 @@ public class SmartHomeTestSuite
 	{
 		setUp();
 
-		try
+		if (testCase.equals("SmartHome-v1-01"))
 		{
-			if (testCase.equals("SmartHome-v1-01"))
-			{
-				testSmartHome_v1_01();
-			}
-			else if (testCase.equals("SmartHome-v1-02"))
-			{
-				testSmartHome_v1_02();
-			}
-			else if (testCase.equals("SmartHome-v1-03"))
-			{
-				testSmartHome_v1_03();
-			}
-			else if (testCase.equals("SmartHome-v1-04"))
-			{
-				testSmartHome_v1_04();
-			}
-			else if (testCase.equals("SmartHome-v1-05"))
-			{
-				testSmartHome_v1_05();
-			}
-			else
-			{
-				fail("TestCase not valid");
-			}
+			testSmartHome_v1_01();
 		}
-		catch (Exception exception)
+		else if (testCase.equals("SmartHome-v1-02"))
 		{
-			logger.error("Exception executing Test Case: %s", exception.getMessage()); //[AT4]
-			
-			try 
-			{
-				tearDown();
-			} 
-			catch (Exception newException) 
-			{
-				logger.error("Exception releasing resources: %s", newException.getMessage());
-			}
-			
-			throw exception;
+			testSmartHome_v1_02();
+		}
+		else if (testCase.equals("SmartHome-v1-03"))
+		{
+			testSmartHome_v1_03();
+		}
+		else if (testCase.equals("SmartHome-v1-04"))
+		{
+			testSmartHome_v1_04();
+		}
+		else if (testCase.equals("SmartHome-v1-05"))
+		{
+			testSmartHome_v1_05();
+		}
+		else
+		{
+			fail("TestCase not valid");
 		}
 
 		tearDown();
@@ -224,7 +206,7 @@ public class SmartHomeTestSuite
 
 
 		//TODO Continue with the implementation of the test cases, 
-		//now we donï¿½t have the correct interface
+		//now we don´t have the correct interface
 		// proxy.getInterface(SmartHomeClient.class).
 
 
