@@ -68,7 +68,21 @@ public class XmlBasedBusIntrospector implements BusIntrospector
         Introspectable introspectableInterface = proxyBusObject.getInterface(Introspectable.class);
         String introspectionXml = introspectableInterface.Introspect();
 
-        IntrospectionNode introspectionNode = getIntrospectionXmlParser().parseXML(getInputStream(introspectionXml));
+        IntrospectionNode introspectionNode = new IntrospectionNode();
+        
+        try
+        {
+        	introspectionNode = getIntrospectionXmlParser().parseXML(getInputStream(introspectionXml));
+        }
+        catch (SAXException ex)
+        {
+        	if (introspectionXml.contains("http:"))
+        	{
+        		introspectionNode = getIntrospectionXmlParser().parseXML(getInputStream(introspectionXml.replace("http", "https")));
+        	}
+        }
+        
+        //IntrospectionNode introspectionNode = getIntrospectionXmlParser().parseXML(getInputStream(introspectionXml));
 
         return new NodeDetail(path, introspectionNode);
     }

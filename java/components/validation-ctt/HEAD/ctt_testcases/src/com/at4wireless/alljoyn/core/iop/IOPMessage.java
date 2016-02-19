@@ -59,7 +59,7 @@ public class IOPMessage
 
 	public void showMessage(String title, String msg)
 	{
-		logger.debug(msg);
+		logger.info(msg);
 
 		JTextPane textPane = new JTextPane();
 		textPane.setText(msg);
@@ -113,7 +113,7 @@ public class IOPMessage
 
 	public int showQuestion(String title, String msg)
 	{
-		logger.debug(msg);
+		logger.info(msg);
 
 		JTextPane textPane = new JTextPane();
 		textPane.setText(msg);

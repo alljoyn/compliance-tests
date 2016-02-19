@@ -364,85 +364,66 @@ public class AudioTestSuite
 	public void runTestCase(String testCase) throws Exception
 	{
 		setUp();
-		
-		try
-		{
-			logger.info("Running testcase: "+testCase);
-	
-			if (testCase.equals("Audio-v1-01")) {
-				testAudio_v1_01_ValidateStreamObjects();
-			} else if(testCase.equals("Audio-v1-02")) {
-				testAudio_v1_02_OpenStreamObject();
-			} else if(testCase.equals("Audio-v1-03")) {
-				testAudio_v1_03_OpenAndCloseStreamObject();
-			} else if(testCase.equals("Audio-v1-04")) {
-				testAudio_v1_04_CloseUnopenedStreamObject();
-			} else if(testCase.equals("Audio-v1-05")) {
-				testAudio_v1_05_VerifyAudioSinkCapabilities();
-			} else if(testCase.equals("Audio-v1-06")) {
-				testAudio_v1_06_VerifyImageSinkCapabilities();
-			} else if(testCase.equals("Audio-v1-07")) {
-				testAudio_v1_07_VerifyApplicationMetadataCapabilities();
-			} else if(testCase.equals("Audio-v1-08")) {
-				testAudio_v1_08_ConfigureAudioSinkPort();
-			} else if(testCase.equals("Audio-v1-09")) {
-				testAudio_v1_09_ConfigureAudioSinkPortWithInvalidConfiguration();
-			} else if(testCase.equals("Audio-v1-10")) {
-				testAudio_v1_10_ConfigureAudioSinkPortTwice();
-			} else if(testCase.equals("Audio-v1-11")) {
-				testAudio_v1_11_CheckOwnershipLostSignal();
-			} else if(testCase.equals("Audio-v1-12")) {
-				testAudio_v1_12_PlaybackAudioSink();
-			} else if(testCase.equals("Audio-v1-13")) {
-				testAudio_v1_13_PauseAudioSinkPlayback();
-			} else if(testCase.equals("Audio-v1-14")) {
-				testAudio_v1_14_FlushPausedAudioSink();
-			} else if(testCase.equals("Audio-v1-15")) {
-				testAudio_v1_15_FlushPlayingAudioSink();
-			} else if(testCase.equals("Audio-v1-16")) {
-				testAudio_v1_16_VerifyPausedAudioSinkRemainsPausedAfterSendingData();
-			} else if(testCase.equals("Audio-v1-17")) {
-				testAudio_v1_17_VerifyPlayingEmptyAudioSinkRemainsIdle();
-			} else if(testCase.equals("Audio-v1-18")) {
-				testAudio_v1_18_FlushIdleAudioSink();
-			} else if(testCase.equals("Audio-v1-19")) {
-				testAudio_v1_19_SendDataToImageSink();
-			} else if(testCase.equals("Audio-v1-20")) {
-				testAudio_v1_20_SendDataToMetadataSink();
-			} else if(testCase.equals("Audio-v1-21")) {
-				testAudio_v1_21_VerifyAudioSinkCanBeMutedUnmuted();
-			} else if(testCase.equals("Audio-v1-22")) {
-				testAudio_v1_22_VerifyVolumeCanBeSetOnAudioSink();
-			} else if(testCase.equals("Audio-v1-23")) {
-				testAudio_v1_23_SetInvalidVolumeOnAudioSink();
-			} else if(testCase.equals("Audio-v1-24")) {
-				testAudio_v1_24_VerifyIndependenceOfMuteAndVolumeOnAudioSink();
-			} else if(testCase.equals("Audio-v1-25")) {
-				testAudio_v1_25_SynchronizeClocksOnAudioSink();
-			} else if(testCase.equals("Audio-v1-26")) {
-				testAudio_v1_26_VerifyVolumeCanBeAdjustedOnAudioSink();
-			} else if(testCase.equals("Audio-v1-27")) {
-				testAudio_v1_27_VerifyVolumeCanBeAdjustedByPercentOnAudioSink();
-			} else if(testCase.equals("Audio-v1-28")) {
-				testAudio_v1_28_VerifyVolumeNotAdjustableWhenDisabled();
-			} else {
-				fail("Test Case not valid");
-			}
-		}
-		catch (Exception exception)
-		{
-			logger.error("Exception executing Test Case: %s", exception.getMessage()); //[AT4]
-			
-			try 
-			{
-				tearDown();
-			} 
-			catch (Exception newException) 
-			{
-				logger.error("Exception releasing resources: %s", newException.getMessage());
-			}
-			
-			throw exception;
+		logger.info("Running testcase: "+testCase);
+
+		if (testCase.equals("Audio-v1-01")) {
+			testAudio_v1_01_ValidateStreamObjects();
+		} else if(testCase.equals("Audio-v1-02")) {
+			testAudio_v1_02_OpenStreamObject();
+		} else if(testCase.equals("Audio-v1-03")) {
+			testAudio_v1_03_OpenAndCloseStreamObject();
+		} else if(testCase.equals("Audio-v1-04")) {
+			testAudio_v1_04_CloseUnopenedStreamObject();
+		} else if(testCase.equals("Audio-v1-05")) {
+			testAudio_v1_05_VerifyAudioSinkCapabilities();
+		} else if(testCase.equals("Audio-v1-06")) {
+			testAudio_v1_06_VerifyImageSinkCapabilities();
+		} else if(testCase.equals("Audio-v1-07")) {
+			testAudio_v1_07_VerifyApplicationMetadataCapabilities();
+		} else if(testCase.equals("Audio-v1-08")) {
+			testAudio_v1_08_ConfigureAudioSinkPort();
+		} else if(testCase.equals("Audio-v1-09")) {
+			testAudio_v1_09_ConfigureAudioSinkPortWithInvalidConfiguration();
+		} else if(testCase.equals("Audio-v1-10")) {
+			testAudio_v1_10_ConfigureAudioSinkPortTwice();
+		} else if(testCase.equals("Audio-v1-11")) {
+			testAudio_v1_11_CheckOwnershipLostSignal();
+		} else if(testCase.equals("Audio-v1-12")) {
+			testAudio_v1_12_PlaybackAudioSink();
+		} else if(testCase.equals("Audio-v1-13")) {
+			testAudio_v1_13_PauseAudioSinkPlayback();
+		} else if(testCase.equals("Audio-v1-14")) {
+			testAudio_v1_14_FlushPausedAudioSink();
+		} else if(testCase.equals("Audio-v1-15")) {
+			testAudio_v1_15_FlushPlayingAudioSink();
+		} else if(testCase.equals("Audio-v1-16")) {
+			testAudio_v1_16_VerifyPausedAudioSinkRemainsPausedAfterSendingData();
+		} else if(testCase.equals("Audio-v1-17")) {
+			testAudio_v1_17_VerifyPlayingEmptyAudioSinkRemainsIdle();
+		} else if(testCase.equals("Audio-v1-18")) {
+			testAudio_v1_18_FlushIdleAudioSink();
+		} else if(testCase.equals("Audio-v1-19")) {
+			testAudio_v1_19_SendDataToImageSink();
+		} else if(testCase.equals("Audio-v1-20")) {
+			testAudio_v1_20_SendDataToMetadataSink();
+		} else if(testCase.equals("Audio-v1-21")) {
+			testAudio_v1_21_VerifyAudioSinkCanBeMutedUnmuted();
+		} else if(testCase.equals("Audio-v1-22")) {
+			testAudio_v1_22_VerifyVolumeCanBeSetOnAudioSink();
+		} else if(testCase.equals("Audio-v1-23")) {
+			testAudio_v1_23_SetInvalidVolumeOnAudioSink();
+		} else if(testCase.equals("Audio-v1-24")) {
+			testAudio_v1_24_VerifyIndependenceOfMuteAndVolumeOnAudioSink();
+		} else if(testCase.equals("Audio-v1-25")) {
+			testAudio_v1_25_SynchronizeClocksOnAudioSink();
+		} else if(testCase.equals("Audio-v1-26")) {
+			testAudio_v1_26_VerifyVolumeCanBeAdjustedOnAudioSink();
+		} else if(testCase.equals("Audio-v1-27")) {
+			testAudio_v1_27_VerifyVolumeCanBeAdjustedByPercentOnAudioSink();
+		} else if(testCase.equals("Audio-v1-28")) {
+			testAudio_v1_28_VerifyVolumeNotAdjustableWhenDisabled();
+		} else {
+			fail("Test Case not valid");
 		}
 
 		tearDown();

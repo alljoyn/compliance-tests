@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="create_run_jar" name="Create Runnable Jar for Project ctt_testcases_v14.12.00b with Jar-in-Jar Loader">
+<project default="create_run_jar" name="Create Runnable Jar for Project ctt_testcases_v14.12.00 with Jar-in-Jar Loader">
     <!--this file was created by Eclipse Runnable JAR Export Wizard-->
     <!--ANT 1.7 is required	-->
 	<target name="initializer">
@@ -25,7 +25,8 @@
 	<target name="compile" depends="clean">
 		<javac srcdir="../src" 
 			destdir="../bin"
-			includes="**/*.java" target="1.7">
+			includes="**/*.java" target="1.8"
+			debug="true" debuglevel="lines" includeantruntime="true">
 			<classpath refid="classpath.base"/>
 		</javac>
 	</target>

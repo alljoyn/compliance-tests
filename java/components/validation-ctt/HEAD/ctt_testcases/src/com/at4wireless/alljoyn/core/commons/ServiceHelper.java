@@ -48,9 +48,11 @@ import org.alljoyn.ns.commons.GenericLogger;
 import org.alljoyn.ns.commons.NativePlatformFactoryException;
 import org.alljoyn.onboarding.client.OnboardingClient;
 import org.alljoyn.onboarding.client.OnboardingClientImpl;
+import org.alljoyn.services.common.AnnouncementHandler;
 import org.alljoyn.services.common.ClientBase;
 import org.alljoyn.services.common.PropertyStore;
 import org.alljoyn.services.common.ServiceAvailabilityListener;
+
 
 
 
@@ -116,15 +118,14 @@ public class ServiceHelper
         deviceAnnouncementHandler = getDeviceAnnouncementHandler(deviceId, appId);
         aboutService.addAnnouncementHandler(deviceAnnouncementHandler, null);*/
        
-	    if (aboutListener)
-	    {
+	    if (aboutListener) {
 	    	logger.info("Adding AboutListener for About announcements");
 	        deviceAnnouncementHandler = getDeviceAnnouncementHandler(deviceId, appId);
 	        busAttachmentMgr.getBusAttachment().registerAboutListener(deviceAnnouncementHandler);
 	       
 	        /*String ifaces[] = {About.INTERFACE_NAME};
 	        busAttachmentMgr.getBusAttachment().whoImplements(ifaces);*/ //[AT4] Since v14.12, all interfaces must be scanned
-	        busAttachmentMgr.getBusAttachment().whoImplements(null);    
+	        busAttachmentMgr.getBusAttachment().whoImplements(null);
 	    }
         
         busAttachmentMgr.advertise();  

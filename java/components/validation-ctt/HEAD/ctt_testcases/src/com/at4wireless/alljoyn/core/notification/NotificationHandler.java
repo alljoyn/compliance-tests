@@ -27,7 +27,7 @@ import com.at4wireless.alljoyn.core.commons.log.WindowsLoggerImpl;
 
 public class NotificationHandler implements NotificationReceiver
 {
-	private static final Logger logger = new WindowsLoggerImpl(NotificationHandler.class.getSimpleName());
+    private static final Logger logger = new WindowsLoggerImpl(NotificationHandler.class.getSimpleName());
     
     private LinkedBlockingDeque<Notification> receivedNotifications = new LinkedBlockingDeque<Notification>();
     
