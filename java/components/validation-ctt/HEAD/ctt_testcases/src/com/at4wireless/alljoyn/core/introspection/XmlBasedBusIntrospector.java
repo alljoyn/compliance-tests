@@ -39,9 +39,10 @@ public class XmlBasedBusIntrospector implements BusIntrospector
     private static final String SLASH_CHARACTER = "/";
     private static final String ROOT_PATH = "/";
     private static final String ALL_STANDARDIZED_INTERFACES = "ALL";
-    private static final String STANDARDIZED_INTERFACE_NAME_PREFIX_ALLJOYN = "org.alljoyn";
-    private static final String STANDARDIZED_INTERFACE_NAME_PREFIX_ALLSEEN = "org.allseen";
-    //private IntrospectionXmlParser introspectionXmlParser = new IntrospectionXmlParser();
+    private static final String STANDARDIZED_INTERFACE_NAME_PREFIX = "org.alljoyn";
+    //This prefix was created due to alljoyn prefix is deprecated
+    private static final String STANDARDIZED_INTERFACE_NAME_PREFIX_NEW = "org.allseen";
+    private IntrospectionXmlParser introspectionXmlParser = new IntrospectionXmlParser();
     private BusAttachment busAttachment;
     private String peerName;
     private int sessionId;
@@ -67,8 +68,22 @@ public class XmlBasedBusIntrospector implements BusIntrospector
         Introspectable introspectableInterface = proxyBusObject.getInterface(Introspectable.class);
         String introspectionXml = introspectableInterface.Introspect();
 
-        IntrospectionNode introspectionNode = getIntrospectionXmlParser().parseXML(getInputStream(introspectionXml));
+        IntrospectionNode introspectionNode = new IntrospectionNode();
         
+        try
+        {
+        	introspectionNode = getIntrospectionXmlParser().parseXML(getInputStream(introspectionXml));
+        }
+        catch (SAXException ex)
+        {
+        	if (introspectionXml.contains("http:"))
+        	{
+        		introspectionNode = getIntrospectionXmlParser().parseXML(getInputStream(introspectionXml.replace("http", "https")));
+        	}
+        }
+        
+        //IntrospectionNode introspectionNode = getIntrospectionXmlParser().parseXML(getInputStream(introspectionXml));
+
         return new NodeDetail(path, introspectionNode);
     }
 
@@ -141,7 +156,7 @@ public class XmlBasedBusIntrospector implements BusIntrospector
 
     IntrospectionXmlParser getIntrospectionXmlParser()
     {
-        return new IntrospectionXmlParser();
+        return introspectionXmlParser;
     }
 
     Class<?>[] getClasses(Class<?> interfaceClass)
@@ -235,8 +250,8 @@ public class XmlBasedBusIntrospector implements BusIntrospector
 
         for (IntrospectionInterface introspectionInterface : introspectionInterfaces)
         {
-            if (introspectionInterface.getName().startsWith(STANDARDIZED_INTERFACE_NAME_PREFIX_ALLJOYN) 
-            		|| introspectionInterface.getName().startsWith(STANDARDIZED_INTERFACE_NAME_PREFIX_ALLSEEN))
+            if (introspectionInterface.getName().startsWith(STANDARDIZED_INTERFACE_NAME_PREFIX) 
+            		|| introspectionInterface.getName().startsWith(STANDARDIZED_INTERFACE_NAME_PREFIX_NEW))
             {
                 standardizedInterfaces.add(introspectionInterface);
             }
