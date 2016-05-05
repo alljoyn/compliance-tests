@@ -86,7 +86,7 @@ public class Manager extends Thread
 		System.loadLibrary("alljoyn_java");
 	}
 	
-	private static final String CERTIFICATION_RELEASE = "15.09.00b";
+	private static final String CERTIFICATION_RELEASE = "16.04.00";
 	private static final Logger logger = new WindowsLoggerImpl(Manager.class.getSimpleName());
 	private static final String XML_NAME = "Results.xml";
 	
