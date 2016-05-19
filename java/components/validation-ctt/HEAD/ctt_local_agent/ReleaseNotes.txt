@@ -1,22 +1,23 @@
-CTT Local Agent Installation Package Version v1.9.0 (CTT_Local_Agent_v1.9.0_Installer.exe) Release Notes
+CTT Local Agent Installation Package Version v2.0.0 (CTT_Local_Agent_v2.0.0_Installer.exe) Release Notes
 ========================================================================================================
  
 Fully Validated Platforms
 -------------------------
  1) Windows 7 (64 bit); Java 8 (64 bits)
 
-Features added in v1.9.0
+Features added in v2.0.0
 ------------------------
- 1) CTT Local Agent v1.9.0 works with CTT Web Server v1.3.0 and v1.4.0.
+ 1) CTT Local Agent v2.0.0 works with CTT Web Server v1.6.0.
+ 2) CTT Local Agent v2.0.0 is able to run JAVA test cases, as well as C/C++ test cases.
  
-Issues Addressed in v1.9.0
+Issues Addressed in v2.0.0
 -------------------------- 
- ASACOMP-132   CTT Local Agent - Time Session expires sometimes during a Run All action
- 
+ ASACOMP-164   CTT Test Cases Packages. IOP_Notification-Consumer-v1-01 & Cat 5.2
+
  For a complete list of fixed issues:
  https://jira.allseenalliance.org/browse/ASACOMP-63?jql=project%20%3D%20ASACOMP%20AND%20issuetype%20in%20standardIssueTypes()%20AND%20status%20in%20(Resolved%2C%20Closed) 
  
-Known Issues in v1.9.0
+Known Issues in v2.0.0
 ----------------------
  ASACOMP-118  IOP - ControlPAnel 3 - Number of used GUs 
 
@@ -35,3 +36,4 @@ Change history
  [20151002] - v1.7.0 - Works with CTT Web Server v1.3.0 - Bug fixes: ASACOMP-86.
  [20151009] - v1.8.0 - Works with CTT Web Server v1.3.0, v1.4.0 - Bug fixes: ASACOMP-125.
  [20151016] - v1.9.0 - Works with CTT Web Server v1.3.0, v1.4.0 - Bug fixes: ASACOMP-132.
+ [201604XX] - v2.0.0 - Works with CTT Web Server v1.6.0 - Bug fixes: ASACOMP-164.

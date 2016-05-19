@@ -27,7 +27,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -104,17 +103,27 @@ public class TestCaseController
 		return data;
 	}
 	
-	public void runTestCase(String certificationRelease, String testCaseName) throws IOException
+	public void runTestCase(String certificationRelease, String testCaseName, String language) throws IOException
 	{   
 		ProcessBuilder processBuilder = null;
 		String packageVersion = ControllerCommons.getNewestPackageVersion(certificationRelease);
 		
-		processBuilder = new ProcessBuilder("java",
-				"-Djava.library.path=" + libraryPath + File.separator + certificationRelease,
-				"-Dfile.encoding=UTF-8", "-jar", 
-				testCasesPath + File.separator + "TestCases_Package_" + certificationRelease + "_" + packageVersion +".jar", 
-				testCaseName, toolPath + File.separator + ConfigParameter.DETAILS_FILE);
-		processBuilder.directory(new File(toolPath));
+		File cTestCases = new File(testCasesPath + File.separator + "TestCases_Package_" + certificationRelease + "_" + packageVersion + ".exe");
+		
+		if (cTestCases.exists() && language.equals("c++"))
+		{
+			processBuilder = new ProcessBuilder(testCasesPath + File.separator + "TestCases_Package_" + certificationRelease
+					+ "_" + packageVersion + ".exe", testCaseName, toolPath + File.separator + ConfigParameter.DETAILS_FILE);
+		}
+		else
+		{
+			processBuilder = new ProcessBuilder("java",
+					"-Djava.library.path=" + libraryPath + File.separator + certificationRelease,
+					"-Dfile.encoding=UTF-8", "-jar", 
+					testCasesPath + File.separator + "TestCases_Package_" + certificationRelease + "_" + packageVersion +".jar", 
+					testCaseName, toolPath + File.separator + ConfigParameter.DETAILS_FILE);
+			processBuilder.directory(new File(toolPath));
+		}
 		
 		testCaseProcess = processBuilder.start();
 
@@ -141,7 +150,7 @@ public class TestCaseController
 		{
 			NodeList resultsNodeList = resultsXmlDocument.getElementsByTagName("TestCase");
 			
-			for (int i = 0; i < resultsNodeList.getLength(); i++)
+			for (int i = resultsNodeList.getLength() - 1; i >= 0; i--)
 			{
 				Node node = resultsNodeList.item(i);
 				Element element = (Element) node;
@@ -163,47 +172,10 @@ public class TestCaseController
 			String testCaseName, String resultLogToBeSent) throws URISyntaxException, IOException, GeneralSecurityException, 
 			SAXException, ParserConfigurationException, SendResultsException, SendLogException
 	{
-		HttpResponse sendResultsXmlResponse = null;
+		String encryptedLogContentToBeSent = testCaseModel.encryptLogContentToBeSent(cipherKey, resultLogToBeSent);
 		
-		try
-		{
-			sendResultsXmlResponse = testCaseModel.sendResultsXmlToServer(authenticatedUser, sessionToken, projectId);
-		}
-		catch (IOException e)
-		{
-			throw new SendResultsException(e);
-		}
-		
-		if (sendResultsXmlResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK)
-		{
-			String encryptedLogContentToBeSent = testCaseModel.encryptLogContentToBeSent(cipherKey, resultLogToBeSent);
-			String logName = getResultLogName(testCaseName);
-			HttpResponse sendLogResponse = null;
-			
-			try
-			{
-				sendLogResponse = testCaseModel.sendLogFileToServer(authenticatedUser, sessionToken, cipherKey, 
-						projectId, logName, encryptedLogContentToBeSent);
-			}
-			catch (IOException e)
-			{
-				throw new SendLogException(e);
-			}	
-			
-			if (sendLogResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK)
-			{
-				ModelCommons.deleteFile(ConfigParameter.RESULTS_FILE);
-				return;
-			}
-			else
-			{
-				logger.debug(sendLogResponse.getStatusLine().getStatusCode());
-			}
-		}
-		else
-		{
-			logger.debug(sendResultsXmlResponse.getStatusLine().getStatusCode());
-		}
+		testCaseModel.sendResultsToServer(authenticatedUser, sessionToken, projectId,
+				testCaseName, encryptedLogContentToBeSent);
 	}
 		
 	private String getResultLogName(String testCaseName) throws SAXException, IOException, ParserConfigurationException
@@ -214,7 +186,7 @@ public class TestCaseController
 		{
 			NodeList resultsNodeList = resultsXmlDocument.getElementsByTagName("TestCase");
 			
-			for (int i = 0; i < resultsNodeList.getLength(); i++)
+			for (int i = resultsNodeList.getLength() - 1; i >= 0; i--)
 			{
 				Node node = resultsNodeList.item(i);
 				Element element = (Element) node;

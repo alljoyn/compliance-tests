@@ -53,8 +53,20 @@ public class TestCaseConsole implements Runnable
 
         try
         {
+        	line = reader.readLine();
+        	
+        	if (line.contains("NO SUCH TESTCASE")) //[AT4] Change to a less trivial sentence
+			{	    			
+				executeTestCaseWindow.runTestCase("java");
+			}
+        	else
+        	{
+        		displayPane.append(line + "\n");
+			    displayPane.setCaretPosition( displayPane.getDocument().getLength());
+        	}
+        	
 			while ((line = reader.readLine()) != null)
-			{
+			{		
 			    displayPane.append(line + "\n");
 			    displayPane.setCaretPosition( displayPane.getDocument().getLength());
 			    
@@ -76,7 +88,7 @@ public class TestCaseConsole implements Runnable
 			}
 		}
         catch (IOException e)
-        {
+        {        	
         	if (runningAll)
         	{
 	    		executeTestCaseWindow.saveButtonAction();

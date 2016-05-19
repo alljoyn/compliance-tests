@@ -3,7 +3,8 @@
 <TestCasesPackagePath>testcases/</TestCasesPackagePath>
 <ResultPath>results/</ResultPath>
 <LogPath>log/</LogPath>
-<TestToolWebAppUrl>https://certification-tool.allseenalliance.org/TestToolWebApp/</TestToolWebAppUrl>
+<!-- <TestToolWebAppUrl>https://certification-tool.allseenalliance.org/TestToolWebApp/</TestToolWebAppUrl>  -->
+<TestToolWebAppUrl>http://192.168.110.64:8080/TestToolWebApp/</TestToolWebAppUrl>
 <GetListOfProjectsUrl>rest/getList/</GetListOfProjectsUrl>
 <GetTestCases>rest/getProject/</GetTestCases>
 <GetResults>rest/getResults/</GetResults>
@@ -12,12 +13,12 @@
 <GetLog>rest/getFullLog/</GetLog>
 <SendResultsUrl>rest/sendResult/</SendResultsUrl>
 <AuthenticateUrl>oauth/token</AuthenticateUrl>
-<UploadLogFile>rest/upload/</UploadLogFile>
+<UploadLogFile>rest/uploadV2/</UploadLogFile>
 <InstalledTestToolPackages></InstalledTestToolPackages>
 <isLastVersion>rest/isLastVersion/</isLastVersion>
 <DownloadPath>downloads/</DownloadPath>
 <getLastVersion>rest/getLastVersion</getLastVersion>
 <keyExchange>rest/keyExchange/</keyExchange>
-<LogLevel>ERROR</LogLevel>
+<LogLevel>INFO</LogLevel>
 <ExistsRelease>rest/existsRelease/</ExistsRelease>
 </Configuration>

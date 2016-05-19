@@ -134,10 +134,20 @@ public class ExecuteTestCaseWindow extends JDialog
 		
 		add(logContentScrollPane);
 		
+		TestCaseConsole.redirectOutput(logContentPane, ExecuteTestCaseWindow.this, runningAll);
+		runTestCase("c++");
+	}
+	
+	public void destroyTestCaseProcess()
+	{
+		testCaseController.destroyTestCaseProcess();
+	}
+	
+	public void runTestCase(String language)
+	{
 		try
 		{
-			TestCaseConsole.redirectOutput(logContentPane, ExecuteTestCaseWindow.this, runningAll);
-			testCaseController.runTestCase(certificationRelease, testCaseName);
+			testCaseController.runTestCase(certificationRelease, testCaseName, language);
 		}
 		catch (IOException e)
 		{

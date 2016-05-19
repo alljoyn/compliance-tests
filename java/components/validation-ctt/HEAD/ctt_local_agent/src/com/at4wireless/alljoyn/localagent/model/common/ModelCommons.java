@@ -78,14 +78,14 @@ public class ModelCommons
 	{
 		URI URI = new URI(url);
 		HttpPost postRequest = new HttpPost(URI);
-		/*RequestConfig Default = RequestConfig.DEFAULT;
+		RequestConfig Default = RequestConfig.DEFAULT;
 		RequestConfig requestConfig = RequestConfig.copy(Default)
 				.setSocketTimeout(5000)
 				.setConnectTimeout(5000)
 				.setConnectionRequestTimeout(CONNECTION_REQUEST_TIMEOUT_IN_MILLISECONDS)
 				.build();
 		
-		postRequest.setConfig(requestConfig);*/
+		postRequest.setConfig(requestConfig);
 		
 		postRequest.addHeader("Authorization", "bearer " + sessionToken);
 		postRequest.addHeader("Accept-Encoding", "UTF-8");

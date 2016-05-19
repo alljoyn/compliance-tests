@@ -24,7 +24,6 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +41,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.entity.StringEntity;
+import org.apache.http.HttpStatus;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -123,14 +122,58 @@ public class TestCaseModel
 		return resultsXmlDocument;
 	}
 	
-	public HttpResponse sendResultsXmlToServer(String authenticatedUser, String sessionToken, int projectId)
-			throws URISyntaxException, IOException
+	public void sendResultsToServer(String authenticatedUser, String sessionToken, int projectId, 
+			String testCaseName, String encryptedLog) throws SAXException, IOException, ParserConfigurationException, URISyntaxException
 	{
-		StringEntity requestBody = new StringEntity(ModelCommons.readFile(ConfigParameter.RESULTS_FILE, StandardCharsets.UTF_8));
+		Document resultsXmlDocument = getResultsXml();
+		int response = HttpStatus.SC_NOT_FOUND;
+		String logName = "";
 		
-		requestBody.setContentType("application/xml");
+		if (resultsXmlDocument != null)
+		{
+			NodeList resultsNodeList = resultsXmlDocument.getElementsByTagName("TestCase");
+			
+			if (resultsNodeList.getLength() > 0)
+			{
+				for (int i = resultsNodeList.getLength() - 1; i >= 0; i--)
+				{
+					Node node = resultsNodeList.item(i);
+					Element element = (Element) node;
+					
+					if (ModelCommons.getValue("Name", element).equals(testCaseName))
+					{	
+						logName = ModelCommons.getValue("LogFile", element);
+						
+						String calculatedHash = ModelCommons.hashString(encryptedLog, "MD5");
+						HttpEntity httpEntity = MultipartEntityBuilder.create()
+								.addTextBody("file", encryptedLog)
+								.addTextBody("hash", calculatedHash)
+								.addTextBody("id-test", ModelCommons.getValue("Id", element))
+								.addTextBody("name", ModelCommons.getValue("Name", element))
+								.addTextBody("description", ModelCommons.getValue("Description", element))
+								.addTextBody("date-time", ModelCommons.getValue("DateTime", element))
+								.addTextBody("verdict", ModelCommons.getValue("Verdict", element))
+								.addTextBody("version", ModelCommons.getValue("Version", element))
+								.addTextBody("log-name", logName)
+								.build();
+						
+						response = ModelCommons.securedPostRequest(ConfigParameter.SEND_LOG_URL
+								+ ModelCommons.encodePathVariable(authenticatedUser)
+								+ "/" + projectId, sessionToken, httpEntity)
+								.getStatusLine().getStatusCode();
+					}
+				}
+			}
+		}
 		
-		return ModelCommons.securedPostRequest(ConfigParameter.SEND_RESULTS_XML_URL + ModelCommons.encodePathVariable(authenticatedUser) + "/" + projectId, sessionToken, requestBody);
+		if (response == HttpStatus.SC_OK)
+		{
+			ModelCommons.deleteFile(ConfigParameter.RESULTS_FILE);
+		}
+		else
+		{
+			//ModelCommons.saveFile("", logName, encryptedLog);
+		}
 	}
 	
 	public List<String> getLogNamesFromFile() throws SAXException, IOException, ParserConfigurationException
@@ -147,19 +190,6 @@ public class TestCaseModel
 		}
 		
 		return logFileList;
-	}
-	
-	public HttpResponse sendLogFileToServer(String authenticatedUser, String sessionToken, SecretKey cipherKey, int projectId, String logName,
-			String encryptedLog) throws URISyntaxException, IOException
-	{
-		String calculatedHash = ModelCommons.hashString(encryptedLog, "MD5");
-		HttpEntity httpEntity = MultipartEntityBuilder.create()
-				.addTextBody("file", encryptedLog)
-				.addTextBody("name", logName)
-				.addTextBody("hash", calculatedHash)
-				.build();
-		
-		return ModelCommons.securedPostRequest(ConfigParameter.SEND_LOG_URL + ModelCommons.encodePathVariable(authenticatedUser) + "/" + projectId, sessionToken, httpEntity);
 	}
 	
 	public String encryptLogContentToBeSent(SecretKey cipherKey, String logToBeSent) throws GeneralSecurityException, IOException
