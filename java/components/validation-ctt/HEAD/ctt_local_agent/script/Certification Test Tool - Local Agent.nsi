@@ -6,7 +6,7 @@
 
 !define APP_NAME "Certification Test Tool - Local Agent"
 !define COMP_NAME "AT4 wireless"
-!define VERSION "1.09.00.00"
+!define VERSION "2.00.00.00"
 !define COPYRIGHT "AllSeen Alliance 2015"
 !define DESCRIPTION "Installer for CTT-Local Agent"
 !define MAIN_APP_EXE "CTT_Local_Agent.exe"
@@ -18,7 +18,7 @@
 !define REG_START_MENU "Start Menu Folder"
 ######################################################################
 ;Modify values to fit your project
-!define INSTALLER_NAME "C:\Users\jtf\Desktop\CTT_Local_Agent_v1.9.0_Installer.exe"
+!define INSTALLER_NAME "C:\Users\jtf\Desktop\CTT_Local_Agent_v2.0.0_Installer.exe"
 !define LOCAL_AGENT_PATH "C:\Users\jtf\Desktop\ctt_local_agent"
 !define MSVS2012_PATH "C:\Users\jtf\Desktop\MSVS2012"
 !define MSVS2013_PATH "C:\Users\jtf\Desktop\MSVS2013"
@@ -137,33 +137,14 @@ File "${LOCAL_AGENT_PATH}\CTT_Local_Agent.exe"
 
 SetOutPath "$INSTDIR\testcases"
 File "${LOCAL_AGENT_PATH}\testcases\*.jar"
+File "${LOCAL_AGENT_PATH}\testcases\*.exe"
 
 SetOutPath "$INSTDIR\res\drawable"
 File "${LOCAL_AGENT_PATH}\res\drawable\*.*"
 
-SetOutPath "$INSTDIR\lib\v14.12.00"
-File "${LOCAL_AGENT_PATH}\lib\v14.12.00\alljoyn_java.dll"
+SetOutPath "$INSTDIR\lib"
+File /r "${LOCAL_AGENT_PATH}\lib"
 
-SetOutPath "$INSTDIR\lib\v14.12.00a"
-File "${LOCAL_AGENT_PATH}\lib\v14.12.00a\alljoyn_java.dll"
-
-SetOutPath "$INSTDIR\lib\v14.06.00a"
-File "${LOCAL_AGENT_PATH}\lib\v14.06.00a\alljoyn_java.dll"
-
-SetOutPath "$INSTDIR\lib\v14.12.00b"
-File "${LOCAL_AGENT_PATH}\lib\v14.12.00b\alljoyn_java.dll"
-
-SetOutPath "$INSTDIR\lib\v15.04.00"
-File "${LOCAL_AGENT_PATH}\lib\v15.04.00\alljoyn_java.dll"
-
-SetOutPath "$INSTDIR\lib\v15.04.00a"
-File "${LOCAL_AGENT_PATH}\lib\v15.04.00a\alljoyn_java.dll"
-
-SetOutPath "$INSTDIR\lib\v15.04.00b"
-File "${LOCAL_AGENT_PATH}\lib\v15.04.00b\alljoyn_java.dll"
-
-SetOutPath "$INSTDIR\lib\v15.09.00"
-File "${LOCAL_AGENT_PATH}\lib\v15.09.00\alljoyn_java.dll"
 SectionEnd
 
 ######################################################################
@@ -219,27 +200,11 @@ Delete "$INSTDIR\CTT_Local_Agent.exe"
 Delete "$INSTDIR\testcases\*.jar"
 Delete "$INSTDIR\res\drawable\*.*"
 Delete "$INSTDIR\log\*.log"
-Delete "$INSTDIR\lib\v14.06.00a\alljoyn_java.dll"
-Delete "$INSTDIR\lib\v14.12.00\alljoyn_java.dll"
-Delete "$INSTDIR\lib\v14.12.00a\alljoyn_java.dll"
-Delete "$INSTDIR\lib\v14.12.00b\alljoyn_java.dll"
-Delete "$INSTDIR\lib\v15.04.00\alljoyn_java.dll"
-Delete "$INSTDIR\lib\v15.04.00a\alljoyn_java.dll"
-Delete "$INSTDIR\lib\v15.04.00b\alljoyn_java.dll"
-Delete "$INSTDIR\lib\v15.09.00\alljoyn_java.dll"
-RmDir "$INSTDIR\lib\v14.06.00a"
-RmDir "$INSTDIR\lib\v14.12.00"
-RmDir "$INSTDIR\lib\v14.12.00a"
-RmDir "$INSTDIR\lib\v14.12.00b"
-RmDir "$INSTDIR\lib\v15.04.00"
-RmDir "$INSTDIR\lib\v15.04.00a"
-RmDir "$INSTDIR\lib\v15.04.00b"
-RmDir "$INSTDIR\lib\v15.09.00"
-RmDir "$INSTDIR\lib\"
+RmDir /r "$INSTDIR\lib\"
 RmDir "$INSTDIR\res\drawable"
 RmDir "$INSTDIR\res"
 RmDir "$INSTDIR\log"
-RmDir "$INSTDIR\testcases"
+RmDir /r "$INSTDIR\testcases"
 RmDir "$INSTDIR"
  
 Delete "$INSTDIR\uninstall.exe"

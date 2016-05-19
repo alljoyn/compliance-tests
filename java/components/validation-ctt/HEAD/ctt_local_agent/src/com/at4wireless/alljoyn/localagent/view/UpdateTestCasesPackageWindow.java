@@ -180,7 +180,15 @@ public class UpdateTestCasesPackageWindow extends JDialog
 			@Override
 			protected Void doInBackground() throws Exception
 			{
-				updateTestCasesController.downloadUpdate(sessionToken, fullTestCasesPackageServerVersion);
+				try
+				{
+					updateTestCasesController.downloadUpdate(sessionToken, fullTestCasesPackageServerVersion);
+				}
+				catch (Exception e)
+				{
+					// A new message should be displayed alerting about the error in the download
+					updateAborted = true;
+				}
 				return null;
 			}
 		};
