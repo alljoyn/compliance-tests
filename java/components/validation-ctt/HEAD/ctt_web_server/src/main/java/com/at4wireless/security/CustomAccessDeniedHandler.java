@@ -34,17 +34,21 @@ import org.springframework.security.web.csrf.MissingCsrfTokenException;
 public class CustomAccessDeniedHandler extends AccessDeniedHandlerImpl
 {
 	/**
-     * @param 	requestservlet 			request that produces the exception
-     * @param 	responseservlet 		response to the exception
-     * @param 	accessDeniedException	exception to be managed
+     * @param requestservlet
+     * 				request that produces the exception
+     * @param responseservlet
+     * 				response to the exception
+     * @param accessDeniedException
+     * 				exception to be managed
      */
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response,
 			AccessDeniedException accessDeniedException) throws IOException, ServletException
 	{	
-		if(accessDeniedException instanceof MissingCsrfTokenException || accessDeniedException instanceof InvalidCsrfTokenException) {
-			response.sendRedirect(request.getContextPath()+"/login?session_expired");
+		if (accessDeniedException instanceof MissingCsrfTokenException
+				|| accessDeniedException instanceof InvalidCsrfTokenException)
+		{
+			response.sendRedirect(request.getContextPath() + "/login?session_expired");
 		}
-		
 	}
 }

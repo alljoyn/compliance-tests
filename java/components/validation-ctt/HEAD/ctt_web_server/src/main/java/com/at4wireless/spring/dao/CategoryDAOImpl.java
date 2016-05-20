@@ -27,15 +27,16 @@ import org.springframework.transaction.annotation.Transactional;
 import com.at4wireless.spring.model.Category;
 
 @Repository
-public class CategoryDAOImpl implements CategoryDAO {
+public class CategoryDAOImpl implements CategoryDAO
+{
 	@Autowired
 	private SessionFactory sessionFactory;
 
 	@Override
-	public List<Category> list() {
+	public List<Category> list()
+	{
 		@SuppressWarnings("unchecked")
-		List<Category> listCategory = (List<Category>) sessionFactory.getCurrentSession()
-				.createCriteria(Category.class)
+		List<Category> listCategory = (List<Category>) sessionFactory.getCurrentSession().createCriteria(Category.class)
 				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
 
 		return listCategory;
@@ -43,16 +44,19 @@ public class CategoryDAOImpl implements CategoryDAO {
 
 	@Override
 	@Transactional
-	public Category getCategoryById(int idCategory) {
+	public Category getCategoryById(int idCategory)
+	{
 		@SuppressWarnings("unchecked")
-		List<Category> listCategory = (List<Category>) sessionFactory.getCurrentSession()
-				.createCriteria(Category.class)
-					.add(Restrictions.like("idCategory", idCategory))
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-		
-		if(listCategory.isEmpty()) {
+		List<Category> listCategory = (List<Category>) sessionFactory.getCurrentSession().createCriteria(Category.class)
+				.add(Restrictions.like("idCategory", idCategory)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
+				.list();
+
+		if (listCategory.isEmpty())
+		{
 			return null;
-		} else {
+		}
+		else
+		{
 			return listCategory.get(0);
 		}
 	}

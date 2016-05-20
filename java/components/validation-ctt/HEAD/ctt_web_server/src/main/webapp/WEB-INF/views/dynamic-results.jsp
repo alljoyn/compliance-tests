@@ -29,7 +29,7 @@
 							<c:if test="${result.verdict=='PASS'}">
 								<td style="font-weight: bold; color: #99CC32"width="10%">${result.verdict}</td>
 							</c:if>
-							<c:if test="${result.verdict=='FAIL'}">
+							<c:if test="${result.verdict=='FAIL' || result.verdict=='NO SUCH TESTCASE'}">
 								<td style="font-weight: bold; color: #D43D1A"width="10%">${result.verdict}</td>
 							</c:if>
 							<c:if test="${result.verdict=='INCONC'}">
@@ -42,19 +42,19 @@
 	    	</table>
     	</div>
     </div>
- 
-	<div class="row">
-		<div class="col-xs-12">
-			<p id="notRanAll">You need to execute all applicable Test Cases to be able to create the Test Report</p>
-		</div>
-	</div>
 
 	<!-- Action buttons -->
 	<div class="row" align="left">
 		<div class="col-xs-12">
-    		<button class="btn btn-default disabled" id="createTR"><span class="glyphicon glyphicon-file"></span> Create Test Results</button>
-      		<a class="btn btn-default disabled" id="sendTR" href="results/tr/send"><span class="glyphicon glyphicon-floppy-disk"></span> Generate Test Results Package</a>
-      		<a class="btn btn-default disabled" id="viewTR" href="results/tr/view" target="_blank"><span class="glyphicon glyphicon-eye-open"></span> View Test Results</a>   
+    		<span id="createTRTooltip" class="helper" data-toggle="tooltip" title="Please execute all applicable Test Cases to be able to create the Test Results document">
+    			<button class="btn btn-default disabled" id="createTR"><span class="glyphicon glyphicon-file"></span> Create Test Results</button>
+    		</span>
+    		<span id="sendTRTooltip" class="helper" data-toggle="tooltip" title="Test Results document is not created, please create it">
+      			<button class="btn btn-default disabled" id="sendTR"><span class="glyphicon glyphicon-cloud-upload"></span> Send Test Results Package</button>
+      		</span>
+      		<span id="viewTRTooltip" class="helper" data-toggle="tooltip" title="Test Results document is not created, please create it">
+      			<button class="btn btn-default disabled" id="viewTR"><span class="glyphicon glyphicon-eye-open"></span> View Test Results</button>
+      		</span>
 		</div>
 	</div>
 </div>
@@ -62,7 +62,8 @@
 <script>
 	$(document).ready(function()
 	{
-		jQuery.getScript('resources/js/dynamic-results.js', function() {
+		jQuery.getScript('resources/js/dynamic-results.js', function()
+		{
 			results.init();
 		});
 	});

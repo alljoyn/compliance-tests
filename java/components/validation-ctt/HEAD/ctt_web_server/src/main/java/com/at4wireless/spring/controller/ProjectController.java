@@ -16,6 +16,7 @@
 package com.at4wireless.spring.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +42,7 @@ import com.at4wireless.spring.model.Project;
 import com.at4wireless.spring.model.ServiceFramework;
 import com.at4wireless.spring.model.Tccl;
 import com.at4wireless.spring.model.dto.ProjectDT;
+import com.at4wireless.spring.controller.CawtWebService;
 import com.at4wireless.spring.service.CertificationReleaseService;
 import com.at4wireless.spring.service.DutService;
 import com.at4wireless.spring.service.ProjectService;
@@ -327,5 +329,61 @@ public class ProjectController
 	public @ResponseBody List<ServiceFramework> loadServiceFrameworks(HttpServletRequest request)
 	{
 		return sfService.list();
+	}
+	
+	@RequestMapping(value="/loadCris", method = RequestMethod.GET)
+	public @ResponseBody List<String> loadCris(HttpServletRequest request)
+	{		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		List<String> retrievedCris = new ArrayList<String>();
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{
+			retrievedCris = obtainCriList(auth.getName());
+		}
+		
+		return retrievedCris;
+	}
+	
+	@RequestMapping(value="/loadProjectTypes", method = RequestMethod.GET)
+	public @ResponseBody List<String> loadProjectTypes(HttpServletRequest request)
+	{
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		List<String> retrievedProjectTypes = new ArrayList<String>(Arrays.asList("Conformance", "Interoperability", "Conformance and Interoperability", "Development"));
+		
+		if (!(auth instanceof AnonymousAuthenticationToken))
+		{		
+			if (obtainCriList(auth.getName()).size() == 0)
+			{
+				retrievedProjectTypes.clear();
+				retrievedProjectTypes.add("Development");
+			}
+		}
+		
+		return retrievedProjectTypes;
+	}
+	
+	private List<String> obtainCriList(String username)
+	{
+		String cawtUrl = "https://certify.alljoyn.org";
+		String secret = "B8nkfYXsXW7izS4i5AK8v8u729EoY34x";
+		
+		List<String> retrievedCris = new ArrayList<String>();
+		try
+		{
+			CawtWebService ws = new CawtWebService(cawtUrl, secret);
+			String output = ws.acceptedApplicationsRaw(username);
+			XMLManager xmlManager = new XMLManager();
+			retrievedCris = xmlManager.retrieveNodeValuesFromXMLString(output, "/Output/Applications/Application/cri");
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+			// An error ocurred when getting the CRI list
+		}
+		
+		return retrievedCris;
 	}
 }

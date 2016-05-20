@@ -19,56 +19,53 @@ var projects = (function()
 	//-------------------------------------------------
 	// TITLE
 	//-------------------------------------------------
-	var title = jQuery('#title');
-	var titleText = "Step 1<small> Select/Edit/Create a project or view results</small>";
+	var _titleText = 'Step 1<small> Select/Edit/Create a project or view results</small>';
 	//-------------------------------------------------
 	// NAVIGATION BUTTONS
 	//-------------------------------------------------
-	var nextButton = jQuery('#nextButton');
 	var navigationList = jQuery('#navigation li');
 	//-------------------------------------------------
 	// PROJECTS TABLE AND BUTTONS
 	//-------------------------------------------------
-	var projectsTable = jQuery('#table');
+	var _$projectsTable = jQuery('#table');
 	
-	var createButton = jQuery('#createButton');
-	var createConfirmButton = jQuery('#createConfirm');
+	var _$createButton = jQuery('#createButton');
+	var _$createConfirmButton = jQuery('#createConfirm');
+	var _$createCancelButton = jQuery('#createCancel');
 	
-	var editButton = jQuery('#editButton');
-	var editConfirmButton = jQuery('#editConfirm');
+	var _$editButton = jQuery('#editButton');
+	var _$editConfirmButton = jQuery('#editConfirm');
+	var _$editCancelButton = jQuery('#editCancel');
 	
-	var deleteButton = jQuery('#deleteButton');
-	var deleteConfirmButton = jQuery('#deleteConfirm');
+	var _$deleteButton = jQuery('#deleteButton');
+	var _$deleteConfirmButton = jQuery('#deleteConfirm');
 	//-------------------------------------------------
 	// PROJECT FORMS AND FIELDS
 	//-------------------------------------------------
-	var newProjectModal = jQuery('#newProjectModal');
-	var newProjectForm = jQuery('#newProjectForm');
-	var newProjectNameField = jQuery('#projectname');
-	var newProjectTypeField = jQuery('#project-type');
-	var newProjectCrField = jQuery('#project-release');
-	var newProjectTcclField = jQuery('#project-tccl');
-	var newProjectCarIdField = jQuery('#project-car-id');
-	var newProjectServicesField = jQuery('#new-project-services');
+	var _$newProjectModal = jQuery('#newProjectModal');
+	var _$newProjectForm = jQuery('#newProjectForm');
+	var _$newProjectNameField = jQuery('#projectname');
+	var _$newProjectTypeField = jQuery('#project-type');
+	var _$newProjectCrField = jQuery('#project-release');
+	var _$newProjectTcclField = jQuery('#project-tccl');
+	var _$newProjectCarIdField = jQuery('#project-car-id');
+	var _$newProjectServicesField = jQuery('#new-project-services');
 	
-	var editProjectModal = jQuery('#editProjectModal');
-	var editProjectForm = jQuery('#editProjectForm');
-	var editProjectIdField = jQuery('#edit_id');
-	var editProjectNameField = jQuery('#edit_name');
-	var editProjectTypeField = jQuery('#edit-type');
-	var editProjectCrField = jQuery('#edit-release');
-	var editProjectTcclField = jQuery('#edit-tccl');
-	var editProjectCarIdField = jQuery('#edit-car-id');
-	var editProjectServicesField = jQuery('#scroll-services');
-	//-------------------------------------------------
-	// POST REQUEST TOKEN AND HEADER
-	//-------------------------------------------------
-	var token = jQuery("meta[name='_csrf']").attr("content");
-	var header = jQuery("meta[name='_csrf_header']").attr("content");
+	var _$editProjectModal = jQuery('#editProjectModal');
+	var _$editProjectForm = jQuery('#editProjectForm');
+	var _$editProjectIdField = jQuery('#edit_id');
+	var _$editProjectNameField = jQuery('#edit_name');
+	var _$editProjectTypeField = jQuery('#edit-type');
+	var _$editProjectCrField = jQuery('#edit-release');
+	var _$editProjectTcclField = jQuery('#edit-tccl');
+	var _$editProjectCarIdField = jQuery('#edit-car-id');
+	var _$editProjectServicesField = jQuery('#scroll-services');
+	
+	var _lastCriValue;
 	
 	var init = function()
-	{
-		title.html(titleText);
+	{	
+		_initStepTexts();
 		$('.selectpicker').selectpicker();
 		sessionStorage.clear();
 		
@@ -79,16 +76,21 @@ var projects = (function()
     	$('#gu-breadcrumb').text('GU');
         $('#gu-breadcrumb').addClass('hidden');
 		
-		validateForms();
-		initDataTable();
-		onClickFunctions();
-		onChangeFunctions();
+		_validateForms();
+		_initDataTable();
+		_onClickFunctions();
+		_onChangeFunctions();
 	};
 	
-	var initDataTable = function()
+	var _initStepTexts = function()
 	{
-		projectsTable.DataTable(
-		{
+		common.$title.html(_titleText);
+		common.changeTooltipText(common.$nextStepButton.parent(), 'You need to select a project to continue');
+	}
+	
+	var _initDataTable = function()
+	{
+		_$projectsTable.DataTable({
 			"ajax": {
 				"type": "GET",
 				"url": "project/dataTable",
@@ -99,8 +101,9 @@ var projects = (function()
 	            { "data": "id" },
 	            { "data": "name" },
 	            { "data": "modified",
-	            	"render": function(data) {
-	            		return formatDateAndTime(data);
+	            	"render": function(data)
+	            	{
+	            		return common.formatDateAndTime(data);
 	            	}
 	            },
 	            { "data": "type" },
@@ -108,13 +111,15 @@ var projects = (function()
 	            { "data": "services" },
 	            { "data": "configured" },
 	            { "data": "results", 
-	            	"render": function(data) {
+	            	"render": function(data)
+	            	{
 	            		return data == true ? "<a href=\"#\" class=\"result-link\">Link to results</a>" : "No results";
 	            	}
 	            },
 	            { "data": "created",
-	            	"render": function(data) {
-	            		return formatDateAndTime(data);
+	            	"render": function(data)
+	            	{
+	            		return common.formatDateAndTime(data);
 	            	}
 	            },
 	            { "data": "tccl" },
@@ -123,7 +128,7 @@ var projects = (function()
 	            { "data": "cri" }
 			],
 			pagingType: 'full_numbers',
-			scrollY: ($(window).height()/2),
+			scrollY: common.$dynamicSection.height() - 164,
 			responsive: {
 				details: {
 					type: 'column',
@@ -135,307 +140,361 @@ var projects = (function()
 				{ className: 'control', orderable: false, targets: 0},
 			],
 			order: [2, 'asc'],
-		}).on('init.dt', function()
-		{
-			onClickResultLink();
-			
-			projectsTable.find("tbody").on('click', 'tr', function ()
-			{
-				var data = projectsTable.DataTable().row(this).data();
-				
-				if ($(this).hasClass("selected"))
-				{
-					$(this).removeClass('selected');
-					sessionStorage.removeItem("idProject");
-					$('.nav-stacked li').addClass('disabled');
-			   		$('.nav-stacked li a').attr('disabled', true);
-					modifyButtonsState(false);
-				}
-				else
-				{
-					projectsTable.DataTable().$('tr.selected').removeClass('selected');
-					$(this).addClass('selected');   
-					
-				   	sessionStorage.setItem("idProject",data.id);
-				   	sessionStorage.setItem("projectName",data.name);
-				   	sessionStorage.setItem("type",data.type);
-				   	sessionStorage.setItem("associatedDut", data.configured == "Yes" ? data.dut : "N/A");
-				   	sessionStorage.setItem("associatedGu", data.configured == "Yes" ? data.gu : "N/A");
-				   	sessionStorage.setItem("isConfigured", data.configured == "Yes");
-	
-				   	if (data.configured == "Yes")
-			   		{
-				   		//changeNavigationState(data[4], true);
-				   		$('.nav-stacked li').removeClass('disabled');
-				   		$('.nav-stacked li a').removeAttr('disabled', false);
-				   		
-				   		if (data.type == "Conformance")
-				   		{
-				   			$('#gu-nav').addClass('disabled');
-				   			$('#gu-nav a').attr('disabled', true);
-				   		}
-				   		
-				   		$.ajax({
-				   			url: 'dut/getId',
-				   			data: {
-				   				dutName: data.dut
-				   			},
-				   			type: 'get',
-				   			success: function(dutId)
-				   			{
-				   				sessionStorage.setItem('idDut', dutId);
-				   			}	
-				   		});
-			   		}
-				   	else
-				   	{
-				   		//changeNavigationState(null, false);
-				   		$('.nav-stacked li').addClass('disabled');
-				   		$('.nav-stacked li a').attr('disabled', true);
-				   	}
-					modifyButtonsState(true);
-				}
-			});
 		});
 	};
 	
-	var onClickResultLink = function()
+	var _onClickFunctions = function()
+	{	
+		_onClickTableRow();
+		_onClickSectionButtons();
+		_onClickNavigationButtons();
+	};
+	
+	var _onClickTableRow = function()
 	{
-		$(projectsTable.dataTable().fnGetNodes()).find('.result-link').on('click', function(e)
+		_onClickRow();
+		_onClickResultLink();
+	}
+	
+	var _onClickRow = function()
+	{
+		_$projectsTable.find("tbody").on('click', 'tr', function ()
+		{
+			var data = _$projectsTable.DataTable().row(this).data();
+			
+			if ($(this).hasClass("selected"))
+			{
+				$(this).removeClass('selected');
+				sessionStorage.removeItem("idProject");
+
+				common.disableNavigationBar();
+				_modifyButtonsState(false);
+				common.disableButtons(common.$nextStepButton);
+			}
+			else
+			{
+				_$projectsTable.DataTable().$('tr.selected').removeClass('selected');
+				$(this).addClass('selected');   
+				
+			   	sessionStorage.setItem("idProject", data.id);
+			   	sessionStorage.setItem("projectName", data.name);
+			   	sessionStorage.setItem("type", data.type);
+			   	sessionStorage.setItem("associatedDut", data.configured == "Yes" ? data.dut : "N/A");
+			   	sessionStorage.setItem("associatedGu", data.configured == "Yes" ? data.gu : "N/A");
+			   	sessionStorage.setItem("isConfigured", data.configured == "Yes");
+
+			   	if (data.configured == "Yes")
+		   		{
+			   		common.enableNavigationBar(data.type);
+			   		
+			   		if (data.type == "Conformance")
+			   		{
+			   			$('#gu-nav').addClass('disabled');
+			   			$('#gu-nav a').attr('disabled', true);
+			   		}
+			   		
+			   		$.ajax({
+			   			url: 'dut/getId',
+			   			data: {
+			   				dutName: data.dut
+			   			},
+			   			type: 'get',
+			   			success: function(dutId)
+			   			{
+			   				sessionStorage.setItem('idDut', dutId);
+			   			}	
+			   		});
+		   		}
+			   	else
+			   	{
+			   		common.disableNavigationBar();
+			   	}
+				_modifyButtonsState(true);
+				common.enableButtons(common.$nextStepButton);
+			}
+		});
+	}
+	
+	var _onClickResultLink = function()
+	{
+		_$projectsTable.find('tbody').on('click', '.result-link', function(e)
 		{
 			e.preventDefault();
-			e.stopPropagation();
+			if ($(this).parent().parent().hasClass('selected'))
+			{
+				e.stopPropagation();
+			}
 			
-			var id2 = projectsTable.DataTable().row($(this).parent().parent()).data().id
+			var id2 = _$projectsTable.DataTable().row($(this).parent().parent()).data().id;
 			$('#idProject').val(id2);
 			
+			common.enableNavigationBar(_$projectsTable.DataTable().row($(this).parent().parent()).data().type);
+			
 			sessionStorage.setItem("idProject", id2);
-			sessionStorage.setItem("projectName", projectsTable.DataTable().row($(this).parent().parent()).data().name);
+			sessionStorage.setItem("projectName", _$projectsTable.DataTable().row($(this).parent().parent()).data().name);
 			
 			$.ajax({
 	            type: "GET",
 	            url: $('#resultForm').attr('action'),
 	            data: $('#resultForm').serialize(),
-	            success: function(response) {
-	            	$('#dynamic').fadeOut('fast', function() {
-	            		$("#dynamic").html( response );
+	            success: function(response)
+	            {
+	            	common.$dynamicSection.fadeOut('fast', function()
+	            	{
+	            		common.$dynamicSection.html( response );
 	            	});
 	                
-	            	$('#dynamic').fadeIn('fast', function() {
-	                	var table = $.fn.dataTable.fnTables(true);
-	                	if ( table.length > 0 ) {
-	                	    $(table).dataTable().fnAdjustColumnSizing();
-	                	}
+	            	common.$dynamicSection.fadeIn('fast', function()
+	            	{
+	                	common.adjustDataTablesHeader();
 	                });
 	                
-	                $('#nextButton').addClass('disabled');
-	                $('#nextButton').attr('disabled', true);
-	                $('#prevButton').removeClass('disabled');
-	                $('#prevButton').removeAttr('disabled', false);
+	            	common.disableButtons(common.$nextStepButton);
+	            	common.enableButtons(common.$previousStepButton);
 	            }
 	        });
 		});
 	}
 	
-	var formatDateAndTime = function(dateAndTime)
+	var _onClickSectionButtons = function()
 	{
-		Number.prototype.padLeft = function(base, chr)
-		{
-		   var  len = (String(base || 10).length - String(this).length) + 1;
-		   return len > 0 ? new Array(len).join(chr || '0') + this : this;
-		}
-		
-		var cd = new Date(dateAndTime);
-		return [cd.getFullYear(), (cd.getMonth()+1).padLeft(), cd.getDate().padLeft()].join('-')
-               		+ ' ' + [cd.getHours().padLeft(), cd.getMinutes().padLeft(), cd.getSeconds().padLeft()].join(':');
+		_onClickCreateButtons();
+		_onClickEditButtons();
+		_onClickDeleteButton();
 	}
 	
-	var onClickFunctions = function()
-	{	
-		createButton.on('click', function()
+	var _onClickCreateButtons = function()
+	{
+		_$createButton.on('click', function()
 		{	
-			$.ajax({
-				cache: false,
-				type: 'GET',
-				url: 'project/loadCertRel',
-				data :
+			_loadProjectTypes().done(function(data)
+			{				
+				var typesToAppend = "";
+				var referenceType = data.length > 1 ? "Conformance" : "Development";
+				$.each(data, function(i, type)
 				{
-					pjType : "Conformance"
-				},
-				success: function(data)
+					typesToAppend += "<option value=\"" + type + "\">" + type + "</option>";
+				});
+				
+				_$newProjectTypeField.append(typesToAppend);
+				
+				_loadCertificationReleases(referenceType).done(function(data)
 				{
 					var selectedCr = null;
 					
 					data.sort(sortComparator);
 					
-					newProjectCrField.empty();
-					$.each(data, function(i, release) {
-						if (i == data.length -1) {
-							newProjectCrField.append("<option selected value=\""+release.idCertrel+"\">"+release.name+" ("+release.description+")</option>");
+					var crsToAppend = "";
+					$.each(data, function(i, release)
+					{
+						if (i == data.length - 1)
+						{
+							crsToAppend += "<option selected value=\""+release.idCertrel+"\">"+release.name+" ("+release.description+")</option>";
 							selectedCr = release.idCertrel;
-						} else {
-							newProjectCrField.append("<option value=\""+release.idCertrel+"\">"+release.name+" ("+release.description+")</option>");
+						}
+						else
+						{
+							crsToAppend += "<option value=\""+release.idCertrel+"\">"+release.name+" ("+release.description+")</option>";
 						}
 					});
 					
-					$.ajax({
-						cache: false,
-						type: 'GET',
-						url: 'project/loadTccl',
-						data : {
-							idCertRel : selectedCr
-						},
-						success: function(data) {
-							newProjectTcclField.empty();
-							$.each(data, function(i, tccl) {
-								newProjectTcclField.append("<option value=\""+tccl.idTccl+"\">"+tccl.name+"</option>");
+					_$newProjectCrField.append(crsToAppend);
+					
+					if (referenceType != "Development")
+					{
+						_loadTccls(selectedCr).done(function(data)
+						{
+							var tcclsToAppend = "";
+							$.each(data, function(i, tccl)
+							{
+								tcclsToAppend += "<option value=\""+tccl.idTccl+"\">"+tccl.name+"</option>";
 							});
-						}
-					});
+							
+							_$newProjectTcclField.append(tcclsToAppend);
+						});
+						
+						_loadCris().done(function(data)
+						{
+							var crisToAppend = "";
+							
+							$.each(data, function(i, cri)
+							{
+								crisToAppend += "<option value=\""+cri+"\">"+cri+"</option>";
+							});
+							
+							_$newProjectCarIdField.append(crisToAppend);
+						});
+					}
+					else
+					{
+						_disableTcclAndCri(_$newProjectTcclField, _$newProjectCarIdField);
+					}
 					
-					loadServiceFrameworks(newProjectServicesField, null);
-				}
+					_loadServiceFrameworks().done(function(data)
+					{
+						var sfToAppend = "";
+						$.each(data, function(i, serviceFramework)
+						{
+							if (serviceFramework.name == "Core Interface")
+							{
+								sfToAppend += "<option selected disabled value=\""+serviceFramework.idService+"\">"+serviceFramework.name+"</option>";
+							}
+							else
+							{
+								sfToAppend += "<option value=\""+serviceFramework.idService+"\">"+serviceFramework.name+"</option>";
+							}
+						});
+						
+						_$newProjectServicesField.append(sfToAppend);
+						_$newProjectServicesField.selectpicker('refresh');
+					});
+				});
 			});
 		});
 		
-		newProjectForm.submit(function(e)
+		_$newProjectForm.submit(function(e)
 		{
-			var text="";
+			var sfToString = "";
 	    	
-	    	newProjectServicesField.find('option:selected').each(function (index)
+			_$newProjectServicesField.find('option:selected').each(function (index)
 	    	{
-	    		text += $(this).val() + ".";
+	    		sfToString += $(this).val() + ".";
 	    	});
 	    	
-	    	$('#supportedServices').val(text);
-	    	//newProjectForm.submit();
+	    	$('#supportedServices').val(sfToString);
 	    	
 	    	$.ajax({
-                url: newProjectForm.attr('action'),
+                url: _$newProjectForm.attr('action'),
                 type: 'POST',
-                data: newProjectForm.serialize(),
+                data: _$newProjectForm.serialize(),
                 success: function(project)
                 {
-                	projectsTable.DataTable().row.add(project).draw();
-                	newProjectNameField.val('');
-                	newProjectCrField.empty();
-                	newProjectTcclField.empty();
-                	newProjectCarIdField.val('');
-                	newProjectServicesField.empty();
-                	newProjectModal.modal('hide');	
+                	_$projectsTable.DataTable().row.add(project).draw();
+                	_$newProjectModal.modal('hide');
+                	_clearFormFields(_$newProjectForm, _$newProjectNameField, _$newProjectTypeField, _$newProjectCrField, _$newProjectTcclField, _$newProjectCarIdField, _$newProjectServicesField);
                 }
             });
 	    	
 	    	e.preventDefault();
 		});
 		
-		createConfirmButton.on('click', function()
+		_$createConfirmButton.on('click', function()
 		{			
-			if (newProjectForm.valid())
+			if (_$newProjectForm.valid())
 			{
-				newProjectForm.submit();
+				_$newProjectForm.submit();
+				_clearFormFields(_$newProjectForm, _$newProjectNameField, _$newProjectTypeField, _$newProjectCrField, _$newProjectTcclField, _$newProjectCarIdField, _$newProjectServicesField);
 			}
 	  	});
-
-		deleteConfirmButton.on('click', function (e)
-		{
-		    $.ajax({
-					type : 'POST',
-					url : 'project/delete',
-					beforeSend: function (xhr) {
-			            xhr.setRequestHeader(header, token);
-			        },
-					data : {
-						idProject : sessionStorage.getItem("idProject")
-					},
-					success: function ()
-					{						
-						projectsTable.DataTable().row('.selected').remove().draw();
-						sessionStorage.removeItem("idProject");
-						modifyButtonsState(false);
-				   }
-			});
-		});
 		
-		editButton.on('click', function()
+		_$createCancelButton.on('click', function()
 		{
-			$.ajax({
-				cache: false,
-				type : 'GET',
-				url : 'project/edit',
-				data : {
-					idProject : sessionStorage.getItem("idProject")
-				},
-				success: function (data) {
+			_clearFormFields(_$newProjectForm, _$newProjectNameField, _$newProjectTypeField, _$newProjectCrField, _$newProjectTcclField, _$newProjectCarIdField, _$newProjectServicesField);
+		})
+	}
+	
+	var _onClickEditButtons = function()
+	{
+		_$editButton.on('click', function()
+		{			
+			_getProjectInfo().done(function(data)
+			{
+				var projectInfo = data;
+				
+				_$editProjectIdField.val(projectInfo.idProject);
+				_$editProjectNameField.val(projectInfo.name);
+				
+				_loadProjectTypes().done(function(data)
+				{
+					var referenceType = data.length > 1 ? projectInfo.type : "Development";
+					var typesToAppend = "";
 					
-					editProjectIdField.val(data.idProject);
-					editProjectNameField.val(data.name);
-					editProjectTypeField.val(data.type);
-					editProjectCarIdField.val(data.carId);
-					
-					$.ajax({
-						cache: false,
-						type: 'GET',
-						url: 'project/loadCertRel',
-						data : {
-							pjType : data.type
-						},
-						success: function(releases) {
-							releases.sort(sortComparator);
-							
-							editProjectCrField.empty();
-							$.each(releases, function(i, release) {
-								editProjectCrField.append("<option value=\""+release.idCertrel+"\">"+release.name+" ("+release.description+")</option>");
-							});
-							
-							editProjectCrField.val(data.idCertrel);
-							
-							if (data.type != "Development")
-							{
-								$.ajax({
-									cache: false,
-									type: 'GET',
-									url: 'project/loadTccl',
-									data : {
-										idCertRel : data.idCertrel
-									},
-									success: function(tccls) {
-										editProjectTcclField.empty();
-										editProjectTcclField.prop('disabled', false);
-										editProjectCarIdField.empty();
-										editProjectCarIdField.prop('disabled', false);
-										$.each(tccls, function(i, tccl) {
-											editProjectTcclField.append("<option value=\""+tccl.idTccl+"\">"+tccl.name+"</option>");
-										});
-									}
-								});
-							}
-							else
-							{
-								editProjectTcclField.empty();
-								editProjectTcclField.prop('disabled', true);
-								editProjectCarIdField.empty();
-								editProjectCarIdField.prop('disabled', true);
-							}
-						}
+					$.each(data, function(i, type)
+					{
+						typesToAppend += "<option value=\"" + type + "\">" + type + "</option>";
 					});
 					
-					editProjectTcclField.val(data.idTccl);
-
-					var services = data.supportedServices.split(".");
-					loadServiceFrameworks(editProjectServicesField, services);
-					//editProjectServicesField.selectpicker('val', services);
-			   }
+					_$editProjectTypeField.append(typesToAppend);
+					_$editProjectTypeField.val(referenceType);
+					
+					_loadCertificationReleases(referenceType).done(function(data)
+					{
+						var selectedCr = null;
+						
+						data.sort(sortComparator);
+						
+						var crsToAppend = "";
+						$.each(data, function(i, release)
+						{
+							crsToAppend += "<option value=\""+release.idCertrel+"\">"+release.name+" ("+release.description+")</option>";
+						});
+						
+						_$editProjectCrField.append(crsToAppend);
+						_$editProjectCrField.val(projectInfo.idCertrel);
+						
+						if (referenceType != "Development")
+						{
+							_loadTccls(projectInfo.idCertrel).done(function(data)
+							{
+								var tcclsToAppend = "";
+								$.each(data, function(i, tccl)
+								{
+									tcclsToAppend += "<option value=\""+tccl.idTccl+"\">"+tccl.name+"</option>";
+								});
+								
+								_$editProjectTcclField.append(tcclsToAppend);
+								_$editProjectTcclField.val(projectInfo.idTccl);
+							});
+							
+							_loadCris().done(function(data)
+							{
+								var crisToAppend = "";
+								
+								$.each(data, function(i, cri)
+								{
+									crisToAppend += "<option value=\""+cri+"\">"+cri+"</option>";
+								});
+								
+								_$editProjectCarIdField.append(crisToAppend);
+								_$editProjectCarIdField.val(projectInfo.carId);
+							});
+						}
+						else
+						{
+							_disableTcclAndCri(_$editProjectTcclField, _$editProjectCarIdField);
+						}
+						
+						_loadServiceFrameworks().done(function(data)
+						{
+							var sfToAppend = "";
+							$.each(data, function(i, serviceFramework)
+							{
+								if (serviceFramework.name == "Core Interface")
+								{
+									sfToAppend += "<option selected disabled value=\""+serviceFramework.idService+"\">"+serviceFramework.name+"</option>";
+								}
+								else
+								{
+									sfToAppend += "<option value=\""+serviceFramework.idService+"\">"+serviceFramework.name+"</option>";
+								}
+							});
+							
+							_$editProjectServicesField.append(sfToAppend);
+							_$editProjectServicesField.selectpicker('val', projectInfo.supportedServices.split("."));
+							_$editProjectServicesField.selectpicker('refresh');
+						});
+					});
+				});
 			});
 		});
 		
-		editProjectForm.submit(function(e)
+		_$editProjectForm.submit(function(e)
 		{
 			e.preventDefault();
 			
 			var text="";
 	    	
-	    	editProjectServicesField.find('option:selected').each(function (index)
+			_$editProjectServicesField.find('option:selected').each(function (index)
 	    	{
 	    		text += $(this).val() + ".";
 	    	});
@@ -443,105 +502,104 @@ var projects = (function()
 	    	$('#edit-services').val(text);
 			
 			$.ajax({
-                url: editProjectForm.attr('action'),
+                url: _$editProjectForm.attr('action'),
                 type: 'POST',
-                data: editProjectForm.serialize(),
+                data: _$editProjectForm.serialize(),
                 success: function(project)
                 {
-                	var selectedRow = projectsTable.find('tbody').find('tr.selected');
-                	project.created = projectsTable.DataTable().row('.selected').data().created;
-                	projectsTable.dataTable().fnUpdate(project, selectedRow, undefined, false);
-                	editProjectModal.modal('hide');	
+                	var selectedRow = _$projectsTable.find('tbody').find('tr.selected');
+                	project.created = _$projectsTable.DataTable().row('.selected').data().created;
+                	project.results = _$projectsTable.DataTable().row('.selected').data().results;
+                	_$projectsTable.dataTable().fnUpdate(project, selectedRow, undefined, false);
+                	sessionStorage.setItem("projectName", project.name);
+                	sessionStorage.setItem("type", project.type);
+                	if (sessionStorage.getItem("isConfigured") == "true")
+                	{
+                		common.disableNavigationBar();
+                		common.enableNavigationBar(project.type);
+                	}
+                	_$editProjectModal.modal('hide');
+    				_clearFormFields(_$editProjectForm, _$editProjectNameField, _$editProjectTypeField, _$editProjectCrField, _$editProjectTcclField, _$editProjectCarIdField, _$editProjectServicesField);
                 }
             });
 		});
 		
-		editConfirmButton.on('click', function(e)
+		_$editConfirmButton.on('click', function(e)
 		{
-			if (editProjectForm.valid())
+			if (_$editProjectForm.valid())
 			{
-				editProjectForm.submit();
+				_$editProjectForm.submit();
 			}
 		});
 		
-		$('#nextButton').off('click').on('click', function(e)
+		_$editCancelButton.on('click', function()
+		{
+			_clearFormFields(_$editProjectForm, _$editProjectNameField, _$editProjectTypeField, _$editProjectCrField, _$editProjectTcclField, _$editProjectCarIdField, _$editProjectServicesField);
+		});
+	}
+	
+	var _onClickDeleteButton = function()
+	{
+		_$deleteConfirmButton.on('click', function (e)
+		{		
+			_deleteProject().done(function()
+			{
+				_$projectsTable.DataTable().row('.selected').remove().draw();
+				sessionStorage.removeItem("idProject");
+				_modifyButtonsState(false);
+				common.disableButtons(common.$nextStepButton);
+			})
+		});
+	}
+	
+	var _onClickNavigationButtons = function()
+	{
+		common.$nextStepButton.off('click').on('click', function(e)
 		{
 			e.preventDefault();
 			
 			$.ajax({
 	            type: "GET",
 	            url: 'dut',
-	            success: function(response) {
-	            	$('#dynamic').fadeOut('fast', function() {
-	            		$("#dynamic").html( response );
+	            success: function(response)
+	            {
+	            	common.$dynamicSection.fadeOut('fast', function()
+	            	{
+	            		common.$dynamicSection.html( response );
 	            	});
 	                
-	            	$('#dynamic').fadeIn('fast', function() {
-	                	var table = $.fn.dataTable.fnTables(true);
-	                	if ( table.length > 0 ) {
-	                	    $(table).dataTable().fnAdjustColumnSizing();
-	                	}
+	            	common.$dynamicSection.fadeIn('fast', function()
+	            	{
+	                	common.adjustDataTablesHeader();
 	                });
 	                
-	                $('#prevButton').removeClass('disabled');
-	                $('#prevButton').removeAttr('disabled', false);
+	            	common.enableButtons(common.$previousStepButton);
 	                
 	                if (sessionStorage.getItem("isConfigured") == "true")
 	                {
-	                	$('#endButton').removeClass('disabled');
-		                $('#endButton').removeAttr('disabled', false);
+	                	common.enableButtons(common.$saveProjectButton);
 	                }
 	                else
 	                {
-	                	$('#nextButton').addClass('disabled');
-	                	$('#nextButton').attr('disabled', true);
+	                	common.disableButtons(common.$nextStepButton);
 	                }
 	                
 	                $('#project-breadcrumb').text(sessionStorage.getItem("projectName"));
 	                $('#project-breadcrumb').removeClass('hidden');
+	                
+	                common.selectNavigationElement($('#dut-nav'));
 	            }
 	        });
 		});
-	};
-	
-	var loadServiceFrameworks = function(field, values)
-	{	
-		$.ajax({
-			cache: false,
-			type: 'GET',
-			url: 'project/loadServiceFrameworks',
-			success: function(data)
-			{
-				field.empty();
-				$.each(data, function(i, serviceFramework)
-				{
-					if (serviceFramework.name == "Core Interface")
-					{
-						field.append("<option selected disabled value=\""+serviceFramework.idService+"\">"+serviceFramework.name+"</option>");
-					}
-					else
-					{
-						field.append("<option value=\""+serviceFramework.idService+"\">"+serviceFramework.name+"</option>");
-					}
-				});
-				
-				if (field.is(editProjectServicesField))
-				{
-					field.selectpicker('val', values);
-				}
-				field.selectpicker('refresh');
-			}
-		});
 	}
 	
-	var modifyButtonsState = function(enabled)
+	var _modifyButtonsState = function(enabled)
 	{
-		modifyState(editButton, enabled);
-		modifyState(deleteButton, enabled);
-		modifyState(nextButton, enabled);
+		_modifyState(_$editButton, enabled);
+		_modifyState(_$deleteButton, enabled);
 	};
 	
-	var modifyState = function(button, enabled)
+	var _modifyState = function(button, enabled)
 	{
 		if (enabled)
 		{
@@ -558,69 +616,85 @@ var projects = (function()
 		
 	};
 	
-	var onChangeFunctions = function()
+	var _onChangeFunctions = function()
 	{
-		onChange(newProjectTypeField, newProjectCrField, newProjectTcclField, newProjectCarIdField);
-		onChange(editProjectTypeField, editProjectCrField, editProjectTcclField, editProjectCarIdField);
+		_onChange(_$newProjectTypeField, _$newProjectCrField, _$newProjectTcclField, _$newProjectCarIdField);
+		_onChange(_$editProjectTypeField, _$editProjectCrField, _$editProjectTcclField, _$editProjectCarIdField);
 	};
 	
-	var onChange = function(typeField, crField, tcclField, carIdField)
+	var _onChange = function(typeField, crField, tcclField, carIdField)
 	{
-		typeField.change(function() {
-			var selectedType = $(this).find("option:selected").val();
+		typeField.change(function()
+		{
+			var selectedType = $(this).val();
 			
-			$.ajax({
-				cache: false,
-				type: 'GET',
-				url: 'project/loadCertRel',
-				data : {
-					pjType : selectedType
-				},
-				success: function(data) {
-					var selectedCr = null;
-					
-					data.sort(sortComparator);
-					
-					crField.empty();
-					$.each(data, function(i, cr) {
-						if (i == data.length - 1) {
-							crField.append("<option selected value=\""+cr.idCertrel+"\">"+cr.name+": ("+cr.description+")</option>");
-							selectedCr = cr.idCertrel;
-						} else {
-							crField.append("<option value=\""+cr.idCertrel+"\">"+cr.name+" ("+cr.description+")</option>");
-						}
-					});
-					
-					if (selectedType != "Development")
+			// load the list of certification releases
+			_loadCertificationReleases(selectedType).done(function(data)
+			{
+				var selectedCr = crField.val();
+				
+				// sort them by name
+				data.sort(sortComparator);
+				
+				// update the selector
+				crField.empty();
+				$.each(data, function(i, cr)
+				{
+					crField.append("<option value=\""+cr.idCertrel+"\">"+cr.name+" ("+cr.description+")</option>");
+				});
+				
+				// set the same value than before
+				crField.val(selectedCr);
+				
+				// if the value does not exist, select the last certification release
+				if (crField.val() === null)
+				{
+					selectedCr = crField.find(':last').val();
+					crField.val(selectedCr);
+				}
+				
+				// if it is not a Development project, load TCCLs and CRIs
+				if (selectedType != "Development")
+				{
+					_loadTccls(selectedCr).done(function(data) 
 					{
-						$.ajax({
-							cache: false,
-							type: 'GET',
-							url: 'project/loadTccl',
-							data : {
-								idCertRel : selectedCr
-							},
-							success: function(data) {
-								tcclField.empty();
-								tcclField.prop('disabled', false);
-								carIdField.val("");
-								carIdField.prop('disabled', false);
-								$.each(data, function(i, tccl) {
-									tcclField.append("<option value=\""+tccl.idTccl+"\">"+tccl.name+"</option>");
-								});
+						tcclField.empty();
+						_enableTcclAndCri(tcclField, carIdField);
+						//_retrieveCri(carIdField, _lastCriValue);
+						$.each(data, function(i, tccl)
+						{
+							tcclField.append("<option value=\""+tccl.idTccl+"\">"+tccl.name+"</option>");
+						});
+						
+						_loadCris().done(function(data)
+						{
+							carIdField.empty();
+							
+							var criToAppend = "";
+							$.each(data, function(i, cri)
+							{
+								criToAppend += "<option value=\""+cri+"\">"+cri+"</option>";
+							});
+							
+							carIdField.append(criToAppend);
+								
+							if (_lastCriValue != null) //[AT4] Easy checking. Review
+							{
+								carIdField.val(_lastCriValue);
 							}
 						});
-					} else {
-						tcclField.empty();
-						tcclField.prop('disabled', true);
-						carIdField.val("");
-						carIdField.prop('disabled', true);
-					}
+					});
+				}
+				else
+				{
+					_lastCriValue = carIdField.val();
+					_disableTcclAndCri(tcclField, carIdField);
 				}
 			});
 		});
 		
-		crField.change(function() {
+		crField.change(function()
+		{
 			var selectedType = typeField.find("option:selected").val();
 			
 			if (selectedType != "Development")
@@ -634,9 +708,11 @@ var projects = (function()
 					data : {
 						idCertRel : selectedCr
 					},
-					success: function(data) {
+					success: function(data)
+					{
 						tcclField.empty();
-						$.each(data, function(i, tccl) {
+						$.each(data, function(i, tccl)
+						{
 							tcclField.append("<option value=\""+tccl.idTccl+"\">"+tccl.name+"</option>");
 						});
 					}
@@ -654,13 +730,13 @@ var projects = (function()
 		return 0;
 	};
 	
-	var validateForms = function()
+	var _validateForms = function()
 	{
-		validate(newProjectForm, null, newProjectNameField, newProjectTypeField);
-		validate(editProjectForm, editProjectIdField, editProjectNameField, editProjectTypeField);
+		_validate(_$newProjectForm, null, _$newProjectNameField, _$newProjectTypeField);
+		_validate(_$editProjectForm, _$editProjectIdField, _$editProjectNameField, _$editProjectTypeField);
 	};
 	
-	var validate = function(form, idField, nameField, typeField)
+	var _validate = function(form, idField, nameField, typeField)
 	{
 		form.validate({
 			rules: {
@@ -689,15 +765,6 @@ var projects = (function()
 							}
 						}
 					}
-				},
-				carId: {
-					required: {
-						depends: function(element)
-						{
-				          return typeField.val() != "Development";
-						}
-			        },
-					maxlength: 60,
 				}
 			},
 			messages: {
@@ -705,14 +772,119 @@ var projects = (function()
 					required: "Please enter project name!",
 					maxlength: "Project name must have a max of 255 characters!",
 					remote: "Project already exists!"
-				},
-				carId: {
-					required: "Please enter CRI!",
-					maxlength: "CRI must have a max of 60 characters!"
 				}
 			}
 		});
 	};
+	
+	var _loadProjectTypes = function()
+	{	
+		return $.ajax({
+			cache: false,
+			type: 'GET',
+			url: 'project/loadProjectTypes'
+		});
+	}
+	
+	var _loadCertificationReleases = function(projectType)
+	{
+		return $.ajax({
+			cache: false,
+			type: 'GET',
+			url: 'project/loadCertRel',
+			data :
+			{
+				pjType : projectType
+			}
+		});
+	}
+	
+	var _loadTccls = function(certificationRelease)
+	{
+		return $.ajax({
+			cache: false,
+			type: 'GET',
+			url: 'project/loadTccl',
+			data : {
+				idCertRel : certificationRelease
+			}
+		});
+	}
+	
+	var _loadCris = function()
+	{
+		return $.ajax({
+			cache: false,
+			type: 'GET',
+			url: 'project/loadCris',
+		});
+	}
+	
+	var _loadServiceFrameworks = function()
+	{	
+		return $.ajax({
+			cache: false,
+			type: 'GET',
+			url: 'project/loadServiceFrameworks',
+		});
+	}
+	
+	var _disableTcclAndCri = function(tcclField, carIdField)
+	{
+		tcclField.empty();
+		tcclField.prop('disabled', true);
+		carIdField.empty();
+		carIdField.prop('disabled', true);
+	}
+	
+	var _enableTcclAndCri = function(tcclField, carIdField)
+	{
+		tcclField.prop('disabled', false);
+		carIdField.prop('disabled', false);
+	}
+	
+	var _clearFormFields = function(form, nameField, typeField, crField, tcclField, criField, sfField)
+	{
+		nameField.val('');
+		typeField.empty();
+    	crField.empty();
+    	tcclField.empty();
+    	criField.empty();
+    	sfField.empty();
+    	
+    	form.clearValidation();
+    	
+    	_enableTcclAndCri(tcclField, criField);
+	}
+	
+	var _deleteProject = function()
+	{
+		return $.ajax({
+			type : 'POST',
+			url : 'project/delete',
+			beforeSend: function (xhr)
+			{
+	            xhr.setRequestHeader(common.csrfHeader, common.csrfToken);
+	        },
+			data :
+			{
+				idProject : sessionStorage.getItem("idProject")
+			}
+		});
+	}
+	
+	var _getProjectInfo = function()
+	{
+		return $.ajax({
+			cache: false,
+			type : 'GET',
+			url : 'project/edit',
+			data :
+			{
+				idProject : sessionStorage.getItem("idProject")
+			}
+		});
+	}
 	
 	return {
 		init : init,

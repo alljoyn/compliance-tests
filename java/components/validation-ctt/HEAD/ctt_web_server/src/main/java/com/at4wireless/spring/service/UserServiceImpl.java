@@ -42,26 +42,26 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserDAO userDao;
-	
+
 	@Override
 	@Transactional
 	public boolean addUser(User u) {
-		
+
 		// if dut's assigned user and context's user are equal
-		if(userDao.getUser(u.getUser())!=null) {
+		if (userDao.getUser(u.getUser()) != null) {
 			return false;
 		} else {
 			userDao.addUser(u);
 			return true;
 		}
 	}
-	
+
 	@Override
 	@Transactional
 	public boolean exists(String name) {
-		
+
 		User u = userDao.getUser(name);
-		if(u==null) {
+		if (u == null) {
 			return false;
 		}
 		return true;
@@ -76,33 +76,33 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional
 	public int setKey(String name) {
-		
-		int pass=-1;
+
+		int pass = -1;
 		SecureRandom random = new SecureRandom();
 		int high = 1000000;
 		int low = 100000;
-		Integer rnd = random.nextInt(high-low)+low;
-		
+		Integer rnd = random.nextInt(high - low) + low;
+
 		byte[] messageDigest;
 		try {
 			messageDigest = MessageDigest.getInstance("SHA-256").digest(rnd.toString().getBytes());
 			StringBuffer hexString = new StringBuffer();
-            for (int i=0; i<messageDigest.length; i++) {
-            	String hex = Integer.toHexString(0xFF & messageDigest[i]);
-            	if(hex.length() == 1) {
-            		hexString.append('0');
-            	}
-            	hexString.append(hex);
-            }
-            
+			for (int i = 0; i < messageDigest.length; i++) {
+				String hex = Integer.toHexString(0xFF & messageDigest[i]);
+				if (hex.length() == 1) {
+					hexString.append('0');
+				}
+				hexString.append(hex);
+			}
+
 			userDao.setKey(name, hexString.toString());
 			pass = rnd;
-		
+
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return pass;
 	}
 

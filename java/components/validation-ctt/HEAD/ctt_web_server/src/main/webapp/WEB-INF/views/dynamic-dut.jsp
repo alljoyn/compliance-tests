@@ -48,20 +48,6 @@
 	   		<button id="deleteButton" type="button" disabled class="btn btn-default disabled" data-toggle="modal" data-target="#delDut"><span class="glyphicon glyphicon-trash"></span> Delete DUT</button>
 		</div>
 	</div>
-      
-	<!-- DUT error message -->
-	<c:if test="${not empty error}">
-		<div class="row" align="center">
-			<div class="col-sm-4 col-sm-offset-4">
-				<div class="alert alert-danger alert-dismissable" role="alert">
-					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-					<span class="sr-only">Error:</span>
-					${error}
-				</div>
-			</div>
-		</div>
-	</c:if>
 </div>
  
 <!-- Hidden form to next view -->
@@ -142,7 +128,7 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					<button id="createCancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 					<button id="createDut" type="submit" class="btn btn-custom">Create DUT</button>
 				</div>
 			</div>
@@ -191,7 +177,7 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					<button id="editCancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 					<button id="editConfirm" type="submit" class="btn btn-custom">Save Changes</button>
 				</div>
 			</div>
@@ -213,24 +199,8 @@
 		</div>
 	</div>
 
-	<!-- Different DUT modal -->
-	<div id ="diffDut" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-body">
-					<h4>This project was configured with a different DUT than selected. If you continue, the project
-					configuration will be deleted.</h4>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-					<button id="continueButton" class="btn btn-custom" data-dismiss="modal">Continue</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
 	<!-- Samples modal -->
-	<div id="samplesDut" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static">
+	<div id="samplesTableModal" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 				<div class="modal-body">
@@ -243,7 +213,7 @@
 								<th>Sw Ver</th>
 								<th>Hw Ver</th>
 						</thead>
-						<tbody id="sampleBody">
+						<tbody>
 						</tbody>
 					</table>
 				</div>
@@ -284,7 +254,7 @@
 					<p>(*) This is a mandatory field</p>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" data-target="#samplesDut">Cancel</button>
+					<button id="cancelCreateSample" type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" data-target="#samplesTableModal">Cancel</button>
 					<button id="createSample" type="submit" class="btn btn-custom">Add Sample</button>
 				</div>
 			</div>
@@ -318,7 +288,7 @@
 	 				<p>(*) This is a mandatory field</p>
 	 			</div>
 	 			<div class="modal-footer">
-	 				<button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" data-target="#samplesDut">Cancel</button>
+	 				<button id="cancelEditSample" type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" data-target="#samplesTableModal">Cancel</button>
 	 				<button id="editSampleConfirm" type="submit" class="btn btn-custom">Save Changes</button>
 	 			</div>
 	 		</div>
@@ -329,7 +299,8 @@
 <script>
 	$(document).ready(function()
 	{
-		jQuery.getScript('resources/js/dynamic-dut.js', function() {
+		jQuery.getScript('resources/js/dynamic-dut.js', function()
+		{
 			duts.init();
 		});
 	});

@@ -1,6 +1,10 @@
 package com.at4wireless.spring.service;
 
+import java.io.IOException;
 import java.util.List;
+
+import javax.crypto.SecretKey;
+import javax.servlet.http.HttpServletResponse;
 
 import com.at4wireless.spring.model.Project;
 import com.at4wireless.spring.model.TestCaseResult;
@@ -27,4 +31,14 @@ public interface ResultService {
 	 * @return				true if Test Report is successfully created, false otherwise
 	 */
 	public boolean createTestReport(String username, Project p, String imgPath);
+	
+	public boolean allTestCasesRun(String username, int idProject);
+	
+	public List<String> createZipFile(String username, int idProject, SecretKey aesSecretKey) throws IOException;
+	
+	public String uploadZipFileToCawt(String username, String cri, int idProject) throws Exception;
+	
+	public void downloadZipFile(HttpServletResponse response, String username, int idProject) throws IOException;
+	
+	public void downloadPdfFile(HttpServletResponse response, String testReportPath) throws IOException;
 }

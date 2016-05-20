@@ -22,6 +22,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -55,6 +57,8 @@ public class IcsController
 	private IcsService icsService;
 	@Autowired
 	private ServiceFrameworkService sfService;
+	
+	static final Logger log = LogManager.getLogger(IcsController.class);
 	
 	/**
 	 * Loads data to be displayed if logged, redirects to login

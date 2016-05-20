@@ -18,30 +18,16 @@ var ixits = (function()
 	//-------------------------------------------------
 	// TITLE
 	//-------------------------------------------------
-	var title = jQuery('#title');
+	var _titleText = (sessionStorage.getItem("type") == "Conformance") ? 'Step 4<small> Configure your IXIT</small>' : 'Step 5<small> Configure your IXIT</small>';
 	//-------------------------------------------------
-	// NAVIGATION BUTTONS
+	// IXIT TABLES
 	//-------------------------------------------------
-	var prevButton = jQuery('#prevButton');
-	var endButton = jQuery('#endButton');
-	var nextButton = jQuery('#nextButton');
-	//-------------------------------------------------
-	// POST REQUEST TOKEN AND HEADER
-	//-------------------------------------------------
-	var token = jQuery("meta[name='_csrf']").attr("content");
-	var header = jQuery("meta[name='_csrf_header']").attr("content");
+	var _$ixitsTables = jQuery('.table');
+	var _ixitsTablesRows;
 	
 	var init = function()
-	{
-		title.html("Step 5<small> Configure your IXIT</small>");
-		
-		if (sessionStorage.getItem("type") == "Conformance")
-		{
-			title.html(function(i, oldText)
-			{
-				return oldText === 'Step 5<small> Configure your IXIT</small>' ? 'Step 4<small> Configure your IXIT</small>' : oldText;
-			});
-		}
+	{	
+		common.$title.html(_titleText);
 		
 		initDataTable();
 		onClickFunctions();
@@ -49,23 +35,27 @@ var ixits = (function()
 	
 	var initDataTable = function()
 	{
+		// core tab will be the active one at load, as it is always loaded
 		$('#1').addClass('in active');
 		
+		// init dataTables of the active tab
 		$("#1").find('.table').dataTable({
 			paging: false,
 			searching: false,
-			"sDom": '<"top">rt<"bottom"flp><"clear">',
-			scrollY: ($(window).height()/2),
+			info: false,
+			scrollY: common.$dynamicSection.height() - 128,
 			columnDefs: [        
 				{ orderable: false, targets: 3},
 			],
 			order: [0, 'asc']
 		});
 		
-		var MyRows = $('.table').find('tbody').find('tr');
-		for (var i = 0; i < MyRows.length; i++)
+		// tables rows are stored into a var for efficiency
+		_ixitsTablesRows = _$ixitsTables.find('tbody').find('tr');
+		
+		for (var i = 0; i < _ixitsTablesRows.length; i++)
 		{
-			var id = $(MyRows[i]).find('td:eq(0)').html();
+			var id = $(_ixitsTablesRows[i]).find('td:eq(0)').html();
 			
 			if ((id == "1") || (id == "12") || (id == "13") || (id == "14") || (id == "15") || (id == "16")
 					|| (id == "17") || (id == "24") || (id == "25") || (id == "26") || (id == "27")
@@ -79,14 +69,15 @@ var ixits = (function()
 					|| (id == "69") || (id == "71") || (id == "72") || (id == "73") || (id == "74")
 					|| (id == "75") || (id == "76") || (id == "77"))
 			{
-				$(MyRows[i]).find('.form-control').prop('type', 'number');
-				$(MyRows[i]).find('.form-control').prop('min', '1');
-				$(MyRows[i]).find('.form-control').keypress(isNumberKey);
+				// number format
+				$(_ixitsTablesRows[i]).find('.form-control').prop('type', 'number');
+				$(_ixitsTablesRows[i]).find('.form-control').prop('min', '1');
+				$(_ixitsTablesRows[i]).find('.form-control').keypress(isNumberKey);
 			}
 			else if (id == "79")
 			{
-				//$(MyRows[i]).find('.form-control').prop('type', 'date');
-				$(MyRows[i]).find('.form-control').datepicker({
+				// date format
+				$(_ixitsTablesRows[i]).find('.form-control').datepicker({
 					format: 'yyyy-mm-dd',
 				    maxViewMode: 'years',
 				    startView: 'decade'
@@ -94,44 +85,54 @@ var ixits = (function()
 			}
 			else if (id == "80")
 			{
-				$(MyRows[i]).find('.form-control').prop('type', 'url');
+				// url format
+				$(_ixitsTablesRows[i]).find('.form-control').prop('type', 'url');
 			}
 			else if ((id == "19") || (id == "22"))
 			{
-				var value = $(MyRows[i]).find('.form-control').val();
+				// selector format
+				var value = $(_ixitsTablesRows[i]).find('.form-control').val();
 				var selector = "<select class=\"form-control\" style=\"width:100%\">"
-				+"<option value=\"-3\">WPA2_AUTO</option>"
-				+"<option value=\"-2\">WPA_AUTO</option>"
-				+"<option value=\"-1\">Any</option>"
+				+"<option disabled value=\"-3\">WPA2_AUTO</option>"
+				+"<option disabled value=\"-2\">WPA_AUTO</option>"
+				+"<option disabled value=\"-1\">Any</option>"
 				+"<option value=\"0\">Open</option>"
 				+"<option value=\"1\">WEP</option>"
 				+"<option value=\"2\">WPA_TKIP</option>"
 				+"<option value=\"3\">WPA_CCMP</option>"
 				+"<option value=\"4\">WPA2_TKIP</option>"
 				+"<option value=\"5\">WPA2_CCMP</option>"
-				+"<option value=\"6\">WPS</option></select>";
-				$(MyRows[i]).find('td:last').empty();
-				$(MyRows[i]).find('td:last').append(selector);
-				$(MyRows[i]).find('.form-control').val(value);
-			}
-			
-			if ((id == "2") || (id == "4") || (id == "5") || (id == "7") || (id == "8") || (id == "9") || (id == "11"))
-			{
-				$(MyRows[i]).find('.form-control').addClass('disabled');
-				$(MyRows[i]).find('.form-control').prop('disabled', true);
-				$(MyRows[i]).addClass('text-muted');
+				+"<option disabled value=\"6\">WPS</option></select>";
+				$(_ixitsTablesRows[i]).find('td:last').empty();
+				$(_ixitsTablesRows[i]).find('td:last').append(selector);
+				$(_ixitsTablesRows[i]).find('.form-control').val(value != "" ? value : 0);
 			}
 			else
 			{
-				var name = $(MyRows[i]).find('td:eq(1)').html();
+				// string format
+			}
+			
+			// disable IXIT that are loaded from DUT and sample info
+			if ((id == "2") || (id == "4") || (id == "5") || (id == "7") || (id == "8") || (id == "9") || (id == "11"))
+			{
+				//
+				$(_ixitsTablesRows[i]).find('.form-control').addClass('disabled');
+				$(_ixitsTablesRows[i]).find('.form-control').prop('disabled', true);
+				$(_ixitsTablesRows[i]).addClass('text-muted');
+			}
+			else
+			{
+				var name = $(_ixitsTablesRows[i]).find('td:eq(1)').html();
 
+				// if it was previously configured, load its last value
 				if (sessionStorage.hasOwnProperty(name))
 				{
-					$(MyRows[i]).find('.form-control').val(sessionStorage.getItem(name));
+					$(_ixitsTablesRows[i]).find('.form-control').val(sessionStorage.getItem(name));
 				}
 			}
 		}
 		
+		// init dataTables of non-shown tabs when they are going to be shown
 		$('a[data-toggle="tab"]').on('shown.bs.tab', function (e)
 		{
 			e.target; // active tab
@@ -143,8 +144,8 @@ var ixits = (function()
 				$("" + tab).find('.table').dataTable({
 					paging: false,
 					searching: false,
-					"sDom": '<"top">rt<"bottom"flp><"clear">',
-					scrollY: 500,
+					info: false,
+					scrollY: common.$dynamicSection.height() - 128,
 					columnDefs: [        
 						{ orderable: false, targets: 3},
 					],
@@ -154,6 +155,7 @@ var ixits = (function()
 		});
 	};
 	
+	// checks if the pressed key is a number
 	var isNumberKey = function (evt)
 	{
 	    var charCode = (evt.which) ? evt.which : event.keyCode;
@@ -166,7 +168,7 @@ var ixits = (function()
 	
 	var onClickFunctions = function()
 	{
-		nextButton.off('click').on('click', function(e)
+		common.$nextStepButton.off('click').on('click', function(e)
 		{
   			e.preventDefault();
   			
@@ -175,11 +177,10 @@ var ixits = (function()
 				sessionStorage.setItem("modifiedIxit", true);
 			}
   			
-			var MyRows = $('.table').find('tbody').find('tr');
-			for (var i = 0; i < MyRows.length; i++)
+			for (var i = 0; i < _ixitsTablesRows.length; i++)
 			{
-				var id = $(MyRows[i]).find('td:eq(1)').html();
-				var value = $(MyRows[i]).find('.form-control').val();
+				var id = $(_ixitsTablesRows[i]).find('td:eq(1)').html();
+				var value = $(_ixitsTablesRows[i]).find('.form-control').val();
 				
 				sessionStorage.setItem(id, value);
 			}
@@ -191,24 +192,22 @@ var ixits = (function()
 				data: $('#nextForm').serialize(),
 				success: function(response)
 				{
-					$('#dynamic').fadeOut('fast', function()
+					common.$dynamicSection.fadeOut('fast', function()
 					{
-	            		$("#dynamic").html( response );
+						common.$dynamicSection.html( response );
 	            	});
 	                
-					$('#dynamic').fadeIn('fast', function()
+					common.$dynamicSection.fadeIn('fast', function()
 					{
-	                	var table = $.fn.dataTable.fnTables(true);
-	                	if (table.length > 0)
-	                	{
-	                	    $(table).dataTable().fnAdjustColumnSizing();
-	                	}
+						common.adjustDataTablesHeader();
 	                });
+					
+					common.selectNavigationElement($('#gp-nav'));
 				}
 			});		
 		});
   		
-  		prevButton.off('click').on('click', function(e)
+  		common.$previousStepButton.off('click').on('click', function(e)
   		{
 			e.preventDefault();
 			
@@ -219,34 +218,31 @@ var ixits = (function()
 				data: $('#prevForm').serialize(),
 				success: function(response)
 				{
-					$('#dynamic').fadeOut('fast', function()
+					common.$dynamicSection.fadeOut('fast', function()
 					{
-	            		$("#dynamic").html(response);
+						common.$dynamicSection.html(response);
 	            	});
 					
-					$('#dynamic').fadeIn('fast', function()
+					common.$dynamicSection.fadeIn('fast', function()
 					{
-	                	var table = $.fn.dataTable.fnTables(true);
-	                	if (table.length > 0)
-	                	{
-	                	    $(table).dataTable().fnAdjustColumnSizing();
-	                	}
+						common.adjustDataTablesHeader();
 	                });
+					
+					common.selectNavigationElement($('#ics-nav'));
 				}
 			});
 		});
   		
-  		endButton.off('click').on('click', function(e)
+  		common.$saveProjectButton.off('click').on('click', function(e)
   		{
   			e.preventDefault();
   			
   			sessionStorage.setItem("modifiedIxit", true);
   			
-  			var MyRows = $('.table').find('tbody').find('tr');
-			for (var i = 0; i < MyRows.length; i++)
+			for (var i = 0; i < _ixitsTablesRows.length; i++)
 			{
-				var id = $(MyRows[i]).find('td:eq(1)').html();
-				var value = $(MyRows[i]).find('.form-control').val();
+				var id = $(_ixitsTablesRows[i]).find('td:eq(1)').html();
+				var value = $(_ixitsTablesRows[i]).find('.form-control').val();
 				
 				sessionStorage.setItem(id, value);
 			}
@@ -263,7 +259,7 @@ var ixits = (function()
 			   	type: 'POST',
 			   	beforeSend: function(xhr)
 			   	{
-		        	xhr.setRequestHeader(header, token);
+		        	xhr.setRequestHeader(common.csrfHeader, common.csrfToken);
 		        },
 			   	data:
 				{
@@ -271,20 +267,14 @@ var ixits = (function()
 				},
 		        success: function(response)
 		        {
-                	$('#dynamic').fadeOut('fast', function()
+		        	common.$dynamicSection.fadeOut('fast', function()
                 	{
-                		$("#dynamic").html(response);
+                		common.$dynamicSection.html(response);
                 	});
-                    $('#dynamic').fadeIn('fast');
+                    common.$dynamicSection.fadeIn('fast');
                     
-                    $('.nav-stacked li').addClass('disabled');
-			   		$('.nav-stacked li a').attr('disabled', true);
-			   		$('#prevButton').addClass('disabled');
-            		$('#prevButton').attr('disabled', true);
-            		$('#nextButton').addClass('disabled');
-            		$('#nextButton').attr('disabled', true);
-            		$('#endButton').addClass('disabled');
-            		$('#endButton').attr('disabled', true);
+                    common.disableNavigationBar();
+                    common.disableButtons(common.$previousStepButton, common.$nextStepButton, common.$saveProjectButton);
 		        }
 			});	
   		});

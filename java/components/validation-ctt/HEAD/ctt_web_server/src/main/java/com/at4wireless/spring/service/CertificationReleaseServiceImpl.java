@@ -55,4 +55,11 @@ public class CertificationReleaseServiceImpl implements CertificationReleaseServ
 	{
 		return certRelDao.getName(certificationReleaseId);
 	}
+
+	@Override
+	@Transactional
+	public boolean isReleaseVersion(int certificationReleaseId)
+	{
+		return certRelDao.isReleaseVersion(certRelDao.getName(certificationReleaseId));
+	}
 }

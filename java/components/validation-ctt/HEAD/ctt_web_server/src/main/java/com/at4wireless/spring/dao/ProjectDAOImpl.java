@@ -18,6 +18,7 @@ package com.at4wireless.spring.dao;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,9 +120,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 			query = String.format("update Project set configuration=null, isConfigured=0 where idProject='%s'", idProject);
 		}
 		
-		System.out.println(query);
 		int result = sessionFactory.getCurrentSession().createQuery(query).executeUpdate();
-		System.out.println(result);
 	}
 	
 	@Override
@@ -156,23 +155,40 @@ public class ProjectDAOImpl implements ProjectDAO {
 	}
 	
 	@Override
-	public void setDut(Project project) {
+	public void setDut(Project project)
+	{
 		sessionFactory.getCurrentSession().createQuery("update Project set idDut = '"
 				+project.getIdDut()+"' where idProject = '"+project.getIdProject()+"'").executeUpdate();
 	}
-
+	
 	@Override
-	public void setGu(Project project) {
-		sessionFactory.getCurrentSession().createSQLQuery("delete from project_golden where id_project="
-				+project.getIdProject()+";").executeUpdate();
+	public void unassignGoldenUnits(int projectId) throws HibernateException
+	{
 		
+		sessionFactory.getCurrentSession().createSQLQuery("delete from project_golden where id_project="
+				+ projectId + ";").executeUpdate();
+	}
+	
+	@Override
+	public void assignGoldenUnits(Project project)
+	{
 		String[] var = project.getgUnits().split("[\\.]+");
 		StringBuilder str = new StringBuilder("values ");
-		for (int i=0; i<var.length; i++) {
-			str.append("("+Integer.toString(project.getIdProject())+","+var[i]+")");
-			if(i!=(var.length-1)) str.append(",");
-			else str.append(";");
+		
+		for (int i = 0; i < var.length; i++)
+		{
+			str.append("(" + Integer.toString(project.getIdProject()) + "," + var[i] + ")");
+			
+			if (i != (var.length - 1))
+			{
+				str.append(",");
+			}
+			else
+			{
+				str.append(";");
+			}
 		}
+		
 		sessionFactory.getCurrentSession().createSQLQuery("insert into project_golden (id_project,id_golden) "
 				+str.toString()).executeUpdate();
 	}

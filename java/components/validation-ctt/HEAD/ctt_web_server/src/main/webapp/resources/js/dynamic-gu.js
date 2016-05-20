@@ -18,74 +18,82 @@ var goldenUnit = (function()
 	//-------------------------------------------------
 	// TITLE
 	//-------------------------------------------------
-	var stepTitle = jQuery('#title');
-	var titleText = "Step 3<small> Select/Edit/Create a Golden Unit (GU)</small>";
+	var _titleText = "Step 3<small> Select/Edit/Create a Golden Unit (GU)</small>";
 	//-------------------------------------------------
-	// HEADER TEXT
+	// GOLDEN UNITS TABLE
 	//-------------------------------------------------
-	var selectedProject = jQuery('#selectedProject');
+	var _$goldenUnitsTable = jQuery('#table');
 	//-------------------------------------------------
-	// GOLDEN UNITS TABLE AND BUTTONS
+	// TOOLTIPS
 	//-------------------------------------------------
-	var goldenUnitsTable = jQuery('#table');
+	var _noSelectedGusMessage = 'You need to select at least 3 Golden Units to continue';
+	//-------------------------------------------------
+	// SECTION BUTTONS
+	//-------------------------------------------------
+	var _$editGuButton = jQuery('#editButton');
+	var _$deleteButton = jQuery('#deleteButton');
+	//-------------------------------------------------
+	// GOLDEN UNIT CREATION MODAL
+	//-------------------------------------------------
+	var _$newGoldenUnitModal = jQuery('#newGuModal');
 	
-	var noSelectedGusMessage = jQuery('#guSelect');
+	var _$newGoldenUnitForm = jQuery('#newGuForm');
+	var _$newGoldenUnitNameField = jQuery('#gu-name');
+	var _$newGoldenUnitCategoryField = jQuery('#gu-category');
+	var _$newGoldenUnitOemField = jQuery('#gu-manufacturer');
+	var _$newGoldenUnitModelField = jQuery('#gu-model');
+	var _$newGoldenUnitSwField = jQuery('#gu-sw-ver');
+	var _$newGoldenUnitHwField = jQuery('#gu-hw-ver');
+	var _$newGoldenUnitDescriptionField = jQuery('#gu-description');
 	
-	var confirmCreationButton = jQuery('#createGu');
-	
-	var editButton = jQuery('#editButton');
-	var confirmEditionButton = jQuery('#editConfirm');
-	
-	var deleteButton = jQuery('#deleteButton');
-	var confirmDeletionButton = jQuery('#deleteConfirm');
-	
-	var nextButton = jQuery('#nextButton');
-	var continueButton = jQuery('#continueButton');
-	
-	var endButton = jQuery('#endButton');
+	var _$confirmCreationButton = jQuery('#createGu');
+	var _$cancelCreationButton = jQuery('#createCancel');
 	//-------------------------------------------------
-	// GOLDEN UNIT CREATION AND EDITION FORM
+	// GOLDEN UNIT EDITION MODAL
 	//-------------------------------------------------
-	var newGoldenUnitForm = jQuery('#newGuForm');
-	var newGoldenUnitNameField = jQuery('#gu-name');
+	var _$editGoldenUnitModal = jQuery('#editGuModal');
 	
-	var editGoldenUnitForm = jQuery('#editGuForm');
-	var editGoldenUnitIdField = jQuery('#edit-id');
-	var editGoldenUnitNameField = jQuery('#edit-name');
-	//-------------------------------------------------
-	// POST REQUEST TOKEN AND HEADER
-	//-------------------------------------------------
-	var token = $("meta[name='_csrf']").attr("content");
-	var header = $("meta[name='_csrf_header']").attr("content");
-	//-------------------------------------------------
-	// LOGOUT FORM
-	//-------------------------------------------------
-	var logoutForm = jQuery('#logoutForm');
+	var _$editGoldenUnitForm = jQuery('#editGuForm');
+	var _$editGoldenUnitIdField = jQuery('#edit-id');
+	var _$editGoldenUnitNameField = jQuery('#edit-name');
+	var _$editGoldenUnitCategoryField = jQuery('#edit-category');
+	var _$editGoldenUnitOemField = jQuery('#edit-manufacturer');
+	var _$editGoldenUnitModelField = jQuery('#edit-model');
+	var _$editGoldenUnitSwField = jQuery('#edit-sw-ver');
+	var _$editGoldenUnitHwField = jQuery('#edit-hw-ver');
+	var _$editGoldenUnitDescriptionField = jQuery('#edit-description');
 	
-	var numberOfSelectedRows = 0;
+	var _$confirmEditionButton = jQuery('#editConfirm');
+	var _$cancelEditionButton = jQuery('#editCancel');
+	//-------------------------------------------------
+	// GOLDEN UNIT DELETION MODAL
+	//-------------------------------------------------
+	var _$confirmDeletionButton = jQuery('#deleteConfirm');
+	//-------------------------------------------------
+	// NAVIGATION BUTTONS
+	//-------------------------------------------------
+	var _$nextStepForm = jQuery('#nextForm');
+	
+	var _numberOfSelectedRows = 0;
 	
 	var init = function()
 	{
-		initStepTexts();
-		initGoldenUnitsTable();
+		_initStepTexts();
+		_initGoldenUnitsTable();
 		
-		onClickFunctions();
-		validateFormFunctions();
-		
-		if (sessionStorage.getItem("type") == "Development")
-		{
-			disableButton(nextButton, false);
-		}
+		_onClickFunctions();
+		_validateFormFunctions();
 	};
 	
-	var initStepTexts = function()
+	var _initStepTexts = function()
 	{
-		stepTitle.html(titleText);
+		common.$title.html(_titleText);
+		common.changeTooltipText(common.$nextStepButton.parent(), _noSelectedGusMessage);
 	}
 	
-	var initGoldenUnitsTable = function()
+	var _initGoldenUnitsTable = function()
 	{
-		goldenUnitsTable.dataTable(
+		_$goldenUnitsTable.dataTable(
 		{
 			"ajax": {
 				"type": "GET",
@@ -96,13 +104,15 @@ var goldenUnit = (function()
 	            { "data": "id" },
 	            { "data": "name" },
 	            { "data": "created",
-	            	"render": function(data) {
-	            		return formatDateAndTime(data);
+	            	"render": function(data)
+	            	{
+	            		return common.formatDateAndTime(data);
 	            	}
 	            },
 	            { "data": "modified",
-	            	"render": function(data) {
-	            		return formatDateAndTime(data);
+	            	"render": function(data)
+	            	{
+	            		return common.formatDateAndTime(data);
 	            	}
 	            },
 	            { "data": "category" },
@@ -115,159 +125,176 @@ var goldenUnit = (function()
 			columnDefs: [
 			             { visible: false, searchable: false, targets: 0}
 			],
-			//autoWidth: false,
 			pagingType: 'full_numbers',
-			scrollY: ($(window).height()/2),
+			scrollY: common.$dynamicSection.height() - 164,
 			order: [1, 'asc']
 		}).on('init.dt', function()
 		{
+			// fill rows object
+			var goldenUnitsTableRows = _$goldenUnitsTable.DataTable().rows().nodes().to$();
+			
+			// if project is configured, mark as selected the stored Golden Units
 			if (sessionStorage.getItem("isConfigured") == "true")
 			{
 				var selectedGus = sessionStorage.getItem("associatedGu");
 				var splitted = selectedGus.split(", ");
-
-				var MyRows = goldenUnitsTable.DataTable().rows().nodes().to$();
 				
 				for (var i = 0; i < splitted.length; i++)
 				{
-					var cell = MyRows.find("td:first:contains('"+splitted[i]+"')");
+					var cell = goldenUnitsTableRows.find("td:first:contains('"+splitted[i]+"')");
 
 					if (cell.length > 0)
 					{
 						cell.parent().addClass('selected');
-						numberOfSelectedRows++;
+						_numberOfSelectedRows++;
 					}
-				}
-				
-				if ((numberOfSelectedRows > 2) || ((numberOfSelectedRows == 0) && (sessionStorage.getItem("type") == "Development")))
-				{
-					disableButton(nextButton, false);
-				}
-				else
-				{
-					disableButton(nextButton, true);
 				}
 			}
 			
-			onClickTableRow();
+			_checkNavigationButtonsStatus();
 		});
 	}
 	
-	var onClickFunctions = function()
+	var _checkNavigationButtonsStatus = function()
 	{
-		//onClickTableRow();
-		onClickTableButtons();
+		// Navigation buttons are enabled when 3 or more Golden Units are selected, or project type is Development and no Golden Units are selected
+	   	if ((_numberOfSelectedRows > 2) || ((_numberOfSelectedRows == 0) && (sessionStorage.getItem("type") == "Development")))
+	   	{
+	   		common.enableButtons(common.$nextStepButton);
+   			
+   			if (sessionStorage.getItem("isConfigured") == "true")
+	   		{
+	   			common.enableButtons(common.$saveProjectButton);
+	   		}
+	   	}
+	   	else
+	   	{
+	   		common.disableButtons(common.$nextStepButton, common.$saveProjectButton);
+	   	}
 	}
 	
-	var onClickTableRow = function()
+	var _onClickFunctions = function()
 	{
-		goldenUnitsTable.find("tbody").on('click', 'tr', function()
+		_onClickTableRow();
+		_onClickSectionButtons();
+		_onClickNavigationButtons();
+	}
+	
+	var _onClickTableRow = function()
+	{
+		_$goldenUnitsTable.find('tbody').on('click', 'tr', function()
 		{
-			var data = goldenUnitsTable.DataTable().row(this).data();
-			
 		   	if ($(this).hasClass("selected"))
 		   	{
+		   		// if selected row was already selected, unselect it
 		   		$(this).removeClass("selected");
-		   		numberOfSelectedRows--;
+		   		_numberOfSelectedRows--;
 		   	}
 		   	else
 		   	{
+		   		// else, select it
 		   		$(this).addClass("selected");
-		   		numberOfSelectedRows++;
+		   		_numberOfSelectedRows++;
 		   	}
-
-		   	if (numberOfSelectedRows >= 3)
+		   	
+		   	// Edit and Delete buttons are enabled only if one Golden Unit is selected
+		   	_optionButtonsEnabled(_numberOfSelectedRows == 1);
+		   	
+		   	if (_numberOfSelectedRows == 1)
 		   	{
-		   		disableButton(nextButton, false);
-		   		disableButton(endButton, false);
+		   		sessionStorage.setItem("idGu", _$goldenUnitsTable.DataTable().row('.selected').data().id);
 		   	}
-		   	else if (numberOfSelectedRows == 2)
+		   	else
 		   	{
-				optionButtonsEnabled(false);
-				disableButton(nextButton, true);
-				disableButton(endButton, true);
-			   	sessionStorage.removeItem("idGu");
-		   	}
-		   	else if (numberOfSelectedRows == 1)
-		   	{
-		   		optionButtonsEnabled(true);
-				
-				if (sessionStorage.getItem("type") == "Development")
-				{
-					disableButton(nextButton, true);
-					disableButton(endButton, true);
-				}
-				
-			   	sessionStorage.setItem("idGu", data.id);
-		   	}
-		   	else if (numberOfSelectedRows == 0)
-		   	{
-		   		if (sessionStorage.getItem("type") == "Development")
-		   		{
-		   			disableButton(nextButton, false);
-		   			disableButton(endButton, false);
-		   		}
-		   		
-		   		optionButtonsEnabled(false);
 		   		sessionStorage.removeItem("idGu");
 		   	}
+		   	
+		   	_checkNavigationButtonsStatus();
 		});
 	}
-	
-	var onClickTableButtons = function()
+		
+	function _optionButtonsEnabled(status)
 	{
-		onClickCreateButton();
-		onClickEditButtons();
-		onClickDeleteButton();
-		onClickNextButtons();
+		_disableButton(_$editGuButton, !status);
+		_disableButton(_$deleteButton, !status);
 	}
 	
-	var onClickCreateButton = function()
+	var _disableButton = function(button, isDisabled)
 	{
+		if (isDisabled)
+		{
+			button.addClass('disabled');
+		}
+		else
+		{
+			button.removeClass('disabled');
+		}
 		
-		newGoldenUnitForm.submit(function(e)
+		button.prop("disabled", isDisabled);
+	}
+	
+	var _onClickSectionButtons = function()
+	{
+		_onClickCreateButton();
+		_onClickEditButtons();
+		_onClickDeleteButton();
+	}
+	
+	var _onClickCreateButton = function()
+	{
+		_$newGoldenUnitForm.submit(function(e)
 		{
 			e.preventDefault();
 			  
 	    	$.ajax({
-                url: newGoldenUnitForm.attr('action'),
-                beforeSend: function(xhr) {
-		            xhr.setRequestHeader(header, token);
+                url: _$newGoldenUnitForm.attr('action'),
+                beforeSend: function(xhr)
+                {
+		            xhr.setRequestHeader(common.csrfHeader, common.csrfToken);
 		        },
                 type: 'POST',
-                data: newGoldenUnitForm.serialize(),
+                data: _$newGoldenUnitForm.serialize(),
                 success: function(goldenUnit)
                 {
-                	goldenUnitsTable.DataTable().row.add(goldenUnit).draw();
-                	$('#newGuModal').modal('hide');	
+                	_$goldenUnitsTable.DataTable().row.add(goldenUnit).draw();
+                	_$newGoldenUnitModal.modal('hide');
+                	_clearFormFields(_$newGoldenUnitForm, _$newGoldenUnitNameField, _$newGoldenUnitCategoryField,
+        					_$newGoldenUnitOemField, _$newGoldenUnitModelField, _$newGoldenUnitSwField, _$newGoldenUnitHwField, _$newGoldenUnitDescriptionField);
                 }
             });
 		})
-	  	confirmCreationButton.on('click', function(e)
+		
+	  	_$confirmCreationButton.on('click', function()
 	  	{
-	    	if (newGoldenUnitForm.valid())
+	    	if (_$newGoldenUnitForm.valid())
 	    	{
-	    		newGoldenUnitForm.submit();
+	    		_$newGoldenUnitForm.submit();
 	    	}
 	  	});
-	}
-	
-	var formatDateAndTime = function(dateAndTime)
-	{
-		Number.prototype.padLeft = function(base, chr)
-		{
-		   var  len = (String(base || 10).length - String(this).length) + 1;
-		   return len > 0 ? new Array(len).join(chr || '0') + this : this;
-		}
 		
-		var cd = new Date(dateAndTime);
-		return [cd.getFullYear(), (cd.getMonth()+1).padLeft(), cd.getDate().padLeft()].join('-')
-               		+ ' ' + [cd.getHours().padLeft(), cd.getMinutes().padLeft(), cd.getSeconds().padLeft()].join(':');
+		_$cancelCreationButton.on('click', function()
+		{
+			_clearFormFields(_$newGoldenUnitForm, _$newGoldenUnitNameField, _$newGoldenUnitCategoryField,
+					_$newGoldenUnitOemField, _$newGoldenUnitModelField, _$newGoldenUnitSwField, _$newGoldenUnitHwField, _$newGoldenUnitDescriptionField);
+		});
 	}
 	
-	var onClickEditButtons = function()
+	var _clearFormFields = function(form, nameField, categoryField, oemField, modelField, swField, hwField, descriptionField)
 	{
-		editButton.on('click', function()
+		nameField.val('');
+		categoryField.val('1');
+		oemField.val('');
+		modelField.val('');
+		swField.val('');
+		hwField.val('');
+		descriptionField.val('');
+    	
+    	form.clearValidation();
+	}
+	
+	var _onClickEditButtons = function()
+	{
+		_$editGuButton.on('click', function()
 		{
 			$.ajax({
 				cache: false,
@@ -279,58 +306,67 @@ var goldenUnit = (function()
 				},
 				success: function (data)
 				{
-					$('#edit-id').val(data.idGolden);
-					$('#edit-name').val(data.name);
-					$('#edit-category').val(data.category);
-					$('#edit-manufacturer').val(data.manufacturer);
-					$('#edit-model').val(data.model);
-					$('#edit-sw-ver').val(data.swVer);
-					$('#edit-hw-ver').val(data.hwVer);
-					$('#edit-description').val(data.description);
+					_$editGoldenUnitIdField.val(data.idGolden);
+					_$editGoldenUnitNameField.val(data.name);
+					_$editGoldenUnitCategoryField.val(data.category);
+					_$editGoldenUnitOemField.val(data.manufacturer);
+					_$editGoldenUnitModelField.val(data.model);
+					_$editGoldenUnitSwField.val(data.swVer);
+					_$editGoldenUnitHwField.val(data.hwVer);
+					_$editGoldenUnitDescriptionField.val(data.description);
 			   }
 			});
 		});
 		
-		editGoldenUnitForm.submit(function(e)
+		_$editGoldenUnitForm.submit(function(e)
 		{
 			e.preventDefault();
 			
 			$.ajax({
-                url: editGoldenUnitForm.attr('action'),
-                beforeSend: function(xhr) {
-		            xhr.setRequestHeader(header, token);
+                url: _$editGoldenUnitForm.attr('action'),
+                beforeSend: function(xhr)
+                {
+                	xhr.setRequestHeader(common.csrfHeader, common.csrfToken);
 		        },
                 type: 'POST',
-                data: editGoldenUnitForm.serialize(),
+                data: _$editGoldenUnitForm.serialize(),
                 success: function(goldenUnit)
                 {
-                	var selectedRow = goldenUnitsTable.find('tbody').find('tr.selected');
-                	goldenUnit.created = goldenUnitsTable.DataTable().row('.selected').data().created;
-                	goldenUnitsTable.dataTable().fnUpdate(goldenUnit, selectedRow, undefined, false);
-                	$('#editGuModal').modal('hide');		
+                	var selectedRow = _$goldenUnitsTable.find('tbody').find('tr.selected');
+                	goldenUnit.created = _$goldenUnitsTable.DataTable().row('.selected').data().created;
+                	_$goldenUnitsTable.dataTable().fnUpdate(goldenUnit, selectedRow, undefined, false);
+                	_$editGoldenUnitModal.modal('hide');
+                	_clearFormFields(_$editGoldenUnitForm, _$editGoldenUnitNameField, _$editGoldenUnitCategoryField,
+        					_$editGoldenUnitOemField, _$editGoldenUnitModelField, _$editGoldenUnitSwField, _$editGoldenUnitHwField, _$editGoldenUnitDescriptionField);
                 }
             });
 		})
 		
-		confirmEditionButton.on('click', function(e)
+		_$confirmEditionButton.on('click', function(e)
 		{
-			if (editGoldenUnitForm.valid())
+			if (_$editGoldenUnitForm.valid())
 			{
-				editGoldenUnitForm.submit();
+				_$editGoldenUnitForm.submit();
 			}
+		});
+		
+		_$cancelEditionButton.on('click', function()
+		{
+			_clearFormFields(_$editGoldenUnitForm, _$editGoldenUnitNameField, _$editGoldenUnitCategoryField,
+					_$editGoldenUnitOemField, _$editGoldenUnitModelField, _$editGoldenUnitSwField, _$editGoldenUnitHwField, _$editGoldenUnitDescriptionField);
 		});
 	}
 	
-	var onClickDeleteButton = function()
+	var _onClickDeleteButton = function()
 	{
-		confirmDeletionButton.on('click', function()
+		_$confirmDeletionButton.on('click', function()
 		{
 		    $.ajax({
 				type : 'POST',
 				url : 'gu/delete',
 				beforeSend: function(xhr)
 				{
-		            xhr.setRequestHeader(header, token);
+					xhr.setRequestHeader(common.csrfHeader, common.csrfToken);
 		        },
 				data :
 				{
@@ -338,48 +374,47 @@ var goldenUnit = (function()
 				},
 				success: function()
 				{
-					goldenUnitsTable.DataTable().row('.selected').remove().draw();
+					_$goldenUnitsTable.DataTable().row('.selected').remove().draw();
 					
 					sessionStorage.removeItem("idGu");
-					numberOfSelectedRows = 0;
+					_numberOfSelectedRows = 0;
 					
-					disableButton(nextButton, true);
-					optionButtonsEnabled(false);
+					_optionButtonsEnabled(false);
+					
+					_checkNavigationButtonsStatus();
 				}
 			});
 		});
 	}
 	
-	$('#nextForm').submit(function(e)
+	var _onClickNavigationButtons = function()
 	{
-	    $.ajax({
-	           type: "POST",
-	           url: $('#nextForm').attr('action'),
-	           beforeSend: function(xhr) {
-		            xhr.setRequestHeader(header, token);
-		        },
-	           data: $("#nextForm").serialize(),
-	           success: function(response)
-	           {
-	        	   $('#dynamic').fadeOut('fast', function() {
-	            		$("#dynamic").html( response );
-	            	});
-	                
-	        	   $('#dynamic').fadeIn('fast', function() {
-	                	var table = $.fn.dataTable.fnTables(true);
-	                	if ( table.length > 0 ) {
-	                	    $(table).dataTable().fnAdjustColumnSizing();
-	                	}
-	                });
-	           }
-	         });
-
-	    e.preventDefault(); // avoid to execute the actual submit of the form.
-	})
+		_onClickNextButton();
+		_onClickPreviousButton();
+		_onClickSaveButton();
+	}
 	
-	var onClickNextButtons = function()
+	var _onClickNextButton = function()
 	{
-		nextButton.off('click').on('click', function()
+		_$nextStepForm.submit(function(e)
+		{
+			e.preventDefault(); // avoid to execute the actual submit of the form.
+			 		
+			_sendSelectedGoldenUnits().done(function(response)
+			{
+				common.$dynamicSection.fadeOut('fast', function()
+        	   	{
+        	   		common.$dynamicSection.html( response );
+        	   	});
+                
+        	   	common.$dynamicSection.fadeIn('fast', function()
+        	   	{
+        	   		common.adjustDataTablesHeader();
+                });
+			});
+		});
+				
+		common.$nextStepButton.off('click').on('click', function()
 		{
 			$('#idProject').val(sessionStorage.getItem('idProject'));
 			
@@ -391,34 +426,68 @@ var goldenUnit = (function()
 			var text = "";
 			var textNames = "";
 			
-			goldenUnitsTable.find("tbody tr").each(function(index)
+			_$goldenUnitsTable.find("tbody tr").each(function(index)
 			{
 				if ($(this).hasClass("selected"))
 				{
-					text += goldenUnitsTable.DataTable().row($(this)).data().id + ".";
-					textNames += goldenUnitsTable.DataTable().row($(this)).data().name + ", ";
+					text += _$goldenUnitsTable.DataTable().row($(this)).data().id + ".";
+					textNames += _$goldenUnitsTable.DataTable().row($(this)).data().name + ", ";
 				}
     		});
 			
 			$('#gUnits').val(text);
 			sessionStorage.setItem("guNames", textNames.substring(0, textNames.length - 2));
-			$('#nextForm').submit();
+			_$nextStepForm.submit();
 			
-			$('#gu-breadcrumb').text(sessionStorage.getItem("guNames"));
+			$('#gu-breadcrumb').text(sessionStorage.getItem("guNames") !== "" ? sessionStorage.getItem("guNames") : "Not selected");
             $('#gu-breadcrumb').removeClass('hidden');
+            
+            common.selectNavigationElement($('#ics-nav'));
 		});
-		
-		continueButton.on('click', function()
-		{
-			$('#idProject').val(sessionStorage.getItem('idProject'));
-			$('#idGolden').val(sessionStorage.getItem('idGu'));
-			sessionStorage.setItem("associatedGu", sessionStorage.getItem("idGu"));
-			$('#nextForm').submit();
+	}
+	
+	var _sendSelectedGoldenUnits = function()
+	{
+		return $.ajax({
+	           		type: "POST",
+	           		url: _$nextStepForm.attr('action'),
+		           beforeSend: function(xhr)
+		           {
+		        	   xhr.setRequestHeader(common.csrfHeader, common.csrfToken);
+			       },
+		           data: _$nextStepForm.serialize()
 		});
-		
-		$('#endButton').off('click').on('click', function(e) {
-  			e.preventDefault();
-  			
+	}
+	
+	var _onClickPreviousButton = function()
+	{		
+		common.$previousStepButton.off('click').on('click', function()
+		{		
+			$.ajax({
+		           type: "GET",
+		           url: 'dut',
+		           success: function(response)
+		           {
+		        	   	common.$dynamicSection.fadeOut('fast', function()
+		        	   	{
+		        	   		common.$dynamicSection.html( response );
+		        	   	});
+		        	   	
+		        	   	common.$dynamicSection.fadeIn('fast');
+		               
+		        	   	$('#dut-breadcrumb').text('DUT');
+		        	   	$('#dut-breadcrumb').addClass('hidden');
+		               
+		        	   	common.selectNavigationElement($('#dut-nav'));
+		           }
+		       });
+		});
+	}
+	
+	var _onClickSaveButton = function()
+	{
+		common.$saveProjectButton.off('click').on('click', function()
+		{		
   			sessionStorage.setItem("modifiedGus", true);
   			
   			$('#idProject').val(sessionStorage.getItem('idProject'));
@@ -426,94 +495,60 @@ var goldenUnit = (function()
 			var text = "";
 			var textNames = "";
 			
-			goldenUnitsTable.find("tbody tr").each(function(index)
+			_$goldenUnitsTable.find("tbody tr").each(function(index)
 			{
 				if ($(this).hasClass("selected"))
 				{
-					text += goldenUnitsTable.DataTable().row($(this)).data().id + ".";
-					textNames += goldenUnitsTable.DataTable().row($(this)).data().name + ", ";
+					text += _$goldenUnitsTable.DataTable().row($(this)).data().id + ".";
+					textNames += _$goldenUnitsTable.DataTable().row($(this)).data().name + ", ";
 				}
     		});
 			
 			$('#gUnits').val(text);
-  			
-  			$.ajax({
- 	           type: "POST",
- 	           url: $('#nextForm').attr('action'),
- 	           beforeSend: function(xhr) {
- 		            xhr.setRequestHeader(header, token);
- 		        },
- 	           data: $("#nextForm").serialize(),
- 	           success: function(response)
- 	           {
- 	        	   	var data = {};
-	 	 			for (var j = 0; j < sessionStorage.length; j++) {
-	 	 				var key = sessionStorage.key(j);
-	 	 				data[key] = sessionStorage.getItem(key);
-	 	 			}
- 	 			
-	 	 			var token = $("meta[name='_csrf']").attr("content");
-	 	 			var header = $("meta[name='_csrf_header']").attr("content");
-	 	 			
-	 	 			$.ajax({
-	 	 				   	url: 'end/save',
-	 	 				   	type: 'POST',
-	 	 				   	beforeSend: function(xhr)
-	 	 				   	{
-	 	 			        	xhr.setRequestHeader(header, token);
-	 	 			        },
-	 	 				   	data:
-	 	 					{
-	 	 					   	data : data	
-	 	 					},
-	 	 			        success: function(response)
-	 	 			        {
-	 	 	                	$('#dynamic').fadeOut('fast', function()
-	 	 	                	{
-	 	 	                		$("#dynamic").html( response );
-	 	 	                	});
-	 	 	                    $('#dynamic').fadeIn('fast');
-	 	 	                    
-	 	 	                    $('.nav-stacked li').addClass('disabled');
-						   		$('.nav-stacked li a').attr('disabled', true);
-						   		$('#prevButton').addClass('disabled');
-			            		$('#prevButton').attr('disabled', true);
-			            		$('#nextButton').addClass('disabled');
-			            		$('#nextButton').attr('disabled', true);
-			            		$('#endButton').addClass('disabled');
-			            		$('#endButton').attr('disabled', true);
-	 	 			        }
-	 	 			});	
- 	           }
- 	         });	
-  		});
-		
-		$('#prevButton').off('click').on('click', function(e) {
-			e.preventDefault();
 			
-			$.ajax({
-		           type: "GET",
-		           url: 'dut',
-		           success: function(response) {
-		           	$('#dynamic').fadeOut('fast', function() {
-		           		$("#dynamic").html( response );
-		           	});
-		               $('#dynamic').fadeIn('fast');
-		               
-		               $('#dut-breadcrumb').text('DUT');
-		               $('#dut-breadcrumb').addClass('hidden');
-		           }
-		       });
-		});
+			_sendSelectedGoldenUnits().done(function(response)
+			{
+				var data = {};
+ 	 			for (var j = 0; j < sessionStorage.length; j++)
+ 	 			{
+ 	 				var key = sessionStorage.key(j);
+ 	 				data[key] = sessionStorage.getItem(key);
+ 	 			}
+ 	 			
+ 	 			$.ajax({
+ 	 				   	url: 'end/save',
+ 	 				   	type: 'POST',
+ 	 				   	beforeSend: function(xhr)
+ 	 				   	{
+ 	 				   		xhr.setRequestHeader(common.csrfHeader, common.csrfToken);
+ 	 			        },
+ 	 				   	data:
+ 	 					{
+ 	 					   	data : data	
+ 	 					},
+ 	 			        success: function(response)
+ 	 			        {
+ 	 	                	common.$dynamicSection.fadeOut('fast', function()
+ 	 	                	{
+ 	 	                		common.$dynamicSection.html( response );
+ 	 	                	});
+ 	 	                	common.$dynamicSection.fadeIn('fast');
+ 	 	                    
+ 	 	                    common.disableNavigationBar();
+ 	 	                    common.disableButtons(common.$nextStepButton, common.$previousStepButton, common.$saveProjectButton);
+ 	 			        }
+ 	 			});
+			});
+  		});
 	}
 	
-	var validateFormFunctions = function()
+	var _validateFormFunctions = function()
 	{
-		validateForm(newGoldenUnitForm, null, newGoldenUnitNameField);
-		validateForm(editGoldenUnitForm, editGoldenUnitIdField, editGoldenUnitNameField);
+		_validateForm(_$newGoldenUnitForm, null, _$newGoldenUnitNameField);
+		_validateForm(_$editGoldenUnitForm, _$editGoldenUnitIdField, _$editGoldenUnitNameField);
 	}
 	
-	var validateForm = function(form, idToValidate, nameToValidate)
+	var _validateForm = function(form, idToValidate, nameToValidate)
 	{
 		form.validate(
 		{
@@ -525,7 +560,8 @@ var goldenUnit = (function()
 						url: "gu/validateName",
 						type: "get",
 						data: {
-							id: function() {
+							id: function()
+							{
 								if (idToValidate != null)
 								{
 									return idToValidate.val();
@@ -535,7 +571,8 @@ var goldenUnit = (function()
 									return 0;
 								}
 							},
-							name: function() {
+							name: function()
+							{
 								return nameToValidate.val();
 							}
 						}
@@ -592,39 +629,8 @@ var goldenUnit = (function()
 		});
 	}
 	
-	var disableButton = function(button, isDisabled)
-	{
-		if (isDisabled)
-		{
-			button.addClass('disabled');
-		}
-		else
-		{
-			button.removeClass('disabled');
-		}
-		
-		button.prop("disabled", isDisabled);
-		
-		if (button.is(nextButton))
-		{
-			noSelectedGusMessage.prop("hidden", !isDisabled);
-		}
-	}
-	
-	function optionButtonsEnabled(status)
-	{
-		disableButton(editButton, !status);
-		disableButton(deleteButton, !status);
-	}
-	
-	var logoutFormSubmit = function()
-	{
-		logoutForm.submit();
-	};
-	
 	return {
 		init : init,
-		logout : logoutFormSubmit
 	};
 	
 })(goldenUnit);

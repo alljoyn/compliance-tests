@@ -38,4 +38,6 @@ public interface CertificationReleaseService {
 	public String getCertificationReleaseDescription(String certificationRelease);
 	
 	public String getCertificationReleaseName(int certificationReleaseId);
+	
+	public boolean isReleaseVersion(int certificationReleaseId);
 }

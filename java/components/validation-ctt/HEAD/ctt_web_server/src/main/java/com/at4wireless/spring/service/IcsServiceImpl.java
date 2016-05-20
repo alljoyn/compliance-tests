@@ -19,6 +19,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +35,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +44,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.at4wireless.spring.controller.XMLManager;
 import com.at4wireless.spring.dao.IcsDAO;
 import com.at4wireless.spring.model.Ics;
 import com.at4wireless.spring.model.Result;
@@ -49,42 +54,55 @@ public class IcsServiceImpl implements IcsService {
 	
 	@Autowired
 	private IcsDAO icsDao;
+	
+	static final Logger log = LogManager.getLogger(IcsServiceImpl.class);
 
 	@Override
 	//@Transactional
-	public List<Ics> load(List<BigInteger> services, boolean isConfigured, String configuration) {
+	public List<Ics> load(List<BigInteger> services, boolean isConfigured, String configuration)
+	{
 		List<Ics> listIcs = new ArrayList<Ics>();
 		
-		for (BigInteger bi : services) {
+		// get all available ICS for supported services
+		for (BigInteger bi : services)
+		{
 			listIcs.addAll(icsDao.getService(bi.intValue()));
 		}
 		
-		if(isConfigured) {			
-			DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder builder = null;
+		// if project is configured, load configured values
+		if (isConfigured)
+		{	
+			XMLManager xmlManager = new XMLManager();
+			// load IDs and values
+			List<String> listOfIcsIds = xmlManager.retrieveNodeValuesFromFile(configuration, "/Project/Ics/Id");
+			List<String> listOfIcsValues = xmlManager.retrieveNodeValuesFromFile(configuration, "/Project/Ics/Value");
+			// store in a map			
+			Iterator<String> i1 = listOfIcsIds.iterator();
+			Iterator<String> i2 = listOfIcsValues.iterator();
+			Map<Integer, Boolean> icsMap = new HashMap<Integer, Boolean>();
 			
-			try {
-				builder = builderFactory.newDocumentBuilder();
-				Document source = builder.parse(new FileInputStream(configuration));
-				
-				XPath xPath = XPathFactory.newInstance().newXPath();	
-				String expression = "/Project/Ics/Value";
-				NodeList nodeList = (NodeList) xPath.compile(expression).evaluate(source, XPathConstants.NODESET);
-				
-				for (int i = 0; i < nodeList.getLength(); i++) {
-				    if(nodeList.item(i).getFirstChild().getNodeValue().equalsIgnoreCase("true")) {
-				    	listIcs.get(i).setValue(true);
-				    }
+			while (i1.hasNext() && i2.hasNext())
+			{
+			    icsMap.put(Integer.parseInt(i1.next()), Boolean.parseBoolean(i2.next()));
+			}
+			
+			if (i1.hasNext() || i2.hasNext())
+			{
+				// if the size of the lists is different, an error occurred
+				log.error(String.format("The number of Id nodes (%d) and Value nodes (%d) is not the same", 
+						listOfIcsIds.size(), listOfIcsValues.size()));
+			}
+			else
+			{
+				// else, load the stored ICS values
+				for (Ics ics : listIcs)
+				{
+					if (icsMap.get(ics.getId()) != null)
+					{
+						ics.setValue(icsMap.get(ics.getId()));
+					}
 				}
-			} catch (ParserConfigurationException e) {
-				e.printStackTrace();
-			} catch (SAXException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (XPathExpressionException e) {
-				e.printStackTrace();
-			}	
+			}
 		}
 		
 		return listIcs;

@@ -45,7 +45,8 @@
 <script>
 	$(document).ready(function()
 	{
-		jQuery.getScript('resources/js/dynamic-parameter.js', function() {
+		jQuery.getScript('resources/js/dynamic-parameter.js', function()
+		{
 			parameters.init();
 		});
 	});

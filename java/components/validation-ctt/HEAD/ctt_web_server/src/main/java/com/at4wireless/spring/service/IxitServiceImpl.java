@@ -20,7 +20,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -30,6 +33,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,62 +42,65 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.at4wireless.spring.controller.XMLManager;
 import com.at4wireless.spring.dao.IxitDAO;
 import com.at4wireless.spring.model.Ixit;
 
 @Service
-public class IxitServiceImpl implements IxitService {
+public class IxitServiceImpl implements IxitService
+{
 	@Autowired
 	private IxitDAO ixitDao;
+	
+	static final Logger log = LogManager.getLogger(IxitServiceImpl.class);
 	
 	@Override
 	//@Transactional
 	public List<Ixit> load(List<BigInteger> services, boolean isConfigured,
-			String configuration) {
+			String configuration)
+	{
 		List<Ixit> listIxit = new ArrayList<Ixit>();
 		
-		for (BigInteger bi : services) {
+		// First of all, load all available IXIT for supported services
+		for (BigInteger bi : services)
+		{
 			listIxit.addAll(ixitDao.getService(bi.intValue()));
 		}
 		
+		// if the project is already configured, update the values of the IXIT to return with the configured values
 		if (isConfigured)
 		{			
-			DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder builder = null;
+			XMLManager xmlManager = new XMLManager();
+			// load the IDs and values
+			List<String> listOfIxitIds = xmlManager.retrieveNodeValuesFromFile(configuration, "/Project/Ixit/Id");
+			List<String> listOfIxitValues = xmlManager.retrieveNodeValuesFromFile(configuration, "/Project/Ixit/Value");
+			// convert to a map			
+			Iterator<String> i1 = listOfIxitIds.iterator();
+			Iterator<String> i2 = listOfIxitValues.iterator();
+			Map<Integer, String> ixitMap = new HashMap<Integer, String>();
 			
-			try
+			while (i1.hasNext() && i2.hasNext())
 			{
-				builder = builderFactory.newDocumentBuilder();
-				Document source = builder.parse(new FileInputStream(configuration));
-				
-				XPath xPath = XPathFactory.newInstance().newXPath();	
-				String expression = "/Project/Ixit/Value";
-				NodeList nodeList = (NodeList) xPath.compile(expression).evaluate(source, XPathConstants.NODESET);
-
-				for (int i = 0; i < nodeList.getLength(); i++)
+			    ixitMap.put(Integer.parseInt(i1.next()), i2.next());
+			}
+			
+			if (i1.hasNext() || i2.hasNext())
+			{
+				// if lists have different size and error occurred
+				log.error(String.format("The number of Id nodes (%d) and Value nodes (%d) is not the same", 
+						listOfIxitIds.size(), listOfIxitValues.size()));
+			}
+			else
+			{
+				// else, load all stored values
+				for (Ixit ixit : listIxit)
 				{
-					if (nodeList.item(i).getFirstChild() != null)
+					if (ixitMap.get(ixit.getIdIxit()) != null)
 					{
-						listIxit.get(i).setValue(nodeList.item(i).getFirstChild().getNodeValue());
+						ixit.setValue(ixitMap.get(ixit.getIdIxit()));
 					}
 				}
 			}
-			catch (ParserConfigurationException e)
-			{
-				e.printStackTrace();
-			}
-			catch (SAXException e)
-			{
-				e.printStackTrace();
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-			}
-			catch (XPathExpressionException e)
-			{
-				e.printStackTrace();
-			}	
 		}
 		
 		return listIxit;
@@ -100,12 +108,14 @@ public class IxitServiceImpl implements IxitService {
 
 	@Override
 	@Transactional
-	public List<Ixit> getService(int idService) {
+	public List<Ixit> getService(int idService)
+	{
 		return ixitDao.getService(idService);
 	}
 	
 	@Override
-	public List<String> pdfData(String configuration) {
+	public List<String> pdfData(String configuration)
+	{
 		DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = null;
 		String separator=": ";
@@ -150,6 +160,7 @@ public class IxitServiceImpl implements IxitService {
 	public String add(Ixit ixit)
 	{
 		String name = ixit.getName();
+		
 		for (Ixit i : ixitDao.list())
 		{
 			if (i.getName().equals(name))

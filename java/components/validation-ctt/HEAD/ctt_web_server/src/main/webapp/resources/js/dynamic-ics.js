@@ -18,32 +18,36 @@ var ics = (function()
 	//-------------------------------------------------
 	// TITLE
 	//-------------------------------------------------
-	var title = jQuery('#title');
+	var _titleText = (sessionStorage.getItem("type") == "Conformance") ? 'Step 3<small> Configure your ICS</small>' : 'Step 4<small> Configure your ICS</small>';
 	//-------------------------------------------------
-	// POST REQUEST TOKEN AND HEADER
+	// ALERT MESSAGES
 	//-------------------------------------------------
-	var token = $("meta[name='_csrf']").attr("content");
-	var header = $("meta[name='_csrf_header']").attr("content");
+	var _scrNeededMessage = 'You need to perform SCR verification';
+	var _fixErrorsMessage = 'You need to correct invalid ICS values';
+	//-------------------------------------------------
+	// ICS TABLES
+	//-------------------------------------------------
+	var _$icsTables = jQuery('.table');
+	var _icsTablesRows;
+	//-------------------------------------------------
+	// BUTTONS
+	//-------------------------------------------------
+	var _$scrButton = jQuery('#scrButton')
+	var _$changeSfIcsButton = jQuery('#changeButton');
 	
 	var init = function()
-	{
-		title.html("Step 4<small> Configure your ICS</small>");
+	{		
+		common.$title.html(_titleText);
 		
-		$('#nextButton').addClass('disabled');
-		$('#nextButton').attr('disabled', true);
-		
-		if(sessionStorage.getItem("type")=="Conformance") {
-			title.html(function(i, oldText) {
-				return oldText === 'Step 4<small> Configure your ICS</small>' ? 'Step 3<small> Configure your ICS</small>' : oldText;
-			});
-			$('#prevButton').attr("href","dut");
-		}
+		common.changeTooltipText(common.$nextStepButton.parent(), _scrNeededMessage);
 		
 		if (sessionStorage.getItem("isConfigured") == "true")
 		{
-			$('#nextButton').removeClass('disabled');
-			$('#nextButton').removeAttr("disabled", false);
-			$('#scrNeed').prop("hidden", true);
+			common.enableButtons(common.$nextStepButton);
+		}
+		else
+		{
+			common.disableButtons(common.$nextStepButton);
 		}
 		
 		initDataTable();
@@ -59,8 +63,8 @@ var ics = (function()
 			autoWidth: false,
 			paging: false,
 			searching: false,
-			"sDom": '<"top">rt<"bottom"flp><"clear">',
-			scrollY: ($(window).height()*0.52),
+			info: false,
+			scrollY: common.$dynamicSection.height() - 128,
 			columnDefs: [       
 			    { width: "3%", targets: 0},
 			    { width: "30%", targets: 1},
@@ -70,14 +74,15 @@ var ics = (function()
 			order: [0, 'asc']
 		});
 		
-		var MyRows = $('.table').find('tbody').find('tr');
-		for (var i = 0; i < MyRows.length; i++)
+		_icsTablesRows = _$icsTables.find('tbody').find('tr');
+		
+		for (var i = 0; i < _icsTablesRows.length; i++)
 		{
-			var id = $(MyRows[i]).find('td:eq(1)').html();
+			var id = $(_icsTablesRows[i]).find('td:eq(1)').html();
 			
 			if (sessionStorage.hasOwnProperty(id))
 			{
-				$(MyRows[i]).find('.form-control').val(sessionStorage.getItem(id));
+				$(_icsTablesRows[i]).find('.form-control').val(sessionStorage.getItem(id));
 			}
 		}
 	
@@ -93,8 +98,8 @@ var ics = (function()
 				    autoWidth: false,
 				   	paging: false,
 					searching: false,
-					"sDom": '<"top">rt<"bottom"flp><"clear">',
-					scrollY: ($(window).height()*0.52),
+					info: false,
+					scrollY: common.$dynamicSection.height() - 128,
 					columnDefs: [        
 						{ width: "3%", targets: 0},
 					    { width: "30%", targets: 1},
@@ -109,24 +114,15 @@ var ics = (function()
 	
 	var onClickFunctions = function()
 	{
-		$('tbody').find('tr').dblclick(function()
+		_icsTablesRows.dblclick(function()
 		{
 			var val = $(this).find('.form-control').val();
 			$(this).find('.form-control').val((val == "false").toString());
-			$('#nextButton').addClass('disabled');
-    		$('#nextButton').attr("disabled", true);
-    		
-    		if (sessionStorage.getItem("isConfigured") == "true")
-    		{
-    			$('#endButton').addClass('disabled');
-        		$('#endButton').attr("disabled", true);
-    		}
-    		
-    		$('#scrNeed').prop("hidden", false);
-    		$('#fixErrors').prop("hidden",true);
+			
+			common.disableButtons(common.$nextStepButton, common.$saveProjectButton);
 		});
 		
-		$('#prevButton').off('click').on('click', function(e)
+		common.$previousStepButton.off('click').on('click', function(e)
 		{
 			e.preventDefault();
 			
@@ -138,41 +134,38 @@ var ics = (function()
 				data: $('#prevForm').serialize(),
 				success: function(response)
 				{
-					$('#dynamic').fadeOut('fast', function()
+					common.$dynamicSection.fadeOut('fast', function()
 					{
-	            		$("#dynamic").html(response);
+	            		common.$dynamicSection.html(response);
 	            	});
-	                $('#dynamic').fadeIn('fast', function()
+	                common.$dynamicSection.fadeIn('fast', function()
 					{
 	                	if (sessionStorage.getItem("isConfigured") == "true")
 	            		{
-	            			$('#endButton').removeClass('disabled');
-	                		$('#endButton').removeAttr("disabled", false);
+	                		common.enableButtons(common.$saveProjectButton);
 	            		}
 	                	
 	                	if (sessionStorage.getItem("type") != "Conformance")
 	                	{
 	                		$('#gu-breadcrumb').text('GU');
 			                $('#gu-breadcrumb').addClass('hidden');
+			                common.selectNavigationElement($('#gu-nav'));
 	                	}
 	                	else
 	                	{
 	                		$('#dut-breadcrumb').text('DUT');
 			                $('#dut-breadcrumb').addClass('hidden');
+			                common.selectNavigationElement($('#dut-nav'));
 	                	}
 	                	
-	                	var table = $.fn.dataTable.fnTables(true);
-	                	if (table.length > 0)
-	                	{
-	                	    $(table).dataTable().fnAdjustColumnSizing();
-	                	}
+	                	common.adjustDataTablesHeader();
 	                });
 				}
 			});
 			
 		});
   		
-		$('#nextButton').off('click').on('click', function(e)
+		common.$nextStepButton.off('click').on('click', function(e)
 		{
 			e.preventDefault();
 			$('#idProject').val(sessionStorage.getItem('idProject'));
@@ -180,11 +173,10 @@ var ics = (function()
 			
 			sessionStorage.setItem('setIcs', true);
 			
-			var MyRows = $('.table').find('tbody').find('tr');
-			for (var i = 0; i < MyRows.length; i++)
+			for (var i = 0; i < _icsTablesRows.length; i++)
 			{
-				var id = $(MyRows[i]).find('td:eq(1)').html();
-				var value = $(MyRows[i]).find('.form-control option:selected').html();
+				var id = $(_icsTablesRows[i]).find('td:eq(1)').html();
+				var value = $(_icsTablesRows[i]).find('.form-control option:selected').html();
 
 				sessionStorage.setItem(id, value);
 			}
@@ -200,32 +192,31 @@ var ics = (function()
 				data: $('#nextForm').serialize(),
 				success: function(response)
 				{
-					$('#dynamic').fadeOut('fast', function()
+					common.$dynamicSection.fadeOut('fast', function()
 					{
-	            		$("#dynamic").html(response);
+						common.$dynamicSection.html(response);
 	            	});
 	                
-					$('#dynamic').fadeIn('fast', function()
+					common.$dynamicSection.fadeIn('fast', function()
 					{
-	                	var table = $.fn.dataTable.fnTables(true);
-	                	if (table.length > 0)
-	                	{
-	                	    $(table).dataTable().fnAdjustColumnSizing();
-	                	}
+	                	common.adjustDataTablesHeader();
 	                });
+					
+					common.selectNavigationElement($('#ixit-nav'));
 				}
 			});	
 		});
   		
-  		$('#scrButton').on('click', function()
+  		_$scrButton.on('click', function()
   		{	
+  			waitingDialog.show('Processing...');
+  			
   			$('.badge').text("");
   			
-			var MyRows = $('.table').find('tbody').find('tr');
-			for (var i = 0; i < MyRows.length; i++)
+			for (var i = 0; i < _icsTablesRows.length; i++)
 			{
-				var id = $(MyRows[i]).find('td:eq(1)').html();
-				var value = $(MyRows[i]).find('.form-control option:selected').html();
+				var id = $(_icsTablesRows[i]).find('td:eq(1)').text();
+				var value = $(_icsTablesRows[i]).find('.form-control').val();
 
 				sessionStorage.setItem(id, value);
 			}
@@ -252,11 +243,11 @@ var ics = (function()
 						{
 							if (!result.result)
 							{
-								for (var i = 0; i < MyRows.length; i++)
+								for (var i = 0; i < _icsTablesRows.length; i++)
 								{
-									if($(MyRows[i]).find('td:eq(0)').html() == result.id)
+									if($(_icsTablesRows[i]).find('td:eq(0)').html() == result.id)
 									{
-										$(MyRows[i]).addClass('danger');
+										$(_icsTablesRows[i]).addClass('danger');
 									}
 								}
 								var label = "badge" + result.idService;
@@ -275,55 +266,58 @@ var ics = (function()
 							}
 							else
 							{
-								for (var i = 0; i < MyRows.length; i++)
+								for (var i = 0; i < _icsTablesRows.length; i++)
 								{
-									if ($(MyRows[i]).find('td:eq(0)').html() == result.id)
+									if ($(_icsTablesRows[i]).find('td:eq(0)').html() == result.id)
 									{
-										$(MyRows[i]).removeClass('danger');
+										$(_icsTablesRows[i]).removeClass('danger');
 									}
 								}
 							}
-							$("#pleaseWaitDialog").modal('hide');
+							waitingDialog.hide();
 						});
 						
 						if (wrong == 0)
 						{
-							$('#nextButton').removeClass('disabled');
-							$('#nextButton').removeAttr("disabled", false);
+							common.enableButtons(common.$nextStepButton);
 							
 							if (sessionStorage.getItem("isConfigured") == "true")
 							{
-								$('#endButton').removeClass('disabled');
-								$('#endButton').removeAttr('disabled', false);
+								common.enableButtons(common.$saveProjectButton);
 							}
-							
-							$('#scrNeed').prop("hidden", true);
 						}
 						else
 						{
-							$('#scrNeed').prop("hidden", true);
-							$('#fixErrors').prop("hidden",false);
+							common.changeTooltipText(common.$nextStepButton.parent(), _fixErrorsMessage);
 						}
 				   }
 			});
   		});
   		
-  		$('#changeButton').on('click', function()
+  		_$changeSfIcsButton.on('click', function()
   		{
-  			$(".tab-pane.active").find('table tbody tr').dblclick();
+  			common.disableButtons(_$scrButton);
+  			
+  			$.each($(".tab-pane.active").find('.form-control'), function()
+  			{
+  				$(this).val(($(this).val() == "false").toString());
+  			});
+  			
+  			common.enableButtons(_$scrButton);
+			
+			common.disableButtons(common.$nextStepButton, common.$saveProjectButton);
   		});
   		
-  		$('#endButton').off('click').on('click', function(e)
+  		common.$saveProjectButton.off('click').on('click', function(e)
   		{
   			e.preventDefault();
   			
   			sessionStorage.setItem("modifiedIcs", true);
   			
-  			var MyRows = $('.table').find('tbody').find('tr');
-			for (var i = 0; i < MyRows.length; i++)
+			for (var i = 0; i < _icsTablesRows.length; i++)
 			{
-				var id = $(MyRows[i]).find('td:eq(1)').html();
-				var value = $(MyRows[i]).find('.form-control option:selected').html();
+				var id = $(_icsTablesRows[i]).find('td:eq(1)').html();
+				var value = $(_icsTablesRows[i]).find('.form-control option:selected').html();
 
 				sessionStorage.setItem(id, value);
 			}
@@ -340,7 +334,7 @@ var ics = (function()
 			   	type: 'POST',
 			   	beforeSend: function(xhr)
 			   	{
-		        	xhr.setRequestHeader(header, token);
+		        	xhr.setRequestHeader(common.csrfHeader, common.csrfToken);
 		        },
 			   	data:
 				{
@@ -348,20 +342,14 @@ var ics = (function()
 				},
 		        success: function(response)
 		        {
-                	$('#dynamic').fadeOut('fast', function()
+		        	common.$dynamicSection.fadeOut('fast', function()
                 	{
-                		$("#dynamic").html(response);
+                		common.$dynamicSection.html(response);
                 	});
-                    $('#dynamic').fadeIn('fast');
+                    common.$dynamicSection.fadeIn('fast');
                     
-                    $('.nav-stacked li').addClass('disabled');
-			   		$('.nav-stacked li a').attr('disabled', true);
-			   		$('#prevButton').addClass('disabled');
-            		$('#prevButton').attr('disabled', true);
-            		$('#nextButton').addClass('disabled');
-            		$('#nextButton').attr('disabled', true);
-            		$('#endButton').addClass('disabled');
-            		$('#endButton').attr('disabled', true);
+                    common.disableNavigationBar();
+                    common.disableButtons(common.$previousStepButton, common.$nextStepButton, common.$saveProjectButton);
 		        }
 			});	
   		});
@@ -371,12 +359,8 @@ var ics = (function()
 	{
 		$('.form-control').on('change', function()
 		{
-    		$('#nextButton').addClass('disabled');
-    		$('#nextButton').prop("disabled", true);
-    		$('#endButton').addClass('disabled');
-    		$('#endButton').attr('disabled', true);
-    		$('#scrNeed').prop("hidden", false);
-    		$('#fixErrors').prop("hidden",true);
+			common.disableButtons(common.$nextStepButton, common.$saveProjectButton);
+			common.changeTooltipText(common.$nextStepButton.parent(), _scrNeededMessage);
     	});
 	}
 	

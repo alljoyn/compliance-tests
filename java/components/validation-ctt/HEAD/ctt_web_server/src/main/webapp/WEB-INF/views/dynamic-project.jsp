@@ -2,7 +2,6 @@
 <!DOCTYPE HTML>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
 <!-- Main -->
 <div class="col-xs-12">   
@@ -79,24 +78,19 @@
 						</div>
 						<div class="form-group">
 							<label for="message-text" class="control-label">Type</label>
-							<form:select path="type" class="form-control" id="project-type">
-								<option value="Conformance">Conformance</option>
-								<option value="Interoperability">Interoperability</option>
-								<option value="Conformance and Interoperability">Conformance and Interoperability</option>
-								<option value="Development">Development</option>
-							</form:select>
+							<form:select path="type" class="form-control" id="project-type"></form:select>
 						</div>
 						<div class="form-group">
 							<label for="project-release" class="control-label">Certification Release Core Version</label>
 							<form:select path="idCertrel" class="form-control" id="project-release"></form:select>
 						</div>
 						<div class="form-group">
-							<label for="project-tccl" class="control-label">Test Case Control List</label>
+							<label for="project-tccl" class="control-label">Test Case Control List (TCCL)</label>
 							<form:select path="idTccl" class="form-control" id="project-tccl"></form:select>
 						</div>
 						<div class="form-group">
-							<label for="project-car-id" class="control-label">Certification Application Request ID (*)</label>
-							<form:input path="carId" type="text" class="form-control" id="project-car-id" name="project-car-id"/>
+							<label for="project-car-id" class="control-label">Certification application Request ID (CRI)</label>
+							<form:select path="carId" type="text" class="form-control" id="project-car-id" name="project-car-id"></form:select>
 						</div>
 						<form:input type="hidden" id="supportedServices" name="supportedServices" path="supportedServices" value=""/>
 						<div class="form-group">
@@ -109,7 +103,7 @@
 					<p>(*) This is a mandatory field</p>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal" id="createCancel"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
 					<button id="createConfirm" type="submit" class="btn btn-custom"><span class="glyphicon glyphicon-ok"></span> Create project</button>
 				</div>
 			</div>
@@ -130,10 +124,6 @@
 						<div class="form-group">
 							<label for="edit-type" class="control-label">Type</label>
 							<form:select path="type" class="form-control" id="edit-type">
-								<option value="Conformance">Conformance</option>
-								<option value="Interoperability">Interoperability</option>
-								<option value="Conformance and Interoperability">Conformance and Interoperability</option>
-								<option value="Development">Development</option>
 							</form:select>
 						</div>
 						<div class="form-group">
@@ -141,12 +131,12 @@
 							<form:select path="idCertrel" class="form-control" id="edit-release"></form:select>
 						</div>
 						<div class="form-group">
-							<label for="edit-tccl" class="control-label">Test Case Control List</label>
+							<label for="edit-tccl" class="control-label">Test Case Control List (TCCL)</label>
 							<form:select path="idTccl" class="form-control" id="edit-tccl"></form:select>
 						</div>
 						<div class="form-group">
-							<label for="edit-car-id" class="control-label">Certification Application Request ID (*)</label>
-							<form:input path="carId" type="text" class="form-control" id="edit-car-id"/>
+							<label for="edit-car-id" class="control-label">Certification application Request ID (CRI)</label>
+							<form:select path="carId" type="text" class="form-control" id="edit-car-id"></form:select>
 						</div>
 						<form:input type="hidden" id="edit-services" name="supportedServices" path="supportedServices" value=""/>
 						<div class="form-group">
@@ -159,7 +149,7 @@
 					<p>(*) This is a mandatory field</p>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal" id="editCancel"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
 					<button id="editConfirm" type="submit" class="btn btn-custom"><span class="glyphicon glyphicon-ok"></span> Save changes</button>
 				</div>
 			</div>
@@ -186,7 +176,8 @@
 <script>
 	$(document).ready(function()
 	{
-		jQuery.getScript('resources/js/dynamic-project.js', function() {
+		jQuery.getScript('resources/js/dynamic-project.js', function()
+		{
 			projects.init();
 		});
 	});

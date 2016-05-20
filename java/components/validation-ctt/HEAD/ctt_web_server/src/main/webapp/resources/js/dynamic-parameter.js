@@ -18,20 +18,16 @@ var parameters = (function()
 	//-------------------------------------------------
 	// TITLE
 	//-------------------------------------------------
-	var title = jQuery('#title');
-	
-	var gpTable = jQuery('#table');
+	var _titleText = (sessionStorage.getItem("type") == "Conformance") ? 'Step 5<small> Configure your General Parameters</small>' : 'Step 6<small> Configure your General Parameters</small>';
+	//-------------------------------------------------
+	// GENERAL PARAMETERS TABLE
+	//-------------------------------------------------
+	var _$generalParametersTable = jQuery('#table');
+	var _generalParametersTableRows;
 	
 	var init = function()
-	{
-		title.html("Step 6<small> Configure your General Parameters</small>");
-		if (sessionStorage.getItem("type") == "Conformance")
-		{
-			title.html(function(i, oldText)
-			{
-				return oldText === 'Step 6<small> Configure your General Parameters</small>' ? 'Step 5<small> Configure your General Parameters</small>' : oldText;
-			});
-		}
+	{	
+		common.$title.html(_titleText);
 		
 		initDataTable();
 		onClickFunctions();
@@ -39,27 +35,27 @@ var parameters = (function()
 	
 	var initDataTable = function()
 	{
-		$('#table').dataTable({
+		_$generalParametersTable.dataTable({
 			paging: false,
 			searching: false,
-			"sDom": '<"top">rt<"bottom"flp><"clear">',
-			scrollY: ($(window).height()*9/15),
+			info: false,
+			scrollY: common.$dynamicSection.height() - 86,
 			columnDefs: [        
 				{ orderable: false, targets: 3},
 			],
 			order: [0, 'asc']
 		});
 		
-		var MyRows = $('#table').find('tbody').find('tr');
-		for (var i = 0; i < MyRows.length; i++)
+		_generalParametersTableRows = _$generalParametersTable.find('tbody').find('tr');
+		for (var i = 0; i < _generalParametersTableRows.length; i++)
 		{
-			var id = $(MyRows[i]).find('td:eq(1)').html();
+			var id = $(_generalParametersTableRows[i]).find('td:eq(1)').html();
 			
-			$(MyRows[i]).find('.form-control').keypress(isNumberKey);
+			$(_generalParametersTableRows[i]).find('.form-control').keypress(isNumberKey);
 			
 			if (sessionStorage.hasOwnProperty(id))
 			{
-				$(MyRows[i]).find('.form-control').val(sessionStorage.getItem(id));
+				$(_generalParametersTableRows[i]).find('.form-control').val(sessionStorage.getItem(id));
 			}
 		}
 	}
@@ -77,7 +73,7 @@ var parameters = (function()
 	
 	var onClickFunctions = function()
 	{
-		$('#nextButton').off('click').on('click', function(e){
+		common.$nextStepButton.off('click').on('click', function(e){
   			e.preventDefault();
   			
   			if (sessionStorage.getItem('isConfigured'))
@@ -85,10 +81,10 @@ var parameters = (function()
 				sessionStorage.setItem("modifiedParameters", true);
 			}
   			
-			var MyRows = $('#table').find('tbody').find('tr');
-			for (var i = 0; i < MyRows.length; i++) {
-				var id = $(MyRows[i]).find('td:eq(1)').html();
-				var value = $(MyRows[i]).find('.form-control').val();
+			for (var i = 0; i < _generalParametersTableRows.length; i++)
+			{
+				var id = $(_generalParametersTableRows[i]).find('td:eq(1)').html();
+				var value = $(_generalParametersTableRows[i]).find('.form-control').val();
 				
 				sessionStorage.setItem(id, value);
 			}
@@ -96,78 +92,80 @@ var parameters = (function()
 			$.ajax({
 				type: 'GET',
 				url: 'testcase',
-				success: function(response) {
-					$('#dynamic').fadeOut('fast', function() {
-	            		$("#dynamic").html( response );
+				success: function(response)
+				{
+					common.$dynamicSection.fadeOut('fast', function()
+					{
+						common.$dynamicSection.html(response);
 	            	});
 	                
-					$('#dynamic').fadeIn('fast', function() {
-	                	var table = $.fn.dataTable.fnTables(true);
-	                	if ( table.length > 0 ) {
-	                	    $(table).dataTable().fnAdjustColumnSizing();
-	                	}
+					common.$dynamicSection.fadeIn('fast', function()
+					{
+						common.adjustDataTablesHeader();
 	                });
 	                
-	                $('#nextButton').addClass('disabled');
-	                $('#nextButton').attr('disabled', true);
-	                $('#endButton').removeClass('disabled');
-	                $('#endButton').removeAttr('disabled', false);
+					common.enableButtons(common.$saveProjectButton);
+					common.disableButtons(common.$nextStepButton);
+	                
+	                common.selectNavigationElement($('#tc-nav'));
 				}
 			});
 		});
   		
-  		$('#prevButton').off('click').on('click', function(e){
+  		common.$previousStepButton.off('click').on('click', function(e)
+  		{
 			e.preventDefault();
 			
 			$('#idProject').val(sessionStorage.getItem('idProject'));
+			
 			$.ajax({
 				type: 'GET',
 				url: $('#prevForm').attr('action'),
 				data: $('#prevForm').serialize(),
-				success: function(response) {
-					$('#dynamic').fadeOut('fast', function() {
-	            		$("#dynamic").html( response );
+				success: function(response)
+				{
+					common.$dynamicSection.fadeOut('fast', function()
+					{
+						common.$dynamicSection.html(response);
 	            	});
 	                
-					$('#dynamic').fadeIn('fast', function() {
-	                	var table = $.fn.dataTable.fnTables(true);
-	                	if ( table.length > 0 ) {
-	                	    $(table).dataTable().fnAdjustColumnSizing();
-	                	}
+					common.$dynamicSection.fadeIn('fast', function()
+					{
+						common.adjustDataTablesHeader();
 	                });
+					
+					common.selectNavigationElement($('#ixit-nav'));
 				}
 			});
-			//$('#prevForm').submit();
 		});
   		
-  		$('#endButton').off('click').on('click', function(e) {
+  		common.$saveProjectButton.off('click').on('click', function(e)
+  		{
   			e.preventDefault();
   			
   			sessionStorage.setItem("modifiedParameters", true);
   			
-  			var MyRows = $('#table').find('tbody').find('tr');
-			for (var i = 0; i < MyRows.length; i++) {
-				var id = $(MyRows[i]).find('td:eq(1)').html();
-				var value = $(MyRows[i]).find('.form-control').val();
+  			for (var i = 0; i < _generalParametersTableRows.length; i++)
+  			{
+				var id = $(_generalParametersTableRows[i]).find('td:eq(1)').html();
+				var value = $(_generalParametersTableRows[i]).find('.form-control').val();
 				
 				sessionStorage.setItem(id, value);
 			}
 			
 			var data = {};
-			for (var j = 0; j < sessionStorage.length; j++) {
+			for (var j = 0; j < sessionStorage.length; j++)
+			{
 				var key = sessionStorage.key(j);
 				data[key] = sessionStorage.getItem(key);
 			}
-			
-			var token = $("meta[name='_csrf']").attr("content");
-			var header = $("meta[name='_csrf_header']").attr("content");
 			
 			$.ajax({
 				   	url: 'end/save',
 				   	type: 'POST',
 				   	beforeSend: function(xhr)
 				   	{
-			        	xhr.setRequestHeader(header, token);
+			        	xhr.setRequestHeader(common.csrfHeader, common.csrfToken);
 			        },
 				   	data:
 					{
@@ -175,20 +173,14 @@ var parameters = (function()
 					},
 			        success: function(response)
 			        {
-	                	$('#dynamic').fadeOut('fast', function()
+			        	common.$dynamicSection.fadeOut('fast', function()
 	                	{
-	                		$("#dynamic").html( response );
+	                		common.$dynamicSection.html( response );
 	                	});
-	                    $('#dynamic').fadeIn('fast');
+	                    common.$dynamicSection.fadeIn('fast');
 	                    
-	                    $('.nav-stacked li').addClass('disabled');
-				   		$('.nav-stacked li a').attr('disabled', true);
-				   		$('#prevButton').addClass('disabled');
-	            		$('#prevButton').attr('disabled', true);
-	            		$('#nextButton').addClass('disabled');
-	            		$('#nextButton').attr('disabled', true);
-	            		$('#endButton').addClass('disabled');
-	            		$('#endButton').attr('disabled', true);
+	                    common.disableNavigationBar();
+	                    common.disableButtons(common.$previousStepButton, common.$nextStepButton, common.$saveProjectButton);
 			        }
 			});	
   		});

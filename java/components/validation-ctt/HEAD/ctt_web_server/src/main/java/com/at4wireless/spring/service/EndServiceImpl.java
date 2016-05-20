@@ -20,6 +20,8 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,6 +67,7 @@ public class EndServiceImpl implements EndService
 	@Autowired
 	private CategoryDAO categoryDao;
 	
+	static final Logger log = LogManager.getLogger(EndServiceImpl.class);
 	private static final String USERS_PATH = File.separator + "Allseen" + File.separator + "Users" + File.separator;
 	
 	@Override
@@ -149,14 +152,17 @@ public class EndServiceImpl implements EndService
 						, param.getName(), map.get("data["+param.getName()+"]")[0]));
 			}
 			
-			if (!p.getType().equalsIgnoreCase("Conformance")) {
+			if (!p.getType().equalsIgnoreCase("Conformance"))
+			{
 				GoldenUnit gu;
 				List<GoldenUnit> guList = guService.getGuList(p.getIdProject());
 				
 				if (!guList.isEmpty())
 				{
 					Iterator<GoldenUnit> iter6 = guService.getGuList(p.getIdProject()).iterator();
-					while(iter6.hasNext()) {
+					
+					while (iter6.hasNext())
+					{
 						gu = iter6.next();
 						mainRootElement.appendChild(getGu(doc,gu.getName(),categoryDao.getCategoryById(gu.getCategory()).getName()));
 					}
@@ -174,7 +180,6 @@ public class EndServiceImpl implements EndService
 			StreamResult console = new StreamResult(new File(url));
 			transformer.transform(source, console);
 			
-			System.out.println("\nXML DOM Created Successfully..");
 			
 			url = File.separator+File.separator+"Allseen"+File.separator+File.separator+"Users"
 					+File.separator+File.separator+username
@@ -186,6 +191,8 @@ public class EndServiceImpl implements EndService
 		{
 			e.printStackTrace();
 		}
+		
+		log.debug("XML created successfully");
 		
 		return url;
 	}
@@ -319,7 +326,7 @@ public class EndServiceImpl implements EndService
 		    	if (child.getNodeName().equals("GoldenUnit"))
 		    	{
 		    		projectNode.removeChild(child);
-		    		guService.deleteProjectGus(p.getIdProject());
+		    		//guService.deleteProjectGus(p.getIdProject());
 		    	}
 		    }
 		    if (modifiedIcs)
@@ -370,19 +377,17 @@ public class EndServiceImpl implements EndService
 			}
 		}
 		
-		if (modifiedGus)
+		if ((modifiedGus) && (!p.getType().equalsIgnoreCase("Conformance")))
 		{
-			if (!p.getType().equalsIgnoreCase("Conformance")) {
-				GoldenUnit gu;
-				List<GoldenUnit> guList = guService.getGuList(p.getIdProject());
-				
-				if (!guList.isEmpty())
-				{
-					Iterator<GoldenUnit> iter6 = guService.getGuList(p.getIdProject()).iterator();
-					while(iter6.hasNext()) {
-						gu = iter6.next();
-						projectNode.appendChild(getGu(doc,gu.getName(),categoryDao.getCategoryById(gu.getCategory()).getName()));
-					}
+			GoldenUnit gu;
+			List<GoldenUnit> guList = guService.getGuList(p.getIdProject());
+			
+			if (!guList.isEmpty())
+			{
+				Iterator<GoldenUnit> iter6 = guService.getGuList(p.getIdProject()).iterator();
+				while(iter6.hasNext()) {
+					gu = iter6.next();
+					projectNode.appendChild(getGu(doc,gu.getName(),categoryDao.getCategoryById(gu.getCategory()).getName()));
 				}
 			}
 		}
@@ -483,7 +488,7 @@ public class EndServiceImpl implements EndService
 			e.printStackTrace();
 		}
 		
-		System.out.println("\nXML DOM Created Successfully..");
+		log.debug("XML created successfully");
 	}
 	
 	private void loadAvailableConfiguration(Project p, List<Ics> icsList, List<Ixit> ixitList, List<TestCase> tcList)

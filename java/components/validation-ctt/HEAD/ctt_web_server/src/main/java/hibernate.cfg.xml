@@ -5,7 +5,7 @@
 <hibernate-configuration>        
   <session-factory>
     <property name="dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
-    <property name="show_sql">true</property>
+    <property name="show_sql">false</property>
     <!-- <property name="hibernate.current_session_context_class">thread</property>   -->
   </session-factory>
 </hibernate-configuration>

@@ -34,9 +34,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.at4wireless.spring.common.DataTablesData;
 import com.at4wireless.spring.model.Project;
+import com.at4wireless.spring.model.Tccl;
 import com.at4wireless.spring.model.TestCase;
 import com.at4wireless.spring.model.dto.TestCaseDT;
+import com.at4wireless.spring.service.CertificationReleaseService;
 import com.at4wireless.spring.service.ProjectService;
+import com.at4wireless.spring.service.TcclService;
 import com.at4wireless.spring.service.TestCaseService;
 
 /**
@@ -50,6 +53,10 @@ public class TestCaseController
 	private TestCaseService tcService;
 	@Autowired
 	private ProjectService projectService;
+	@Autowired
+	private TcclService tcclService;
+	@Autowired
+	private CertificationReleaseService crService;
 	
 	/**
 	 * Loads the view and creates the necessary model objects
@@ -76,7 +83,7 @@ public class TestCaseController
      * @param 	request		servlet request with the ICS configuration
      * @return 				target view
      */
-	@RequestMapping(value="dataTable", method=RequestMethod.GET)
+	@RequestMapping(value="dataTable", method=RequestMethod.POST)
 	public @ResponseBody DataTablesData load(HttpServletRequest request)
 	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -128,15 +135,22 @@ public class TestCaseController
 	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		
+		List<Integer> disabledTccls = new ArrayList<Integer>();
+		
 		if (!(auth instanceof AnonymousAuthenticationToken))
 		{
 			Project p = projectService.getFormData(auth.getName(), Integer.parseInt(request.getParameter("idProject")));
+			int targetTccl = p.getIdTccl();
 			
-			return tcService.getDisabled(p.getIdTccl());
+			if ((targetTccl == 0) && (crService.isReleaseVersion(p.getIdCertrel())))
+			{
+				List<Tccl> tcclList = tcclService.listByCR(p.getIdCertrel());
+				targetTccl = tcclList.get(tcclList.size() - 1).getIdTccl();
+			}
+			
+			disabledTccls = tcService.getDisabled(targetTccl);
 		}
-		else
-		{
-			return new ArrayList<Integer>();
-		}
+		
+		return disabledTccls;
 	}
 }

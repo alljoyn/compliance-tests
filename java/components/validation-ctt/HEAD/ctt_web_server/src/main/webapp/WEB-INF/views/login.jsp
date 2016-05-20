@@ -5,7 +5,7 @@
 
 <html lang="en">
     <head>
-        <title>AllSeen</title>
+        <title>AllSeen Alliance CTT</title>
     	<meta charset="utf-8">
     	
     	<!-- Add the next line to ensure proper rendering and touch zooming -->
@@ -76,7 +76,16 @@
 		<script>
 			$(document).ready(function()
 			{
+				// reloading of the login screen every 5 minutes
 				setTimeout("location.reload(true);", 300000);
+				
+				// centering of the login box
+				$('#login-box').css({"margin-top": ($(window).height() - $('.footer').height() - $('#login-box').height())/2});
+				
+				// centering of the login box when resizing
+				$(window).resize(function() {
+					$('#login-box').css({"margin-top": ($(window).height() - $('.footer').height() - $('#login-box').height())/2});
+				})
 			});
 		</script>
     </body>

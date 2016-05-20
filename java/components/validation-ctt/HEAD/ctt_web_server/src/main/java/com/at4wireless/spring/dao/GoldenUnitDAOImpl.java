@@ -29,12 +29,14 @@ import org.springframework.stereotype.Repository;
 import com.at4wireless.spring.model.GoldenUnit;
 
 @Repository
-public class GoldenUnitDAOImpl implements GoldenUnitDAO {
+public class GoldenUnitDAOImpl implements GoldenUnitDAO
+{
 	@Autowired
 	private SessionFactory sessionFactory;
 
 	@Override
-	public List<GoldenUnit> list(String user) {
+	public List<GoldenUnit> list(String user)
+	{
 		@SuppressWarnings("unchecked")
 		List<GoldenUnit> listGolden = (List<GoldenUnit>) sessionFactory.getCurrentSession()
 				.createCriteria(GoldenUnit.class)
@@ -45,34 +47,41 @@ public class GoldenUnitDAOImpl implements GoldenUnitDAO {
 	}
 	
 	@Override
-	public GoldenUnit getGu(String user, int idGolden) {
+	public GoldenUnit getGu(String user, int idGolden)
+	{
 		@SuppressWarnings("unchecked")
 		List<GoldenUnit> listGolden = (List<GoldenUnit>) sessionFactory.getCurrentSession()
 				.createCriteria(GoldenUnit.class)
 					.add(Restrictions.like("user", user))
 					.add(Restrictions.like("idGolden", idGolden))
 				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-		if(listGolden.isEmpty()) {
+		
+		if (listGolden.isEmpty())
+		{
 			return null;
-		} else {
+		}
+		else
+		{
 			return listGolden.get(0);
 		}
 	}
 
 	@Override
-	public void addGu(GoldenUnit gu) {
+	public void addGu(GoldenUnit gu)
+	{
 		sessionFactory.getCurrentSession().save(gu);		
 	}
 	
 	@Override
-	public void delGu(int idGolden) {
-		
+	public void delGu(int idGolden)
+	{
 		sessionFactory.getCurrentSession().createSQLQuery("delete from project_golden where id_golden="+idGolden).executeUpdate();
 		sessionFactory.getCurrentSession().createSQLQuery("delete from golden where id_golden ="+idGolden).executeUpdate();
 	}
 	
 	@Override
-	public void saveChanges(GoldenUnit gu) {
+	public void saveChanges(GoldenUnit gu)
+	{
 		sessionFactory.getCurrentSession().createQuery("update GoldenUnit set name = '"+gu.getName()
 				+"', modifiedDate = '"+gu.getModifiedDate()+"', category = '"+gu.getCategory()
 				+"', manufacturer = '"+gu.getManufacturer()+"', model = '"+gu.getModel()
@@ -82,7 +91,8 @@ public class GoldenUnitDAOImpl implements GoldenUnitDAO {
 	}
 
 	@Override
-	public GoldenUnit getGuByName(String user, String name) {
+	public GoldenUnit getGuByName(String user, String name)
+	{
 		@SuppressWarnings("unchecked")
 		List<GoldenUnit> listGolden = (List<GoldenUnit>) sessionFactory.getCurrentSession()
 				.createCriteria(GoldenUnit.class)
@@ -90,9 +100,12 @@ public class GoldenUnitDAOImpl implements GoldenUnitDAO {
 					.add(Restrictions.like("name", name))
 				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
 
-		if(listGolden.isEmpty()) {
+		if (listGolden.isEmpty())
+		{
 			return null;	
-		} else {
+		}
+		else
+		{
 			return listGolden.get(0);
 		}
 	}
@@ -100,17 +113,20 @@ public class GoldenUnitDAOImpl implements GoldenUnitDAO {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<GoldenUnit> getGuList(int idProject) {
-		
+	public List<GoldenUnit> getGuList(int idProject)
+	{
 		List<BigInteger> listIds = (List<BigInteger>) sessionFactory.getCurrentSession()
 				.createSQLQuery("select id_golden from project_golden where id_project="+idProject).list();
 		
 		List<Integer> cast = new ArrayList<Integer>();
-		for (BigInteger bi : listIds) {
+		
+		for (BigInteger bi : listIds)
+		{
 			cast.add(bi.intValue());
 		}
 		
 		List<GoldenUnit> guList = new ArrayList<GoldenUnit>();
+		
 		if (!cast.isEmpty())
 		{
 			guList = (List<GoldenUnit>) sessionFactory.getCurrentSession()

@@ -253,7 +253,8 @@ public class TestCaseServiceImpl implements TestCaseService
 	
 	@Override
 	@Transactional
-	public List<Integer> getDisabled(int idTccl) {
+	public List<Integer> getDisabled(int idTccl)
+	{
 		return tcclDao.getIdsDisabled(idTccl);
 	}
 

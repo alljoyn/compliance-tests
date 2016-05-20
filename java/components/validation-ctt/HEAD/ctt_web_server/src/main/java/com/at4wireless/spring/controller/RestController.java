@@ -32,12 +32,16 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -53,6 +57,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
@@ -69,14 +75,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.at4wireless.spring.dao.GoldenUnitDAO;
 import com.at4wireless.spring.model.Project;
 import com.at4wireless.spring.model.RestProject;
-import com.at4wireless.spring.service.CertificationReleaseService;
+import com.at4wireless.spring.model.Sample;
 import com.at4wireless.spring.service.DutService;
 import com.at4wireless.spring.service.ProjectService;
 import com.at4wireless.spring.service.TestCaseService;
@@ -93,15 +99,17 @@ public class RestController
 	@Autowired
 	private ProjectService projectService;
 	@Autowired
-	private CertificationReleaseService crService;
-	@Autowired
 	private DutService dutService;
-	@Autowired
-	private GoldenUnitDAO guDao;
 	@Autowired
 	private TestCaseService tcService;
 	@Autowired
 	private UserService userService;
+	
+	private static final String USERS_PATH = File.separator + "Allseen"
+			+File.separator+"Users"+File.separator;
+	private static final String RESULTS_XML_NAME = "result.xml";
+	
+	static final Logger log = LogManager.getLogger(RestController.class);
 	
 	@RequestMapping(value = "/keyExchange", method = RequestMethod.POST,
 			produces = "application/json; charset=utf-8")
@@ -228,27 +236,25 @@ public class RestController
 		JSONObject xmlJSONObj = null;
 		String user = new String(DatatypeConverter.parseBase64Binary(encodedUser));
 		
-		for (Project p : projectService.list(user))
+		Project p = projectService.getFormData(user, id);
+		
+		if (p.isHasResults())
 		{
-			if(p.getIdProject()==id)
-			{
-				if(p.isHasResults())
-				{
-					appendLastExecution(p.getConfiguration(), p.getResults());
-				}
-				
-				config = readFile(p.getConfiguration(), StandardCharsets.UTF_8);
-				
-				try
-				{
-					xmlJSONObj = XML.toJSONObject(config);
-				}
-				catch (JSONException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+			appendLastExecution(p.getConfiguration(), p.getResults());
+		}
+		
+		// Update samples to be sure that sample list has the newest values
+		updateSamples(p.getIdDut(), p.getConfiguration());
+		
+		config = readFile(p.getConfiguration(), StandardCharsets.UTF_8);
+		
+		try
+		{
+			xmlJSONObj = XML.toJSONObject(config);
+		}
+		catch (JSONException e)
+		{
+			// Error while creating JSON
 		}
 		return xmlJSONObj.toString();
 	}
@@ -339,6 +345,25 @@ public class RestController
 		}
 	}
 	
+	private void updateSamples(int idDut, String configurationPath)
+	{
+		XMLManager xmlManager = new XMLManager();
+		Document xmlDocument = xmlManager.fileToDocument(configurationPath);
+		List<String> sampleNodes = Arrays.asList("Id", "DeviceId", "AppId", "swVer", "hwVer");
+		
+		xmlManager.removeNodesFromDocument(xmlDocument, "Project/Sample");
+		
+		for (Sample sample : dutService.getSampleData(idDut))
+		{
+			List<String> sampleValues = Arrays.asList(Integer.toString(sample.getIdSample()),
+					sample.getDeviceId(), sample.getAppId(), sample.getSwVer(), sample.getHwVer());
+			
+			xmlManager.addNodeToDocument(xmlDocument, "Sample", sampleNodes, sampleValues);
+		}
+		
+		xmlManager.saveDocumentToFile(xmlDocument, configurationPath);
+	}
+	
 	/**
 	 * Sends results of a certain project
 	 * 
@@ -405,14 +430,14 @@ public class RestController
 		
 		if (!requestBody.isEmpty())
 		{
-			for (Project p : projectService.list(user))
+			for (Project p : projectService.list(user)) //change this for [AT4]
 			{
-				if (p.getIdProject()==id)
+				if (p.getIdProject() == id)
 				{
 					Writer writer = null;
 					String url = File.separator+"Allseen"
 							+File.separator+"Users"+File.separator+user+File.separator+id
-							+File.separator+"result.xml";
+							+File.separator+"result.xml"; //change this to a Config parameter [AT4]
 	
 					File f = new File(url);
 					
@@ -449,7 +474,7 @@ public class RestController
 							{
 							    //Create a duplicate node and transfer ownership of the
 							    //new node into the destination document
-							    Node newNode = target.importNode(nodeList.item(i),true);
+							    Node newNode = target.importNode(nodeList.item(i), true);
 							    //Make the new node an actual item in the target document
 							    target.getDocumentElement().appendChild(newNode);
 							}
@@ -510,7 +535,6 @@ public class RestController
 									+user+File.separator+File.separator+id
 									+File.separator+File.separator+"result.xml";
 						    projectService.resultProject(id, url);
-						    System.out.println("\nXML DOM Created Successfully..");
 						}
 						catch (IOException ex)
 						{
@@ -526,6 +550,8 @@ public class RestController
 						   catch (Exception ex) {}
 						}
 					}
+					
+					log.debug("XML created successfully");
 					
 					return new ResponseEntity<String>(
 							"Handled application/xml request. Request body was: "
@@ -685,6 +711,179 @@ public class RestController
 		return "Bad user or projectId";
     }
 	
+	@RequestMapping(value="/uploadV2/{encodedUser}/{id}", method = RequestMethod.POST)
+	public ResponseEntity<String> handleFileUploadV2(@PathVariable String encodedUser, @PathVariable int id,
+			@RequestParam("log-name") String log_name, @RequestParam("file") String file,
+			@RequestParam("hash") String hash, @RequestParam("id-test") String id_test,
+			@RequestParam("name") String name, @RequestParam("description") String description,
+			@RequestParam("date-time") String date_time, @RequestParam("verdict") String verdict,
+			@RequestParam("version") String version)
+	{
+		// Decode the user
+		String user = new String(DatatypeConverter.parseBase64Binary(encodedUser));
+		// Retrieve the target project
+		Project p = projectService.getFormData(user, id);
+		// If project exists and received parameters are not null...
+		if ((p != null) && (log_name != null) && (file != null) && (hash != null)
+				&& (name != null) && (date_time != null) && (verdict != null)
+				&& (version != null) && (id_test != null))
+		{
+			// Calculate MD5 from file, to check if log has been received correctly
+			byte[] messageDigest;
+			StringBuffer hexString;
+			try
+			{
+				messageDigest = MessageDigest.getInstance("MD5").digest(file.getBytes());
+				
+				hexString = new StringBuffer();
+		        
+		        for (int i = 0; i < messageDigest.length; i++)
+		        {
+		        	String hex = Integer.toHexString(0xFF & messageDigest[i]);
+		        	if (hex.length() == 1)
+		        	{
+		        		hexString.append('0');
+		        	}
+		        	hexString.append(hex);
+		        }
+			} 
+			catch (NoSuchAlgorithmException e)
+			{
+				e.printStackTrace();
+				return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+	        
+	        
+	        // If received MD5 is the same than calculated...
+	        if (hash.equalsIgnoreCase(hexString.toString()))
+	        {
+	        	boolean newFile = false;
+				String resultsXmlPath = USERS_PATH + user + File.separator + id + File.separator + "result.xml"; 
+				File resultsXmlFile = new File(resultsXmlPath);
+				// Check if target file exists. If not, create it.
+				if (!resultsXmlFile.exists())
+				{
+					try
+					{
+						resultsXmlFile.createNewFile();
+					}
+					catch (IOException e)
+					{
+						e.printStackTrace();
+						return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);	
+					}
+					
+					newFile = true;
+				}
+				
+				// Add new node with received data
+				Document resultsXmlDocument;
+				try
+				{
+					if (!newFile)
+					{
+						resultsXmlDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+								.parse(new FileInputStream(resultsXmlPath));
+					}
+					else
+					{
+						resultsXmlDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+					}
+				}
+				catch (SAXException | IOException | ParserConfigurationException | FactoryConfigurationError e)
+				{
+					e.printStackTrace();
+					return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+				}
+				
+				if (newFile)
+				{
+					Element rootElement = resultsXmlDocument.createElement("Results");
+					resultsXmlDocument.appendChild(rootElement);
+				}
+				
+				List<String> nodeNames = new ArrayList<String>(Arrays.asList("Id", 
+						"Name", "Description", "DateTime", "Verdict", "Version", "LogFile"));
+				
+				List<String> nodeValues = new ArrayList<String>(Arrays.asList(id_test,
+						name, description, date_time, verdict, version, log_name));
+				
+				addNodesToDocument(nodeNames, nodeValues, resultsXmlDocument);
+				
+				Transformer transformer;
+				try
+				{
+					transformer = TransformerFactory.newInstance().newTransformer();
+				}
+				catch (TransformerConfigurationException | TransformerFactoryConfigurationError e)
+				{
+					e.printStackTrace();
+					return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);	
+				}
+				
+				Result output = new StreamResult(new File(resultsXmlPath));
+				Source input = new DOMSource(resultsXmlDocument);
+				
+				try
+				{
+					transformer.transform(input, output);
+				}
+				catch (TransformerException e)
+				{
+					e.printStackTrace();
+					return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);	
+				}
+				
+				// Modify results path format (File.separator -> File.separator + File.separator)
+				// to add path to database
+				resultsXmlPath = File.separator+File.separator+"Allseen"
+						+File.separator+File.separator+"Users"+File.separator+File.separator
+						+user+File.separator+File.separator+id
+						+File.separator+File.separator+"result.xml";
+				projectService.resultProject(id, resultsXmlPath);
+				
+				// Store log
+				BufferedOutputStream stream;
+				try
+				{
+					stream = new BufferedOutputStream(new FileOutputStream(new File(USERS_PATH + user
+							+ File.separator + id + File.separator + log_name)));
+					stream.write(file.getBytes());
+	                stream.close();
+				}
+				catch (Exception e)
+				{
+					// Here a deletion of xml info should be included
+					e.printStackTrace();
+					return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);	
+				}
+				
+				return new ResponseEntity<String>(HttpStatus.OK);	
+	        }
+	        else
+	        {
+	        	return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);	
+	        }
+		}
+		else
+		{
+			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+		}
+    }
+		
+	private void addNodesToDocument(List<String> nodeNames, List<String> nodeValues, Document document)
+	{
+		Element rootElement = document.createElement("TestCase");
+		for (int i = 0; i < nodeNames.size(); i++)
+		{
+			Element node = document.createElement(nodeNames.get(i));
+			node.appendChild(document.createTextNode(nodeValues.get(i)));
+			rootElement.appendChild(node);
+		}
+		
+		document.getDocumentElement().appendChild(rootElement);
+	}
+	
 	
 	/**
 	 * Reads characters of an input file
@@ -694,7 +893,7 @@ public class RestController
 	 * @return				string with the content of the file
 	 * @throws 	IOException	if file does not exist
 	 */
-	protected static String readFile(String path, Charset encoding) throws IOException 
+	public static String readFile(String path, Charset encoding) throws IOException 
 	{
 		byte[] encoded = Files.readAllBytes(Paths.get(path));
 		return new String(encoded, encoding);

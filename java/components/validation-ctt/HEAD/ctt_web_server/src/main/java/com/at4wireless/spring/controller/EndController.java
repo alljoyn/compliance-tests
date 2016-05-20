@@ -24,6 +24,8 @@ import java.io.OutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -47,6 +49,8 @@ public class EndController
 	private ProjectService projectService;
 	@Autowired
 	private EndService endService;
+	
+	static final Logger log = LogManager.getLogger(EndController.class);
 	
 	private static final int BUFFER_SIZE = 4096;
 	

@@ -17,7 +17,7 @@
 			        	<th>Select</th>
 	        		</tr>
 	    		</thead>
-	      		<tbody id="tcBody">
+	      		<tbody>
 				</tbody>        	
 	      	</table>
       	</div>
@@ -44,27 +44,12 @@
 		<form:input type="hidden" id="idProject" name="idProject" path="idProject" value=""/>
 	</form:form>
 </div>
-    
-<!-- Processing... modal -->	
-<div class="modal" tabindex="-1" role="dialog" aria-hidden="true" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false">
-	<div class="modal-dialog">
-    	<div class="modal-content">
-			<div class="modal-header">
-       			<h1>Processing...</h1>
-       		</div>
-       		<div class="modal-body">
-       			<div class="progress progress-striped active">
-       				<div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%"></div>
-       			</div>
-       		</div>
-		</div>
-	</div>
-</div>
 		
 <script>	
 	$(document).ready(function()
 	{
-		jQuery.getScript('resources/js/dynamic-testcase.js', function() {
+		jQuery.getScript('resources/js/dynamic-testcase.js', function()
+		{
 			testcases.init();
 		});
 	});

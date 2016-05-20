@@ -21,6 +21,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -49,7 +51,9 @@ import com.at4wireless.spring.service.ProjectService;
 @Controller
 @RequestMapping(value="/gu")
 public class GoldenUnitController
-{
+{	
+	static final Logger log = LogManager.getLogger(GoldenUnitController.class);
+	
 	@Autowired
 	private ProjectService projectService;
 	@Autowired
@@ -70,9 +74,8 @@ public class GoldenUnitController
 		
 		if (!(auth instanceof AnonymousAuthenticationToken))
 		{
-			String username = auth.getName();
+			//String username = auth.getName();
 			
-			//model.addAttribute("guList", guService.getTableData(username));
 			model.addAttribute("categoryList", guService.getCategories());
 			model.addAttribute("newProject", new Project());
 			model.addAttribute("newGu", new GoldenUnit());
@@ -254,7 +257,11 @@ public class GoldenUnitController
 		
 		if (!(auth instanceof AnonymousAuthenticationToken))
 		{
+			log.trace("User authenticated");
+			
 			projectService.setGu(auth.getName(), newProject);
+			
+			log.trace(String.format("%d golden units stored", guService.getGuList(newProject.getIdProject()).size()));
 			return new ModelAndView("redirect:/ics?idProject=" + newProject.getIdProject());
 		}
 		else

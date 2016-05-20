@@ -84,12 +84,9 @@ public interface ProjectDAO {
 	 */
 	public void setDut(Project project);
 	
-	/**
-	 * Assigns a GU to a project
-	 * 
-	 * @param 	project		project object with the GU to be assigned
-	 */
-	public void setGu(Project project);
+	public void unassignGoldenUnits(int projectId);
+	
+	public void assignGoldenUnits(Project project);
 	
 	/**
 	 * Retrieves a certain project by id

@@ -38,6 +38,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +51,7 @@ import org.xml.sax.SAXException;
 
 import com.at4wireless.spring.dao.CertificationReleaseDAO;
 import com.at4wireless.spring.dao.DutDAO;
+import com.at4wireless.spring.dao.GoldenUnitDAO;
 import com.at4wireless.spring.dao.ProjectDAO;
 import com.at4wireless.spring.dao.SampleDAO;
 import com.at4wireless.spring.dao.ServiceFrameworkDAO;
@@ -62,7 +65,7 @@ import com.at4wireless.spring.model.Tccl;
 
 @Service
 public class ProjectServiceImpl implements ProjectService
-{
+{	
 	@Autowired
 	private ProjectDAO projectDao;
 	@Autowired
@@ -70,11 +73,15 @@ public class ProjectServiceImpl implements ProjectService
 	@Autowired
 	private DutDAO dutDao;
 	@Autowired
+	private GoldenUnitDAO guDao;
+	@Autowired
 	private SampleDAO sampleDao;
 	@Autowired
 	private TcclDAO tcclDao;
 	@Autowired
 	private ServiceFrameworkDAO serviceDao;
+	
+	static final Logger log = LogManager.getLogger(ProjectServiceImpl.class);
 	
 	@Override
 	@Transactional
@@ -187,6 +194,9 @@ public class ProjectServiceImpl implements ProjectService
 	public Project getFormData(String username, int idProject)
 	{
 		Project p = projectDao.getProject(username,idProject);
+		
+		log.trace(guDao.getGuList(p.getIdProject()).size());
+
 		List<BigInteger> biList = serviceDao.getServices(p.getIdProject());
 		
 		StringBuilder str = new StringBuilder();
@@ -222,38 +232,15 @@ public class ProjectServiceImpl implements ProjectService
 				i++;
 			}
 			
-			if ((saved.getIdCertrel() != p.getIdCertrel()) || (!(saved.getType().equals(p.getType())))
-					|| (!equals))
-			{
-				/*if (saved.isIsConfigured())
-				{	
-					try
-					{
-						String cfg = saved.getConfiguration();
-						
-						if (cfg != null)
-						{
-							File fileTemp = new File(cfg);
-							
-							if (fileTemp.exists())
-							{
-								fileTemp.delete();
-							}
-						}
-					}
-					catch (Exception e)
-					{
-						e.printStackTrace();
-					}
-					projectDao.configProject(Integer.toString(saved.getIdProject()), null);
-				}*/
-			}
 			projectDao.saveChanges(p);
 
 			checkTcclContent(p);
 			parseSupportedServices(p);
 			parseGoldenUnits(p);
+			p.setIdDut(saved.getIdDut());
 			p.setIsConfigured(saved.isIsConfigured());
+			p.setResults(saved.getResults());
+			
 			return p;
 		}
 		else
@@ -474,16 +461,25 @@ public class ProjectServiceImpl implements ProjectService
 			e.printStackTrace();
 		}
 		
-		System.out.println("\nXML DOM Created Successfully..");
+		log.debug("XML created successfully");
 	}
 
 	@Override
-	@Transactional
+	@Transactional(rollbackFor={Exception.class})
 	public void setGu(String username, Project project)
 	{
-		if (!project.getgUnits().isEmpty())
+		
+		try
 		{
-			projectDao.setGu(project);
+			if (!project.getgUnits().isEmpty())
+			{
+				projectDao.unassignGoldenUnits(project.getIdProject());
+				projectDao.assignGoldenUnits(project);
+			}
+		}
+		catch (Exception e)
+		{
+			throw e;
 		}
 	}
 	
@@ -543,7 +539,6 @@ public class ProjectServiceImpl implements ProjectService
 		{
 			for (Project p : projectDao.getProjectByDut(username, idDut))
 			{
-				System.out.println(p.isIsConfigured());
 				if (p.isIsConfigured())
 				{	
 					try

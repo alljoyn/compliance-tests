@@ -16,50 +16,104 @@
 var common = (function()
 {
 	//-------------------------------------------------
-	// LOCAL AGENT KEY BUTTONS
+	// TITLE
+	//-------------------------------------------------
+	var $title = jQuery('#title');
+	//-------------------------------------------------
+	// COMMON BUTTONS
 	//-------------------------------------------------	
-	var apiKeyButton = jQuery('.api-key');
-	var closeApiKeyButton = jQuery('#closeApiKey');
-	var apiKeyField = jQuery('#key');
-	var apiKeyModal = jQuery('#generatedKey');
+	var _$apiKeyButton = jQuery('#api-key-button');
+
+	var _$viewTcclButton = jQuery('#view-tccls');
+	var _$viewTcclModal = jQuery('#viewTcclModal');
+	var _$viewTcclTable = jQuery('#viewTcclTable');
+	
+	//var _$viewUserManualButton = jQuery('#view-user-manual');
 	//-------------------------------------------------
 	// NAVIGATION BAR
-	//-------------------------------------------------	
-	var navigationElements = jQuery('.asa-left-nav li');
+	//-------------------------------------------------
+	var _$navigationList = jQuery('.asa-left-nav');
+	var _$navigationElements = jQuery('.asa-left-nav li');
 	//-------------------------------------------------
 	// BREADCRUMBS
 	//-------------------------------------------------	
-	var projectBreadcrumb = jQuery('#project-breadcrumb');
-	var dutBreadcrumb = jQuery('#dut-breadcrumb');
-	var guBreadcrumb = jQuery('#gu-breadcrumb');
+	var _$projectBreadcrumb = jQuery('#project-breadcrumb');
+	var _$dutBreadcrumb = jQuery('#dut-breadcrumb');
+	var _$guBreadcrumb = jQuery('#gu-breadcrumb');
+	//-------------------------------------------------
+	// DYNAMIC SECTION
+	//-------------------------------------------------	
+	var $dynamicSection = jQuery('#dynamic');
+	//-------------------------------------------------
+	// NAVIGATION BUTTONS
+	//-------------------------------------------------	
+	var $nextStepButton = jQuery('#nextButton');
+	var $previousStepButton = jQuery('#prevButton');
+	var $saveProjectButton = jQuery('#endButton');
+	//-------------------------------------------------
+	// TOOLTIPS
+	//-------------------------------------------------	
+	var _$nextStepButtonTooltip = jQuery('#nextButtonTooltip');
 	//-------------------------------------------------
 	// POST REQUEST TOKEN AND HEADER
 	//-------------------------------------------------
 	var token = jQuery("meta[name='_csrf']").attr("content");
 	var header = jQuery("meta[name='_csrf_header']").attr("content");
+	//-------------------------------------------------
+	// LOGOUT
+	//-------------------------------------------------
+	var _$logoutForm = jQuery("#logoutForm");
+	
+	var _lastWindowSize = $(window).height();
 	
 	var init = function()
 	{
-		onClickFunctions();
+		$dynamicSection.css({height: $(window).height() - 220});
 		
+		$(window).resize(function()
+		{
+			var windowHeight = $(window).height();
+			var tableHeight = $('div.dataTables_scrollBody').height();
+			$dynamicSection.css({height: windowHeight - 220});
+			
+			adjustDataTablesHeader();
+			
+			$('div.dataTables_scrollBody').height(tableHeight - _lastWindowSize + windowHeight );
+			_lastWindowSize = windowHeight;
+		})
+		
+		_initTooltips();
+		
+		// init click functions
+		_onClickFunctions();
+		
+		// load project view
 		$.ajax({
             type: "GET",
             url: 'project',
             success: function(response)
             {
-            	$('#dynamic').fadeOut('fast', function()
+            	$dynamicSection.fadeOut('fast', function()
             	{
-            		$("#dynamic").html( response );
+            		$dynamicSection.html(response);
             	});
             	
-                $('#dynamic').fadeIn('fast');
+            	$dynamicSection.fadeIn('fast');
             }
         });
 	}
 	
-	var onClickFunctions = function()
+	var _initTooltips = function()
 	{
-		apiKeyButton.on('click', function()
+		_$nextStepButtonTooltip.tooltip({'placement': 'right'});
+		/*_$previousStepButtonTooltip.tooltip({'placement': 'left'});
+		_$saveProjectButtonTooltip.tooltip({'placement': 'bottom'});*/
+	}
+	
+	var _onClickFunctions = function()
+	{
+		// generate a new CTT Local Agent key
+		_$apiKeyButton.on('click', function()
 		{
 			$.ajax({
 				type : 'POST',
@@ -68,24 +122,116 @@ var common = (function()
 				{
 		            xhr.setRequestHeader(header, token);
 		        },
-				success : function (data)
+				success : function (newCttPass)
 				{
-					apiKeyField.empty();
-					apiKeyField.append(data);
-					apiKeyModal.modal('show');
+					var message = "Your CTT Local Agent password is:";
+					message += "<br>" + newCttPass + "<br>";
+					message += "Please copy it because it cannot be retrieved";
+
+					// open the modal to show the password
+					yesNoModal.show(message, {title: "CTT Local Agent password", yesButton: false, noLabel: 'Close', noOnClick: function() {
+						$('.modal-body').find('h4').empty();
+					}});
 				}
 			});	
 		});
 		
-		closeApiKeyButton.on('click', function()
+		/*_$viewUserManualButton.on('click', function(e)
+				{
+					e.preventDefault();
+
+					window.open('common/user-manual');
+				});*/
+		
+		_$viewTcclButton.on('click', function()
 		{
-			apiKeyField.empty();
+			$.ajax({
+				type: 'get',
+				url: 'common/tccl',
+				success: function(tcclList)
+				{
+					var tcclToAppend = '<select id="tccl-selector" class="form-control">'
+					$.each(tcclList, function(i, tccl)
+					{
+						tcclToAppend += "<option value=\""+tccl.idTccl+"\">"+tccl.name+"</option>";
+					})
+					
+					tcclToAppend += '</select>';
+					
+					yesNoModal.show(tcclToAppend, {title: "Select a TCCL to view",
+							yesLabel: '<span class="glyphicon glyphicon-search"></span> View',
+							noLabel: '<span class="glyphicon glyphicon-chevron-left"></span> Back',
+							yesOnClick: function()
+							{
+								$.ajax({
+									cache: false,
+									type : 'GET',
+									url : 'common/tccl/edit',
+									data :
+									{
+										idTccl : $('#tccl-selector').val()
+									},
+									success: function (data)
+									{
+										yesNoModal.hide();
+										
+										_$viewTcclModal.find('h3').html($('#tccl-selector option:selected').text());
+										_$viewTcclTable.find('tbody').empty();
+										
+										var tcclToAppend = '';
+										
+										$.each(data, function(i, tc)
+										{
+											tcclToAppend += '<tr><td class="hide">' + tc[0] + '</td><td width="20%">'
+													+ tc[1] + '</td><td width="60%">' + tc[2] + '</td>'
+													+ '<td width="10%">' + tc[3]
+													+'</td><td width="10%" style="text-align: center"><input class="is_checkbox" type="checkbox"';
+											
+											if (tc[4])
+											{
+												tcclToAppend += 'checked';
+											}
+											
+											tcclToAppend += '></tr>';
+										});
+										
+										_$viewTcclTable.find('tbody').append(tcclToAppend);
+										
+										_$viewTcclModal.modal('show');
+										
+										_$viewTcclModal.on('shown.bs.modal', function()
+										{
+											_$viewTcclTable.DataTable().columns.adjust().draw();
+										})
+										
+										if (!_$viewTcclTable.hasClass("dataTable"))
+										{
+											_$viewTcclTable.DataTable({
+												paging: false,
+												"sDom": '<"top">rt<"bottom"flp><"clear">',
+												scrollY: ($(window).height()/2),
+												columnDefs: [        
+													{ orderable: false, targets: [3, 4]},
+												],
+												order: [0, 'asc']
+											});			
+										}
+										
+										_$viewTcclTable.DataTable().search('');
+										
+										_$viewTcclTable.find('tbody').find('.is_checkbox').prop('disabled', true);
+								   }
+								});
+							}
+					});
+				}
+			})
 		});
 		
-		navigationElements.on('click', function(e)
+		_$navigationElements.on('click', function(e)
 		{
-			e.preventDefault();	
-			
+			e.preventDefault();
+			var navigationElement = $(this);
 			var link = $(this).find('a').attr('href');
 			
 			if ((link == 'ics') || (link == 'parameter') || (link == 'testcase'))
@@ -99,7 +245,7 @@ var common = (function()
 			
 			//jQuery.address.value(link);
 			
-			if (!$(this).hasClass('disabled'))
+			if ((!$(this).hasClass('disabled')) && (!$(this).hasClass('selected-step')))
 			{
 				$.ajax({
 		            type: "GET",
@@ -108,42 +254,33 @@ var common = (function()
 		            {	
 		            	if (link == 'project')
 	            		{
-		            		navigationElementStatus(false);
-					   		$('#prevButton').addClass('disabled');
-		            		$('#prevButton').attr('disabled', true);
-		            		$('#nextButton').addClass('disabled');
-		            		$('#nextButton').attr('disabled', true);
-		            		$('#endButton').addClass('disabled');
-		            		$('#endButton').attr('disabled', true);
+		            		//navigationElementStatus(false);
+		            		disableNavigationBar();
+		            				            		
+		            		disableNavigationButtons($previousStepButton, $nextStepButton, $saveProjectButton);
 		            		
 		            		sessionStorage.clear();
 	            		}
 		            	else
 	            		{
-		            		$('#prevButton').removeClass('disabled');
-		            		$('#prevButton').removeAttr('disabled', false);
-		            		
+		            		enableNavigationButtons($previousStepButton, $saveProjectButton);
+		            		            		
 		            		if (link.indexOf('testcase') >= 0)
 	            			{
-		            			$('#nextButton').addClass('disabled');
-			            		$('#nextButton').attr('disabled', true);
+		            			disableNavigationButtons($nextStepButton);
 	            			}
 		            		else
 		            		{
-		            			$('#nextButton').removeClass('disabled');
-			            		$('#nextButton').removeAttr('disabled', false);
+		            			enableNavigationButtons($nextStepButton);
 		            		}
-		            		
-		            		$('#endButton').removeClass('disabled');
-		            		$('#endButton').removeAttr('disabled', false);
 	            		}
 		            	
-		            	$('#dynamic').fadeOut('fast', function()
+		            	$dynamicSection.fadeOut('fast', function()
 		            	{
-		            		$("#dynamic").html(response);
+		            		$dynamicSection.html(response);
 		            	});
 		            	
-		                $('#dynamic').fadeIn('fast', function()
+		            	$dynamicSection.fadeIn('fast', function()
 		                {
 		                	var table = $.fn.dataTable.fnTables(true);
 		                	if (table.length > 0)
@@ -152,41 +289,43 @@ var common = (function()
 		                	}
 		                });
 		                
-		                updateBreadcrumbs(link, sessionStorage.getItem('projectName'), sessionStorage.getItem('type'), 
+		                _updateBreadcrumbs(link, sessionStorage.getItem('projectName'), sessionStorage.getItem('type'), 
 		                		sessionStorage.getItem('associatedDut'), sessionStorage.getItem('associatedGu'));
+		                
+		                selectNavigationElement(navigationElement);
 		            }
 		        });
 			}
 		});
 	}
 	
-	var updateBreadcrumbs = function(url, projectName, projectType, dutName, guNames)
+	var _updateBreadcrumbs = function(url, projectName, projectType, dutName, guNames)
 	{
 		if (url.indexOf('project') < 0)
 		{
-			showBreadcrumb(projectBreadcrumb, projectName, true);
+			_showBreadcrumb(_$projectBreadcrumb, projectName, true);
             
             if (url.indexOf('dut') < 0)
             {
-            	showBreadcrumb(dutBreadcrumb, dutName, true);
+            	_showBreadcrumb(_$dutBreadcrumb, dutName, true);
                 
                 if ((projectType != "Conformance") && (url.indexOf('gu') < 0))
                 {
-                	showBreadcrumb(guBreadcrumb, guNames, true);
+                	_showBreadcrumb(_$guBreadcrumb, guNames, true);
                 }
                 else
                 {
-                	showBreadcrumb(guBreadcrumb, 'GU', false);
+                	_showBreadcrumb(_$guBreadcrumb, 'GU', false);
                 }
             }
             else
             {
-            	showBreadcrumb(dutBreadcrumb, 'DUT', false);
+            	_showBreadcrumb(_$dutBreadcrumb, 'DUT', false);
             }
 		}
 	}
 	
-	var showBreadcrumb = function(breadcrumb, value, shown)
+	var _showBreadcrumb = function(breadcrumb, value, shown)
 	{
 		breadcrumb.text(value);
 		
@@ -204,24 +343,139 @@ var common = (function()
 	{
 		if (enabled)
 		{
-			navigationElements.removeClass('disabled');
-	   		navigationElements.find('a').removeAttr('disabled', false);
+			_$navigationElements.removeClass('disabled');
+	   		_$navigationElements.find('a').removeAttr('disabled', false);
 		}
 		else
 		{
-			navigationElements.addClass('disabled');
-	   		navigationElements.find('a').attr('disabled', true);
+			_$navigationElements.addClass('disabled');
+	   		_$navigationElements.find('a').attr('disabled', true);
 		}
 	}
 	
 	var logoutFormSubmit = function()
 	{
-		logoutForm.submit();
+		_$logoutForm.submit();
 	};
+	
+	var disableNavigationButtons = function()
+	{
+		for (var i = 0; i < arguments.length; i++)
+		{
+			arguments[i].addClass('disabled');
+			arguments[i].attr('disabled', true);
+			arguments[i].parent().tooltip('enable');
+		}
+	}
+	
+	var enableNavigationButtons = function()
+	{
+   		for (var i = 0; i < arguments.length; i++)
+		{
+			arguments[i].removeClass('disabled');
+			arguments[i].removeAttr('disabled', false);
+			arguments[i].parent().tooltip('disable');
+		}
+	}
+	
+	var disableNavigationBar = function()
+	{
+		_$navigationElements.each(function(i)
+		{
+			$(this).find('a').attr('disabled', true);
+
+			if (i === 0)
+			{
+				$(this).addClass('selected-step');
+			}
+			if (i > 0)
+			{
+				$(this).addClass('disabled');
+				$(this).removeClass('selected-step');
+		   		//$(this).find('a').attr('disabled', true);
+			}
+		});
+	}
+	
+	var enableNavigationBar = function(projectType)
+	{
+		_$navigationElements.each(function(i)
+		{
+			if (i === 0)
+			{
+				$(this).find('a').removeAttr('disabled', false);
+			}
+			else if (!((i === 2) && (projectType === "Conformance")))
+			{
+				$(this).removeClass('disabled');
+		   		$(this).find('a').removeAttr('disabled', false);
+			}
+		});
+	}
+	
+	var selectNavigationElement = function(navigationElement)
+	{
+		var previousSelectedElement = _$navigationList.find('li.selected-step');
+
+		if (previousSelectedElement.is($('#project-nav')))
+		{
+			previousSelectedElement.find('a').removeAttr('disabled', false);
+		}
+		else if (sessionStorage.getItem("isConfigured") == "false")
+		{
+			previousSelectedElement.addClass('disabled');
+		}
+
+		navigationElement.removeClass('disabled');
+		previousSelectedElement.removeClass('selected-step');
+		navigationElement.addClass('selected-step');
+	}
+	
+	var changeTooltipText = function(tooltip, newText)
+	{
+		tooltip.tooltip().attr('data-original-title', newText);
+	}
+	
+	var adjustDataTablesHeader = function()
+	{
+		var table = $.fn.dataTable.fnTables(true);
+    	if (table.length > 0)
+    	{
+    	    $(table).dataTable().fnAdjustColumnSizing();
+    	}
+	}
+	
+	var formatDateAndTime = function(dateAndTime)
+	{
+		Number.prototype.padLeft = function(base, chr)
+		{
+		   var  len = (String(base || 10).length - String(this).length) + 1;
+		   return len > 0 ? new Array(len).join(chr || '0') + this : this;
+		}
+		
+		var cd = new Date(dateAndTime);
+		return [cd.getFullYear(), (cd.getMonth()+1).padLeft(), cd.getDate().padLeft()].join('-')
+               		+ ' ' + [cd.getHours().padLeft(), cd.getMinutes().padLeft(), cd.getSeconds().padLeft()].join(':');
+	}
 	
 	return {
 		init: init,
 		navigationElementStatus: navigationElementStatus,
-		logout: logoutFormSubmit
+		logout: logoutFormSubmit,
+		$title: $title,
+		csrfToken: token,
+		csrfHeader: header,
+		$dynamicSection: $dynamicSection,
+		$nextStepButton: $nextStepButton,
+		$previousStepButton: $previousStepButton,
+		$saveProjectButton: $saveProjectButton,
+		disableButtons: disableNavigationButtons,
+		enableButtons: enableNavigationButtons,
+		disableNavigationBar: disableNavigationBar,
+		enableNavigationBar: enableNavigationBar,
+		selectNavigationElement: selectNavigationElement,
+		changeTooltipText: changeTooltipText,
+		adjustDataTablesHeader: adjustDataTablesHeader,
+		formatDateAndTime: formatDateAndTime
 	}
 })(common);

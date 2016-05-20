@@ -18,41 +18,35 @@ var testcases = (function()
 	//-------------------------------------------------
 	// TITLE
 	//-------------------------------------------------
-	var title = jQuery('#title');
+	var _titleText = (sessionStorage.getItem("type") == "Conformance") ? 'Step 6<small> Test Plan generation</small>' : 'Step 7<small> Test Plan generation</small>';
 	//-------------------------------------------------
-	// TEST CASES TABLE AND BUTTONS
+	// TEST CASES TABLE
 	//-------------------------------------------------
-	var table = jQuery('#tcTable');
-	
-	var selectAllButton = jQuery('#selectAll');
-	var deselectAllButton = jQuery('#deselectAll');
-	
-	var prevButton = jQuery('#prevButton');
-	var endButton = jQuery('#endButton');
-	var nextButton = jQuery('#nextButton');
+	var _$testCasesTable = jQuery('#tcTable');
+	var _testCasesTableRows;
 	//-------------------------------------------------
-	// POST REQUEST TOKEN AND HEADER
+	// SELECT AND DESELECT BUTTONS
 	//-------------------------------------------------
-	var token = $("meta[name='_csrf']").attr("content");
-	var header = $("meta[name='_csrf_header']").attr("content");
+	var _$selectAllButton = jQuery('#selectAll');
+	var _$deselectAllButton = jQuery('#deselectAll');
+	//-------------------------------------------------
+	// NAVIGATION BUTTONS MESSAGES
+	//-------------------------------------------------
+	var _noMoreStepsMessage = 'There are no more steps, please save your project';
 	
 	var init = function()
 	{
-		title.html("Step 7<small> Test Plan generation</small>");
-		if (sessionStorage.getItem("type") == "Conformance")
-		{
-			title.html(function(i, oldText)
-			{
-				return oldText === 'Step 7<small> Test Plan generation</small>' ? 'Step 6<small> Test Plan generation</small>' : oldText;
-			});
-		}
+		common.$title.html(_titleText);
 		
-		initDataTable();
-		onClickFunctions();
+		common.changeTooltipText(common.$nextStepButton.parent(), _noMoreStepsMessage);
+		
+		_initDataTable();
+		_onClickFunctions();
 	};
 	
-	var initDataTable = function()
+	var _initDataTable = function()
 	{
+		// Firefox has problems managing sessionStorage, so data is stored into a var before sending
 		var data = {};
 		for (var j = 0; j < sessionStorage.length; j++)
 		{
@@ -60,11 +54,16 @@ var testcases = (function()
 			data[key] = sessionStorage.getItem(key);
 		}
 		
-		table.DataTable(
+		// load all applicable test cases when loading dataTables
+		_$testCasesTable.DataTable(
 		{
 			"ajax": {
-				"type": "GET",
+				"type": "post",
 				"url": "testcase/dataTable",
+				"beforeSend": function(xhr)
+			   	{
+		        	xhr.setRequestHeader(common.csrfHeader, common.csrfToken);
+		        },
 				"data": {
 					data: data
 				},
@@ -83,59 +82,72 @@ var testcases = (function()
 			autoWidth: false,
 			paging: false,
 			searching: false,
-			"sDom": '<"top">rt<"bottom"flp><"clear">',
-			scrollY: ($(window).height()*5/9),
+			info: false,
+			scrollY: common.$dynamicSection.height() - 122,
 			columnDefs: [        
 				{ orderable: false, targets: 3},
 				{ visible: false, targets: 0}
 			],
 			order: [0, 'asc']
 		}).on('init.dt', function()
-		{
-			if (sessionStorage.getItem("type") != "Development")
-			{
-				$.ajax({
-					url: "testcase/disabled",
-					type: 'GET',
-					data: {
-						idProject : sessionStorage.getItem("idProject")
-					},
-					success: function(data)
+		{	
+			_testCasesTableRows = _$testCasesTable.find('tbody').find('tr');
+			// when finished, load all disabled by TCCL test cases
+			$.ajax({
+				url: "testcase/disabled",
+				type: 'GET',
+				data: {
+					idProject : sessionStorage.getItem("idProject")
+				},
+				success: function(data)
+				{										
+					// for each disable test case
+					$.each(data, function(i, disabled)
 					{
-						var MyRows = $('#tcBody').find('tr');
-
-						$.each(data, function(i, disabled)
+						// get the associated row or -1 if it is not in the table
+						var rowIndex = _$testCasesTable.DataTable().columns(0).data().eq(0).indexOf(disabled);
+						
+						if (rowIndex > -1)
 						{
-							for (var j = 0; j < MyRows.length; j++)
+							// If it is not a Development and configured project
+							var checkedCondition = ((sessionStorage.getItem("type") == "Development") && (sessionStorage.getItem("isConfigured") == "true"));
+							
+							if (!checkedCondition)
 							{
-								if (table.DataTable().row($(MyRows[j])).data().id == disabled)
-								{
-									$(MyRows[j]).find('.is_checkbox').prop('checked', false);
-									$(MyRows[j]).find('.is_checkbox').prop('disabled', true);
-									$(MyRows[j]).addClass('text-muted');
-								}
+								// Disabled test cases are unchecked
+								$(_testCasesTableRows[rowIndex]).find('.is_checkbox').prop('checked', false);
 							}
-						});
-					}
-				});
-			}
-			else
+							
+							// If it is not a development project, rows are disabled
+							$(_testCasesTableRows[rowIndex]).find('.is_checkbox').prop('disabled', sessionStorage.getItem("type") != "Development");
+							
+							if (sessionStorage.getItem("type") != "Development")
+							{
+								$(_testCasesTableRows[rowIndex]).addClass('text-muted');
+							}
+						}
+					});
+				}
+			});
+			
+			// if it is a Development project and no GUs have been selected, IOP test cases will be disabled
+			if (sessionStorage.getItem("type") == "Development")
 			{
-				var MyRows = $('#tcBody').find('tr');
-				var noGUs = sessionStorage.getItem("guNames") == "";
+				var noGUs = (jQuery('#gu-breadcrumb').text() == "Not selected");
 
-				for (var j = 0; j < MyRows.length; j++)
+				for (var j = 0; j < _testCasesTableRows.length; j++)
 				{
-					if ((noGUs) && (table.DataTable().row($(MyRows[j])).data().name.indexOf("IOP") >= 0))
+					if ((noGUs) && (_$testCasesTable.DataTable().row($(_testCasesTableRows[j])).data().name.indexOf("IOP") >= 0))
 					{
-						$(MyRows[j]).find('.is_checkbox').prop('checked', false);
-						$(MyRows[j]).find('.is_checkbox').prop('disabled', true);
-						$(MyRows[j]).addClass('text-muted');
+						$(_testCasesTableRows[j]).find('.is_checkbox').prop('checked', false);
+						$(_testCasesTableRows[j]).find('.is_checkbox').prop('disabled', true);
+						$(_testCasesTableRows[j]).addClass('text-muted');
 					}
 				}
 			}
-				
-			$('tbody').find('tr').dblclick(function()
+			
+			// add switch value on double click to each enabled row
+			_testCasesTableRows.dblclick(function()
 			{
 				if (!($(this).hasClass("text-muted")))
 				{
@@ -146,22 +158,21 @@ var testcases = (function()
 		});
 	};
 	
-	var onClickFunctions = function()
+	var _onClickFunctions = function()
 	{
-		onClickEnd();
-		onClickSelectors();
-		onClickBack();
+		_onClickSaveProject();
+		_onClickSelectors();
+		_onClickPrevious();
 	}
 	
-	var onClickEnd = function()
+	var _onClickSaveProject = function()
 	{
-		endButton.off('click').on('click', function()
+		common.$saveProjectButton.off('click').on('click', function()
 		{
-			var MyRows = $('.table').find('tbody').find('tr');
-			for (var i = 0; i < MyRows.length; i++)
+			for (var i = 0; i < _testCasesTableRows.length; i++)
 			{
-				var id = table.DataTable().row($(MyRows[i])).data().name;
-				var value = $(MyRows[i]).find('.is_checkbox').is(':checked');
+				var id = _$testCasesTable.DataTable().row($(_testCasesTableRows[i])).data().name;
+				var value = $(_testCasesTableRows[i]).find('.is_checkbox').is(':checked');
 				
 				if (value == true)
 				{
@@ -183,7 +194,7 @@ var testcases = (function()
 				   	type: 'POST',
 				   	beforeSend: function(xhr)
 				   	{
-			        	xhr.setRequestHeader(header, token);
+			        	xhr.setRequestHeader(common.csrfHeader, common.csrfToken);
 			        },
 				   	data:
 					{
@@ -191,54 +202,38 @@ var testcases = (function()
 					},
 			        success: function(response)
 			        {
-	                	$('#dynamic').fadeOut('fast', function()
+			        	common.$dynamicSection.fadeOut('fast', function()
 	                	{
-	                		$("#dynamic").html(response);
+	                		common.$dynamicSection.html(response);
 	                	});
-	                    $('#dynamic').fadeIn('fast');
+	                	common.$dynamicSection.fadeIn('fast');
 	                    
-	                    buttonState(endButton, false);
-	                    buttonState(nextButton, false);
-	                    buttonState(prevButton, false);
-	                    $('.nav-stacked li').addClass('disabled');
-				   		$('.nav-stacked li a').attr('disabled', true);
+	                	common.disableButtons(common.$previousStepButton, common.$nextStepButton, common.$saveProjectButton);
+	                    common.disableNavigationBar();
 			        }
 			});	
 		});
 	}
 	
-	var buttonState = function(button, state)
+	var _onClickSelectors = function()
 	{
-		if (state)
-		{
-			button.removeClass('disabled');
-            button.removeAttr('disabled', false);
-		}
-		else
-		{
-			button.addClass('disabled');
-            button.attr('disabled', true);
-		}
-	}
-	
-	var onClickSelectors = function()
-	{
-		selectAllButton.on('click', function()
+		_$selectAllButton.on('click', function()
 		{
 			$('.is_checkbox').prop('checked', true);
 			$('.text-muted').find('.is_checkbox').prop('checked', false);
 			
 		});
 
-  		deselectAllButton.on('click', function()
+  		_$deselectAllButton.on('click', function()
   		{
 			$('.is_checkbox').prop('checked', false);
 		});
 	}
 	
-	var onClickBack = function()
+	var _onClickPrevious = function()
 	{
-		prevButton.off('click').on('click', function(e){
+		common.$previousStepButton.off('click').on('click', function(e)
+		{
 			e.preventDefault();
 			
 			$('#idProject').val(sessionStorage.getItem('idProject'));
@@ -249,27 +244,24 @@ var testcases = (function()
 				data: $('#prevForm').serialize(),
 				success: function(response)
 				{
-					$('#dynamic').fadeOut('fast', function()
+					common.$dynamicSection.fadeOut('fast', function()
 					{
-	            		$("#dynamic").html(response);
+						common.$dynamicSection.html(response);
 	            	});
 	                
-					$('#dynamic').fadeIn('fast', function()
+					common.$dynamicSection.fadeIn('fast', function()
 					{
-	                	var table = $.fn.dataTable.fnTables(true);
-	                	
-	                	if (table.length > 0)
-	                	{
-	                	    $(table).dataTable().fnAdjustColumnSizing();
-	                	}
+						common.adjustDataTablesHeader();
 	                });
 	                
-					buttonState(nextButton, true);
+					common.enableButtons(common.$nextStepButton);
 					
 					if (sessionStorage.getItem("isConfigured") == "false")
 					{
-						buttonState(endButton, false);
+						common.disableButtons(common.$saveProjectButton);
 					}
+					
+					common.selectNavigationElement($('#gp-nav'));
 				}
 			});
 		});

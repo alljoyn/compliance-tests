@@ -36,7 +36,6 @@
 	       	<button type="button" class="btn btn-default" data-toggle="modal" data-target="#newGuModal"><span class="glyphicon glyphicon-plus"></span> New GU</button>
 	       	<button id="editButton" type="button" disabled class="btn btn-default disabled" data-toggle="modal" data-target="#editGuModal"><span class="glyphicon glyphicon-pencil"></span> Edit GU</button>   
 	       	<button id="deleteButton" type="button" disabled class="btn btn-default disabled" data-toggle="modal" data-target="#delGu"><span class="glyphicon glyphicon-trash"></span> Delete GU</button>
-	    	<p class="pull-right" id="guSelect">You need to select at least 3 Golden Units</p>
     	</div>
     </div>
       
@@ -128,7 +127,7 @@
 					</div>
  				</div>
 	 			<div class="modal-footer">
-	 				<button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+	 				<button id="createCancel" type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
 	 				<button id="createGu" type="submit" class="btn btn-custom"><span class="glyphicon glyphicon-ok"></span> Create GU</button>
 	 			</div>
  			</div>
@@ -199,7 +198,7 @@
 					</div>
     			</div>
     			<div class="modal-footer">
-    				<button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+    				<button id="editCancel" type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
     				<button id="editConfirm" type="submit" class="btn btn-custom"><span class="glyphicon glyphicon-ok"></span> Save Changes</button>
     			</div>
     		</div>
@@ -225,7 +224,8 @@
 <script>
 	$(document).ready(function()
 	{
-		jQuery.getScript('resources/js/dynamic-gu.js', function() {
+		jQuery.getScript('resources/js/dynamic-gu.js', function()
+		{
 			goldenUnit.init();
 		});
 	});
