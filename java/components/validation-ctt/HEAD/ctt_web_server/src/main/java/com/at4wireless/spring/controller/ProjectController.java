@@ -368,7 +368,7 @@ public class ProjectController
 	private List<String> obtainCriList(String username)
 	{
 		String cawtUrl = "https://certify.alljoyn.org";
-		String secret = "B8nkfYXsXW7izS4i5AK8v8u729EoY34x";
+		String secret = "ask the alliance for the secret";
 		
 		List<String> retrievedCris = new ArrayList<String>();
 		try
