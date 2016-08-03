@@ -1,0 +1,704 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Archivos de código fuente">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Archivos de encabezado">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Archivos de recursos">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Archivos de encabezado\core.about">
+      <UniqueIdentifier>{9cd2a72c-ca93-423a-9145-1d8236456766}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\core.commons">
+      <UniqueIdentifier>{e9ebd7fa-00bb-4daf-8bc5-f3b24e0ac637}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\core.about">
+      <UniqueIdentifier>{b09446b5-6eb9-46b6-8eea-439e7bd1c38b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\core.commons">
+      <UniqueIdentifier>{656a8fe2-37eb-4766-bb06-796c7867e607}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\core.commons.log">
+      <UniqueIdentifier>{18122b0d-e1a2-4f50-9699-dbd71be23229}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\core.commons.xml">
+      <UniqueIdentifier>{1a5ca198-36b9-4bac-813a-01576a5c720b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\core.commons.log">
+      <UniqueIdentifier>{e14c99d7-aa0a-43d8-9b0f-2dfd0a7d97fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\core.commons.xml">
+      <UniqueIdentifier>{2cf77349-fe0a-4693-b8be-62734f26a867}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\core.introspection">
+      <UniqueIdentifier>{07c0cd93-e62f-4736-99ff-3fdc986a697c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\core.introspection.bean">
+      <UniqueIdentifier>{508b37e4-ba0c-4ee9-9d91-f4e4b5872f02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\core.introspection.bean">
+      <UniqueIdentifier>{ac66fd2b-6f66-4358-a232-c1508c4e03ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\core.introspection">
+      <UniqueIdentifier>{520dc11b-ff55-4818-9dfb-d8921e76064f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\core.interfacevalidator">
+      <UniqueIdentifier>{ec8a0fb2-a4ef-4e9d-b996-68fdd38fdca4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\core.interfacevalidator">
+      <UniqueIdentifier>{78439a69-c0c9-4532-80f0-867ad8c5431d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\core.notification">
+      <UniqueIdentifier>{772052bf-8914-459a-b47d-1d7e41e811f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\core.notification">
+      <UniqueIdentifier>{d4f833e7-caf3-4b79-9576-ac74b26af878}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\testcases.conf.about">
+      <UniqueIdentifier>{7d5351e9-393a-46a4-a2e3-e2bcb45dd803}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\testcases.conf.commons">
+      <UniqueIdentifier>{e5962a16-c443-439c-94d6-027ce73dc56e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\testcases.conf.eventsandactions">
+      <UniqueIdentifier>{88895d37-caa8-4380-a012-9dfc4857b06c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\testcases.conf.notification">
+      <UniqueIdentifier>{21044488-d7f1-4b4d-b7ed-6f6898af6076}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\testcases.conf.about">
+      <UniqueIdentifier>{36520ecb-91b5-4035-8b61-88c1d42d63dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\testcases.conf.commons">
+      <UniqueIdentifier>{71391d74-abd0-4431-8bb3-0af0d7948f9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\testcases.conf.eventsandactions">
+      <UniqueIdentifier>{b7580f2e-f72a-4be5-b143-ade786bdf2d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\testcases.conf.notification">
+      <UniqueIdentifier>{fc45ad6a-8287-4c34-97c2-d09e88df96be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\testcases.conf.configuration">
+      <UniqueIdentifier>{09c09c26-4ac5-4a34-9036-022c35bc5e30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\testcases.conf.configuration">
+      <UniqueIdentifier>{0ab978c6-7c25-4d29-982d-b5a686e7d42e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\testcases.conf.controlpanel">
+      <UniqueIdentifier>{e90e9f1c-2c8e-4775-aeb4-6c859b130674}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\testcases.conf.controlpanel">
+      <UniqueIdentifier>{419d8ba0-4057-4903-bdbb-0586819f6bd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\testcases.conf.onboarding">
+      <UniqueIdentifier>{b5cd5220-b5e4-45ca-9c63-46fd94e19eb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\testcases.conf.onboarding">
+      <UniqueIdentifier>{6980cf91-13fa-49c0-bfbb-e566e280d3cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\core.onboarding">
+      <UniqueIdentifier>{a6213c50-f82a-42db-ac9a-2d10374820ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\core.onboarding">
+      <UniqueIdentifier>{1271c708-608f-4134-838f-92cd01a419ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\testcases.conf.lsf_lamp">
+      <UniqueIdentifier>{9f607a96-3d93-4a4e-a13b-206a46b0f583}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\testcases.conf.lsf_lamp">
+      <UniqueIdentifier>{98f4a953-8570-4841-8ab0-76832db39bf7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\core.lsf_lamp">
+      <UniqueIdentifier>{ec88cbb4-33f9-49eb-96dc-7a91279ae859}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\core.lsf_lamp">
+      <UniqueIdentifier>{dea36234-668f-4685-aea9-0886fd61dde3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\testcases.conf.lsf_controller">
+      <UniqueIdentifier>{d92a0479-df7d-4f59-bfb6-fc2a351defaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\testcases.conf.lsf_controller">
+      <UniqueIdentifier>{6d7e5609-df5f-4073-bc10-933236a9d34f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\core.lsf_controller">
+      <UniqueIdentifier>{e922970d-b41e-442a-8244-983d04141b95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\core.lsf_controller">
+      <UniqueIdentifier>{258a5bbf-031c-447a-a28c-5a9709c7f653}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\core.commons.auth">
+      <UniqueIdentifier>{65bc33ef-b5f2-4528-9e0d-76abb45e83f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\core.commons.auth\srp_keyx">
+      <UniqueIdentifier>{8f7d043e-c4ff-4675-8802-6f922913570b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\core.commons.auth\srp_logon">
+      <UniqueIdentifier>{e1fbc541-963d-4784-bad5-25cdea926c9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\core.commons.auth\ecdhe_null">
+      <UniqueIdentifier>{f17ba1aa-b012-4035-a2ce-4712698a2cf3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\core.commons.auth\ecdhe_psk">
+      <UniqueIdentifier>{fd81429c-4659-43a4-87b6-68a12ad5153a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de código fuente\core.commons.auth\ecdhe_ecdsa">
+      <UniqueIdentifier>{e6d2ce05-8133-4d3c-8576-8f5b76636120}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\core.commons.auth">
+      <UniqueIdentifier>{82c3f372-7a22-47de-9828-7c3f6cbdc0a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\core.commons.auth\srp_keyx">
+      <UniqueIdentifier>{8bad3a4b-3a14-44b0-9f32-4d568fe88bbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\core.commons.auth\srp_logon">
+      <UniqueIdentifier>{1bf919b9-132e-4b2b-ae08-f7596ee62a2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\core.commons.auth\ecdhe_null">
+      <UniqueIdentifier>{7240d10a-1e6e-44cd-a1aa-280cb7f2304a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\core.commons.auth\ecdhe_psk">
+      <UniqueIdentifier>{81028547-0943-437c-8444-1ed0ddb19f82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\core.commons.auth\ecdhe_ecdsa">
+      <UniqueIdentifier>{89877c97-1267-478a-9b23-c27fdad43684}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="BusAttachmentMgr.h">
+      <Filter>Archivos de encabezado\core.commons</Filter>
+    </ClInclude>
+    <ClInclude Include="DeviceAnnouncementHandler.h">
+      <Filter>Archivos de encabezado\core.commons</Filter>
+    </ClInclude>
+    <ClInclude Include="AboutAnnouncement.h">
+      <Filter>Archivos de encabezado\core.about</Filter>
+    </ClInclude>
+    <ClInclude Include="AboutAnnouncementDetails.h">
+      <Filter>Archivos de encabezado\core.about</Filter>
+    </ClInclude>
+    <ClInclude Include="easylogging++.h">
+      <Filter>Archivos de encabezado\core.commons.log</Filter>
+    </ClInclude>
+    <ClInclude Include="AboutTestSuite.h">
+      <Filter>Archivos de encabezado\testcases.conf.about</Filter>
+    </ClInclude>
+    <ClInclude Include="TersePrinter.h">
+      <Filter>Archivos de encabezado\core.commons.log</Filter>
+    </ClInclude>
+    <ClInclude Include="ArrayParser.h">
+      <Filter>Archivos de encabezado\core.commons.log</Filter>
+    </ClInclude>
+    <ClInclude Include="XMLParser.h">
+      <Filter>Archivos de encabezado\core.commons.xml</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidxml.hpp">
+      <Filter>Archivos de encabezado\core.commons.xml</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidxml_iterators.hpp">
+      <Filter>Archivos de encabezado\core.commons.xml</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidxml_print.hpp">
+      <Filter>Archivos de encabezado\core.commons.xml</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidxml_utils.hpp">
+      <Filter>Archivos de encabezado\core.commons.xml</Filter>
+    </ClInclude>
+    <ClInclude Include="ServiceHelper.h">
+      <Filter>Archivos de encabezado\core.commons</Filter>
+    </ClInclude>
+    <ClInclude Include="IOManager.h">
+      <Filter>Archivos de encabezado\testcases.conf.commons</Filter>
+    </ClInclude>
+    <ClInclude Include="ServiceFramework.h">
+      <Filter>Archivos de encabezado\testcases.conf.commons</Filter>
+    </ClInclude>
+    <ClInclude Include="BusIntrospector.h">
+      <Filter>Archivos de encabezado\core.introspection</Filter>
+    </ClInclude>
+    <ClInclude Include="InterfaceDetail.h">
+      <Filter>Archivos de encabezado\core.introspection.bean</Filter>
+    </ClInclude>
+    <ClInclude Include="IntrospectionAnnotation.h">
+      <Filter>Archivos de encabezado\core.introspection.bean</Filter>
+    </ClInclude>
+    <ClInclude Include="IntrospectionBaseTag.h">
+      <Filter>Archivos de encabezado\core.introspection.bean</Filter>
+    </ClInclude>
+    <ClInclude Include="IntrospectionArg.h">
+      <Filter>Archivos de encabezado\core.introspection.bean</Filter>
+    </ClInclude>
+    <ClInclude Include="IntrospectionInterface.h">
+      <Filter>Archivos de encabezado\core.introspection.bean</Filter>
+    </ClInclude>
+    <ClInclude Include="IntrospectionMethod.h">
+      <Filter>Archivos de encabezado\core.introspection.bean</Filter>
+    </ClInclude>
+    <ClInclude Include="IntrospectionNode.h">
+      <Filter>Archivos de encabezado\core.introspection.bean</Filter>
+    </ClInclude>
+    <ClInclude Include="IntrospectionProperty.h">
+      <Filter>Archivos de encabezado\core.introspection.bean</Filter>
+    </ClInclude>
+    <ClInclude Include="IntrospectionSignal.h">
+      <Filter>Archivos de encabezado\core.introspection.bean</Filter>
+    </ClInclude>
+    <ClInclude Include="IntrospectionSubNode.h">
+      <Filter>Archivos de encabezado\core.introspection.bean</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeDetail.h">
+      <Filter>Archivos de encabezado\core.introspection.bean</Filter>
+    </ClInclude>
+    <ClInclude Include="XMLBasedBusIntrospector.h">
+      <Filter>Archivos de encabezado\core.introspection</Filter>
+    </ClInclude>
+    <ClInclude Include="IntrospectionXmlParser.h">
+      <Filter>Archivos de encabezado\core.introspection</Filter>
+    </ClInclude>
+    <ClInclude Include="IntrospectionXmlHandler.h">
+      <Filter>Archivos de encabezado\core.introspection</Filter>
+    </ClInclude>
+    <ClInclude Include="IntrospectionXmlErrorHandler.h">
+      <Filter>Archivos de encabezado\core.introspection</Filter>
+    </ClInclude>
+    <ClInclude Include="ValidationResult.h">
+      <Filter>Archivos de encabezado\core.interfacevalidator</Filter>
+    </ClInclude>
+    <ClInclude Include="InterfaceValidator.h">
+      <Filter>Archivos de encabezado\core.interfacevalidator</Filter>
+    </ClInclude>
+    <ClInclude Include="SetValidator.h">
+      <Filter>Archivos de encabezado\core.interfacevalidator</Filter>
+    </ClInclude>
+    <ClInclude Include="EventsActionsTestSuite.h">
+      <Filter>Archivos de encabezado\testcases.conf.eventsandactions</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageSet.h">
+      <Filter>Archivos de encabezado\core.notification</Filter>
+    </ClInclude>
+    <ClInclude Include="NotifConsumerTestSuite.h">
+      <Filter>Archivos de encabezado\testcases.conf.notification</Filter>
+    </ClInclude>
+    <ClInclude Include="NotifProducerTestSuite.h">
+      <Filter>Archivos de encabezado\testcases.conf.notification</Filter>
+    </ClInclude>
+    <ClInclude Include="NotificationValidator.h">
+      <Filter>Archivos de encabezado\core.notification</Filter>
+    </ClInclude>
+    <ClInclude Include="NotificationHandler.h">
+      <Filter>Archivos de encabezado\core.notification</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInputDetails.h">
+      <Filter>Archivos de encabezado\core.notification</Filter>
+    </ClInclude>
+    <ClInclude Include="ConfigTestSuite.h">
+      <Filter>Archivos de encabezado\testcases.conf.configuration</Filter>
+    </ClInclude>
+    <ClInclude Include="ServiceAvailabilityHandler.h">
+      <Filter>Archivos de encabezado\core.commons</Filter>
+    </ClInclude>
+    <ClInclude Include="ControlPanelTestSuite.h">
+      <Filter>Archivos de encabezado\testcases.conf.controlpanel</Filter>
+    </ClInclude>
+    <ClInclude Include="OnboardingTestSuite.h">
+      <Filter>Archivos de encabezado\testcases.conf.onboarding</Filter>
+    </ClInclude>
+    <ClInclude Include="OnboardingHelper.h">
+      <Filter>Archivos de encabezado\core.onboarding</Filter>
+    </ClInclude>
+    <ClInclude Include="WifiNetworkConfig.h">
+      <Filter>Archivos de encabezado\core.onboarding</Filter>
+    </ClInclude>
+    <ClInclude Include="WifiHelper.h">
+      <Filter>Archivos de encabezado\core.onboarding</Filter>
+    </ClInclude>
+    <ClInclude Include="WifiHelperImpl.h">
+      <Filter>Archivos de encabezado\core.onboarding</Filter>
+    </ClInclude>
+    <ClInclude Include="WifiManager.h">
+      <Filter>Archivos de encabezado\core.onboarding</Filter>
+    </ClInclude>
+    <ClInclude Include="ScanResult.h">
+      <Filter>Archivos de encabezado\core.onboarding</Filter>
+    </ClInclude>
+    <ClInclude Include="SoftAPValidator.h">
+      <Filter>Archivos de encabezado\core.onboarding</Filter>
+    </ClInclude>
+    <ClInclude Include="OnboardingSignalListenerImpl.h">
+      <Filter>Archivos de encabezado\core.onboarding</Filter>
+    </ClInclude>
+    <ClInclude Include="WifiNotEnabledException.h">
+      <Filter>Archivos de encabezado\core.onboarding</Filter>
+    </ClInclude>
+    <ClInclude Include="LSFLampTestSuite.h">
+      <Filter>Archivos de encabezado\testcases.conf.lsf_lamp</Filter>
+    </ClInclude>
+    <ClInclude Include="LSFControllerTestSuite.h">
+      <Filter>Archivos de encabezado\testcases.conf.lsf_controller</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerServiceBusObject.h">
+      <Filter>Archivos de encabezado\core.lsf_controller</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerServiceLampBusObject.h">
+      <Filter>Archivos de encabezado\core.lsf_controller</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerServicePresetBusObject.h">
+      <Filter>Archivos de encabezado\core.lsf_controller</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerServiceLampGroupBusObject.h">
+      <Filter>Archivos de encabezado\core.lsf_controller</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerServiceSceneBusObject.h">
+      <Filter>Archivos de encabezado\core.lsf_controller</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerServiceMasterSceneBusObject.h">
+      <Filter>Archivos de encabezado\core.lsf_controller</Filter>
+    </ClInclude>
+    <ClInclude Include="LeaderElectionAndStateSyncBusObject.h">
+      <Filter>Archivos de encabezado\core.lsf_controller</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerServiceTransitionEffectBusObject.h">
+      <Filter>Archivos de encabezado\core.lsf_controller</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerServicePulseEffectBusObject.h">
+      <Filter>Archivos de encabezado\core.lsf_controller</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerServiceDataSetBusObject.h">
+      <Filter>Archivos de encabezado\core.lsf_controller</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerServiceSceneElementBusObject.h">
+      <Filter>Archivos de encabezado\core.lsf_controller</Filter>
+    </ClInclude>
+    <ClInclude Include="ControllerServiceSceneWithSceneElementsBusObject.h">
+      <Filter>Archivos de encabezado\core.lsf_controller</Filter>
+    </ClInclude>
+    <ClInclude Include="NotificationDialogResources.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="AvailableSoftAPException.h">
+      <Filter>Archivos de encabezado\core.onboarding</Filter>
+    </ClInclude>
+    <ClInclude Include="LampStateBusObject.h">
+      <Filter>Archivos de encabezado\core.lsf_lamp</Filter>
+    </ClInclude>
+    <ClInclude Include="LampServiceBusObject.h">
+      <Filter>Archivos de encabezado\core.lsf_lamp</Filter>
+    </ClInclude>
+    <ClInclude Include="LampParametersBusObject.h">
+      <Filter>Archivos de encabezado\core.lsf_lamp</Filter>
+    </ClInclude>
+    <ClInclude Include="LampDetailsBusObject.h">
+      <Filter>Archivos de encabezado\core.lsf_lamp</Filter>
+    </ClInclude>
+    <ClInclude Include="AuthListeners.h">
+      <Filter>Archivos de encabezado\core.commons.auth</Filter>
+    </ClInclude>
+    <ClInclude Include="ECDHEEcdsaHandlerImpl.h">
+      <Filter>Archivos de encabezado\core.commons.auth\ecdhe_ecdsa</Filter>
+    </ClInclude>
+    <ClInclude Include="ECDHEEcdsaListener.h">
+      <Filter>Archivos de encabezado\core.commons.auth\ecdhe_ecdsa</Filter>
+    </ClInclude>
+    <ClInclude Include="ECDHEEcdsaStore.h">
+      <Filter>Archivos de encabezado\core.commons.auth\ecdhe_ecdsa</Filter>
+    </ClInclude>
+    <ClInclude Include="ECDHENullHandlerImpl.h">
+      <Filter>Archivos de encabezado\core.commons.auth\ecdhe_null</Filter>
+    </ClInclude>
+    <ClInclude Include="ECDHENullListener.h">
+      <Filter>Archivos de encabezado\core.commons.auth\ecdhe_null</Filter>
+    </ClInclude>
+    <ClInclude Include="ECDHEPskHandlerImpl.h">
+      <Filter>Archivos de encabezado\core.commons.auth\ecdhe_psk</Filter>
+    </ClInclude>
+    <ClInclude Include="ECDHEPskListener.h">
+      <Filter>Archivos de encabezado\core.commons.auth\ecdhe_psk</Filter>
+    </ClInclude>
+    <ClInclude Include="ECDHEPskStore.h">
+      <Filter>Archivos de encabezado\core.commons.auth\ecdhe_psk</Filter>
+    </ClInclude>
+    <ClInclude Include="SrpKeyXHandlerImpl.h">
+      <Filter>Archivos de encabezado\core.commons.auth\srp_keyx</Filter>
+    </ClInclude>
+    <ClInclude Include="SrpKeyXListener.h">
+      <Filter>Archivos de encabezado\core.commons.auth\srp_keyx</Filter>
+    </ClInclude>
+    <ClInclude Include="SrpKeyXStore.h">
+      <Filter>Archivos de encabezado\core.commons.auth\srp_keyx</Filter>
+    </ClInclude>
+    <ClInclude Include="SrpLogonHandlerImpl.h">
+      <Filter>Archivos de encabezado\core.commons.auth\srp_logon</Filter>
+    </ClInclude>
+    <ClInclude Include="SrpLogonListener.h">
+      <Filter>Archivos de encabezado\core.commons.auth\srp_logon</Filter>
+    </ClInclude>
+    <ClInclude Include="SrpLogonStore.h">
+      <Filter>Archivos de encabezado\core.commons.auth\srp_logon</Filter>
+    </ClInclude>
+    <ClInclude Include="AuthPasswordHandler.h">
+      <Filter>Archivos de encabezado\core.commons.auth</Filter>
+    </ClInclude>
+    <ClInclude Include="NotAvailableSoftAPException.h">
+      <Filter>Archivos de encabezado\core.onboarding</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="BusAttachmentMgr.cpp">
+      <Filter>Archivos de código fuente\core.commons</Filter>
+    </ClCompile>
+    <ClCompile Include="DeviceAnnouncementHandler.cpp">
+      <Filter>Archivos de código fuente\core.commons</Filter>
+    </ClCompile>
+    <ClCompile Include="AboutAnnouncement.cpp">
+      <Filter>Archivos de código fuente\core.about</Filter>
+    </ClCompile>
+    <ClCompile Include="AboutAnnouncementDetails.cpp">
+      <Filter>Archivos de código fuente\core.about</Filter>
+    </ClCompile>
+    <ClCompile Include="AboutTestSuite.cpp">
+      <Filter>Archivos de código fuente\testcases.conf.about</Filter>
+    </ClCompile>
+    <ClCompile Include="TersePrinter.cpp">
+      <Filter>Archivos de código fuente\core.commons.log</Filter>
+    </ClCompile>
+    <ClCompile Include="ArrayParser.cpp">
+      <Filter>Archivos de código fuente\core.commons.log</Filter>
+    </ClCompile>
+    <ClCompile Include="XMLParser.cpp">
+      <Filter>Archivos de código fuente\core.commons.xml</Filter>
+    </ClCompile>
+    <ClCompile Include="ServiceHelper.cpp">
+      <Filter>Archivos de código fuente\core.commons</Filter>
+    </ClCompile>
+    <ClCompile Include="IOManager.cpp">
+      <Filter>Archivos de código fuente\testcases.conf.commons</Filter>
+    </ClCompile>
+    <ClCompile Include="InterfaceDetail.cpp">
+      <Filter>Archivos de código fuente\core.introspection.bean</Filter>
+    </ClCompile>
+    <ClCompile Include="IntrospectionAnnotation.cpp">
+      <Filter>Archivos de código fuente\core.introspection.bean</Filter>
+    </ClCompile>
+    <ClCompile Include="IntrospectionArg.cpp">
+      <Filter>Archivos de código fuente\core.introspection.bean</Filter>
+    </ClCompile>
+    <ClCompile Include="IntrospectionBaseTag.cpp">
+      <Filter>Archivos de código fuente\core.introspection.bean</Filter>
+    </ClCompile>
+    <ClCompile Include="IntrospectionInterface.cpp">
+      <Filter>Archivos de código fuente\core.introspection.bean</Filter>
+    </ClCompile>
+    <ClCompile Include="IntrospectionMethod.cpp">
+      <Filter>Archivos de código fuente\core.introspection.bean</Filter>
+    </ClCompile>
+    <ClCompile Include="IntrospectionNode.cpp">
+      <Filter>Archivos de código fuente\core.introspection.bean</Filter>
+    </ClCompile>
+    <ClCompile Include="IntrospectionProperty.cpp">
+      <Filter>Archivos de código fuente\core.introspection.bean</Filter>
+    </ClCompile>
+    <ClCompile Include="IntrospectionSignal.cpp">
+      <Filter>Archivos de código fuente\core.introspection.bean</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeDetail.cpp">
+      <Filter>Archivos de código fuente\core.introspection.bean</Filter>
+    </ClCompile>
+    <ClCompile Include="IntrospectionXmlErrorHandler.cpp">
+      <Filter>Archivos de código fuente\core.introspection</Filter>
+    </ClCompile>
+    <ClCompile Include="IntrospectionXmlParser.cpp">
+      <Filter>Archivos de código fuente\core.introspection</Filter>
+    </ClCompile>
+    <ClCompile Include="IntrospectionXmlHandler.cpp">
+      <Filter>Archivos de código fuente\core.introspection</Filter>
+    </ClCompile>
+    <ClCompile Include="XMLBasedBusIntrospector.cpp">
+      <Filter>Archivos de código fuente\core.introspection</Filter>
+    </ClCompile>
+    <ClCompile Include="ValidationResult.cpp">
+      <Filter>Archivos de código fuente\core.interfacevalidator</Filter>
+    </ClCompile>
+    <ClCompile Include="InterfaceValidator.cpp">
+      <Filter>Archivos de código fuente\core.interfacevalidator</Filter>
+    </ClCompile>
+    <ClCompile Include="EventsActionsTestSuite.cpp">
+      <Filter>Archivos de código fuente\testcases.conf.eventsandactions</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageSet.cpp">
+      <Filter>Archivos de código fuente\core.notification</Filter>
+    </ClCompile>
+    <ClCompile Include="NotifConsumerTestSuite.cpp">
+      <Filter>Archivos de código fuente\testcases.conf.notification</Filter>
+    </ClCompile>
+    <ClCompile Include="NotifProducerTestSuite.cpp">
+      <Filter>Archivos de código fuente\testcases.conf.notification</Filter>
+    </ClCompile>
+    <ClCompile Include="NotificationHandler.cpp">
+      <Filter>Archivos de código fuente\core.notification</Filter>
+    </ClCompile>
+    <ClCompile Include="NotificationValidator.cpp">
+      <Filter>Archivos de código fuente\core.notification</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInputDetails.cpp">
+      <Filter>Archivos de código fuente\core.notification</Filter>
+    </ClCompile>
+    <ClCompile Include="ConfigTestSuite.cpp">
+      <Filter>Archivos de código fuente\testcases.conf.configuration</Filter>
+    </ClCompile>
+    <ClCompile Include="ServiceAvailabilityHandler.cpp">
+      <Filter>Archivos de código fuente\core.commons</Filter>
+    </ClCompile>
+    <ClCompile Include="ControlPanelTestSuite.cpp">
+      <Filter>Archivos de código fuente\testcases.conf.controlpanel</Filter>
+    </ClCompile>
+    <ClCompile Include="OnboardingTestSuite.cpp">
+      <Filter>Archivos de código fuente\testcases.conf.onboarding</Filter>
+    </ClCompile>
+    <ClCompile Include="WifiNetworkConfig.cpp">
+      <Filter>Archivos de código fuente\core.onboarding</Filter>
+    </ClCompile>
+    <ClCompile Include="WifiManager.cpp">
+      <Filter>Archivos de código fuente\core.onboarding</Filter>
+    </ClCompile>
+    <ClCompile Include="WifiHelperImpl.cpp">
+      <Filter>Archivos de código fuente\core.onboarding</Filter>
+    </ClCompile>
+    <ClCompile Include="OnboardingHelper.cpp">
+      <Filter>Archivos de código fuente\core.onboarding</Filter>
+    </ClCompile>
+    <ClCompile Include="ScanResult.cpp">
+      <Filter>Archivos de código fuente\core.onboarding</Filter>
+    </ClCompile>
+    <ClCompile Include="SoftAPValidator.cpp">
+      <Filter>Archivos de código fuente\core.onboarding</Filter>
+    </ClCompile>
+    <ClCompile Include="OnboardingSignalListenerImpl.cpp">
+      <Filter>Archivos de código fuente\core.onboarding</Filter>
+    </ClCompile>
+    <ClCompile Include="LSFLampTestSuite.cpp">
+      <Filter>Archivos de código fuente\testcases.conf.lsf_lamp</Filter>
+    </ClCompile>
+    <ClCompile Include="LSFControllerTestSuite.cpp">
+      <Filter>Archivos de código fuente\testcases.conf.lsf_controller</Filter>
+    </ClCompile>
+    <ClCompile Include="ControllerServiceBusObject.cpp">
+      <Filter>Archivos de código fuente\core.lsf_controller</Filter>
+    </ClCompile>
+    <ClCompile Include="ControllerServiceLampBusObject.cpp">
+      <Filter>Archivos de código fuente\core.lsf_controller</Filter>
+    </ClCompile>
+    <ClCompile Include="ControllerServicePresetBusObject.cpp">
+      <Filter>Archivos de código fuente\core.lsf_controller</Filter>
+    </ClCompile>
+    <ClCompile Include="ControllerServiceLampGroupBusObject.cpp">
+      <Filter>Archivos de código fuente\core.lsf_controller</Filter>
+    </ClCompile>
+    <ClCompile Include="ControllerServiceSceneBusObject.cpp">
+      <Filter>Archivos de código fuente\core.lsf_controller</Filter>
+    </ClCompile>
+    <ClCompile Include="ControllerServiceMasterSceneBusObject.cpp">
+      <Filter>Archivos de código fuente\core.lsf_controller</Filter>
+    </ClCompile>
+    <ClCompile Include="LeaderElectionAndStateSyncBusObject.cpp">
+      <Filter>Archivos de código fuente\core.lsf_controller</Filter>
+    </ClCompile>
+    <ClCompile Include="ControllerServiceDataSetBusObject.cpp">
+      <Filter>Archivos de código fuente\core.lsf_controller</Filter>
+    </ClCompile>
+    <ClCompile Include="ControllerServiceTransitionEffectBusObject.cpp">
+      <Filter>Archivos de código fuente\core.lsf_controller</Filter>
+    </ClCompile>
+    <ClCompile Include="ControllerServicePulseEffectBusObject.cpp">
+      <Filter>Archivos de código fuente\core.lsf_controller</Filter>
+    </ClCompile>
+    <ClCompile Include="ControllerServiceSceneWithSceneElementsBusObject.cpp">
+      <Filter>Archivos de código fuente\core.lsf_controller</Filter>
+    </ClCompile>
+    <ClCompile Include="ControllerServiceSceneElementBusObject.cpp">
+      <Filter>Archivos de código fuente\core.lsf_controller</Filter>
+    </ClCompile>
+    <ClCompile Include="LampStateBusObject.cpp">
+      <Filter>Archivos de código fuente\core.lsf_lamp</Filter>
+    </ClCompile>
+    <ClCompile Include="LampServiceBusObject.cpp">
+      <Filter>Archivos de código fuente\core.lsf_lamp</Filter>
+    </ClCompile>
+    <ClCompile Include="LampParametersBusObject.cpp">
+      <Filter>Archivos de código fuente\core.lsf_lamp</Filter>
+    </ClCompile>
+    <ClCompile Include="LampDetailsBusObject.cpp">
+      <Filter>Archivos de código fuente\core.lsf_lamp</Filter>
+    </ClCompile>
+    <ClCompile Include="AuthListeners.cpp">
+      <Filter>Archivos de código fuente\core.commons.auth</Filter>
+    </ClCompile>
+    <ClCompile Include="ECDHEEcdsaHandlerImpl.cpp">
+      <Filter>Archivos de código fuente\core.commons.auth\ecdhe_ecdsa</Filter>
+    </ClCompile>
+    <ClCompile Include="ECDHEEcdsaListener.cpp">
+      <Filter>Archivos de código fuente\core.commons.auth\ecdhe_ecdsa</Filter>
+    </ClCompile>
+    <ClCompile Include="ECDHEEcdsaStore.cpp">
+      <Filter>Archivos de código fuente\core.commons.auth\ecdhe_ecdsa</Filter>
+    </ClCompile>
+    <ClCompile Include="ECDHENullHandlerImpl.cpp">
+      <Filter>Archivos de código fuente\core.commons.auth\ecdhe_null</Filter>
+    </ClCompile>
+    <ClCompile Include="ECDHENullListener.cpp">
+      <Filter>Archivos de código fuente\core.commons.auth\ecdhe_null</Filter>
+    </ClCompile>
+    <ClCompile Include="ECDHEPskHandlerImpl.cpp">
+      <Filter>Archivos de código fuente\core.commons.auth\ecdhe_psk</Filter>
+    </ClCompile>
+    <ClCompile Include="ECDHEPskListener.cpp">
+      <Filter>Archivos de código fuente\core.commons.auth\ecdhe_psk</Filter>
+    </ClCompile>
+    <ClCompile Include="ECDHEPskStore.cpp">
+      <Filter>Archivos de código fuente\core.commons.auth\ecdhe_psk</Filter>
+    </ClCompile>
+    <ClCompile Include="SrpKeyXHandlerImpl.cpp">
+      <Filter>Archivos de código fuente\core.commons.auth\srp_keyx</Filter>
+    </ClCompile>
+    <ClCompile Include="SrpKeyXListener.cpp">
+      <Filter>Archivos de código fuente\core.commons.auth\srp_keyx</Filter>
+    </ClCompile>
+    <ClCompile Include="SrpKeyXStore.cpp">
+      <Filter>Archivos de código fuente\core.commons.auth\srp_keyx</Filter>
+    </ClCompile>
+    <ClCompile Include="SrpLogonHandlerImpl.cpp">
+      <Filter>Archivos de código fuente\core.commons.auth\srp_logon</Filter>
+    </ClCompile>
+    <ClCompile Include="SrpLogonListener.cpp">
+      <Filter>Archivos de código fuente\core.commons.auth\srp_logon</Filter>
+    </ClCompile>
+    <ClCompile Include="SrpLogonStore.cpp">
+      <Filter>Archivos de código fuente\core.commons.auth\srp_logon</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="TestCases_Package.rc">
+      <Filter>Archivos de recursos</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
