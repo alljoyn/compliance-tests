@@ -1,0 +1,345 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B590E918-396E-4E53-A39D-E9F810EC5FB0}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>TestCasesPackage</RootNamespace>
+    <ProjectName>TestCases_Package</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;QCC_OS_GROUP_WINDOWS;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ALLJOYN_SDK_HOMe)\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(ALLJOYN_SDK_HOME)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>alljoyn.lib;ajrouter.lib;ws2_32.lib;Secur32.lib;crypt32.lib;Bcrypt.lib;Ncrypt.lib;iphlpapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <Profile>true</Profile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;QCC_OS_GROUP_WINDOWS;UNICODE;ELPP_NO_DEFAULT_LOG_FILE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>false</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\..\..\xerces-c-3.1.3\src;$(GTEST_ROOT)\include;$(ALLJOYN_SDK_HOME)\v15.04b\Base\Debug\inc;$(ALLJOYN_SDK_HOME)\v15.04b\Core\Debug\cpp\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>..\..\..\..\xerces-c-3.1.3\Build\Win64\VC12\Debug;$(GTEST_ROOT)\msvc\x64\Debug;$(ALLJOYN_SDK_HOME)\v15.04b\Base\Debug\lib;$(ALLJOYN_SDK_HOME)\v15.04b\Core\Debug\cpp\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>alljoyn.lib;ajrouter.lib;ws2_32.lib;Secur32.lib;crypt32.lib;Bcrypt.lib;Ncrypt.lib;iphlpapi.lib;gtestd.lib;xerces-c_3D.lib;alljoyn_notification.lib;alljoyn_services_common.lib;alljoyn_config.lib;alljoyn_controlpanel.lib;alljoyn_onboarding.lib;Wlanapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <Profile>false</Profile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;QCC_OS_GROUP_WINDOWS;UNICODE;ELPP_NO_DEFAULT_LOG_FILE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>false</SDLCheck>
+      <AdditionalIncludeDirectories>..\..\..\..\xerces-c-3.1.3\src;$(GTEST_ROOT)\include;$(ALLJOYN_SDK_HOME)\v15.04b\Base\Release\inc;$(ALLJOYN_SDK_HOME)\v15.04b\Core\Release\cpp\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>..\..\..\..\xerces-c-3.1.3\Build\Win64\VC12\Release;$(GTEST_ROOT)\msvc\x64\Release;$(ALLJOYN_SDK_HOME)\v15.04b\Base\Release\lib;$(ALLJOYN_SDK_HOME)\v15.04b\Core\Release\cpp\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>alljoyn.lib;ajrouter.lib;alljoyn_about.lib;ws2_32.lib;Secur32.lib;gtest.lib;crypt32.lib;Bcrypt.lib;Ncrypt.lib;iphlpapi.lib;xerces-c_3.lib;alljoyn_notification.lib;alljoyn_services_common.lib;alljoyn_config.lib;alljoyn_onboarding.lib;Wlanapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AboutAnnouncement.h" />
+    <ClInclude Include="AboutAnnouncementDetails.h" />
+    <ClInclude Include="AboutTestSuite.h" />
+    <ClInclude Include="ArrayParser.h" />
+    <ClInclude Include="AuthListeners.h" />
+    <ClInclude Include="AuthPasswordHandler.h" />
+    <ClInclude Include="AvailableSoftAPException.h" />
+    <ClInclude Include="BusAttachmentMgr.h" />
+    <ClInclude Include="BusIntrospector.h" />
+    <ClInclude Include="ConfigTestSuite.h" />
+    <ClInclude Include="ControllerServiceBusObject.h" />
+    <ClInclude Include="ControllerServiceDataSetBusObject.h" />
+    <ClInclude Include="ControllerServiceLampBusObject.h" />
+    <ClInclude Include="ControllerServiceLampGroupBusObject.h" />
+    <ClInclude Include="ControllerServiceMasterSceneBusObject.h" />
+    <ClInclude Include="ControllerServicePresetBusObject.h" />
+    <ClInclude Include="ControllerServicePulseEffectBusObject.h" />
+    <ClInclude Include="ControllerServiceSceneBusObject.h" />
+    <ClInclude Include="ControllerServiceSceneElementBusObject.h" />
+    <ClInclude Include="ControllerServiceSceneWithSceneElementsBusObject.h" />
+    <ClInclude Include="ControllerServiceTransitionEffectBusObject.h" />
+    <ClInclude Include="ControlPanelTestSuite.h" />
+    <ClInclude Include="DeviceAnnouncementHandler.h" />
+    <ClInclude Include="easylogging++.h" />
+    <ClInclude Include="ECDHEEcdsaHandlerImpl.h" />
+    <ClInclude Include="ECDHEEcdsaListener.h" />
+    <ClInclude Include="ECDHEEcdsaStore.h" />
+    <ClInclude Include="ECDHENullHandlerImpl.h" />
+    <ClInclude Include="ECDHENullListener.h" />
+    <ClInclude Include="ECDHEPskHandlerImpl.h" />
+    <ClInclude Include="ECDHEPskListener.h" />
+    <ClInclude Include="ECDHEPskStore.h" />
+    <ClInclude Include="EventsActionsTestSuite.h" />
+    <ClInclude Include="InterfaceDetail.h" />
+    <ClInclude Include="InterfaceValidator.h" />
+    <ClInclude Include="IntrospectionAnnotation.h" />
+    <ClInclude Include="IntrospectionArg.h" />
+    <ClInclude Include="IntrospectionBaseTag.h" />
+    <ClInclude Include="IntrospectionInterface.h" />
+    <ClInclude Include="IntrospectionMethod.h" />
+    <ClInclude Include="IntrospectionNode.h" />
+    <ClInclude Include="IntrospectionProperty.h" />
+    <ClInclude Include="IntrospectionSignal.h" />
+    <ClInclude Include="IntrospectionSubNode.h" />
+    <ClInclude Include="IntrospectionXmlErrorHandler.h" />
+    <ClInclude Include="IntrospectionXmlHandler.h" />
+    <ClInclude Include="IntrospectionXmlParser.h" />
+    <ClInclude Include="LampDetailsBusObject.h" />
+    <ClInclude Include="LampParametersBusObject.h" />
+    <ClInclude Include="LampServiceBusObject.h" />
+    <ClInclude Include="LampStateBusObject.h" />
+    <ClInclude Include="LeaderElectionAndStateSyncBusObject.h" />
+    <ClInclude Include="LSFControllerTestSuite.h" />
+    <ClInclude Include="LSFLampTestSuite.h" />
+    <ClInclude Include="MessageSet.h" />
+    <ClInclude Include="NotAvailableSoftAPException.h" />
+    <ClInclude Include="OnboardingHelper.h" />
+    <ClInclude Include="OnboardingSignalListenerImpl.h" />
+    <ClInclude Include="OnboardingTestSuite.h" />
+    <ClInclude Include="ScanResult.h" />
+    <ClInclude Include="ServiceAvailabilityHandler.h" />
+    <ClInclude Include="IOManager.h" />
+    <ClInclude Include="NodeDetail.h" />
+    <ClInclude Include="NotifConsumerTestSuite.h" />
+    <ClInclude Include="NotificationHandler.h" />
+    <ClInclude Include="NotificationValidator.h" />
+    <ClInclude Include="NotifProducerTestSuite.h" />
+    <ClInclude Include="rapidxml.hpp" />
+    <ClInclude Include="rapidxml_iterators.hpp" />
+    <ClInclude Include="rapidxml_print.hpp" />
+    <ClInclude Include="rapidxml_utils.hpp" />
+    <ClInclude Include="NotificationDialogResources.h" />
+    <ClInclude Include="ServiceFramework.h" />
+    <ClInclude Include="ServiceHelper.h" />
+    <ClInclude Include="SetValidator.h" />
+    <ClInclude Include="SoftAPValidator.h" />
+    <ClInclude Include="SrpKeyXHandlerImpl.h" />
+    <ClInclude Include="SrpKeyXListener.h" />
+    <ClInclude Include="SrpKeyXStore.h" />
+    <ClInclude Include="SrpLogonHandlerImpl.h" />
+    <ClInclude Include="SrpLogonListener.h" />
+    <ClInclude Include="SrpLogonStore.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="TersePrinter.h" />
+    <ClInclude Include="UserInputDetails.h" />
+    <ClInclude Include="ValidationResult.h" />
+    <ClInclude Include="WifiHelper.h" />
+    <ClInclude Include="WifiHelperImpl.h" />
+    <ClInclude Include="WifiManager.h" />
+    <ClInclude Include="WifiNetworkConfig.h" />
+    <ClInclude Include="WifiNotEnabledException.h" />
+    <ClInclude Include="XMLBasedBusIntrospector.h" />
+    <ClInclude Include="XMLParser.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AboutAnnouncement.cpp" />
+    <ClCompile Include="AboutAnnouncementDetails.cpp" />
+    <ClCompile Include="AboutTestSuite.cpp" />
+    <ClCompile Include="ArrayParser.cpp" />
+    <ClCompile Include="AuthListeners.cpp" />
+    <ClCompile Include="BusAttachmentMgr.cpp" />
+    <ClCompile Include="ConfigTestSuite.cpp" />
+    <ClCompile Include="ControllerServiceBusObject.cpp" />
+    <ClCompile Include="ControllerServiceDataSetBusObject.cpp" />
+    <ClCompile Include="ControllerServiceLampBusObject.cpp" />
+    <ClCompile Include="ControllerServiceLampGroupBusObject.cpp" />
+    <ClCompile Include="ControllerServiceMasterSceneBusObject.cpp" />
+    <ClCompile Include="ControllerServicePresetBusObject.cpp" />
+    <ClCompile Include="ControllerServicePulseEffectBusObject.cpp" />
+    <ClCompile Include="ControllerServiceSceneBusObject.cpp" />
+    <ClCompile Include="ControllerServiceSceneElementBusObject.cpp" />
+    <ClCompile Include="ControllerServiceSceneWithSceneElementsBusObject.cpp" />
+    <ClCompile Include="ControllerServiceTransitionEffectBusObject.cpp" />
+    <ClCompile Include="ControlPanelTestSuite.cpp" />
+    <ClCompile Include="DeviceAnnouncementHandler.cpp" />
+    <ClCompile Include="ECDHEEcdsaHandlerImpl.cpp" />
+    <ClCompile Include="ECDHEEcdsaListener.cpp" />
+    <ClCompile Include="ECDHEEcdsaStore.cpp" />
+    <ClCompile Include="ECDHENullHandlerImpl.cpp" />
+    <ClCompile Include="ECDHENullListener.cpp" />
+    <ClCompile Include="ECDHEPskHandlerImpl.cpp" />
+    <ClCompile Include="ECDHEPskListener.cpp" />
+    <ClCompile Include="ECDHEPskStore.cpp" />
+    <ClCompile Include="EventsActionsTestSuite.cpp" />
+    <ClCompile Include="InterfaceDetail.cpp" />
+    <ClCompile Include="InterfaceValidator.cpp" />
+    <ClCompile Include="IntrospectionAnnotation.cpp" />
+    <ClCompile Include="IntrospectionArg.cpp" />
+    <ClCompile Include="IntrospectionBaseTag.cpp" />
+    <ClCompile Include="IntrospectionInterface.cpp" />
+    <ClCompile Include="IntrospectionMethod.cpp" />
+    <ClCompile Include="IntrospectionNode.cpp" />
+    <ClCompile Include="IntrospectionProperty.cpp" />
+    <ClCompile Include="IntrospectionSignal.cpp" />
+    <ClCompile Include="IntrospectionXmlErrorHandler.cpp" />
+    <ClCompile Include="IntrospectionXmlHandler.cpp" />
+    <ClCompile Include="IntrospectionXmlParser.cpp" />
+    <ClCompile Include="LampDetailsBusObject.cpp" />
+    <ClCompile Include="LampParametersBusObject.cpp" />
+    <ClCompile Include="LampServiceBusObject.cpp" />
+    <ClCompile Include="LampStateBusObject.cpp" />
+    <ClCompile Include="LeaderElectionAndStateSyncBusObject.cpp" />
+    <ClCompile Include="LSFControllerTestSuite.cpp" />
+    <ClCompile Include="LSFLampTestSuite.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MessageSet.cpp" />
+    <ClCompile Include="OnboardingHelper.cpp" />
+    <ClCompile Include="OnboardingSignalListenerImpl.cpp" />
+    <ClCompile Include="OnboardingTestSuite.cpp" />
+    <ClCompile Include="ScanResult.cpp" />
+    <ClCompile Include="ServiceAvailabilityHandler.cpp" />
+    <ClCompile Include="IOManager.cpp" />
+    <ClCompile Include="NodeDetail.cpp" />
+    <ClCompile Include="NotifConsumerTestSuite.cpp" />
+    <ClCompile Include="NotificationHandler.cpp" />
+    <ClCompile Include="NotificationValidator.cpp" />
+    <ClCompile Include="NotifProducerTestSuite.cpp" />
+    <ClCompile Include="ServiceHelper.cpp" />
+    <ClCompile Include="SoftAPValidator.cpp" />
+    <ClCompile Include="SrpKeyXHandlerImpl.cpp" />
+    <ClCompile Include="SrpKeyXListener.cpp" />
+    <ClCompile Include="SrpKeyXStore.cpp" />
+    <ClCompile Include="SrpLogonHandlerImpl.cpp" />
+    <ClCompile Include="SrpLogonListener.cpp" />
+    <ClCompile Include="SrpLogonStore.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="TersePrinter.cpp" />
+    <ClCompile Include="UserInputDetails.cpp" />
+    <ClCompile Include="ValidationResult.cpp" />
+    <ClCompile Include="WifiHelperImpl.cpp" />
+    <ClCompile Include="WifiManager.cpp" />
+    <ClCompile Include="WifiNetworkConfig.cpp" />
+    <ClCompile Include="XMLBasedBusIntrospector.cpp" />
+    <ClCompile Include="XMLParser.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="TestCases_Package.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
