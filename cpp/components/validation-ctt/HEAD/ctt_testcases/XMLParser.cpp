@@ -18,12 +18,11 @@
 
 #include "rapidxml_print.hpp"
 
-using namespace std;
 using namespace rapidxml;
 
-XMLParser::XMLParser(string t_FileName) : m_FileName(t_FileName)
+XMLParser::XMLParser(const std::string& t_FileName) : m_FileName(t_FileName)
 {
-	if (ifstream is{ t_FileName, is.binary | is.ate | is.in | is.out })
+	if (std::ifstream is{ t_FileName, is.binary | is.ate | is.in | is.out })
 	{
 		m_File.resize(static_cast<size_t>(is.tellg()));
 		is.seekg(0);
@@ -32,8 +31,8 @@ XMLParser::XMLParser(string t_FileName) : m_FileName(t_FileName)
 	}
 }
 
-void XMLParser::processXMLFile(map<string, bool> &t_Ics, map<string, string> &t_Ixit,
-	map<string, string> &t_GeneralParameter)
+void XMLParser::processXMLFile(std::map<std::string, bool> &t_Ics, std::map<std::string, std::string> &t_Ixit,
+	std::map<std::string, std::string> &t_GeneralParameter)
 {
 	enum
 	{
@@ -70,15 +69,15 @@ void XMLParser::processXMLFile(map<string, bool> &t_Ics, map<string, string> &t_
 
 			if (strcmp(nodeName, "Ics") == 0)
 			{
-				t_Ics.insert(pair<string, bool>(name, (strcmp(value, "true") == 0)));
+				t_Ics.insert(std::pair<std::string, bool>(name, (strcmp(value, "true") == 0)));
 			}
 			else if (strcmp(nodeName, "Ixit") == 0)
 			{
-				t_Ixit.insert(pair<string, string>(name, value));
+				t_Ixit.insert(std::pair<std::string, std::string>(name, value));
 			}
 			else
 			{
-				t_GeneralParameter.insert(pair<string, string>(name, value));
+				t_GeneralParameter.insert(std::pair<std::string, std::string>(name, value));
 			}
 
 			delete[] name;
@@ -91,7 +90,7 @@ void XMLParser::processXMLFile(map<string, bool> &t_Ics, map<string, string> &t_
 	xmlDoc.clear();
 }
 
-void XMLParser::loadTestCaseInfo(string& t_TestCaseId, const string& t_TestCaseName, string& t_TestCaseDescription)
+void XMLParser::loadTestCaseInfo(std::string& t_TestCaseId, const std::string& t_TestCaseName, std::string& t_TestCaseDescription)
 {
 	enum
 	{
@@ -121,15 +120,15 @@ void XMLParser::loadTestCaseInfo(string& t_TestCaseId, const string& t_TestCaseN
 				strncpy_s(id, n->first_node("Id")->value_size() + 1, n->first_node("Id")->value(), _TRUNCATE);
 				strncpy_s(description, n->first_node("Description")->value_size() + 1, n->first_node("Description")->value(), _TRUNCATE);
 
-				t_TestCaseId = string(id);
-				t_TestCaseDescription = string(description);
+				t_TestCaseId = std::string(id);
+				t_TestCaseDescription = std::string(description);
 			}
 		}
 	}
 }
 
-void XMLParser::saveResultsToFile(const string& t_TestCaseId, const string& t_TestCaseName,
-	const string& t_TestCaseDescription, const tm& t_TestCaseDatetime)
+void XMLParser::saveResultsToFile(const std::string& t_TestCaseId, const std::string& t_TestCaseName,
+	const std::string& t_TestCaseDescription, const tm& t_TestCaseDatetime)
 {
 	enum
 	{
@@ -160,7 +159,7 @@ void XMLParser::saveResultsToFile(const string& t_TestCaseId, const string& t_Te
 	std::strftime(xmlDatetime, 20, "%Y-%m-%d %H:%M:%S", &t_TestCaseDatetime);
 
 	::testing::UnitTest& unitTest = *::testing::UnitTest::GetInstance();
-	string verdict;
+	std::string verdict;
 	if (unitTest.failed_test_case_count() == 1)
 	{
 		verdict = "FAIL";
@@ -170,7 +169,7 @@ void XMLParser::saveResultsToFile(const string& t_TestCaseId, const string& t_Te
 		verdict = "PASS";
 	}
 
-	string logFileName = "Log-";
+	std::string logFileName = "Log-";
 	logFileName.append(t_TestCaseName);
 	logFileName.append("-");
 	logFileName.append(logDatetime);
@@ -193,7 +192,7 @@ void XMLParser::saveResultsToFile(const string& t_TestCaseId, const string& t_Te
 	resultsNode->append_node(logFileNode);
 
 
-	ofstream file;
+	std::ofstream file;
 	file.open(m_FileName);
 	file << xmlDoc;
 	file.close();

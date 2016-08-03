@@ -15,14 +15,17 @@
 ******************************************************************************/
 #pragma once
 
-#include <map>
-#include <string>
+#include "ECDHENullHandlerImpl.h"
 
-class PasswordStore
+#include <alljoyn/AuthListener.h>
+
+class ECDHENullListener : public ajn::AuthListener
 {
-	public:
-		const char* getPassword(std::string);
-		void setPassword(std::string, const char*);
-	private:
-		std::map<std::string, const char*> m_PasswordStore;
+public:
+	ECDHENullListener(ECDHENullHandlerImpl*);
+	bool RequestCredentials(const char*, const char*, uint16_t, const char*, uint16_t, Credentials&);
+	void AuthenticationComplete(const char*, const char*, bool);
+
+private:
+	ECDHENullHandlerImpl* m_AuthenticationHandler{ nullptr };
 };

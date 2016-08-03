@@ -105,6 +105,11 @@ void IOManager::printIcs(ServiceFramework t_ServiceFramework)
 			filters.push_back("ICSLC");
 			break;
 		}
+		case(ServiceFramework::HAE) :
+		{
+			filters.push_back("ICSH");
+			break;
+		}
 	}
 
 	for (auto filter : filters)
@@ -156,6 +161,11 @@ void IOManager::printIxit(ServiceFramework t_ServiceFramework)
 			filters.push_back("IXITLC");
 			break;
 		}
+		case(ServiceFramework::HAE):
+		{
+			filters.push_back("IXITH");
+			break;
+		}
 	}
 
 	for (auto filter : filters)
@@ -204,6 +214,11 @@ void IOManager::printGeneralParameter(ServiceFramework t_ServiceFramework)
 		case( ServiceFramework::LSF_CONTROLLER) :
 		{
 			filters.push_back("GPLC");
+			break;
+		}
+		case(ServiceFramework::HAE):
+		{
+			filters.push_back("GPH");
 			break;
 		}
 	}

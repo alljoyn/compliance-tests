@@ -143,16 +143,20 @@ WLAN_INTERFACE_INFO_LIST WifiManager::enumInterfaces()
 	return *pInterfaceInfoList;
 }
 
-void WifiManager::scan(const long t_startTime, const long t_timeToWaitInMs)
+bool WifiManager::scan(const long t_startTime, const long t_timeToWaitInMs)
 {
 	registerNotification();
 
-	DWORD dwError = WlanScan(
+	DWORD dwError;
+	if ((dwError = WlanScan(
 		m_HClient,
 		&m_InterfaceGuid,
 		NULL,
 		NULL,
-		NULL);
+		NULL)) != ERROR_SUCCESS)
+	{
+		return false;
+	}
 
 	const clock_t begin_time = clock();
 	while (!m_ScanCompleted && (clock() - t_startTime < t_timeToWaitInMs))
@@ -163,6 +167,8 @@ void WifiManager::scan(const long t_startTime, const long t_timeToWaitInMs)
 	m_ScanCompleted = false;
 
 	unregisterNotification();
+
+	return true;
 }
 
 std::list<ScanResult> WifiManager::getVisibleNetworkList()
@@ -197,12 +203,13 @@ std::list<ScanResult> WifiManager::getVisibleNetworkList()
 
 			UCHAR* ssid = pAvailableNetworkList->Network[i].dot11Ssid.ucSSID;
 			ULONG bssid = pAvailableNetworkList->Network[i].uNumberOfBssids;
+			ULONG ssidLength = pAvailableNetworkList->Network[i].dot11Ssid.uSSIDLength;
 			std::string capabilities = pAvailableNetworkList->Network[i].dot11DefaultAuthAlgorithm
 				+ ", " + pAvailableNetworkList->Network[i].dot11DefaultCipherAlgorithm;
 			int level = -100 + pAvailableNetworkList->Network[i].wlanSignalQuality/2;
 			int frequency = 2400;
 
-			network = new ScanResult(std::string(reinterpret_cast<char*>(ssid)), 
+			network = new ScanResult(std::string(reinterpret_cast<char*>(ssid), ssidLength),
 				std::to_string(bssid), capabilities, level, frequency);
 			scanResults.push_back(*network);
 		}
@@ -429,12 +436,13 @@ std::list<ScanResult> WifiManager::waitForScanResults(const long t_timeout)
 	
 	const clock_t beginTime = clock();
 
-	scan(beginTime, t_timeout);
-
-	while (scanResults.empty() && (clock() - beginTime < t_timeout))
+	if (scan(beginTime, t_timeout))
 	{
-		scanResults = getVisibleNetworkList();
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		while (scanResults.empty() && (clock() - beginTime < t_timeout))
+		{
+			scanResults = getVisibleNetworkList();
+			std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		}
 	}
 
 	return scanResults;

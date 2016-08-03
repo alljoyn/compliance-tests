@@ -133,6 +133,72 @@
     <Filter Include="Source Files\testcases.conf.eventsandactions">
       <UniqueIdentifier>{3cddf846-4cf2-47ad-a550-1b41a9762974}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\core.commons.auth">
+      <UniqueIdentifier>{529cc679-7adf-431e-b5cc-51ce24fa4e7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\core.commons.auth">
+      <UniqueIdentifier>{354939ed-b248-4d79-b633-b69abb662c54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\core.commons.auth\srp_keyx">
+      <UniqueIdentifier>{be37d7e3-3788-4428-a08d-52dfb602b039}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\core.commons.auth\srp_logon">
+      <UniqueIdentifier>{c4887879-1aab-4063-b815-4e824b3b6d10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\core.commons.auth\srp_keyx">
+      <UniqueIdentifier>{7c8c6f4f-a8a8-4956-b4fe-c26efee8cee5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\core.commons.auth\srp_logon">
+      <UniqueIdentifier>{95ce0f10-ccdb-49f0-855f-ba970fbdcc2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\core.commons.auth\ecdhe_null">
+      <UniqueIdentifier>{7d065ac6-a62d-4e63-bead-81d8b7ae6a5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\core.commons.auth\ecdhe_psk">
+      <UniqueIdentifier>{327032e6-0c90-47ae-9ed4-d2fd05e6a074}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\core.commons.auth\ecdhe_ecdsa">
+      <UniqueIdentifier>{da0332c3-e942-4794-b262-3c2621b16e14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\core.commons.auth\ecdhe_speke">
+      <UniqueIdentifier>{31c8a21e-13ad-413f-a3f0-e98f47a10b53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\core.commons.auth\ecdhe_null">
+      <UniqueIdentifier>{0a083353-ea6a-4ac7-8ac2-e8b29721e0f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\core.commons.auth\ecdhe_psk">
+      <UniqueIdentifier>{70f7ca58-d349-46bb-a795-7f86e252bf12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\core.commons.auth\ecdhe_ecdsa">
+      <UniqueIdentifier>{9c504bc6-3ad6-4009-949b-65c63c051476}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\core.commons.auth\ecdhe_speke">
+      <UniqueIdentifier>{b5917bff-c95f-418e-8bf0-26cac6eec826}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\testcases.conf.hae">
+      <UniqueIdentifier>{e6469504-9263-4c3a-9139-5b6809481d5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\core.hae">
+      <UniqueIdentifier>{42ef6076-9120-4955-8fe4-0ed409537792}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\testcases.conf.hae">
+      <UniqueIdentifier>{ee3a6230-f912-4946-9269-944a97299e14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\core.hae">
+      <UniqueIdentifier>{bcb26b4a-04f5-4b8f-8897-6125769129f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\testcases.conf.security20">
+      <UniqueIdentifier>{cd77f1df-c68f-47b2-ba2b-1f10ae04bb9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\testcases.conf.security20">
+      <UniqueIdentifier>{0add6f92-9316-4734-b516-e5b7c310f0ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\core.security20">
+      <UniqueIdentifier>{8dff6217-f25e-4f37-854a-1f0df30661f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\core.security20">
+      <UniqueIdentifier>{90bb4c67-c395-418e-b37f-66c785c73478}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -150,28 +216,16 @@
     <ClInclude Include="AboutAnnouncementDetails.h">
       <Filter>Header Files\core.about</Filter>
     </ClInclude>
-    <ClInclude Include="AuthPasswordHandler.h">
-      <Filter>Header Files\core.commons</Filter>
-    </ClInclude>
-    <ClInclude Include="AuthPasswordHandlerImpl.h">
-      <Filter>Header Files\core.commons</Filter>
-    </ClInclude>
     <ClInclude Include="BusAttachmentMgr.h">
       <Filter>Header Files\core.commons</Filter>
     </ClInclude>
     <ClInclude Include="DeviceAnnouncementHandler.h">
       <Filter>Header Files\core.commons</Filter>
     </ClInclude>
-    <ClInclude Include="PasswordStore.h">
-      <Filter>Header Files\core.commons</Filter>
-    </ClInclude>
     <ClInclude Include="ServiceAvailabilityHandler.h">
       <Filter>Header Files\core.commons</Filter>
     </ClInclude>
     <ClInclude Include="ServiceHelper.h">
-      <Filter>Header Files\core.commons</Filter>
-    </ClInclude>
-    <ClInclude Include="SrpAnonymousKeyListener.h">
       <Filter>Header Files\core.commons</Filter>
     </ClInclude>
     <ClInclude Include="ArrayParser.h">
@@ -372,6 +426,81 @@
     <ClInclude Include="AboutTestSuite.h">
       <Filter>Header Files\testcases.conf.about</Filter>
     </ClInclude>
+    <ClInclude Include="AuthListeners.h">
+      <Filter>Header Files\core.commons.auth</Filter>
+    </ClInclude>
+    <ClInclude Include="AuthPasswordHandler.h">
+      <Filter>Header Files\core.commons.auth</Filter>
+    </ClInclude>
+    <ClInclude Include="SrpKeyXListener.h">
+      <Filter>Header Files\core.commons.auth\srp_keyx</Filter>
+    </ClInclude>
+    <ClInclude Include="SrpKeyXStore.h">
+      <Filter>Header Files\core.commons.auth\srp_keyx</Filter>
+    </ClInclude>
+    <ClInclude Include="SrpKeyXHandlerImpl.h">
+      <Filter>Header Files\core.commons.auth\srp_keyx</Filter>
+    </ClInclude>
+    <ClInclude Include="SrpLogonListener.h">
+      <Filter>Header Files\core.commons.auth\srp_logon</Filter>
+    </ClInclude>
+    <ClInclude Include="SrpLogonStore.h">
+      <Filter>Header Files\core.commons.auth\srp_logon</Filter>
+    </ClInclude>
+    <ClInclude Include="SrpLogonHandlerImpl.h">
+      <Filter>Header Files\core.commons.auth\srp_logon</Filter>
+    </ClInclude>
+    <ClInclude Include="ECDHENullListener.h">
+      <Filter>Header Files\core.commons.auth\ecdhe_null</Filter>
+    </ClInclude>
+    <ClInclude Include="ECDHENullHandlerImpl.h">
+      <Filter>Header Files\core.commons.auth\ecdhe_null</Filter>
+    </ClInclude>
+    <ClInclude Include="ECDHEPskListener.h">
+      <Filter>Header Files\core.commons.auth\ecdhe_psk</Filter>
+    </ClInclude>
+    <ClInclude Include="ECDHEPskHandlerImpl.h">
+      <Filter>Header Files\core.commons.auth\ecdhe_psk</Filter>
+    </ClInclude>
+    <ClInclude Include="ECDHEPskStore.h">
+      <Filter>Header Files\core.commons.auth\ecdhe_psk</Filter>
+    </ClInclude>
+    <ClInclude Include="ECDHEEcdsaListener.h">
+      <Filter>Header Files\core.commons.auth\ecdhe_ecdsa</Filter>
+    </ClInclude>
+    <ClInclude Include="ECDHEEcdsaHandlerImpl.h">
+      <Filter>Header Files\core.commons.auth\ecdhe_ecdsa</Filter>
+    </ClInclude>
+    <ClInclude Include="ECDHEEcdsaStore.h">
+      <Filter>Header Files\core.commons.auth\ecdhe_ecdsa</Filter>
+    </ClInclude>
+    <ClInclude Include="ECDHESpekeListener.h">
+      <Filter>Header Files\core.commons.auth\ecdhe_speke</Filter>
+    </ClInclude>
+    <ClInclude Include="ECDHESpekeHandlerImpl.h">
+      <Filter>Header Files\core.commons.auth\ecdhe_speke</Filter>
+    </ClInclude>
+    <ClInclude Include="ECDHESpekeStore.h">
+      <Filter>Header Files\core.commons.auth\ecdhe_speke</Filter>
+    </ClInclude>
+    <ClInclude Include="HaeTestSuite.h">
+      <Filter>Header Files\testcases.conf.hae</Filter>
+    </ClInclude>
+    <ClInclude Include="InterfaceInfo.h">
+      <Filter>Header Files\core.hae</Filter>
+    </ClInclude>
+    <ClInclude Include="Security20TestSuite.h">
+      <Filter>Header Files\testcases.conf.security20</Filter>
+    </ClInclude>
+    <ClInclude Include="Claim_ApplicationStateListener.h">
+      <Filter>Header Files\core.security20</Filter>
+    </ClInclude>
+    <ClInclude Include="AvailableSoftAPException.h">
+      <Filter>Header Files\core.onboarding</Filter>
+    </ClInclude>
+    <ClInclude Include="NotAvailableSoftAPException.h">
+      <Filter>Header Files\core.onboarding</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -386,25 +515,16 @@
     <ClCompile Include="AboutAnnouncementDetails.cpp">
       <Filter>Source Files\core.about</Filter>
     </ClCompile>
-    <ClCompile Include="AuthPasswordHandlerImpl.cpp">
-      <Filter>Source Files\core.commons</Filter>
-    </ClCompile>
     <ClCompile Include="BusAttachmentMgr.cpp">
       <Filter>Source Files\core.commons</Filter>
     </ClCompile>
     <ClCompile Include="DeviceAnnouncementHandler.cpp">
       <Filter>Source Files\core.commons</Filter>
     </ClCompile>
-    <ClCompile Include="PasswordStore.cpp">
-      <Filter>Source Files\core.commons</Filter>
-    </ClCompile>
     <ClCompile Include="ServiceAvailabilityHandler.cpp">
       <Filter>Source Files\core.commons</Filter>
     </ClCompile>
     <ClCompile Include="ServiceHelper.cpp">
-      <Filter>Source Files\core.commons</Filter>
-    </ClCompile>
-    <ClCompile Include="SrpAnonymousKeyListener.cpp">
       <Filter>Source Files\core.commons</Filter>
     </ClCompile>
     <ClCompile Include="ArrayParser.cpp">
@@ -574,6 +694,72 @@
     </ClCompile>
     <ClCompile Include="NotifConsumerTestSuite.cpp">
       <Filter>Source Files\testcases.conf.notification</Filter>
+    </ClCompile>
+    <ClCompile Include="AuthListeners.cpp">
+      <Filter>Source Files\core.commons.auth</Filter>
+    </ClCompile>
+    <ClCompile Include="SrpKeyXHandlerImpl.cpp">
+      <Filter>Source Files\core.commons.auth\srp_keyx</Filter>
+    </ClCompile>
+    <ClCompile Include="SrpKeyXListener.cpp">
+      <Filter>Source Files\core.commons.auth\srp_keyx</Filter>
+    </ClCompile>
+    <ClCompile Include="SrpKeyXStore.cpp">
+      <Filter>Source Files\core.commons.auth\srp_keyx</Filter>
+    </ClCompile>
+    <ClCompile Include="SrpLogonListener.cpp">
+      <Filter>Source Files\core.commons.auth\srp_logon</Filter>
+    </ClCompile>
+    <ClCompile Include="SrpLogonStore.cpp">
+      <Filter>Source Files\core.commons.auth\srp_logon</Filter>
+    </ClCompile>
+    <ClCompile Include="SrpLogonHandlerImpl.cpp">
+      <Filter>Source Files\core.commons.auth\srp_logon</Filter>
+    </ClCompile>
+    <ClCompile Include="ECDHENullListener.cpp">
+      <Filter>Source Files\core.commons.auth\ecdhe_null</Filter>
+    </ClCompile>
+    <ClCompile Include="ECDHENullHandlerImpl.cpp">
+      <Filter>Source Files\core.commons.auth\ecdhe_null</Filter>
+    </ClCompile>
+    <ClCompile Include="ECDHEPskListener.cpp">
+      <Filter>Source Files\core.commons.auth\ecdhe_psk</Filter>
+    </ClCompile>
+    <ClCompile Include="ECDHEPskHandlerImpl.cpp">
+      <Filter>Source Files\core.commons.auth\ecdhe_psk</Filter>
+    </ClCompile>
+    <ClCompile Include="ECDHEPskStore.cpp">
+      <Filter>Source Files\core.commons.auth\ecdhe_psk</Filter>
+    </ClCompile>
+    <ClCompile Include="ECDHEEcdsaListener.cpp">
+      <Filter>Source Files\core.commons.auth\ecdhe_ecdsa</Filter>
+    </ClCompile>
+    <ClCompile Include="ECDHEEcdsaHandlerImpl.cpp">
+      <Filter>Source Files\core.commons.auth\ecdhe_ecdsa</Filter>
+    </ClCompile>
+    <ClCompile Include="ECDHEEcdsaStore.cpp">
+      <Filter>Source Files\core.commons.auth\ecdhe_ecdsa</Filter>
+    </ClCompile>
+    <ClCompile Include="ECDHESpekeListener.cpp">
+      <Filter>Source Files\core.commons.auth\ecdhe_speke</Filter>
+    </ClCompile>
+    <ClCompile Include="ECDHESpekeHandlerImpl.cpp">
+      <Filter>Source Files\core.commons.auth\ecdhe_speke</Filter>
+    </ClCompile>
+    <ClCompile Include="ECDHESpekeStore.cpp">
+      <Filter>Source Files\core.commons.auth\ecdhe_speke</Filter>
+    </ClCompile>
+    <ClCompile Include="HaeTestSuite.cpp">
+      <Filter>Source Files\testcases.conf.hae</Filter>
+    </ClCompile>
+    <ClCompile Include="InterfaceInfo.cpp">
+      <Filter>Source Files\core.hae</Filter>
+    </ClCompile>
+    <ClCompile Include="Security20TestSuite.cpp">
+      <Filter>Source Files\testcases.conf.security20</Filter>
+    </ClCompile>
+    <ClCompile Include="Claim_ApplicationStateListener.cpp">
+      <Filter>Source Files\core.security20</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

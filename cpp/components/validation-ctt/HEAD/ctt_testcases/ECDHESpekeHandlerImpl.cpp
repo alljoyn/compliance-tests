@@ -14,53 +14,49 @@
 *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************************************************************/
 #include "stdafx.h"
-#include "AuthPasswordHandlerImpl.h"
+#include "ECDHESpekeHandlerImpl.h"
 
-#include "SrpAnonymousKeyListener.h"
+ECDHESpekeHandlerImpl::ECDHESpekeHandlerImpl(ECDHESpekeStore* t_PasswordStore, std::string t_DefaultPassword) :
+	m_PasswordStore(t_PasswordStore), m_DefaultPassword(t_DefaultPassword) {}
 
-using namespace std;
-
-AuthPasswordHandlerImpl::AuthPasswordHandlerImpl(PasswordStore* t_PasswordStore) :
-	m_PasswordStore(t_PasswordStore) {}
-
-const char* AuthPasswordHandlerImpl::getPassword(string t_PeerName)
+const char* ECDHESpekeHandlerImpl::getPassword(std::string t_PeerName)
 {
 	const char* securedSessionPassword = m_PasswordStore->getPassword(t_PeerName);
 
-	securedSessionPassword = (securedSessionPassword != nullptr) ? securedSessionPassword : SrpAnonymousKeyListener::DEFAULT_PINCODE;
+	securedSessionPassword = (securedSessionPassword != nullptr) ? securedSessionPassword : m_DefaultPassword.c_str();
 	LOG(INFO) << "Providing password for " << t_PeerName << " as " << securedSessionPassword;
-	m_PeerAuthenticated.insert(pair<string, bool>(t_PeerName, true));
+	m_PeerAuthenticated.insert(std::pair<std::string, bool>(t_PeerName, true));
 	return securedSessionPassword;
 }
 
-void AuthPasswordHandlerImpl::completed(string t_Mechanism, string t_AuthPeer, bool t_Authenticated)
+void ECDHESpekeHandlerImpl::completed(std::string t_Mechanism, std::string t_AuthPeer, bool t_Authenticated)
 {
 	if (!t_Authenticated)
 	{
-		m_PeerAuthenticated.insert(pair<string, bool>(t_AuthPeer, true));
-		m_PeerAuthenticationSuccessful.insert(pair<string, bool>(t_AuthPeer, false));
+		m_PeerAuthenticated.insert(std::pair<std::string, bool>(t_AuthPeer, true));
+		m_PeerAuthenticationSuccessful.insert(std::pair<std::string, bool>(t_AuthPeer, false));
 		LOG(INFO) << " ** " << t_AuthPeer << " failed to authenticate";
 	}
 	else
 	{
-		m_PeerAuthenticated.insert(pair<string, bool>(t_AuthPeer, true));
-		m_PeerAuthenticationSuccessful.insert(pair<string, bool>(t_AuthPeer, true));
+		m_PeerAuthenticated.insert(std::pair<std::string, bool>(t_AuthPeer, true));
+		m_PeerAuthenticationSuccessful.insert(std::pair<std::string, bool>(t_AuthPeer, true));
 		LOG(INFO) << " ** " << t_AuthPeer << " successfully authenticated";
 	}
 }
 
-void AuthPasswordHandlerImpl::resetAuthentication(string t_AuthPeer)
+void ECDHESpekeHandlerImpl::resetAuthentication(std::string t_AuthPeer)
 {
-	m_PeerAuthenticated.insert(pair<string, bool>(t_AuthPeer, false));
-	m_PeerAuthenticationSuccessful.insert(pair<string, bool>(t_AuthPeer, false));
+	m_PeerAuthenticated.insert(std::pair<std::string, bool>(t_AuthPeer, false));
+	m_PeerAuthenticationSuccessful.insert(std::pair<std::string, bool>(t_AuthPeer, false));
 }
 
-bool AuthPasswordHandlerImpl::isPeerAuthenticated(string t_AuthPeer)
+bool ECDHESpekeHandlerImpl::isPeerAuthenticated(std::string t_AuthPeer)
 {
 	return isTrueBoolean(m_PeerAuthenticated.at(t_AuthPeer));
 }
 
-bool AuthPasswordHandlerImpl::isPeerAuthenticationSuccessful(string t_AuthPeer)
+bool ECDHESpekeHandlerImpl::isPeerAuthenticationSuccessful(std::string t_AuthPeer)
 {
 	if (m_PeerAuthenticationSuccessful.empty())
 	{
@@ -72,7 +68,7 @@ bool AuthPasswordHandlerImpl::isPeerAuthenticationSuccessful(string t_AuthPeer)
 	}
 }
 
-bool AuthPasswordHandlerImpl::isTrueBoolean(bool t_Value)
+bool ECDHESpekeHandlerImpl::isTrueBoolean(bool t_Value)
 {
 	bool result;
 

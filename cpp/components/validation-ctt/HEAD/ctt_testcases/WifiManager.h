@@ -17,7 +17,7 @@
 
 #include <list>
 #include <wlanapi.h>
-#include <Windows.h>
+#include <windows.h>
 
 #include "ScanResult.h"
 
@@ -47,7 +47,7 @@ private:
 
 	HANDLE openHandle();
 	WLAN_INTERFACE_INFO_LIST enumInterfaces();
-	void scan(const long, const long);
+	bool scan(const long, const long);
 	std::list<ScanResult> getVisibleNetworkList();
 	void disconnect();
 	void registerNotification();

@@ -58,7 +58,13 @@ void ControlPanelTestSuite::SetUp()
 	m_DutAppId = ArrayParser::parseAppIdFromString(m_IxitMap.at("IXITCO_AppId"));
 
 	m_ServiceHelper = new ServiceHelper();
-	QStatus status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId);
+	QStatus status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId,
+		m_IcsMap.at("ICSCO_SrpKeyX"), m_IxitMap.at("IXITCO_SrpKeyXPincode"),
+		m_IcsMap.at("ICSCO_SrpLogon"), m_IxitMap.at("IXITCO_SrpLogonUser"), m_IxitMap.at("IXITCO_SrpLogonPass"),
+		m_IcsMap.at("ICSCO_EcdheNull"),
+		m_IcsMap.at("ICSCO_EcdhePsk"), m_IxitMap.at("IXITCO_EcdhePskPassword"),
+		m_IcsMap.at("ICSCO_EcdheEcdsa"), m_IxitMap.at("IXITCO_EcdheEcdsaPrivateKey"), m_IxitMap.at("IXITCO_EcdheEcdsaCertChain"),
+		m_IcsMap.at("ICSCO_EcdheSpeke"), m_IxitMap.at("IXITCO_EcdheSpekePassword"));
 	ASSERT_EQ(status, ER_OK) << "serviceHelper Initialize() failed: " << QCC_StatusText(status);
 
 	m_DeviceAboutAnnouncement =
@@ -1265,10 +1271,11 @@ void ControlPanelTestSuite::validateSecuredContainerInvalidPasscodeInterfaceDeta
 void ControlPanelTestSuite::validateSecuredInterfaceInvalidPasscodeBusObject(const string& t_Path, const char* t_Interface)
 {
 	ProxyBusObject* proxyBusObject = m_BusIntrospector->getProxyBusObject(t_Path);
-	setInvalidPassword();
+	setInvalidAuthentication();
 
-	const char* currentPasscode = m_ServiceHelper->getAuthPassword(*m_DeviceAboutAnnouncement);
-	LOG(INFO) << "Connecting with invalid password: " << currentPasscode;
+	/*const char* currentPasscode = m_ServiceHelper->getSrpKeyXPincode(*m_DeviceAboutAnnouncement);
+	LOG(INFO) << "Connecting with invalid password: " << currentPasscode;*/
+	LOG(INFO) << "Connecting with invalid credentials";
 
 	uint16_t version;
 	QStatus status = getVersionPropertyFromInterface(proxyBusObject, t_Interface,
@@ -1279,10 +1286,35 @@ void ControlPanelTestSuite::validateSecuredInterfaceInvalidPasscodeBusObject(con
 		<< t_Interface << " version";
 }
 
-void ControlPanelTestSuite::setInvalidPassword()
+void ControlPanelTestSuite::setInvalidAuthentication()
 {
 	m_ServiceHelper->clearPeerAuthenticationFlags(*m_DeviceAboutAnnouncement);
-	m_ServiceHelper->setAuthPassword(*m_DeviceAboutAnnouncement, "123456");
+
+	if (m_IcsMap.at("ICSCO_SrpKeyX"))
+	{
+		m_ServiceHelper->setSrpKeyXPincode(*m_DeviceAboutAnnouncement, m_IxitMap.at("IXITCO_SrpKeyXWrongPincode").c_str());
+	}
+
+	if (m_IcsMap.at("ICSCO_SrpLogon"))
+	{
+		m_ServiceHelper->setSrpLogonPass(*m_DeviceAboutAnnouncement, m_IxitMap.at("IXITCO_SrpLogonWrongPass").c_str());
+	}
+
+	if (m_IcsMap.at("ICSCO_EcdhePsk"))
+	{
+		m_ServiceHelper->setEcdhePskPassword(*m_DeviceAboutAnnouncement, m_IxitMap.at("IXITCO_EcdhePskWrongPassword").c_str());
+	}
+
+	if (m_IcsMap.at("ICSCO_EcdheEcdsa"))
+	{
+		m_ServiceHelper->setEcdheEcdsaCredentials(*m_DeviceAboutAnnouncement, 
+			m_IxitMap.at("IXITCO_EcdheEcdsaWrongPrivateKey").c_str(), m_IxitMap.at("IXITCO_EcdheEcdsaWrongCertChain").c_str());
+	}
+
+	if (m_IcsMap.at("ICSCO_EcdheSpeke"))
+	{
+		m_ServiceHelper->setEcdheSpekePassword(*m_DeviceAboutAnnouncement, m_IxitMap.at("IXITCO_EcdheSpekeWrongPassword").c_str());
+	}
 }
 
 void ControlPanelTestSuite::validateSecuredPropertyInvalidPasscodeInterfaceDetailList(const list<InterfaceDetail>& t_InterfaceDetailList)

@@ -37,7 +37,6 @@ protected:
 	static const char* INVALID_NETWORK_NAME;
 	static const char* INVALID_PASSCODE;
 	static const char* TEMP_PASSCODE;
-	static const char* VALID_DEFAULT_PASSCODE;
 	static const char* NEW_DEVICE_NAME;
 
 	std::string m_DutDeviceId = std::string{ "" };
@@ -48,13 +47,18 @@ protected:
 	std::string m_SoftApSsid = std::string{ "" };
 	WifiNetworkConfig* m_PersonalApConfig;
 	WifiNetworkConfig* m_SoftApConfig;
+	AboutAnnouncementDetails* m_AboutAnnouncementDetails{ nullptr };
+
+	std::string m_DefaultSrpKeyXPincode = std::string{ "" };
+	std::string m_DefaultEcdhePskPassword = std::string{ "" };
+	std::string m_DefaultEcdheSpekePassword = std::string{ "" };
 	
 	void releaseResources();
 	void disconnectAboutProxy();
 	void disconnectConfigClient();
 
 	// Onboarding-v1-01
-	AboutAnnouncementDetails placeDUTInOnboardState();
+	QStatus placeDUTInOnboardState();
 	QStatus placeDUTInOffboardState();
 
 	// Onboarding-v1-02
@@ -64,9 +68,12 @@ protected:
 	void verifyOnboardingErrorCode(const short);
 
 	// Onboarding-v1-03
-	AboutAnnouncementDetails connectToDUTInOffboardedState();
+	AboutAnnouncementDetails* connectToDUTInOffboardedState();
 
 	// Onboarding-v1-08
 	void validateScanResult(const ajn::services::OBScanInfo&);
 	void validateAuthType(const ajn::services::OBAuthType&);
+
+	// Onboarding-v1-10
+	void setDefaultAuthentication(AboutAnnouncementDetails, const std::string&, ajn::SessionId);
 };

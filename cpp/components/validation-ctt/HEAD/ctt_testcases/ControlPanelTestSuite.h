@@ -124,7 +124,7 @@ protected:
 	// ControlPanel-v1-10
 	void validateSecuredContainerInvalidPasscodeInterfaceDetailList(const std::list<InterfaceDetail>&);
 	void validateSecuredInterfaceInvalidPasscodeBusObject(const std::string&, const char*);
-	void setInvalidPassword();
+	void setInvalidAuthentication();
 	void validateSecuredPropertyInvalidPasscodeInterfaceDetailList(const std::list<InterfaceDetail>&);
 	void validateSecuredActionInvalidPasscodeInterfaceDetailList(const std::list<InterfaceDetail>&);
 	void validateSecuredDialogInvalidPasscodeInterfaceDetailList(const std::list<InterfaceDetail>&);

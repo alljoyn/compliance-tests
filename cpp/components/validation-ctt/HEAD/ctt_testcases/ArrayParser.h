@@ -21,4 +21,5 @@ public:
 	static std::string parseAppId(const uint8_t*);
 	static uint16_t stringToUint16(const char*);
 	static uint8_t* parseAppIdFromString(const std::string&);
+	static uint8_t* parseBytesFromHexString(const std::string&, size_t&);
 };

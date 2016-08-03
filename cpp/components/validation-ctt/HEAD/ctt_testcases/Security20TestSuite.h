@@ -15,23 +15,31 @@
 ******************************************************************************/
 #pragma once
 
-#include "AuthPasswordHandler.h"
-#include "PasswordStore.h"
+#include "IOManager.h"
+#include "ServiceHelper.h"
 
-class AuthPasswordHandlerImpl : public AuthPasswordHandler
+#include <set>
+
+#include <alljoyn\AboutProxy.h>
+
+class Security20TestSuite : public ::testing::Test, public IOManager
 {
 public:
-	AuthPasswordHandlerImpl(PasswordStore*);
-	virtual ~AuthPasswordHandlerImpl() {}
-	virtual const char* getPassword(std::string);
-	virtual void completed(std::string, std::string, bool);
-	void resetAuthentication(std::string);
-	bool isPeerAuthenticated(std::string);
-	bool isPeerAuthenticationSuccessful(std::string);
+	Security20TestSuite();
+	void SetUp();
+	void TearDown();
+
 protected:
-	bool isTrueBoolean(bool);
-private:
-	PasswordStore* m_PasswordStore;
-	std::map<std::string, bool> m_PeerAuthenticated;
-	std::map<std::string, bool> m_PeerAuthenticationSuccessful;
+	static const char* BUS_APPLICATION_NAME;
+
+	std::string m_DutDeviceId = std::string{ "" };
+	uint8_t* m_DutAppId{ nullptr };
+	ServiceHelper* m_ServiceHelper{ nullptr };
+	AboutAnnouncementDetails* m_DeviceAboutAnnouncement{ nullptr };
+	ajn::AboutProxy* m_AboutProxy{ nullptr };
+	std::string m_DefaultLanguage = std::string{ "" };
+	ajn::SecurityApplicationProxy* m_SecurityApplicationProxy{ nullptr };
+
+	void releaseResources();
+	void setManifestTemplate(ajn::BusAttachment&);
 };

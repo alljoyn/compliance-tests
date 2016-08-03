@@ -47,13 +47,18 @@ protected:
 	ajn::SessionId m_SessionId;
 	ServiceAvailabilityHandler* m_ServiceAvailabilityHandler{ nullptr };
 
+	std::string m_DefaultSrpKeyXPincode = std::string{ "" };
+	std::string m_DefaultEcdhePskPassword = std::string{ "" };
+	std::string m_DefaultEcdheSpekePassword = std::string{ "" };
+
 	AboutAnnouncementDetails* waitForDeviceAboutAnnouncement();
-	void resetPasscodeIfNeeded();
+	QStatus resetPasscodeIfNeeded();
 	QStatus setPasscode(const char*);
 	void releaseResources();
 
 	// Config-v1-02
 	QStatus callMethodToCheckAuthentication();
+	void setWrongAuthValues();
 
 	// Config-v1-04
 	QStatus getConfigurations(const char*, ajn::services::ConfigClient::Configurations&);
@@ -99,4 +104,6 @@ protected:
 	// Config-v1-29
 	void testChangePasscode(const char*);
 	void changePasscodeAndReconnect(const char*);
+	void restorePasswordInStores();
+	void changePasswordInStores(const char*);
 };

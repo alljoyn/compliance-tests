@@ -99,7 +99,7 @@ void NotificationValidator::readNotification()
 		else if ((m_ExpectedRichIconUrl && richIconUrl == nullptr)
 			|| (!m_ExpectedRichIconUrl && richIconUrl != nullptr))
 		{
-			FAIL() << "RichIconUrl support is not the defined by ICSN_RichIconUrl";
+			EXPECT_TRUE(false) << "RichIconUrl support is not the defined by ICSN_RichIconUrl";
 		}
 		
 		const std::vector<ajn::services::RichAudioUrl> richAudioUrls = notification->getRichAudioUrl();
@@ -114,7 +114,7 @@ void NotificationValidator::readNotification()
 		else if ((m_ExpectedRichAudioUrl && richAudioUrls.empty())
 			|| (!m_ExpectedRichAudioUrl && !richAudioUrls.empty()))
 		{
-			FAIL() << "RichAudioUrl support is not the defined by ICSN_RichAudioUrl";
+			EXPECT_TRUE(false) << "RichAudioUrl support is not the defined by ICSN_RichAudioUrl";
 		}
 
 		const char* responseObjectPath = notification->getControlPanelServiceObjectPath();
@@ -127,7 +127,7 @@ void NotificationValidator::readNotification()
 		else if ((m_ExpectedResponseObjectPath && responseObjectPath == nullptr)
 			|| (!m_ExpectedResponseObjectPath && responseObjectPath != nullptr))
 		{
-			FAIL() << "RespObjectPath support is not the defined by ICSN_RespObjectPath";
+			EXPECT_TRUE(false) << "RespObjectPath support is not the defined by ICSN_RespObjectPath";
 		}
 
 		std::string message("Notification Received: ");

@@ -13,24 +13,23 @@
 *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************************************************************/
-#pragma once
+#include "stdafx.h"
+#include "ECDHEPskStore.h"
 
-#include "AuthPasswordHandlerImpl.h"
-
-#include <alljoyn\AuthListener.h>
-
-class SrpAnonymousKeyListener : public ajn::AuthListener
+const char* ECDHEPskStore::getPassword(std::string t_PeerName)
 {
-public:
-	static const char* DEFAULT_PINCODE;
+	return m_PasswordStore.empty() ? nullptr : m_PasswordStore.at(t_PeerName);
+}
 
-	SrpAnonymousKeyListener(AuthPasswordHandlerImpl*);
-	SrpAnonymousKeyListener(AuthPasswordHandlerImpl*, std::vector<std::string>);
-	bool RequestCredentials(const char*, const char*, uint16_t, const char*, uint16_t, Credentials&);
-	void AuthenticationComplete(const char*, const char*, bool);
-	std::vector<std::string> getAuthMechanisms();
-	std::string getAuthMechanismsAsString();
-private:
-	std::vector<std::string> m_AuthMechanisms;
-	AuthPasswordHandlerImpl* m_PasswordHandler;
-};
+void ECDHEPskStore::setPassword(std::string t_PeerName, const char* t_Password)
+{
+	std::map<std::string, const char*>::iterator iterator = m_PasswordStore.find(t_PeerName);
+	if (iterator != m_PasswordStore.end())
+	{
+		iterator->second = t_Password;
+	}
+	else
+	{
+		m_PasswordStore.insert(std::pair<std::string, const char*>(t_PeerName, t_Password));
+	}
+}

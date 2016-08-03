@@ -45,10 +45,19 @@ void ConfigTestSuite::SetUp()
 	m_DutDeviceId = m_IxitMap.at("IXITCO_DeviceId");
 	m_DutAppId = ArrayParser::parseAppIdFromString(m_IxitMap.at("IXITCO_AppId"));
 	m_DefaultLanguage = m_IxitMap.at("IXITCO_DefaultLanguage");
+	m_DefaultSrpKeyXPincode = m_IxitMap.at("IXITCO_SrpKeyXPincode");
+	m_DefaultEcdhePskPassword = m_IxitMap.at("IXITCO_EcdhePskPassword");
+	m_DefaultEcdheSpekePassword = m_IxitMap.at("IXITCO_EcdheSpekePassword");
 
 	m_ServiceHelper = new ServiceHelper();
 
-	QStatus status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId);
+	QStatus status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId,
+		m_IcsMap.at("ICSCO_SrpKeyX"), m_IxitMap.at("IXITCO_SrpKeyXPincode"),
+		m_IcsMap.at("ICSCO_SrpLogon"), m_IxitMap.at("IXITCO_SrpLogonUser"), m_IxitMap.at("IXITCO_SrpLogonPass"),
+		m_IcsMap.at("ICSCO_EcdheNull"),
+		m_IcsMap.at("ICSCO_EcdhePsk"), m_IxitMap.at("IXITCO_EcdhePskPassword"),
+		m_IcsMap.at("ICSCO_EcdheEcdsa"), m_IxitMap.at("IXITCO_EcdheEcdsaPrivateKey"), m_IxitMap.at("IXITCO_EcdheEcdsaCertChain"),
+		m_IcsMap.at("ICSCO_EcdheSpeke"), m_IxitMap.at("IXITCO_EcdheSpekePassword"));
 	ASSERT_EQ(ER_OK, status) << "serviceHelper Initialize() failed: " << QCC_StatusText(status);
 
 	m_DeviceAboutAnnouncement = waitForDeviceAboutAnnouncement();
@@ -68,7 +77,10 @@ void ConfigTestSuite::SetUp()
 	status = m_ServiceHelper->enableAuthentication("/Keystore");
 	ASSERT_EQ(ER_OK, status);
 
-	resetPasscodeIfNeeded();
+	if (m_IcsMap.at("ICSCO_SrpKeyX") || m_IcsMap.at("ICSCO_EcdhePsk") || m_IcsMap.at("ICSCO_EcdheSpeke"))
+	{
+		ASSERT_EQ(ER_OK, resetPasscodeIfNeeded()) << "Resetting passcode failed";
+	}
 
 	LOG(INFO) << "test setUp done";
 	CLOG(INFO, "raw") << "====================================================";
@@ -81,25 +93,42 @@ AboutAnnouncementDetails* ConfigTestSuite::waitForDeviceAboutAnnouncement()
 		) * 1000);
 }
 
-void ConfigTestSuite::resetPasscodeIfNeeded()
+QStatus ConfigTestSuite::resetPasscodeIfNeeded()
 {
 	QStatus status;
 	if ((status = callMethodToCheckAuthentication()) != ER_OK)
 	{
 		if ((status = setPasscode(NEW_PASSCODE)) != ER_OK)
 		{
-			if (setPasscode(SINGLE_CHAR_PASSCODE) != ER_OK)
+			if ((status = setPasscode(SINGLE_CHAR_PASSCODE)) != ER_OK)
 			{
-				setPasscode(SPECIAL_CHARS_PASSCODE);
+				status = setPasscode(SPECIAL_CHARS_PASSCODE);
 			}
 		}
 	}
+
+	return status;
 }
 
 QStatus ConfigTestSuite::setPasscode(const char* t_passcode)
 {
 	m_ServiceHelper->clearKeyStore();
-	m_ServiceHelper->setAuthPassword(*m_DeviceAboutAnnouncement, t_passcode);
+
+	if (m_IcsMap.at("ICSCO_SrpKeyX"))
+	{
+		m_ServiceHelper->setSrpKeyXPincode(*m_DeviceAboutAnnouncement, t_passcode);
+	}
+
+	if (m_IcsMap.at("ICSCO_EcdhePsk"))
+	{
+		m_ServiceHelper->setEcdhePskPassword(*m_DeviceAboutAnnouncement, t_passcode);
+	}
+
+	if (m_IcsMap.at("ICSCO_EcdheSpeke"))
+	{
+		m_ServiceHelper->setEcdheSpekePassword(*m_DeviceAboutAnnouncement, t_passcode);
+	}
+	
 	QStatus status = callMethodToCheckAuthentication();
 
 	if (status != ER_OK)
@@ -108,7 +137,23 @@ QStatus ConfigTestSuite::setPasscode(const char* t_passcode)
 	}
 	else
 	{
-		changePasscodeAndReconnect(SrpAnonymousKeyListener::DEFAULT_PINCODE);
+		if (m_IcsMap.at("ICSCO_EcdheSpeke"))
+		{
+			changePasscodeAndReconnect(m_DefaultEcdheSpekePassword.c_str());
+		}
+		else if (m_IcsMap.at("ICSCO_EcdhePsk"))
+		{
+			changePasscodeAndReconnect(m_DefaultEcdhePskPassword.c_str());
+		}
+		else if (m_IcsMap.at("ICSCO_SrpKeyX"))
+		{
+			changePasscodeAndReconnect(m_DefaultSrpKeyXPincode.c_str());
+		}
+		else
+		{
+			return ER_FAIL;
+		}
+		
 		return ER_OK;
 	}
 }
@@ -171,12 +216,8 @@ TEST_F(ConfigTestSuite, Config_v1_02)
 	reconnectClients(status);
 	ASSERT_EQ(ER_OK, status) << "Clients reconnection returned error: " << QCC_StatusText(status);
 
-	const char* wrongPasscode = "123456";
-	m_ServiceHelper->clearKeyStore();
-	m_ServiceHelper->setAuthPassword(*m_DeviceAboutAnnouncement, wrongPasscode);
-
-	LOG(INFO) << "Attempting to retrieve Version property from Config interface using the passcode: "
-		<< wrongPasscode;
+	setWrongAuthValues();
+	LOG(INFO) << "Attempting to retrieve Version property from Config interface using wrong credentials";
 
 	status = callMethodToCheckAuthentication();
 	ASSERT_EQ(ER_AUTH_FAIL, status)
@@ -192,6 +233,37 @@ QStatus ConfigTestSuite::callMethodToCheckAuthentication()
 {
 	int version;
 	return m_ConfigClient->GetVersion(m_DeviceAboutAnnouncement->getServiceName().c_str(), version, m_SessionId);
+}
+
+void ConfigTestSuite::setWrongAuthValues()
+{
+	m_ServiceHelper->clearKeyStore();
+
+	if (m_IcsMap.at("ICSCO_SrpKeyX"))
+	{
+		m_ServiceHelper->setSrpKeyXPincode(*m_DeviceAboutAnnouncement, m_IxitMap.at("IXITCO_SrpKeyXWrongPincode").c_str());
+	}
+
+	if (m_IcsMap.at("ICSCO_SrpLogon"))
+	{
+		m_ServiceHelper->setSrpLogonPass(*m_DeviceAboutAnnouncement, m_IxitMap.at("IXITCO_SrpLogonWrongPass").c_str());
+	}
+
+	if (m_IcsMap.at("ICSCO_EcdhePsk"))
+	{
+		m_ServiceHelper->setEcdhePskPassword(*m_DeviceAboutAnnouncement, m_IxitMap.at("IXITCO_EcdhePskWrongPassword").c_str());
+	}
+
+	if (m_IcsMap.at("ICSCO_EcdheEcdsa"))
+	{
+		m_ServiceHelper->setEcdheEcdsaCredentials(*m_DeviceAboutAnnouncement, 
+			m_IxitMap.at("IXITCO_EcdheEcdsaWrongPrivateKey").c_str(), m_IxitMap.at("IXITCO_EcdheEcdsaWrongCertChain").c_str());
+	}
+
+	if (m_IcsMap.at("ICSCO_EcdheSpeke"))
+	{
+		m_ServiceHelper->setEcdheSpekePassword(*m_DeviceAboutAnnouncement, m_IxitMap.at("IXITCO_EcdheSpekeWrongPassword").c_str());
+	}
 }
 
 TEST_F(ConfigTestSuite, Config_v1_04)
@@ -796,7 +868,13 @@ void ConfigTestSuite::reconnectClients(QStatus& status)
 	releaseResources();
 	
 	m_ServiceHelper = new ServiceHelper();
-	status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId);
+	status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId,
+		m_IcsMap.at("ICSCO_SrpKeyX"), m_IxitMap.at("IXITCO_SrpKeyXPincode"),
+		m_IcsMap.at("ICSCO_SrpLogon"), m_IxitMap.at("IXITCO_SrpLogonUser"), m_IxitMap.at("IXITCO_SrpLogonPass"),
+		m_IcsMap.at("ICSCO_EcdheNull"),
+		m_IcsMap.at("ICSCO_EcdhePsk"), m_IxitMap.at("IXITCO_EcdhePskPassword"),
+		m_IcsMap.at("ICSCO_EcdheEcdsa"), m_IxitMap.at("IXITCO_EcdheEcdsaPrivateKey"), m_IxitMap.at("IXITCO_EcdheEcdsaCertChain"),
+		m_IcsMap.at("ICSCO_EcdheSpeke"), m_IxitMap.at("IXITCO_EcdheSpekePassword"));
 	ASSERT_EQ(ER_OK, status) << "serviceHelper Initialize() failed: " << QCC_StatusText(status);
 
 	m_DeviceAboutAnnouncement = waitForDeviceAboutAnnouncement();
@@ -826,14 +904,14 @@ TEST_F(ConfigTestSuite, Config_v1_29)
 void ConfigTestSuite::testChangePasscode(const char* t_Passcode)
 {
 	changePasscodeAndReconnect(t_Passcode);
-	changePasscodeAndReconnect(SrpAnonymousKeyListener::DEFAULT_PINCODE);
+	restorePasswordInStores();
 }
 
-void ConfigTestSuite::changePasscodeAndReconnect(const char* t_passcode)
+void ConfigTestSuite::changePasscodeAndReconnect(const char* t_Passcode)
 {
-	LOG(INFO) << "Calling SetPasscode() on Config with passcode " << t_passcode;
+	LOG(INFO) << "Calling SetPasscode() on Config with passcode " << t_Passcode;
 	QStatus status = m_ConfigClient->SetPasscode(m_DeviceAboutAnnouncement->getServiceName().c_str(),
-		"MyDaemonRealm", 6, (const uint8_t*)t_passcode, m_SessionId);
+		"MyDaemonRealm", 6, (const uint8_t*)t_Passcode, m_SessionId);
 	ASSERT_EQ(ER_OK, status) << "Calling SetPasscode() on Config interface returned status code: "
 		<< QCC_StatusText(status);
 
@@ -841,9 +919,49 @@ void ConfigTestSuite::changePasscodeAndReconnect(const char* t_passcode)
 	ASSERT_EQ(ER_OK, status) << "Reconnecting clients returned status code: " << QCC_StatusText(status);
 
 	m_ServiceHelper->clearKeyStore();
-	m_ServiceHelper->setAuthPassword(*m_DeviceAboutAnnouncement, t_passcode);
+
+	changePasswordInStores(t_Passcode);
 
 	ASSERT_EQ(ER_OK, callMethodToCheckAuthentication()) << "Checking authentication failed";
+}
+
+void ConfigTestSuite::restorePasswordInStores()
+{
+	const char* passcode = "";
+	if (m_IcsMap.at("ICSCO_EcdheSpeke"))
+	{
+		passcode = m_DefaultEcdheSpekePassword.c_str();
+	}
+	else if (m_IcsMap.at("ICSCO_EcdhePsk"))
+	{
+		passcode = m_DefaultEcdhePskPassword.c_str();
+	}
+	else if (m_IcsMap.at("ICSCO_SrpKeyX"))
+	{
+		passcode = m_DefaultSrpKeyXPincode.c_str();
+	}
+
+	changePasscodeAndReconnect(passcode);
+}
+
+void ConfigTestSuite::changePasswordInStores(const char* t_Passcode)
+{
+	m_ServiceHelper->clearKeyStore();
+
+	if (m_IcsMap.at("ICSCO_SrpKeyX"))
+	{
+		m_ServiceHelper->setSrpKeyXPincode(*m_DeviceAboutAnnouncement, t_Passcode);
+	}
+
+	if (m_IcsMap.at("ICSCO_EcdhePsk"))
+	{
+		m_ServiceHelper->setEcdhePskPassword(*m_DeviceAboutAnnouncement, t_Passcode);
+	}
+
+	if (m_IcsMap.at("ICSCO_EcdheSpeke"))
+	{
+		m_ServiceHelper->setEcdheSpekePassword(*m_DeviceAboutAnnouncement, t_Passcode);
+	}
 }
 
 TEST_F(ConfigTestSuite, Config_v1_30)
@@ -867,9 +985,9 @@ TEST_F(ConfigTestSuite, Config_v1_32)
 	ASSERT_EQ(ER_OK, status) << "Reconnecting clients returned status code: " << QCC_StatusText(status);
 
 	m_ServiceHelper->clearKeyStore();
-	m_ServiceHelper->setAuthPassword(*m_DeviceAboutAnnouncement, NEW_PASSCODE);
+	changePasswordInStores(NEW_PASSCODE);
 	ASSERT_EQ(ER_OK, callMethodToCheckAuthentication());
-	changePasscodeAndReconnect(SrpAnonymousKeyListener::DEFAULT_PINCODE);
+	restorePasswordInStores();
 }
 
 TEST_F(ConfigTestSuite, Config_v1_33)
@@ -892,8 +1010,8 @@ TEST_F(ConfigTestSuite, Config_v1_33)
 		status = getConfigurations(NULL, configurations);
 		ASSERT_EQ(ER_OK, status) << "Calling GetConfigurations() returned status code: " << QCC_StatusText(status);
 
-		const char* deviceNameBeforeReset = configurations.at(AboutKeys::DEVICE_NAME).v_string.str;
-		const char* defaultLanguageBeforeReset = configurations.at(AboutKeys::DEFAULT_LANGUAGE).v_string.str;
+		std::string deviceNameBeforeReset = std::string(configurations.at(AboutKeys::DEVICE_NAME).v_string.str);
+		std::string defaultLanguageBeforeReset = std::string(configurations.at(AboutKeys::DEFAULT_LANGUAGE).v_string.str);
 
 		m_ServiceHelper->clearQueuedDeviceAnnouncements();
 
@@ -922,9 +1040,9 @@ TEST_F(ConfigTestSuite, Config_v1_33)
 		const char* deviceNameAfterReset = configurations.at(AboutKeys::DEVICE_NAME).v_string.str;
 		const char* defaultLanguageAfterReset = configurations.at(AboutKeys::DEFAULT_LANGUAGE).v_string.str;
 
-		EXPECT_STREQ(deviceNameBeforeReset, deviceNameAfterReset)
+		EXPECT_STREQ(deviceNameBeforeReset.c_str(), deviceNameAfterReset)
 			<< "FactoryReset() set the DeviceName to a different value than ResetConfigurations()";
-		EXPECT_STREQ(defaultLanguageBeforeReset, defaultLanguageAfterReset)
+		EXPECT_STREQ(defaultLanguageBeforeReset.c_str(), defaultLanguageAfterReset)
 			<< "FactoryReset() set the DefaultLanguage to a different value than ResetConfigurations()";
 	}
 }

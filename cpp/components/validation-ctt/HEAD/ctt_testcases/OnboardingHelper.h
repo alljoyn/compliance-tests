@@ -34,15 +34,26 @@ public:
 	WifiNetworkConfig* getPersonalAPConfig();
 	void setSoftAPConfig(WifiNetworkConfig*);
 	WifiNetworkConfig* getSoftAPConfig();
-	QStatus initialize(const std::string&, const std::string&, uint8_t*);
-	QStatus initServiceHelper();
+	QStatus initialize(const std::string&, const std::string&, uint8_t*,
+		const bool, const std::string&,
+		const bool, const std::string&, const std::string&,
+		const bool,
+		const bool, const std::string&,
+		const bool, const std::string&, const std::string&,
+		const bool, const std::string&);
+	QStatus initServiceHelper(const bool, const std::string&,
+		const bool, const std::string&, const std::string&,
+		const bool,
+		const bool, const std::string&,
+		const bool, const std::string&, const std::string&,
+		const bool, const std::string&);
 	void connectToPersonalAPIfNeeded();
 	QStatus connectToPersonalAP();
 	bool isDeviceInOnboardedState();
 	QStatus retrieveVersionProperty(int&);
 	QStatus callOffboard();
 	std::string connectToDUTOnSoftAP();
-	AboutAnnouncementDetails waitForAboutAnnouncementAndThenConnect();
+	AboutAnnouncementDetails* waitForAboutAnnouncementAndThenConnect();
 	QStatus callConfigureWiFi(WifiNetworkConfig, short&);
 	ajn::services::OBAuthType getOnboardingServiceAuthType(const std::string&);
 	void callConnectWiFiAndWaitForSoftAPDisconnect();
@@ -88,6 +99,19 @@ private:
 	AboutAnnouncementDetails* m_DeviceAboutAnnouncement{ nullptr };
 	std::string m_DeviceIdSuffix = std::string{ "" };
 	
+	bool m_SupportsSrpKeyX;
+	std::string m_DefaultSrpXPincode;
+	bool m_SupportsSrpLogon;
+	std::string m_DefaultLogonUser;
+	std::string m_DefaultLogonPass;
+	bool m_SupportsEcdheNull;
+	bool m_SupportsEcdhePsk;
+	std::string m_DefaultECDHEPskPassword;
+	bool m_SupportsEcdheEcdsa;
+	std::string m_DefaultECDHEEcdsaPrivateKey;
+	std::string m_DefaultECDHEEcdsaCertChain;
+	bool m_SupportsEcdheSpeke;
+	std::string m_DefaultECDHESpekePassword;
 
 	void releaseServiceHelper();
 	void disconnectOnboardingClient();

@@ -20,7 +20,7 @@
 class XMLParser
 {
 public:
-	XMLParser(std::string);
+	XMLParser(const std::string&);
 	void processXMLFile(std::map<std::string, bool>&, std::map<std::string, std::string>&, 
 		std::map<std::string, std::string>&);
 	void loadTestCaseInfo(std::string&, const std::string&, std::string&);

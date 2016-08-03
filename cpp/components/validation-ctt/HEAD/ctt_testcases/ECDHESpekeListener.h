@@ -13,25 +13,20 @@
 *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************************************************************/
-#include "stdafx.h"
-#include "PasswordStore.h"
+#pragma once
 
-using namespace std;
+#include "ECDHESpekeHandlerImpl.h"
 
-const char* PasswordStore::getPassword(string t_PeerName)
+#include <alljoyn\AuthListener.h>
+
+class ECDHESpekeListener : public ajn::AuthListener
 {
-	return m_PasswordStore.empty() ? nullptr : m_PasswordStore.at(t_PeerName);
-}
+public:
+	ECDHESpekeListener(ECDHESpekeHandlerImpl*, const std::string&);
+	bool RequestCredentials(const char*, const char*, uint16_t, const char*, uint16_t, Credentials&);
+	void AuthenticationComplete(const char*, const char*, bool);
 
-void PasswordStore::setPassword(string t_PeerName, const char* t_Password)
-{
-	std::map<string, const char*>::iterator iterator = m_PasswordStore.find(t_PeerName);
-	if (iterator != m_PasswordStore.end())
-	{
-		iterator->second = t_Password;
-	}
-	else
-	{
-		m_PasswordStore.insert(pair<string, const char*>(t_PeerName, t_Password));
-	}
-}
+private:
+	ECDHESpekeHandlerImpl* m_PasswordHandler{ nullptr };
+	std::string m_DefaultPassword = std::string("");
+};

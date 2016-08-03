@@ -64,6 +64,26 @@ uint8_t* ArrayParser::parseAppIdFromString(const string& t_StringAppId)
 	return appId;
 }
 
+uint8_t* ArrayParser::parseBytesFromHexString(const string& t_HexString, size_t& t_ByteArraySize)
+{
+	uint8_t* bytes = new uint8_t[t_HexString.length()/2];
+
+	char tmp[3];
+	tmp[2] = '\0';
+
+	int i;
+	for (i = 0; i < t_HexString.length()/2; ++i)
+	{
+		tmp[0] = t_HexString.at(2 * i);
+		tmp[1] = t_HexString.at(2 * i + 1);
+
+		bytes[i] = static_cast<uint8_t>(strtol(tmp, NULL, 16));
+	}
+
+	t_ByteArraySize = i;
+	return bytes;
+}
+
 uint16_t ArrayParser::stringToUint16(const char* t_Str)
 {
 	char *end;

@@ -14,10 +14,6 @@
 *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************************************************************/
 #include "stdafx.h"
-#include "AboutTestSuite.h"
-
-#include <chrono>
-#include <thread>
 
 #include "TersePrinter.h"
 
@@ -72,42 +68,50 @@ std::string getTestFilter(const std::string& t_TestCaseName)
 {
 	std::string testSuite, testFilter;
 
-	if (t_TestCaseName.find("About") == 0)
+	if (0 == t_TestCaseName.compare(0, 5, "About"))
 	{
 		testSuite = "AboutTestSuite";
 	}
-	else if (t_TestCaseName.find("EventsActions") == 0)
+	else if (0 == t_TestCaseName.compare(0, 13, "EventsActions"))
 	{
 		testSuite = "EventsActionsTestSuite";
 	}
-	else if (t_TestCaseName.find("Notification-Consumer") == 0)
+	else if (0 == t_TestCaseName.compare(0, 21, "Notification-Consumer"))
 	{
 		testSuite = "NotifConsumerTestSuite";
 	}
-	else if (t_TestCaseName.find("Notification") == 0)
+	else if (0 == t_TestCaseName.compare(0, 12, "Notification"))
 	{
 		testSuite = "NotifProducerTestSuite";
 	}
-	else if (t_TestCaseName.find("Config") == 0)
+	else if (0 == t_TestCaseName.compare(0, 6, "Config"))
 	{
 		testSuite = "ConfigTestSuite";
 	}
-	else if (t_TestCaseName.find("ControlPanel") == 0)
+	else if (0 == t_TestCaseName.compare(0, 12, "ControlPanel"))
 	{
 		testSuite = "ControlPanelTestSuite";
 	}
-	else if (t_TestCaseName.find("Onboarding") == 0)
+	else if (0 == t_TestCaseName.compare(0, 10, "Onboarding"))
 	{
 		testSuite = "OnboardingTestSuite";
 	}
-	else if (t_TestCaseName.find("LSF_Lamp") == 0)
+	else if (0 == t_TestCaseName.compare(0, 8, "LsF_Lamp"))
 	{
 		testSuite = "LSFLampTestSuite";
 	}
-	else if (t_TestCaseName.find("LSF_Controller") == 0)
+	else if (0 == t_TestCaseName.compare(0, 14, "LSF_Controller"))
 	{
 		testSuite = "LSFControllerTestSuite";
 	}
+	/*else if (0 == t_TestCaseName.compare(0, 3, "HAE"))
+	{
+		testSuite = "HaeTestSuite";
+	}
+	else if (0 == t_TestCaseName.compare(0, 10, "Security20"))
+	{
+		testSuite = "Security20TestSuite";
+	}*/ // [JTF] Disabled until 16.10
 
 	if (!testSuite.empty())
 	{
@@ -125,7 +129,7 @@ int main(int argc, char* argv[])
 {
 	// Avoid execution if the number of input parameters
 	// is not correct
-	if (argc != 3)
+	if (3 != argc)
 	{
 		return -1;
 	}

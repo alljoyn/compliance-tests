@@ -53,7 +53,13 @@ void AboutTestSuite::SetUp()
 
 	m_ServiceHelper = new ServiceHelper();
 
-	QStatus status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId);
+	QStatus status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId,
+		m_IcsMap.at("ICSCO_SrpKeyX"), m_IxitMap.at("IXITCO_SrpKeyXPincode"), 
+		m_IcsMap.at("ICSCO_SrpLogon"), m_IxitMap.at("IXITCO_SrpLogonUser"), m_IxitMap.at("IXITCO_SrpLogonPass"), 
+		m_IcsMap.at("ICSCO_EcdheNull"),
+		m_IcsMap.at("ICSCO_EcdhePsk"), m_IxitMap.at("IXITCO_EcdhePskPassword"), 
+		m_IcsMap.at("ICSCO_EcdheEcdsa"), m_IxitMap.at("IXITCO_EcdheEcdsaPrivateKey"), m_IxitMap.at("IXITCO_EcdheEcdsaCertChain"),
+		m_IcsMap.at("ICSCO_EcdheSpeke"), m_IxitMap.at("IXITCO_EcdheSpekePassword"));
 	ASSERT_EQ(status, ER_OK) << "serviceHelper Initialize() failed: " << QCC_StatusText(status);
 
 	m_DeviceAboutAnnouncement = 
@@ -249,11 +255,11 @@ void AboutTestSuite::compareAbout(const char* t_FieldName, const string& t_Expec
 
 	ASSERT_EQ(t_AboutFieldValue, t_ExpectedAboutFieldValue)
 		<< t_FieldName << " value returned from the About Announcement: '"
-		<< t_AboutFieldValue << "' does not match IXIT_" << t_FieldName <<
+		<< t_AboutFieldValue << "' does not match IXITCO_" << t_FieldName <<
 		": '" << t_ExpectedAboutFieldValue << "' for language '" << t_Language << "'";
 
 	SUCCEED() << t_FieldName << " value returned from the About Announcement: '"
-		<< t_AboutFieldValue << "' matches IXIT_" << t_FieldName <<
+		<< t_AboutFieldValue << "' matches IXITCO_" << t_FieldName <<
 		": '" << t_ExpectedAboutFieldValue << "' for language '" << t_Language << "'";
 }
 
@@ -548,8 +554,10 @@ void AboutTestSuite::checkForNull(AboutData t_AboutData, string t_Language)
 
 void AboutTestSuite::checkForNull(AboutData t_AboutData, string t_FieldName, string t_Language)
 {
+	QStatus status = ER_OK;
 	MsgArg* value;
-	t_AboutData.GetField(t_FieldName.c_str(), value);
+	ASSERT_EQ(ER_OK, status = t_AboutData.GetField(t_FieldName.c_str(), value))
+		<< "Retrieving " << t_FieldName << " field from AboutData returned status code: " << QCC_StatusText(status);
 
 	if (value == nullptr)
 	{
@@ -580,10 +588,9 @@ void AboutTestSuite::checkForNull(AboutData t_AboutData, string t_FieldName, str
 				}
 				else
 				{
-					MsgArg* msgArg;
-					t_AboutData.GetField(t_FieldName.c_str(), msgArg);
 					const char* fieldValue;
-					msgArg->Get("s", &fieldValue);
+					ASSERT_EQ(ER_OK, status = value->Get("s", &fieldValue))
+						<< "Retrieving " << t_FieldName << " field from AboutData returned status code: " << QCC_StatusText(status);
 
 					compareAbout(t_FieldName.c_str(), m_IxitMap.at(string("IXITCO_").append(t_FieldName)).c_str(),
 						fieldValue, "");
@@ -610,9 +617,12 @@ void AboutTestSuite::validateSignature(AboutData t_AboutData, string t_Language)
 
 void AboutTestSuite::validateSignature(AboutData t_AboutData, string t_FieldName, const char* t_Signature, string t_Language)
 {
+	QStatus status = ER_OK;
 	MsgArg* value;
-	t_AboutData.GetField(t_FieldName.c_str(), value, t_Language.c_str());
+	ASSERT_EQ(ER_OK, status = t_AboutData.GetField(t_FieldName.c_str(), value, t_Language.c_str()))
+		<< "Retrieving " << t_FieldName << " from AboutData returned status code: " << QCC_StatusText(status);
 
+	ASSERT_TRUE(value->typeId != ajn::ALLJOYN_INVALID) << t_FieldName << " is a required field for language " << t_Language;
 	const qcc::String valueSignature = value->Signature();
 	ASSERT_STREQ(t_Signature, valueSignature.c_str()) << "Signature (" << valueSignature.c_str() << ") does not match (" << t_Signature << ") for required field : "
 		<< t_FieldName << " for language " << t_Language;
@@ -649,8 +659,11 @@ void AboutTestSuite::validateDateOfManufacture(AboutData t_AboutData, string t_L
 	MsgArg *value;
 	char* dateOfManufacture;
 
-	t_AboutData.GetField(AboutKeys::DATE_OF_MANUFACTURE, value);
-	value->Get("s", &dateOfManufacture);
+	QStatus status = ER_OK;
+	ASSERT_EQ(ER_OK, status = t_AboutData.GetField(AboutData::DATE_OF_MANUFACTURE, value))
+		<< "Retrieving DateOfManufacture field from AboutData returned status code: " << QCC_StatusText(status);
+	ASSERT_EQ(ER_OK, status = value->Get("s", &dateOfManufacture))
+		<< "Retrieving DateOfManufacture field from AboutData returned status code: " << QCC_StatusText(status);
 
 	LOG(INFO) << "Validating date of manufacture: " << dateOfManufacture;
 
@@ -660,7 +673,7 @@ void AboutTestSuite::validateDateOfManufacture(AboutData t_AboutData, string t_L
 	ASSERT_FALSE(stringStream.fail()) << "DateOfManufacture field value "
 		<< dateOfManufacture << " does not match expected date pattern YYYY-MM-DD";
 
-	SUCCEED() << "DateOfManufacture field matches expected date pattern YYY-MM-DD";
+	SUCCEED() << "DateOfManufacture field matches expected date pattern YYYY-MM-DD";
 }
 
 void AboutTestSuite::validateSupportUrl(AboutData t_AboutData, string t_Language)
@@ -668,8 +681,11 @@ void AboutTestSuite::validateSupportUrl(AboutData t_AboutData, string t_Language
 	MsgArg *value;
 	char* supportUrl;
 
-	t_AboutData.GetField(AboutKeys::SUPPORT_URL, value);
-	value->Get("s", &supportUrl);
+	QStatus status = ER_OK;
+	ASSERT_EQ(ER_OK, status = t_AboutData.GetField(AboutData::SUPPORT_URL, value))
+		<< "Retrieving SupportUrl field from AboutData returned status code: " << QCC_StatusText(status);
+	ASSERT_EQ(ER_OK, status = value->Get("s", &supportUrl))
+		<< "Retrieving SupportUrl field from AboutData returned status code: " << QCC_StatusText(status);
 
 	validateUrl(supportUrl);
 }
@@ -972,9 +988,12 @@ TEST_F(AboutTestSuite, About_v1_08)
 void AboutTestSuite::compareFieldsInAboutData(AboutData t_AboutDataDefaultLanguage,
 	AboutData t_AboutDataSuportedLanguage, string t_Language)
 {
-	compareAboutNonRequired(t_AboutDataDefaultLanguage, t_AboutDataSuportedLanguage,
-		t_Language, AboutKeys::DEVICE_NAME);
-
+	if (m_IcsMap.at("ICSCO_DeviceName"))
+	{
+		compareAboutNonRequired(t_AboutDataDefaultLanguage, t_AboutDataSuportedLanguage,
+			t_Language, AboutKeys::DEVICE_NAME);
+	}
+	
 	char* default_app_name;
 	t_AboutDataDefaultLanguage.GetAppName(&default_app_name);
 
@@ -1041,7 +1060,12 @@ TEST_F(AboutTestSuite, About_v1_11)
 	QStatus status = m_AboutIconProxy->GetIcon(aboutIcon);
 	ASSERT_EQ(ER_OK, status) << "Calling GetIcon() method returned status code: " << QCC_StatusText(status);
 
-	ASSERT_FALSE(aboutIcon.url.empty()) << "Url is empty";
-
-	validateUrl(aboutIcon.url.c_str());
+	if (aboutIcon.url.empty())
+	{
+		LOG(INFO) << "NOTE ADDED: Url is empty";
+	}
+	else
+	{
+		validateUrl(aboutIcon.url.c_str());
+	}
 }

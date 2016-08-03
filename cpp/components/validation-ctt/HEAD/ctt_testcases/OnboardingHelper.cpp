@@ -1,3 +1,18 @@
+/******************************************************************************
+* Copyright AllSeen Alliance. All rights reserved.
+*
+*    Permission to use, copy, modify, and/or distribute this software for any
+*    purpose with or without fee is hereby granted, provided that the above
+*    copyright notice and this permission notice appear in all copies.
+*
+*    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+*    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+*    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+*    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+*    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+*    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+*    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+******************************************************************************/
 #include "stdafx.h"
 #include "OnboardingHelper.h"
 
@@ -102,13 +117,24 @@ WifiNetworkConfig* OnboardingHelper::getSoftAPConfig()
 }
 
 QStatus OnboardingHelper::initialize(const std::string& t_KeystorePath,
-	const std::string& t_DeviceId, uint8_t* t_AppId)
+	const std::string& t_DeviceId, uint8_t* t_AppId,
+	const bool t_SupportsSrpKeyX, const std::string& t_DefaultSrpXPincode,
+	const bool t_SupportsSrpLogon, const std::string& t_DefaultLogonUser, const std::string& t_DefaultLogonPass,
+	const bool t_SupportsEcdheNull,
+	const bool t_SupportsEcdhePsk, const std::string& t_DefaultECDHEPskPassword,
+	const bool t_SupportsEcdheEcdsa, const std::string& t_DefaultECDHEEcdsaPrivateKey, const std::string& t_DefaultECDHEEcdsaCertChain,
+	const bool t_SupportsEcdheSpeke, const std::string& t_DefaultECDHESpekePassword)
 {
 	m_DeviceId = t_DeviceId;
 	m_AppId = t_AppId;
 	m_KeystorePath = t_KeystorePath;
 
-	QStatus status = initServiceHelper();
+	QStatus status = initServiceHelper(m_SupportsSrpKeyX = t_SupportsSrpKeyX, m_DefaultSrpXPincode = t_DefaultSrpXPincode,
+		m_SupportsSrpLogon = t_SupportsSrpLogon, m_DefaultLogonUser = t_DefaultLogonUser, m_DefaultLogonPass = t_DefaultLogonPass,
+		m_SupportsEcdheNull = t_SupportsEcdheNull,
+		m_SupportsEcdhePsk = t_SupportsEcdhePsk, m_DefaultECDHEPskPassword = t_DefaultECDHEPskPassword,
+		m_SupportsEcdheEcdsa = t_SupportsEcdheEcdsa, m_DefaultECDHEEcdsaPrivateKey = t_DefaultECDHEEcdsaPrivateKey, m_DefaultECDHEEcdsaCertChain = t_DefaultECDHEEcdsaCertChain,
+		m_SupportsEcdheSpeke = t_SupportsEcdheSpeke, m_DefaultECDHESpekePassword = t_DefaultECDHESpekePassword);
 	if (ER_OK != status)
 	{
 		return status;
@@ -120,11 +146,22 @@ QStatus OnboardingHelper::initialize(const std::string& t_KeystorePath,
 	return status;
 }
 
-QStatus OnboardingHelper::initServiceHelper()
+QStatus OnboardingHelper::initServiceHelper(const bool t_SupportsSrpKeyX, const std::string& t_DefaultSrpXPincode,
+	const bool t_SupportsSrpLogon, const std::string& t_DefaultLogonUser, const std::string& t_DefaultLogonPass,
+	const bool t_SupportsEcdheNull,
+	const bool t_SupportsEcdhePsk, const std::string& t_DefaultECDHEPskPassword,
+	const bool t_SupportsEcdheEcdsa, const std::string& t_DefaultECDHEEcdsaPrivateKey, const std::string& t_DefaultECDHEEcdsaCertChain,
+	const bool t_SupportsEcdheSpeke, const std::string& t_DefaultECDHESpekePassword)
 {
 	releaseServiceHelper();
 	m_ServiceHelper = new ServiceHelper();
-	QStatus status = m_ServiceHelper->initializeClient(m_BusApplicationName, m_DeviceId, m_AppId);
+	QStatus status = m_ServiceHelper->initializeClient(m_BusApplicationName, m_DeviceId, m_AppId,
+		t_SupportsSrpKeyX, t_DefaultSrpXPincode,
+		t_SupportsSrpLogon, t_DefaultLogonUser, t_DefaultLogonPass,
+		t_SupportsEcdheNull,
+		t_SupportsEcdhePsk, t_DefaultECDHEPskPassword,
+		t_SupportsEcdheEcdsa, t_DefaultECDHEEcdsaPrivateKey, t_DefaultECDHEEcdsaCertChain,
+		t_SupportsEcdheSpeke, t_DefaultECDHESpekePassword);
 	if (status != ER_OK)
 	{
 		return status;
@@ -196,7 +233,12 @@ QStatus OnboardingHelper::connectToPersonalAP()
 		//throw Exception
 	}
 
-	return initServiceHelper();
+	return initServiceHelper(m_SupportsSrpKeyX, m_DefaultSrpXPincode,
+		m_SupportsSrpLogon, m_DefaultLogonUser, m_DefaultLogonPass,
+		m_SupportsEcdheNull,
+		m_SupportsEcdhePsk, m_DefaultECDHEPskPassword,
+		m_SupportsEcdheEcdsa, m_DefaultECDHEEcdsaPrivateKey, m_DefaultECDHEEcdsaCertChain,
+		m_SupportsEcdheSpeke, m_DefaultECDHESpekePassword);
 }
 
 bool OnboardingHelper::isDeviceInOnboardedState()
@@ -340,7 +382,12 @@ std::string OnboardingHelper::connectToDUTOnSoftAP()
 		//throw exception
 	}
 
-	initServiceHelper();
+	initServiceHelper(m_SupportsSrpKeyX, m_DefaultSrpXPincode,
+		m_SupportsSrpLogon, m_DefaultLogonUser, m_DefaultLogonPass,
+		m_SupportsEcdheNull,
+		m_SupportsEcdhePsk, m_DefaultECDHEPskPassword,
+		m_SupportsEcdheEcdsa, m_DefaultECDHEEcdsaPrivateKey, m_DefaultECDHEEcdsaCertChain,
+		m_SupportsEcdheSpeke, m_DefaultECDHESpekePassword);
 
 	return ssid;
 }
@@ -380,7 +427,7 @@ bool OnboardingHelper::connectToSoftAPNetwork()
 	return ssid.compare(connectedSsid) == 0;
 }
 
-AboutAnnouncementDetails OnboardingHelper::waitForAboutAnnouncementAndThenConnect()
+AboutAnnouncementDetails* OnboardingHelper::waitForAboutAnnouncementAndThenConnect()
 {
 	bool foundMatch = false;
 	m_DeviceAboutAnnouncement = nullptr;
@@ -452,7 +499,7 @@ AboutAnnouncementDetails OnboardingHelper::waitForAboutAnnouncementAndThenConnec
 	}
 
 	m_OnboardingClient = m_ServiceHelper->connectOnboardingClient(*m_DeviceAboutAnnouncement);
-	return *m_DeviceAboutAnnouncement;
+	return m_DeviceAboutAnnouncement;
 }
 
 AboutAnnouncementDetails* OnboardingHelper::waitForNextAboutAnnouncementFromDevice(const long t_TimeRemaining)
@@ -669,7 +716,18 @@ ajn::services::OnboardingClient::ScanInfos OnboardingHelper::callScanInfo()
 
 void OnboardingHelper::setPasscode(const AboutAnnouncementDetails& t_AboutAnnouncement, const char* t_Passcode)
 {
-	m_ServiceHelper->setAuthPassword(t_AboutAnnouncement, t_Passcode);
+	if (m_SupportsEcdheSpeke)
+	{
+		m_ServiceHelper->setEcdheSpekePassword(t_AboutAnnouncement, t_Passcode);
+	}
+	else if (m_SupportsEcdhePsk)
+	{
+		m_ServiceHelper->setEcdhePskPassword(t_AboutAnnouncement, t_Passcode);
+	}
+	else if (m_SupportsSrpKeyX)
+	{
+		m_ServiceHelper->setSrpKeyXPincode(t_AboutAnnouncement, t_Passcode);
+	}
 }
 
 ajn::services::ConfigClient* OnboardingHelper::connectConfigClient(ajn::SessionId& t_SessionId)
