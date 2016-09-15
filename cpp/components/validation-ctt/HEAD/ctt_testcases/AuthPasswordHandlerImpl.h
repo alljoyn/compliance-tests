@@ -13,17 +13,25 @@
 *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************************************************************/
-#include "stdafx.h"
-#include "Claim_ApplicationStateListener.h"
+#pragma once
 
-Claim_ApplicationStateListener::Claim_ApplicationStateListener()
-{
-		stateChanged = false;
-}
+#include "AuthPasswordHandler.h"
+#include "PasswordStore.h"
 
-void Claim_ApplicationStateListener::State(const char* busName, const qcc::KeyInfoNISTP256& publicKeyInfo, ajn::PermissionConfigurator::ApplicationState state)
+class AuthPasswordHandlerImpl : public AuthPasswordHandler
 {
-	QCC_UNUSED(publicKeyInfo);
-	LOG(INFO) << "Received State signal from " << busName << " with Application State " << ajn::PermissionConfigurator::ToString(state);
-	stateChanged = true;
-}
+public:
+	AuthPasswordHandlerImpl(PasswordStore*);
+	virtual ~AuthPasswordHandlerImpl() {}
+	virtual const char* getPassword(std::string);
+	virtual void completed(std::string, std::string, bool);
+	void resetAuthentication(std::string);
+	bool isPeerAuthenticated(std::string);
+	bool isPeerAuthenticationSuccessful(std::string);
+protected:
+	bool isTrueBoolean(bool);
+private:
+	PasswordStore* m_PasswordStore;
+	std::map<std::string, bool> m_PeerAuthenticated;
+	std::map<std::string, bool> m_PeerAuthenticationSuccessful;
+};

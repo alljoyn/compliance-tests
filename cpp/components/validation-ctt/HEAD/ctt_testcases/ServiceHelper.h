@@ -16,7 +16,6 @@
 #pragma once
 
 #include "AuthListeners.h"
-//#include "AuthPasswordHandlerImpl.h"
 #include "BusAttachmentMgr.h"
 #include "DeviceAnnouncementHandler.h"
 #include "ECDHENullHandlerImpl.h"
@@ -26,9 +25,7 @@
 #include "ECDHEEcdsaStore.h"
 #include "ECDHESpekeHandlerImpl.h"
 #include "ECDHESpekeStore.h"
-//#include "PasswordStore.h"
 #include "ServiceAvailabilityHandler.h"
-//#include "SrpAnonymousKeyListener.h"
 #include "SrpKeyXHandlerImpl.h"
 #include "SrpKeyXStore.h"
 #include "SrpLogonHandlerImpl.h"
@@ -37,6 +34,7 @@
 
 #include <alljoyn\AboutProxy.h>
 #include <alljoyn\AboutIconProxy.h>
+#include <alljoyn\SecurityApplicationProxy.h>
 #include <alljoyn\config\ConfigClient.h>
 #include <alljoyn\notification\NotificationReceiver.h>
 #include <alljoyn\onboarding\OnboardingClient.h>
@@ -46,13 +44,7 @@ class ServiceHelper
 
 public:
 	// About
-	QStatus initializeClient(const std::string&, const std::string&, const uint8_t*, 
-		const bool, const std::string&, 
-		const bool, const std::string&, const std::string&,
-		const bool, 
-		const bool, const std::string&, 
-		const bool, const std::string&, const std::string&, 
-		const bool, const std::string&);
+	QStatus initializeClient(const std::string&, const std::string&, const uint8_t*);
 	QStatus initializeSender(const std::string&, const std::string&, const uint8_t*);
 	AboutAnnouncementDetails* waitForNextDeviceAnnouncement(const long);
 	ajn::AboutProxy* connectAboutProxy(const AboutAnnouncementDetails&);
@@ -74,7 +66,13 @@ public:
 	// Configuration
 	ajn::services::ConfigClient* connectConfigClient(ajn::SessionId&);
 	void clearKeyStore();
-	QStatus enableAuthentication(const std::string&);
+	QStatus enableAuthentication(const std::string&,
+		const bool, const std::string&,
+		const bool, const std::string&, const std::string&,
+		const bool,
+		const bool, const std::string&,
+		const bool, const std::string&, const std::string&,
+		const bool, const std::string&);
 	bool isPeerAuthenticationSuccessful(const AboutAnnouncementDetails&);
 	void clearQueuedDeviceAnnouncements();
 
@@ -135,12 +133,7 @@ private:
 	bool m_SupportsEcdheSpeke;
 	std::string m_DefaultECDHESpekePassword = std::string("");
 	
-	QStatus initialize(const std::string&, const std::string&, const uint8_t*, const bool,
-		const bool, const std::string&,
-		const bool, const std::string&, const std::string&,
-		const bool,
-		const bool, const std::string&,
-		const bool, const std::string&, const std::string&,
-		const bool, const std::string&);
+	QStatus initialize(const std::string&, const std::string&, const uint8_t*, const bool);
+	void releaseAuthenticationClasses();
 	void disconnectBusAttachment();
 };

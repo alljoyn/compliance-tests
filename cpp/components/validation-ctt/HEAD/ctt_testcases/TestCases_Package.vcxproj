@@ -140,14 +140,14 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;QCC_OS_GROUP_WINDOWS;UNICODE;ELPP_NO_DEFAULT_LOG_FILE;WIN32_LEAN_AND_MEAN;ELPP_WINSOCK2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ALLJOYN_SDK_HOME)\v16.04\Core\Release\cpp\inc;$(ALLJOYN_SDK_HOME)\v16.04\HAE\Release\inc;$(ALLJOYN_SDK_HOME)\v16.04\Base\Release\inc;..\..\..\..\xerces-c-3.1.3\src;$(GTEST_ROOT)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ALLJOYN_SDK_HOME)\v16.04a\Core\Release\cpp\inc;$(ALLJOYN_SDK_HOME)\v16.04\HAE\Release\inc;$(ALLJOYN_SDK_HOME)\v16.04\Base\Release\inc;..\..\..\..\xerces-c-3.1.3\src;$(GTEST_ROOT)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ALLJOYN_SDK_HOME)\v16.04\Core\Release\cpp\lib;$(ALLJOYN_SDK_HOME)\v16.04\HAE\Release\lib;$(ALLJOYN_SDK_HOME)\v16.04\Base\Release\lib;..\..\..\..\xerces-c-3.1.3\Build\Win64\VC12\Release;$(GTEST_ROOT)\msvc_2015\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ALLJOYN_SDK_HOME)\v16.04a\Core\Release\cpp\lib;$(ALLJOYN_SDK_HOME)\v16.04\HAE\Release\lib;$(ALLJOYN_SDK_HOME)\v16.04\Base\Release\lib;..\..\..\..\xerces-c-3.1.3\Build\Win64\VC12\Release;$(GTEST_ROOT)\msvc_2015\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>alljoyn.lib;ajrouter.lib;alljoyn_about.lib;ws2_32.lib;Secur32.lib;gtest.lib;crypt32.lib;Bcrypt.lib;Ncrypt.lib;iphlpapi.lib;xerces-c_3.lib;alljoyn_notification.lib;alljoyn_services_common.lib;alljoyn_config.lib;alljoyn_onboarding.lib;Wlanapi.lib;alljoyn_hae.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -163,7 +163,6 @@
     <ClInclude Include="AuthPasswordHandler.h" />
     <ClInclude Include="AvailableSoftAPException.h" />
     <ClInclude Include="BusAttachmentMgr.h" />
-    <ClInclude Include="Claim_ApplicationStateListener.h" />
     <ClInclude Include="ConfigTestSuite.h" />
     <ClInclude Include="ControllerServiceBusObject.h" />
     <ClInclude Include="ControllerServiceDataSetBusObject.h" />
@@ -231,7 +230,6 @@
     <ClInclude Include="rapidxml_print.hpp" />
     <ClInclude Include="rapidxml_utils.hpp" />
     <ClInclude Include="ScanResult.h" />
-    <ClInclude Include="Security20TestSuite.h" />
     <ClInclude Include="ServiceAvailabilityHandler.h" />
     <ClInclude Include="ServiceHelper.h" />
     <ClInclude Include="SetValidator.h" />
@@ -262,7 +260,6 @@
     <ClCompile Include="ArrayParser.cpp" />
     <ClCompile Include="AuthListeners.cpp" />
     <ClCompile Include="BusAttachmentMgr.cpp" />
-    <ClCompile Include="Claim_ApplicationStateListener.cpp" />
     <ClCompile Include="ConfigTestSuite.cpp" />
     <ClCompile Include="ControllerServiceBusObject.cpp" />
     <ClCompile Include="ControllerServiceDataSetBusObject.cpp" />
@@ -322,7 +319,6 @@
     <ClCompile Include="OnboardingSignalListenerImpl.cpp" />
     <ClCompile Include="OnboardingTestSuite.cpp" />
     <ClCompile Include="ScanResult.cpp" />
-    <ClCompile Include="Security20TestSuite.cpp" />
     <ClCompile Include="ServiceAvailabilityHandler.cpp" />
     <ClCompile Include="ServiceHelper.cpp" />
     <ClCompile Include="SoftAPValidator.cpp" />

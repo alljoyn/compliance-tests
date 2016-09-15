@@ -15,31 +15,14 @@
 ******************************************************************************/
 #pragma once
 
-#include "IOManager.h"
-#include "ServiceHelper.h"
+#include <map>
+#include <string>
 
-#include <set>
-
-#include <alljoyn\AboutProxy.h>
-
-class Security20TestSuite : public ::testing::Test, public IOManager
+class PasswordStore
 {
-public:
-	Security20TestSuite();
-	void SetUp();
-	void TearDown();
-
-protected:
-	static const char* BUS_APPLICATION_NAME;
-
-	std::string m_DutDeviceId = std::string{ "" };
-	uint8_t* m_DutAppId{ nullptr };
-	ServiceHelper* m_ServiceHelper{ nullptr };
-	AboutAnnouncementDetails* m_DeviceAboutAnnouncement{ nullptr };
-	ajn::AboutProxy* m_AboutProxy{ nullptr };
-	std::string m_DefaultLanguage = std::string{ "" };
-	ajn::SecurityApplicationProxy* m_SecurityApplicationProxy{ nullptr };
-
-	void releaseResources();
-	void setManifestTemplate(ajn::BusAttachment&);
+	public:
+		const char* getPassword(std::string);
+		void setPassword(std::string, const char*);
+	private:
+		std::map<std::string, const char*> m_PasswordStore;
 };

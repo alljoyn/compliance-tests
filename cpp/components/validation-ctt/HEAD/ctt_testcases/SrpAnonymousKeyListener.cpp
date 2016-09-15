@@ -14,46 +14,54 @@
 *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************************************************************/
 #include "stdafx.h"
-#include "ECDHESpekeListener.h"
+#include "SrpAnonymousKeyListener.h"
 
-#include <qcc\GUID.h>
+const char* SrpAnonymousKeyListener::DEFAULT_PINCODE = "000000";
 
-ECDHESpekeListener::ECDHESpekeListener(ECDHESpekeHandlerImpl* t_ECDHEPskHandlerImpl, const std::string& t_DefaultECDHESpekePassword) :
-	m_PasswordHandler(t_ECDHEPskHandlerImpl), m_DefaultPassword(t_DefaultECDHESpekePassword) {}
+SrpAnonymousKeyListener::SrpAnonymousKeyListener(AuthPasswordHandlerImpl* t_PasswordHandler)
+{
+	m_PasswordHandler = t_PasswordHandler;
+	m_AuthMechanisms.push_back("ALLJOYN_SRP_KEYX");
+	m_AuthMechanisms.push_back("ALLJOYN_ECDHE_PSK");
+}
 
-bool ECDHESpekeListener::RequestCredentials(const char* t_AuthMechanism,
+SrpAnonymousKeyListener::SrpAnonymousKeyListener(AuthPasswordHandlerImpl* t_PasswordHandler,
+	std::vector<std::string> t_AuthMechanisms) : 
+	SrpAnonymousKeyListener::SrpAnonymousKeyListener(t_PasswordHandler)
+{
+		for (auto mechanism : t_AuthMechanisms)
+		{
+			m_AuthMechanisms.push_back(mechanism);
+		}
+}
+
+bool SrpAnonymousKeyListener::RequestCredentials(const char* t_AuthMechanism,
 	const char* t_AuthPeer, uint16_t t_AuthCount, const char* t_UserID,
 	uint16_t t_CredMask, Credentials& t_Creds)
 {
-	if (t_AuthCount > 10)
-	{
-		/* If the peer making a large number of attempts, they may be an attacking trying to guess the password. */
-		LOG(INFO) << "RequestCredentials called for ECDHE_SPEKE more than 10 times, authentication will fail.";
-		return false;
-	}
+	LOG(INFO) << " ** requested, mechanism = " << t_AuthMechanism
+		<< " peer = " << t_AuthPeer;
 
-	if (ajn::AuthListener::CRED_PASSWORD & t_CredMask)
+	if (std::find(m_AuthMechanisms.begin(), m_AuthMechanisms.end(), t_AuthMechanism) != m_AuthMechanisms.end())
 	{
-		const char* password = m_DefaultPassword.c_str();
+		const char* pinCode = DEFAULT_PINCODE;
 		const char* storedPass = m_PasswordHandler->getPassword(t_AuthPeer);
 
 		if (m_PasswordHandler != nullptr && storedPass != nullptr)
 		{
-			password = storedPass;
+			pinCode = storedPass;
 		}
 
-		t_Creds.SetPassword(password);
+		t_Creds.SetPassword(qcc::String(pinCode));
+		return true;
 	}
-
-	if (ajn::AuthListener::CRED_EXPIRATION & t_CredMask)
+	else
 	{
-		t_Creds.SetExpiration(300);
+		return false;
 	}
-
-	return true;
 }
 
-void ECDHESpekeListener::AuthenticationComplete(const char* t_AuthMechanism,
+void SrpAnonymousKeyListener::AuthenticationComplete(const char* t_AuthMechanism,
 	const char* t_AuthPeer, bool t_Success)
 {
 	if (!t_Success)
@@ -65,4 +73,27 @@ void ECDHESpekeListener::AuthenticationComplete(const char* t_AuthMechanism,
 		LOG(INFO) << " ** " << t_AuthPeer << " successfully authenticated using mechanism " << t_AuthMechanism;
 		m_PasswordHandler->completed(t_AuthMechanism, t_AuthPeer, t_Success);
 	}
+}
+
+std::vector<std::string> SrpAnonymousKeyListener::getAuthMechanisms()
+{
+	return m_AuthMechanisms;
+}
+
+std::string SrpAnonymousKeyListener::getAuthMechanismsAsString()
+{
+	std::string separator(" ");
+	std::string s;
+
+	for (size_t i = 0; i < m_AuthMechanisms.size(); ++i)
+	{
+		s.append(m_AuthMechanisms[i]);
+
+		if (i != m_AuthMechanisms.size() - 1)
+		{
+			s.append(separator);
+		}
+	}
+
+	return s;
 }

@@ -116,7 +116,7 @@ void OnboardingTestSuite::disconnectAboutProxy()
 {
 	if (m_AboutProxy != nullptr)
 	{
-		delete m_AboutProxy;
+		m_AboutProxy = nullptr;
 	}
 }
 

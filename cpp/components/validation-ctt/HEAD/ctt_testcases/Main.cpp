@@ -104,14 +104,10 @@ std::string getTestFilter(const std::string& t_TestCaseName)
 	{
 		testSuite = "LSFControllerTestSuite";
 	}
-	/*else if (0 == t_TestCaseName.compare(0, 3, "HAE"))
+	else if (0 == t_TestCaseName.compare(0, 3, "HAE"))
 	{
 		testSuite = "HaeTestSuite";
 	}
-	else if (0 == t_TestCaseName.compare(0, 10, "Security20"))
-	{
-		testSuite = "Security20TestSuite";
-	}*/ // [JTF] Disabled until 16.10
 
 	if (!testSuite.empty())
 	{

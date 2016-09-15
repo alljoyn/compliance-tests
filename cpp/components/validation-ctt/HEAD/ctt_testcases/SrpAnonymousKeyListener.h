@@ -15,13 +15,22 @@
 ******************************************************************************/
 #pragma once
 
-#include <alljoyn\ApplicationStateListener.h>
+#include "AuthPasswordHandlerImpl.h"
 
-class Claim_ApplicationStateListener : public ajn::ApplicationStateListener
+#include <alljoyn\AuthListener.h>
+
+class SrpAnonymousKeyListener : public ajn::AuthListener
 {
 public:
-	Claim_ApplicationStateListener();
-	virtual void State(const char* busName, const qcc::KeyInfoNISTP256& publicKeyInfo, ajn::PermissionConfigurator::ApplicationState state);
+	static const char* DEFAULT_PINCODE;
 
-	bool stateChanged;
+	SrpAnonymousKeyListener(AuthPasswordHandlerImpl*);
+	SrpAnonymousKeyListener(AuthPasswordHandlerImpl*, std::vector<std::string>);
+	bool RequestCredentials(const char*, const char*, uint16_t, const char*, uint16_t, Credentials&);
+	void AuthenticationComplete(const char*, const char*, bool);
+	std::vector<std::string> getAuthMechanisms();
+	std::string getAuthMechanismsAsString();
+private:
+	std::vector<std::string> m_AuthMechanisms;
+	AuthPasswordHandlerImpl* m_PasswordHandler;
 };

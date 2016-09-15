@@ -28,9 +28,9 @@ const char* ConfigTestSuite::BUS_APPLICATION_NAME = "ConfigTestSuite";
 const char* ConfigTestSuite::INVALID_LANGUAGE_CODE = "INVALID";
 const char* ConfigTestSuite::NEW_DEVICE_NAME = "NewDeviceName";
 const int ConfigTestSuite::CONFIG_CLIENT_RECONNECT_WAIT_TIME = 10000;
-const char* ConfigTestSuite::NEW_PASSCODE = "111111";
+const char* ConfigTestSuite::NEW_PASSCODE = "1111111111111111";
 const char* ConfigTestSuite::SINGLE_CHAR_PASSCODE = "1";
-const char* ConfigTestSuite::SPECIAL_CHARS_PASSCODE = "!@#$%^";
+const char* ConfigTestSuite::SPECIAL_CHARS_PASSCODE = "!@#$%^!@#$%^!@#$";
 
 ConfigTestSuite::ConfigTestSuite() : IOManager(ServiceFramework::CONFIGURATION)
 {
@@ -51,13 +51,7 @@ void ConfigTestSuite::SetUp()
 
 	m_ServiceHelper = new ServiceHelper();
 
-	QStatus status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId,
-		m_IcsMap.at("ICSCO_SrpKeyX"), m_IxitMap.at("IXITCO_SrpKeyXPincode"),
-		m_IcsMap.at("ICSCO_SrpLogon"), m_IxitMap.at("IXITCO_SrpLogonUser"), m_IxitMap.at("IXITCO_SrpLogonPass"),
-		m_IcsMap.at("ICSCO_EcdheNull"),
-		m_IcsMap.at("ICSCO_EcdhePsk"), m_IxitMap.at("IXITCO_EcdhePskPassword"),
-		m_IcsMap.at("ICSCO_EcdheEcdsa"), m_IxitMap.at("IXITCO_EcdheEcdsaPrivateKey"), m_IxitMap.at("IXITCO_EcdheEcdsaCertChain"),
-		m_IcsMap.at("ICSCO_EcdheSpeke"), m_IxitMap.at("IXITCO_EcdheSpekePassword"));
+	QStatus status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId);
 	ASSERT_EQ(ER_OK, status) << "serviceHelper Initialize() failed: " << QCC_StatusText(status);
 
 	m_DeviceAboutAnnouncement = waitForDeviceAboutAnnouncement();
@@ -74,7 +68,16 @@ void ConfigTestSuite::SetUp()
 	ASSERT_NE(m_ConfigClient, nullptr) << "ConfigClient connection failed";
 	SUCCEED() << "ConfigClient connected";
 
-	status = m_ServiceHelper->enableAuthentication("/Keystore");
+	m_UseEcdheNullInTest = strcmp("Config_v1_02", ::testing::UnitTest::GetInstance()->current_test_info()->name()) == 0 ?
+		false : m_IcsMap.at("ICSCO_EcdheNull");
+
+	status = m_ServiceHelper->enableAuthentication("/Keystore",
+		m_IcsMap.at("ICSCO_SrpKeyX"), m_IxitMap.at("IXITCO_SrpKeyXPincode"),
+		m_IcsMap.at("ICSCO_SrpLogon"), m_IxitMap.at("IXITCO_SrpLogonUser"), m_IxitMap.at("IXITCO_SrpLogonPass"),
+		m_UseEcdheNullInTest,
+		m_IcsMap.at("ICSCO_EcdhePsk"), m_IxitMap.at("IXITCO_EcdhePskPassword"),
+		m_IcsMap.at("ICSCO_EcdheEcdsa"), m_IxitMap.at("IXITCO_EcdheEcdsaPrivateKey"), m_IxitMap.at("IXITCO_EcdheEcdsaCertChain"),
+		m_IcsMap.at("ICSCO_EcdheSpeke"), m_IxitMap.at("IXITCO_EcdheSpekePassword"));
 	ASSERT_EQ(ER_OK, status);
 
 	if (m_IcsMap.at("ICSCO_SrpKeyX") || m_IcsMap.at("ICSCO_EcdhePsk") || m_IcsMap.at("ICSCO_EcdheSpeke"))
@@ -868,13 +871,7 @@ void ConfigTestSuite::reconnectClients(QStatus& status)
 	releaseResources();
 	
 	m_ServiceHelper = new ServiceHelper();
-	status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId,
-		m_IcsMap.at("ICSCO_SrpKeyX"), m_IxitMap.at("IXITCO_SrpKeyXPincode"),
-		m_IcsMap.at("ICSCO_SrpLogon"), m_IxitMap.at("IXITCO_SrpLogonUser"), m_IxitMap.at("IXITCO_SrpLogonPass"),
-		m_IcsMap.at("ICSCO_EcdheNull"),
-		m_IcsMap.at("ICSCO_EcdhePsk"), m_IxitMap.at("IXITCO_EcdhePskPassword"),
-		m_IcsMap.at("ICSCO_EcdheEcdsa"), m_IxitMap.at("IXITCO_EcdheEcdsaPrivateKey"), m_IxitMap.at("IXITCO_EcdheEcdsaCertChain"),
-		m_IcsMap.at("ICSCO_EcdheSpeke"), m_IxitMap.at("IXITCO_EcdheSpekePassword"));
+	status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId);
 	ASSERT_EQ(ER_OK, status) << "serviceHelper Initialize() failed: " << QCC_StatusText(status);
 
 	m_DeviceAboutAnnouncement = waitForDeviceAboutAnnouncement();
@@ -892,7 +889,13 @@ void ConfigTestSuite::reconnectClients(QStatus& status)
 	ASSERT_NE(m_ConfigClient, nullptr) << "ConfigClient connection failed";
 	SUCCEED() << "ConfigClient connected";
 
-	status = m_ServiceHelper->enableAuthentication("/Keystore");
+	status = m_ServiceHelper->enableAuthentication("/Keystore",
+		m_IcsMap.at("ICSCO_SrpKeyX"), m_IxitMap.at("IXITCO_SrpKeyXPincode"),
+		m_IcsMap.at("ICSCO_SrpLogon"), m_IxitMap.at("IXITCO_SrpLogonUser"), m_IxitMap.at("IXITCO_SrpLogonPass"),
+		m_UseEcdheNullInTest,
+		m_IcsMap.at("ICSCO_EcdhePsk"), m_IxitMap.at("IXITCO_EcdhePskPassword"),
+		m_IcsMap.at("ICSCO_EcdheEcdsa"), m_IxitMap.at("IXITCO_EcdheEcdsaPrivateKey"), m_IxitMap.at("IXITCO_EcdheEcdsaCertChain"),
+		m_IcsMap.at("ICSCO_EcdheSpeke"), m_IxitMap.at("IXITCO_EcdheSpekePassword"));
 	ASSERT_EQ(ER_OK, status);
 }
 
@@ -911,7 +914,7 @@ void ConfigTestSuite::changePasscodeAndReconnect(const char* t_Passcode)
 {
 	LOG(INFO) << "Calling SetPasscode() on Config with passcode " << t_Passcode;
 	QStatus status = m_ConfigClient->SetPasscode(m_DeviceAboutAnnouncement->getServiceName().c_str(),
-		"MyDaemonRealm", 6, (const uint8_t*)t_Passcode, m_SessionId);
+		"MyDaemonRealm", qcc::String(t_Passcode).length(), (const uint8_t*)t_Passcode, m_SessionId);
 	ASSERT_EQ(ER_OK, status) << "Calling SetPasscode() on Config interface returned status code: "
 		<< QCC_StatusText(status);
 
@@ -986,7 +989,7 @@ TEST_F(ConfigTestSuite, Config_v1_32)
 
 	m_ServiceHelper->clearKeyStore();
 	changePasswordInStores(NEW_PASSCODE);
-	ASSERT_EQ(ER_OK, callMethodToCheckAuthentication());
+	ASSERT_EQ(ER_OK, callMethodToCheckAuthentication()) << "Checking authentication returned status code: " << QCC_StatusText(status);
 	restorePasswordInStores();
 }
 

@@ -14,5 +14,24 @@
 *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************************************************************/
 #include "stdafx.h"
+#include "PasswordStore.h"
 
-std::string CERTIFICATION_RELEASE = "16.04.00a";
+using namespace std;
+
+const char* PasswordStore::getPassword(string t_PeerName)
+{
+	return m_PasswordStore.empty() ? nullptr : m_PasswordStore.at(t_PeerName);
+}
+
+void PasswordStore::setPassword(string t_PeerName, const char* t_Password)
+{
+	std::map<string, const char*>::iterator iterator = m_PasswordStore.find(t_PeerName);
+	if (iterator != m_PasswordStore.end())
+	{
+		iterator->second = t_Password;
+	}
+	else
+	{
+		m_PasswordStore.insert(pair<string, const char*>(t_PeerName, t_Password));
+	}
+}

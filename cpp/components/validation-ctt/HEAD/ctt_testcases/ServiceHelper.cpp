@@ -30,35 +30,27 @@ using namespace std;
 uint32_t ServiceHelper::LINK_TIMEOUT_IN_SECONDS = 120;
 
 QStatus ServiceHelper::initializeClient(const string& t_BusApplicationName,
-	const string& t_DeviceId, const uint8_t* t_AppId,
-	const bool t_SupportsSrpKeyX, const string& t_DefaultSrpXPincode, 
-	const bool t_SupportsSrpLogon, const string& t_DefaultLogonUser, const string& t_DefaultLogonPass,
-	const bool t_SupportsEcdheNull,
-	const bool t_SupportsEcdhePsk, const string& t_DefaultECDHEPskPassword, 
-	const bool t_SupportsEcdheEcdsa, const string& t_DefaultECDHEEcdsaPrivateKey, const string& t_DefaultECDHEEcdsaCertChain,
-	const bool t_SupportsEcdheSpeke, const string& t_DefaultECDHESpekePassword)
+	const string& t_DeviceId, const uint8_t* t_AppId)
 {
-	return initialize(t_BusApplicationName, t_DeviceId, t_AppId, true,
-		t_SupportsSrpKeyX, t_DefaultSrpXPincode, t_SupportsSrpLogon, t_DefaultLogonUser, t_DefaultLogonPass, 
-		t_SupportsEcdheNull, t_SupportsEcdhePsk, t_DefaultECDHEPskPassword, t_SupportsEcdheEcdsa, t_DefaultECDHEEcdsaPrivateKey,
-		t_DefaultECDHEEcdsaCertChain, t_SupportsEcdheSpeke, t_DefaultECDHESpekePassword);
+	return initialize(t_BusApplicationName, t_DeviceId, t_AppId, true);
 }
 
 QStatus ServiceHelper::initializeSender(const string& t_BusApplicationName,
 	const string& t_DeviceId, const uint8_t* t_AppId)
 {
-	return initialize(t_BusApplicationName, t_DeviceId, t_AppId, false, false, "", false, "", "", false, false, "", false, "", "", false, "");
+	return initialize(t_BusApplicationName, t_DeviceId, t_AppId, false);
 }
 
 QStatus ServiceHelper::initialize(const string& t_BusApplicationName,
-	const string& t_DeviceId, const uint8_t* t_AppId, const bool t_Listener,
-	const bool t_SupportsSrpKeyX, const string& t_DefaultSrpXPincode, 
-	const bool t_SupportsSrpLogon, const string& t_DefaultLogonUser, const string& t_DefaultLogonPass,
-	const bool t_SupportsEcdheNull,
-	const bool t_SupportsEcdhePsk, const string& t_DefaultECDHEPskPassword, 
-	const bool t_SupportsEcdheEcdsa, const string& t_DefaultECDHEEcdsaPrivateKey, const string& t_DefaultECDHEEcdsaCertChain,
-	const bool t_SupportsEcdheSpeke, const string& t_DefaultECDHESpekePassword)
+	const string& t_DeviceId, const uint8_t* t_AppId, const bool t_Listener)
 {
+	//--------------------------------------------------
+	// ALLJOYN INITIALIZATION
+	//--------------------------------------------------
+	/*
+		AllJoynInit() must be called prior to instantiating or using any AllJoyn functionality.
+		AllJoynShutdown() must be called for each invocation of AllJoynInit().
+	*/
 	QStatus status = AllJoynInit();
 	if (status != ER_OK)
 	{
@@ -66,6 +58,10 @@ QStatus ServiceHelper::initialize(const string& t_BusApplicationName,
 		return status;
 	}
 
+	/*
+		For an application that is a routing node (either standalone or bundled),
+		AllJoynRouterInit() must be called before using any AllJoyn router functionality and after AllJoynInit()
+	*/
 	status = AllJoynRouterInit();
 	if (status != ER_OK)
 	{
@@ -74,53 +70,13 @@ QStatus ServiceHelper::initialize(const string& t_BusApplicationName,
 		return status;
 	}
 
+	//--------------------------------------------------
+	// BUS ATTACHMENT INITIALIZATION
+	//--------------------------------------------------
 	m_BusAttachmentMgr = new BusAttachmentMgr();
-
-	if (m_SupportsSrpKeyX = t_SupportsSrpKeyX)
-	{
-		m_SrpKeyXStore = new SrpKeyXStore();
-		m_SrpKeyXHandlerImpl = new SrpKeyXHandlerImpl(m_SrpKeyXStore, t_DefaultSrpXPincode);
-		m_DefaultSrpKeyXPincode = t_DefaultSrpXPincode;
-	}
-	
-	if (m_SupportsSrpLogon = t_SupportsSrpLogon)
-	{
-		m_SrpLogonStore = new SrpLogonStore();
-		m_SrpLogonHandlerImpl = new SrpLogonHandlerImpl(m_SrpLogonStore, t_DefaultLogonUser, t_DefaultLogonPass);
-		m_DefaultLogonUser = t_DefaultLogonUser;
-		m_DefaultLogonPass = t_DefaultLogonPass;
-	}
-	
-	if (m_SupportsEcdheNull = t_SupportsEcdheNull)
-	{
-		m_ECDHENullHandlerImpl = new ECDHENullHandlerImpl();
-	}
-	
-	if (m_SupportsEcdhePsk = t_SupportsEcdhePsk)
-	{
-		m_ECDHEPskStore = new ECDHEPskStore();
-		m_ECDHEPskHandlerImpl = new ECDHEPskHandlerImpl(m_ECDHEPskStore, t_DefaultECDHEPskPassword);
-		m_DefaultECDHEPskPassword = t_DefaultECDHEPskPassword;
-	}
-	
-	if (m_SupportsEcdheEcdsa = t_SupportsEcdheEcdsa)
-	{
-		m_ECDHEEcdsaStore = new ECDHEEcdsaStore();
-		m_ECDHEEcdsaHandlerImpl = new ECDHEEcdsaHandlerImpl(m_ECDHEEcdsaStore, t_DefaultECDHEEcdsaPrivateKey, t_DefaultECDHEEcdsaCertChain);
-		m_DefaultECDHEEcdsaPrivateKey = t_DefaultECDHEEcdsaPrivateKey;
-		m_DefaultECDHEEcdsaCertChain = t_DefaultECDHEEcdsaCertChain;
-	}
-	
-	if (m_SupportsEcdheSpeke = t_SupportsEcdheSpeke)
-	{
-		m_ECDHESpekeStore = new ECDHESpekeStore();
-		m_ECDHESpekeHandlerImpl = new ECDHESpekeHandlerImpl(m_ECDHESpekeStore, t_DefaultECDHESpekePassword);
-		m_DefaultECDHESpekePassword = t_DefaultECDHESpekePassword;
-	}
-	
 	m_BusAttachmentMgr->create(t_BusApplicationName, true);
-	status = m_BusAttachmentMgr->connect();
-	if (status != ER_OK)
+
+	if (ER_OK != (status = m_BusAttachmentMgr->connect()))
 	{
 		return status;
 	}
@@ -130,8 +86,8 @@ QStatus ServiceHelper::initialize(const string& t_BusApplicationName,
 		LOG(INFO) << "Adding AboutListener for About announcements";
 		m_DeviceAnnouncementHandler = new DeviceAnnouncementHandler(t_DeviceId, t_AppId);
 		m_BusAttachmentMgr->getBusAttachment()->RegisterAboutListener(*m_DeviceAnnouncementHandler);
-		status = m_BusAttachmentMgr->getBusAttachment()->WhoImplements(NULL);
-		if (status != ER_OK)
+
+		if (ER_OK != (status = m_BusAttachmentMgr->getBusAttachment()->WhoImplements(NULL)))
 		{
 			return status;
 		}
@@ -218,11 +174,18 @@ QStatus ServiceHelper::release()
 
 void ServiceHelper::disconnectBusAttachment()
 {
-	if (m_BusAttachmentMgr != nullptr)
+	if (nullptr != m_BusAttachmentMgr)
 	{
-		m_BusAttachmentMgr->getBusAttachment()->UnregisterAboutListener(*m_DeviceAnnouncementHandler);
+		if (nullptr != m_DeviceAnnouncementHandler)
+		{
+			m_BusAttachmentMgr->getBusAttachment()->UnregisterAboutListener(*m_DeviceAnnouncementHandler);
+			delete m_DeviceAnnouncementHandler;
+			m_DeviceAnnouncementHandler = nullptr;
+		}
+		
 		m_BusAttachmentMgr->release();
 		delete m_BusAttachmentMgr;
+		m_BusAttachmentMgr = nullptr;
 	}
 }
 
@@ -381,21 +344,21 @@ void ServiceHelper::setEcdheEcdsaCredentials(const AboutAnnouncementDetails& t_A
 void ServiceHelper::setEcdheSpekePassword(const AboutAnnouncementDetails& t_AboutAnnouncementDetails,
 	const char* t_Password)
 {
-	const char* currentPassword = m_ECDHESpekeStore->getPassword(t_AboutAnnouncementDetails.getServiceName());
+	const char* currentPassword = m_ECDHESpekeStore->getPassword();
 
 	if (currentPassword == nullptr)
 	{
-		currentPassword = m_DefaultECDHEPskPassword.c_str();
+		currentPassword = m_DefaultECDHESpekePassword.c_str();
 	}
 
 	if (t_Password == nullptr)
 	{
-		t_Password = m_DefaultECDHEPskPassword.c_str();
+		t_Password = m_DefaultECDHESpekePassword.c_str();
 	}
 
 	LOG(INFO) << "Setting password that will be used when authenticating with ECDHE_SPEKE to " << t_AboutAnnouncementDetails.getServiceName()
 		<< " from " << currentPassword << " to " << t_Password;
-	m_ECDHESpekeStore->setPassword(t_AboutAnnouncementDetails.getServiceName(), t_Password);
+	m_ECDHESpekeStore->setPassword(t_Password);
 }
 
 void ServiceHelper::clearKeyStore()
@@ -405,8 +368,60 @@ void ServiceHelper::clearKeyStore()
 
 }
 
-QStatus ServiceHelper::enableAuthentication(const std::string& t_KeyStoreFileName)
+QStatus ServiceHelper::enableAuthentication(const std::string& t_KeyStoreFileName,
+	const bool t_SupportsSrpKeyX, const string& t_DefaultSrpXPincode,
+	const bool t_SupportsSrpLogon, const string& t_DefaultLogonUser, const string& t_DefaultLogonPass,
+	const bool t_SupportsEcdheNull,
+	const bool t_SupportsEcdhePsk, const string& t_DefaultECDHEPskPassword,
+	const bool t_SupportsEcdheEcdsa, const string& t_DefaultECDHEEcdsaPrivateKey, const string& t_DefaultECDHEEcdsaCertChain,
+	const bool t_SupportsEcdheSpeke, const string& t_DefaultECDHESpekePassword)
 {
+	releaseAuthenticationClasses();
+	//--------------------------------------------------
+	// AUTHENTICATION LISTENERS INITIALIZATION
+	//--------------------------------------------------
+	if (m_SupportsSrpKeyX = t_SupportsSrpKeyX)
+	{
+		m_SrpKeyXStore = new SrpKeyXStore();
+		m_SrpKeyXHandlerImpl = new SrpKeyXHandlerImpl(m_SrpKeyXStore, t_DefaultSrpXPincode);
+		m_DefaultSrpKeyXPincode = t_DefaultSrpXPincode;
+	}
+
+	if (m_SupportsSrpLogon = t_SupportsSrpLogon)
+	{
+		m_SrpLogonStore = new SrpLogonStore();
+		m_SrpLogonHandlerImpl = new SrpLogonHandlerImpl(m_SrpLogonStore, t_DefaultLogonUser, t_DefaultLogonPass);
+		m_DefaultLogonUser = t_DefaultLogonUser;
+		m_DefaultLogonPass = t_DefaultLogonPass;
+	}
+
+	if (m_SupportsEcdheNull = t_SupportsEcdheNull)
+	{
+		m_ECDHENullHandlerImpl = new ECDHENullHandlerImpl();
+	}
+
+	if (m_SupportsEcdhePsk = t_SupportsEcdhePsk)
+	{
+		m_ECDHEPskStore = new ECDHEPskStore();
+		m_ECDHEPskHandlerImpl = new ECDHEPskHandlerImpl(m_ECDHEPskStore, t_DefaultECDHEPskPassword);
+		m_DefaultECDHEPskPassword = t_DefaultECDHEPskPassword;
+	}
+
+	if (m_SupportsEcdheEcdsa = t_SupportsEcdheEcdsa)
+	{
+		m_ECDHEEcdsaStore = new ECDHEEcdsaStore();
+		m_ECDHEEcdsaHandlerImpl = new ECDHEEcdsaHandlerImpl(m_ECDHEEcdsaStore, t_DefaultECDHEEcdsaPrivateKey, t_DefaultECDHEEcdsaCertChain);
+		m_DefaultECDHEEcdsaPrivateKey = t_DefaultECDHEEcdsaPrivateKey;
+		m_DefaultECDHEEcdsaCertChain = t_DefaultECDHEEcdsaCertChain;
+	}
+
+	if (m_SupportsEcdheSpeke = t_SupportsEcdheSpeke)
+	{
+		m_ECDHESpekeStore = new ECDHESpekeStore();
+		m_ECDHESpekeHandlerImpl = new ECDHESpekeHandlerImpl(m_ECDHESpekeStore, t_DefaultECDHESpekePassword);
+		m_DefaultECDHESpekePassword = t_DefaultECDHESpekePassword;
+	}
+
 	m_AuthListener = new AuthListeners(m_SupportsSrpKeyX, m_SrpKeyXHandlerImpl, m_DefaultSrpKeyXPincode,
 		m_SupportsSrpLogon, m_SrpLogonHandlerImpl, m_DefaultLogonUser, m_DefaultLogonPass,
 		m_SupportsEcdheNull, m_ECDHENullHandlerImpl, 
@@ -417,6 +432,56 @@ QStatus ServiceHelper::enableAuthentication(const std::string& t_KeyStoreFileNam
 	LOG(INFO) << "Registering an AuthListener";
 	return m_BusAttachmentMgr->getBusAttachment()->EnablePeerSecurity(m_AuthListener->getAuthMechanismsAsString().c_str(), 
 		m_AuthListener, t_KeyStoreFileName.c_str());
+}
+
+void ServiceHelper::releaseAuthenticationClasses()
+{
+	if (m_SupportsSrpKeyX)
+	{
+		delete m_SrpKeyXStore;
+		delete m_SrpKeyXHandlerImpl;
+		m_DefaultSrpKeyXPincode.clear();
+	}
+
+	if (m_SupportsSrpLogon)
+	{
+		delete m_SrpLogonStore;
+		delete m_SrpLogonHandlerImpl;
+		m_DefaultLogonUser.clear();
+		m_DefaultLogonPass.clear();
+	}
+
+	if (m_SupportsEcdheNull)
+	{
+		delete m_ECDHENullHandlerImpl;
+	}
+
+	if (m_SupportsEcdhePsk)
+	{
+		delete m_ECDHEPskStore;
+		delete m_ECDHEPskHandlerImpl;
+		m_DefaultECDHEPskPassword.clear();
+	}
+
+	if (m_SupportsEcdheEcdsa)
+	{
+		delete m_ECDHEEcdsaStore;
+		delete m_ECDHEEcdsaHandlerImpl;
+		m_DefaultECDHEEcdsaPrivateKey.clear();
+		m_DefaultECDHEEcdsaCertChain.clear();
+	}
+
+	if (m_SupportsEcdheSpeke)
+	{
+		delete m_ECDHESpekeStore;
+		delete m_ECDHESpekeHandlerImpl;
+		m_DefaultECDHESpekePassword.clear();
+	}
+
+	if (nullptr != m_AuthListener)
+	{
+		delete m_AuthListener;
+	}
 }
 
 bool ServiceHelper::isPeerAuthenticationSuccessful(const AboutAnnouncementDetails& t_AboutAnnouncementDetails)
