@@ -18,25 +18,37 @@
 
 #include <qcc\GUID.h>
 
-ECDHESpekeListener::ECDHESpekeListener(ECDHESpekeHandlerImpl* t_ECDHEPskHandlerImpl, const std::string& t_DefaultECDHEPskPassword) :
-	m_PasswordHandler(t_ECDHEPskHandlerImpl), m_DefaultPassword(t_DefaultECDHEPskPassword) {}
+ECDHESpekeListener::ECDHESpekeListener(ECDHESpekeHandlerImpl* t_ECDHEPskHandlerImpl, const std::string& t_DefaultECDHESpekePassword) :
+	m_PasswordHandler(t_ECDHEPskHandlerImpl), m_DefaultPassword(t_DefaultECDHESpekePassword) {}
 
 bool ECDHESpekeListener::RequestCredentials(const char* t_AuthMechanism,
 	const char* t_AuthPeer, uint16_t t_AuthCount, const char* t_UserID,
 	uint16_t t_CredMask, Credentials& t_Creds)
 {
-	const char* password = m_DefaultPassword.c_str();
-	const char* storedPass = m_PasswordHandler->getPassword(t_AuthPeer);
-
-	if (m_PasswordHandler != nullptr && storedPass != nullptr)
+	if (t_AuthCount > 10)
 	{
-		password = storedPass;
+		/* If the peer making a large number of attempts, they may be an attacking trying to guess the password. */
+		LOG(INFO) << "RequestCredentials called for ECDHE_SPEKE more than 10 times, authentication will fail.";
+		return false;
 	}
 
-	qcc::String outpsk;
-	outpsk.assign(reinterpret_cast<const char*>(qcc::GUID128(password).GetBytes()), qcc::GUID128::SIZE);
-	t_Creds.SetPassword(outpsk);    /* The credentials class has only one way to store pre-shared credentials. */
-	outpsk.clear();
+	if (ajn::AuthListener::CRED_PASSWORD & t_CredMask)
+	{
+		const char* password = m_DefaultPassword.c_str();
+		const char* storedPass = m_PasswordHandler->getPassword(t_AuthPeer);
+
+		if (m_PasswordHandler != nullptr && storedPass != nullptr)
+		{
+			password = storedPass;
+		}
+
+		t_Creds.SetPassword(password);
+	}
+
+	if (ajn::AuthListener::CRED_EXPIRATION & t_CredMask)
+	{
+		t_Creds.SetExpiration(300);
+	}
 
 	return true;
 }

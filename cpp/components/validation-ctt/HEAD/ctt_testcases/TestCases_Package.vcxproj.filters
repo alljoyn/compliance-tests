@@ -187,18 +187,6 @@
     <Filter Include="Source Files\core.hae">
       <UniqueIdentifier>{bcb26b4a-04f5-4b8f-8897-6125769129f1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\testcases.conf.security20">
-      <UniqueIdentifier>{cd77f1df-c68f-47b2-ba2b-1f10ae04bb9f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\testcases.conf.security20">
-      <UniqueIdentifier>{0add6f92-9316-4734-b516-e5b7c310f0ef}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\core.security20">
-      <UniqueIdentifier>{8dff6217-f25e-4f37-854a-1f0df30661f9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\core.security20">
-      <UniqueIdentifier>{90bb4c67-c395-418e-b37f-66c785c73478}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -489,12 +477,6 @@
     <ClInclude Include="InterfaceInfo.h">
       <Filter>Header Files\core.hae</Filter>
     </ClInclude>
-    <ClInclude Include="Security20TestSuite.h">
-      <Filter>Header Files\testcases.conf.security20</Filter>
-    </ClInclude>
-    <ClInclude Include="Claim_ApplicationStateListener.h">
-      <Filter>Header Files\core.security20</Filter>
-    </ClInclude>
     <ClInclude Include="AvailableSoftAPException.h">
       <Filter>Header Files\core.onboarding</Filter>
     </ClInclude>
@@ -754,12 +736,6 @@
     </ClCompile>
     <ClCompile Include="InterfaceInfo.cpp">
       <Filter>Source Files\core.hae</Filter>
-    </ClCompile>
-    <ClCompile Include="Security20TestSuite.cpp">
-      <Filter>Source Files\testcases.conf.security20</Filter>
-    </ClCompile>
-    <ClCompile Include="Claim_ApplicationStateListener.cpp">
-      <Filter>Source Files\core.security20</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

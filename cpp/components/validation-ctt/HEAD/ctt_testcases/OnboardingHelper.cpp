@@ -155,13 +155,7 @@ QStatus OnboardingHelper::initServiceHelper(const bool t_SupportsSrpKeyX, const 
 {
 	releaseServiceHelper();
 	m_ServiceHelper = new ServiceHelper();
-	QStatus status = m_ServiceHelper->initializeClient(m_BusApplicationName, m_DeviceId, m_AppId,
-		t_SupportsSrpKeyX, t_DefaultSrpXPincode,
-		t_SupportsSrpLogon, t_DefaultLogonUser, t_DefaultLogonPass,
-		t_SupportsEcdheNull,
-		t_SupportsEcdhePsk, t_DefaultECDHEPskPassword,
-		t_SupportsEcdheEcdsa, t_DefaultECDHEEcdsaPrivateKey, t_DefaultECDHEEcdsaCertChain,
-		t_SupportsEcdheSpeke, t_DefaultECDHESpekePassword);
+	QStatus status = m_ServiceHelper->initializeClient(m_BusApplicationName, m_DeviceId, m_AppId);
 	if (status != ER_OK)
 	{
 		return status;
@@ -169,7 +163,13 @@ QStatus OnboardingHelper::initServiceHelper(const bool t_SupportsSrpKeyX, const 
 
 	//m_config_client = m_ServiceHelper->connectConfigClient(m_session_id);
 
-	return m_ServiceHelper->enableAuthentication(m_KeystorePath);
+	return m_ServiceHelper->enableAuthentication(m_KeystorePath,
+		t_SupportsSrpKeyX, t_DefaultSrpXPincode,
+		t_SupportsSrpLogon, t_DefaultLogonUser, t_DefaultLogonPass,
+		t_SupportsEcdheNull,
+		t_SupportsEcdhePsk, t_DefaultECDHEPskPassword,
+		t_SupportsEcdheEcdsa, t_DefaultECDHEEcdsaPrivateKey, t_DefaultECDHEEcdsaCertChain,
+		t_SupportsEcdheSpeke, t_DefaultECDHESpekePassword);
 }
 
 void OnboardingHelper::releaseServiceHelper()

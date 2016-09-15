@@ -1,0 +1,127 @@
+CTT Test Cases Package Version 16.04.00a_R2 (TestCases_Package_v16.04.00a_R2.jar) Release Notes
+===============================================================================================
+ 
+Fully Validated Platforms
+-------------------------
+ 1) Windows 7 (64 bit)
+ 2) Java 8 (64 bits)
+
+Features added in Version 16.04.00a_R2 
+--------------------------------------
+ 1)  
+ 
+Issues Addressed in Version 16.04.00a_R2 
+----------------------------------------
+ ASACOMP-179  CTT Local Agent / Improvements in ALLJOYN_ECDHE_SPEKE implementation
+ ASACOMP-178  CTT Local Agent / ICS/IXIT are now loaded in AuthListerner
+ ASACOMP-177  CTT Local Agent / Config-v1-02. Error in Calling to GetVersion()
+ ASACOMP-176  CTT Local Agent / About-v1-07. Regression checking Multiple Language
+ ASACOMP-166  Core. About-v1-04 and About-v1-05 are failing in Core v16.04
+          
+ For a complete list of fixed issues:
+ https://jira.allseenalliance.org/browse/ASACOMP-63?jql=project%20%3D%20ASACOMP%20AND%20issuetype%20in%20standardIssueTypes()%20AND%20status%20in%20(Resolved%2C%20Closed) 
+ 
+Known Issues in Version 16.04.00a_R2 
+------------------------------------
+ 
+ 
+ For a complete list of open issues:
+ https://jira.allseenalliance.org/browse/ASACOMP-66?jql=project%20%3D%20ASACOMP%20AND%20issuetype%20in%20standardIssueTypes()%20AND%20status%20in%20(Open%2C%20%22In%20Progress%22%2C%20New)
+
+Change history
+--------------
+ [20160914] - 16.04.00a_R2  - Core(16.04a) Base(16.04) Lighting(15.04) - Bug fixes: ASACOMPs: 177,176,166.
+ [20160914] - 16.04.00_R4   - Core(16.04)  Base(16.04) Lighting(15.04) - Bug fixes:
+ [20160804] - 16.04.00a_R1  - Core(16.04a) Base(16.04) Lighting(15.04) - Bug fixes: ASACOMPs: 175,174,173,172,171,170,169,168,129,104,80,73,54,6,5. ASACOREs: 3106,3132,2730,2955,2940. 
+ [20160804] - 16.04.00_R3   - Core(16.04)  Base(16.04) Lighting(15.04) - Bug fixes: 
+ [20160804] - 15.09.00a_R6  - Core(15.09a) Base(15.09) Lighting(15.04) - Bug fixes:
+ [20160804] - 15.09.00_R10  - Core(15.09)  Base(15.09) Lighting(15.04) - Bug fixes:
+ [20160804] - 15.04.00b_R12 - Core(15.04b) Base(15.04) Lighting(15.04) - Bug fixes:
+ [20160804] - 15.04.00a_R18 - Core(15.04a) Base(15.04) Lighting(15.04) - Bug fixes:
+ [20160804] - 15.04.00_R16  - Core(15.04)  Base(15.04) Lighting(15.04) - Bug fixes:
+ [20160804] - 14.12.00b_R12 - Core(14.12b) Base(14.12) Gateway(14.12) - Bug fixes:
+ [20160804] - 14.12.00a_R11 - Core(14.12a) Base(14.12) Gateway(14.12) - Bug fixes:
+ [20160804] - 14.12.00_R9   - Core(14.12)  Base(14.12) Gateway(14.12) - Bug fixes:
+ [20160607] - 16.04.00_R2   - Core(16.04)  Base(16.04) Lighting(15.04) - Bug fixes: ASACOREs: 2933. ASABASEs: 706,709,724. 
+ [20160607] - 15.09.00a_R5  - Core(15.09a) Base(15.09) Lighting(15.04) - Bug fixes:
+ [20160607] - 15.09.00_R9   - Core(15.09)  Base(15.09) Lighting(15.04) - Bug fixes:
+ [20160607] - 15.04.00b_R11 - Core(15.04b) Base(15.04) Lighting(15.04) - Bug fixes:
+ [20160607] - 15.04.00a_R17 - Core(15.04a) Base(15.04) Lighting(15.04) - Bug fixes:
+ [20160607] - 15.04.00_R15  - Core(15.04)  Base(15.04) Lighting(15.04) - Bug fixes:
+ [20160607] - 14.12.00b_R11 - Core(14.12b) Base(14.12) Gateway(14.12) - Bug fixes:
+ [20160607] - 14.12.00a_R10 - Core(14.12a) Base(14.12) Gateway(14.12) - Bug fixes:
+ [20160607] - 14.12.00_R8   - Core(14.12)  Base(14.12) Gateway(14.12) - Bug fixes:
+ [20160505] - 16.04.00_R1  - Core(16.04)  Base(15.09) Lighting(15.04) - Bug fixes: ASACOMPs: 164. ASACOREs: 2742,2793,2810,2815,2811,2813,2746,2802,2802,2751,2750,2439,2854,2818,2855,2757,2587,2858,2853,2824,2576,2822,2678,2701,2838,2807,2738,2820,2666,2795,2791,2807,2835,2807,2667,2914,2903,2884,2840,2900,2899,2843,2895,2891,2889,2878,2516,2873,2883,2874,2882,2857,2860,2782,2745,2863,2862. 
+ [20160219] - 15.09.00a_R3 - Core(15.09a) Base(15.09) Lighting(15.04) - Bug fixes: ASACOMPs: 163.
+ [20160219] - 15.09.00_R7  - Core(15.09)  Base(15.09) Lighting(15.04) - Bug fixes: ASACOMPs: 163.
+ [20160219] - 15.04.00b_R9 - Core(15.04b) Base(15.04) Lighting(15.04) - Bug fixes: ASACOMPs: 163.
+ [20160219] - 15.04.00a_R15- Core(15.04a) Base(15.04) Lighting(15.04) - Bug fixes: ASACOMPs: 163.
+ [20160219] - 15.04.00_R13 - Core(15.04)  Base(15.04) Lighting(15.04) - Bug fixes: ASACOMPs: 163.
+ [20160219] - 14.12.00b_R9 - Core(14.12b) Base(14.12) Gateway(14.12) - Bug fixes: ASACOMPs: 163.
+ [20160219] - 14.12.00a_R8 - Core(14.12a) Base(14.12) Gateway(14.12) - Bug fixes: ASACOMPs: 163.
+ [20160219] - 14.12.00_R6  - Core(14.12)  Base(14.12) Gateway(14.12) - Bug fixes: ASACOMPs: 163.
+ [20151210] - 15.09.00a_R2 - Core(15.09a) Base(15.09) Lighting(15.04) - Bug fixes: ASACOMPs: 148.
+ [20151210] - 15.09.00_R6  - Core(15.09)  Base(15.09) Lighting(15.04) - Bug fixes: ASACOMPs: 148.
+ [20151210] - 15.04.00b_R8 - Core(15.04b) Base(15.04) Lighting(15.04) - Bug fixes: ASACOMPs: 148.
+ [20151210] - 15.04.00a_R14- Core(15.04a) Base(15.04) Lighting(15.04) - Bug fixes: ASACOMPs: 148.
+ [20151210] - 15.04.00_R12 - Core(15.04)  Base(15.04) Lighting(15.04) - Bug fixes: ASACOMPs: 148.
+ [20151210] - 14.12.00b_R8 - Core(14.12b) Base(14.12) Gateway(14.12) - Bug fixes: ASACOMPs: 148.
+ [20151210] - 14.12.00a_R7 - Core(14.12a) Base(14.12) Gateway(14.12) - Bug fixes: ASACOMPs: 148.
+ [20151210] - 14.12.00_R5  - Core(14.12)  Base(14.12) Gateway(14.12) - Bug fixes: ASACOMPs: 148.
+ [20151116] - 15.09.00a_R1 - Core(15.09a) Base(15.04) - Bug fixes: ASACOMPs: 147,140,139,138,137. ASACOREs: 2539,2575,2588,2590.
+ [20151116] - 15.09.00_R5  - Core(15.09)  Base(15.04) - Bug fixes: ASACOMPs: 147,140,139,138,137. ASACOREs: 2539,2575,2588,2590.
+ [20151116] - 15.04.00b_R7 - Core(15.04b) Base(15.04) - Bug fixes: ASACOMPs: 147,140,139,138,137. ASACOREs: 2539,2575,2588,2590.
+ [20151116] - 15.04.00a_R13- Core(15.04a) Base(15.04) - Bug fixes: ASACOMPs: 147,140,139,138,137. ASACOREs: 2539,2575,2588,2590.
+ [20151116] - 15.04.00_R11 - Core(15.04)  Base(15.04) - Bug fixes: ASACOMPs: 147,140,139,138,137. ASACOREs: 2539,2575,2588,2590.
+ [20151116] - 14.12.00b_R7 - Core(14.12b) Base(14.12) Gateway(14.12) - Bug fixes: ASACOMPs: 147,140,139,138,137. ASACOREs: 2539,2575,2588,2590.
+ [20151022] - 15.04.00_R10 - Core(15.04)  Base(15.04) - Bug fixes: ASACOMPs: 136.
+ [20151016] - 15.09.00_R4  - Core(15.09)  Base(15.04) - Bug fixes: ASACOMPs: 133.
+ [20151016] - 15.04.00b_R6 - Core(15.04b) Base(15.04) - Bug fixes: ASACOMPs: 133.
+ [20151016] - 15.04.00a_R12- Core(15.04a) Base(15.04) - Bug fixes: ASACOMPs: 133.
+ [20151016] - 15.04.00_R9  - Core(15.04)  Base(15.04) - Bug fixes: ASACOMPs: 133.
+ [20151016] - 14.12.00b_R6 - Core(14.12b) Base(14.12) Gateway(14.12) - Bug fixes: ASACOMPs: 133.
+ [20151016] - 14.12.00a_R6 - Core(14.12a) Base(14.12) Gateway(14.12) - Bug fixes: ASACOMPs: 133. 
+ [20151016] - 14.12.00_R4  - Core(14.12)  Base(14.12) Gateway(14.12) - Bug fixes: ASACOMPs: 133.
+ [20151009] - 15.09.00_R3  - Core(15.09)  Base(15.04) - Bug fixes: ASACOMPs: 126.
+ [20151009] - 15.04.00b_R5 - Core(15.04b) Base(15.04) - Bug fixes: ASACOMPs: 126.
+ [20151009] - 15.04.00a_R11- Core(15.04a) Base(15.04) - Bug fixes: ASACOMPs: 126.
+ [20151009] - 15.04.00_R8  - Core(15.04)  Base(15.04) - Bug fixes: ASACOMPs: 126.
+ [20151006] - 15.09.00_R2  - Core(15.09)  Base(15.04) - Bug fixes: ASACOMPs: 121. 
+ [20151006] - 15.04.00b_R4 - Core(15.04b) Base(15.04) - Bug fixes: ASACOMPs: 121.
+ [20151006] - 15.04.00a_R10- Core(15.04a) Base(15.04) - Bug fixes: ASACOMPs: 121.
+ [20151006] - 15.04.00_R7  - Core(15.04)  Base(15.04) - Bug fixes: ASACOMPs: 121.
+ [20151001] - 15.09.00_R1  - Core(15.09)  Base(15.04) - Bug fixes: ASACOMPs: 100,102,105,113,114,115,116. ASACOREs: 2561,2559,2529,2531,2509,2524,2548,2519,2081,2362,2545,2467,2530,2462,2528,2401,2518,181,2460,2411,2469,2443,2510,1394,1865,1886,1904. 
+ [20151001] - 15.04.00b_R3 - Core(15.04b) Base(15.04) - Bug fixes: ASACOMPs: 100,102,105,114,115,116.
+ [20151001] - 15.04.00a_R9 - Core(15.04a) Base(15.04) - Bug fixes: ASACOMPs: 100,102,105,114,115,116.
+ [20151001] - 15.04.00_R6  - Core(15.04)  Base(15.04) - Bug fixes: ASACOMPs: 100,102,105,114,115,116.
+ [20150917] - 15.09.00_D2  - Core(15.09)  Base(15.04) - Core(15.09-Master) Base(15.09-Master)   - Debug 2
+ [20150917] - 15.04.00b_R2 - Core(15.04b) Base(15.04) - Bug fixes: ASACOMP-67, ASACOMP-69, ASACORE-2464, ASACORE-2496, ASACORE-2492, ASACORE-2468, ASACORE-2477, ASACORE-2495, ASACORE-2490.
+ [20150917] - 15.04.00a_R8 - Core(15.04a) Base(15.04) - It includes all possible fixes in 15.04.00b_R2 according to Core(15.04a) and Base(15.04).
+ [20150917] - 15.04.00_R5  - Core(15.04)  Base(15.04) - It includes all possible fixes in 15.04.00b_R2 according to Core(15.04) and Base(15.04). 
+ [20150917] - 14.12.00b_R5 - Core(14.12b) Base(14.12) Gateway(14.12) - It includes all possible fixes in 15.04.00b_R2 according to Core(14.12b) and Base(14.12).
+ [20150917] - 14.12.00a_R5 - Core(14.12a) Base(14.12) Gateway(14.12) - It includes all possible fixes in 15.04.00b_R2 according to Core(14.12a) and Base(14.12). 
+ [20150917] - 14.12.00_R3  - Core(14.12)  Base(14.12) Gateway(14.12) - It includes all possible fixes in 15.04.00b_R2 according to Core(14.12) and Base(14.12).
+ [20150804] - 15.04.00b_R1 - Core(15.04b) Base(15.04) - Bug fixes: ASACOMP-95, ASACOMP-72, ASACORE-2270, ASACORE-2247.
+ [20150804] - 15.04.00a_R7 - Core(15.04a) Base(15.04) - It includes all possible fixes in 15.04.00b_R1 according to Core(15.04a) and Base(15.04).
+ [20150804] - 15.04.00_R4  - Core(15.04)  Base(15.04) - It includes all possible fixes in 15.04.00b_R1 according to Core(15.04) and Base(15.04). 
+ [20150804] - 14.12.00b_R4 - Core(14.12b) Base(14.12) Gateway(14.12) - It includes all possible fixes in 15.04.00b_R1 according to Core(14.12b) and Base(14.12).
+ [20150804] - 14.12.00a_R4 - Core(14.12a) Base(14.12) Gateway(14.12) - It includes all possible fixes in 15.04.00b_R1 according to Core(14.12a) and Base(14.12). 
+ [20150804] - 14.12.00_R2  - Core(14.12)  Base(14.12) Gateway(14.12) - It includes all possible fixes in 15.04.00b_R1 according to Core(14.12) and Base(14.12).
+ [20150729] - 15.09.00_D1  - Core(15.09-Master) Base(15.09-Master)   - Debug 1
+ [20150724] - 15.04.00a_R6 - Core(15.04a) Base(15.04) - Bug fixes: ASACOMP-88, ASACOMP-85, ASACOMP-84, ASACOMP-76.
+ [20150724] - 15.04.00_R3  - Core(15.04)  Base(15.04) - It includes all possible fixes in 15.04.00a_R6 according to Core(15.04) and Base(15.04). 
+ [20150724] - 14.12.00b_R3 - Core(14.12b) Base(14.12) Gateway(14.12) - It includes all possible fixes in 15.04.00a_R6 according to Core(14.12b) and Base(14.12).
+ [20150724] - 14.12.00a_R3 - Core(14.12a) Base(14.12) Gateway(14.12) - It includes all possible fixes in 15.04.00a_R6 according to Core(14.12a) and Base(14.12). 
+ [20150724] - 14.12.00_R1  - Core(14.12)  Base(14.12) Gateway(14.12) - It includes all possible fixes in 15.04.00a_R6 according to Core(14.12) and Base(14.12).
+ [20150715] - 15.04.00a_R5 - Core(15.04a) Base(15.04) - Bug fixes: ASACOMP-76, ASACOMP-78.
+ [20150715] - 15.04.00_R2  - Core(15.04)  Base(14.12) - It includes all possible fixes in 15.04.00a_R5 according to Core(15.04) and Base(14.12). 
+ [20150715] - 14.12.00b_R2 - Core(14.12b) Base(14.12) Gateway(14.12) - It includes all possible fixes in 15.04.00a_R5 according to Core(14.12b) and Base(14.12).
+ [20150715] - 14.12.00a_R2 - Core(14.12a) Base(14.12) Gateway(14.12) - It includes all possible fixes in 15.04.00a_R5 according to Core(14.12a) and Base(14.12).
+ [20150713] - 15.04.00a_R4 - Core(15.04a) Base(15.04) - Bug fixes: ASACOMP-75.
+ [20150710] - 15.04.00a_R3 - Core(15.04a) Base(15.04) - Bug fixes: ASACOMP-74.
+ [20150708] - 15.04.00a_R2 - Core(15.04a) Base(15.04) - Bug fixes: ASACOMP-48, ASACOMP-50, ASACOMP-55, ASACOMP-68, ASACORE-2048, ASACORE-1960, ASACORE-2032, ASACORE-2018, ASACORE-1977, ASACORE-2035, ASACORE-2000, ASACORE-1978, ASACORE-1959, ASACORE-1954, ASACORE-1961, ASACORE-1929, ASACORE-1921, ASACORE-1920, ASABASE-489 ASABASE-502, ASABASE-485.
+ [20150617] - 15.04.00a_R1 - Core(15.04a) Base(15.04) - Bug fixes: ASACOMP-66, ASACOMP-64.
+ [20150515] - 15.04.00_R1  - Core(15.04)  Base(14.12) - Bug fixes:
+ [20150515] - 14.12.00b_R1 - Core(14.12b) Base(14.12) Gateway(14.12) - Bug fixes:
+ [20150417] - 14.12.00a_R1 - Core(14.12a) Base(14.12) Gateway(14.12) - Bug fixes:
+ [20150417] - 14.06.00a_R1 - Core(14.06a) Base(14.06) Gateway(14.06) - Bug fixes:

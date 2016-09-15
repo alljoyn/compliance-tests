@@ -83,18 +83,18 @@ void HaeTestSuite::SetUp()
 
 	m_ServiceHelper = new ServiceHelper();
 
-	QStatus status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId,
+	QStatus status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId);
+	ASSERT_EQ(status, ER_OK) << "serviceHelper Initialize() failed: " << QCC_StatusText(status);
+
+	m_Controller = new ajn::services::HaeController(*m_ServiceHelper->getBusAttachmentMgr()->getBusAttachment(), this);
+	
+	status = m_ServiceHelper->enableAuthentication("/Keystore",
 		m_IcsMap.at("ICSCO_SrpKeyX"), m_IxitMap.at("IXITCO_SrpKeyXPincode"),
 		m_IcsMap.at("ICSCO_SrpLogon"), m_IxitMap.at("IXITCO_SrpLogonUser"), m_IxitMap.at("IXITCO_SrpLogonPass"),
 		m_IcsMap.at("ICSCO_EcdheNull"),
 		m_IcsMap.at("ICSCO_EcdhePsk"), m_IxitMap.at("IXITCO_EcdhePskPassword"),
 		m_IcsMap.at("ICSCO_EcdheEcdsa"), m_IxitMap.at("IXITCO_EcdheEcdsaPrivateKey"), m_IxitMap.at("IXITCO_EcdheEcdsaCertChain"),
 		m_IcsMap.at("ICSCO_EcdheSpeke"), m_IxitMap.at("IXITCO_EcdheSpekePassword"));
-	ASSERT_EQ(status, ER_OK) << "serviceHelper Initialize() failed: " << QCC_StatusText(status);
-
-	m_Controller = new ajn::services::HaeController(*m_ServiceHelper->getBusAttachmentMgr()->getBusAttachment(), this);
-	
-	status = m_ServiceHelper->enableAuthentication("/Keystore");
 	ASSERT_EQ(ER_OK, status) << "Enabling authentication returned status code " << status;
 
 	status = m_Controller->Start();

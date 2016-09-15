@@ -48,6 +48,7 @@ protected:
 	ServiceAvailabilityHandler* m_ServiceAvailabilityHandler{ nullptr };
 
 	std::string m_DefaultSrpKeyXPincode = std::string{ "" };
+	bool m_UseEcdheNullInTest;
 	std::string m_DefaultEcdhePskPassword = std::string{ "" };
 	std::string m_DefaultEcdheSpekePassword = std::string{ "" };
 
