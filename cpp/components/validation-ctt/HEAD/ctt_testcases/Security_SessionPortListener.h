@@ -15,22 +15,16 @@
 ******************************************************************************/
 #pragma once
 
-#include <alljoyn\ApplicationStateListener.h>
+#include <alljoyn\SessionPortListener.h>
 
-class Claim_ApplicationStateListener : public ajn::ApplicationStateListener
+class Security_SessionPortListener : public ajn::SessionPortListener
 {
 public:
-	Claim_ApplicationStateListener();
-	virtual void State(const char* busName, const qcc::KeyInfoNISTP256& publicKeyInfo, ajn::PermissionConfigurator::ApplicationState state);
-	bool isClaimable(const char* busName);
-	bool isClaimed(const char* busName);
-	bool checkApplicationState(const char* busName, const ajn::PermissionConfigurator::ApplicationState& applicationState);
-	bool checkEccPublicKey(const char* busName, const qcc::ECCPublicKey &publicKey);
-
-private:
-	std::map<std::string, ajn::PermissionConfigurator::ApplicationState> m_BusApplicationStates;
-	std::map<std::string, qcc::KeyInfoNISTP256> m_BusApplicationEccPublicKeys;
-
-	void updateBusApplicationState(const char* busName, const ajn::PermissionConfigurator::ApplicationState &state);
-	void updateBusEccPublicKey(const char* busName, const qcc::KeyInfoNISTP256 &eccPublicKey);
+	virtual bool AcceptSessionJoiner(ajn::SessionPort sessionPort, const char* joiner, const ajn::SessionOpts& opts)
+	{
+		QCC_UNUSED(sessionPort);
+		QCC_UNUSED(joiner);
+		QCC_UNUSED(opts);
+		return true;
+	}
 };
