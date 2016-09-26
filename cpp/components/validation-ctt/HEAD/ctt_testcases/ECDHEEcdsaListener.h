@@ -24,6 +24,7 @@ class ECDHEEcdsaListener : public ajn::AuthListener
 public:
 	ECDHEEcdsaListener(ECDHEEcdsaHandlerImpl*, const std::string&, const std::string&);
 	bool RequestCredentials(const char*, const char*, uint16_t, const char*, uint16_t, Credentials&);
+	bool VerifyCredentials(const char*, const char*, const Credentials&);
 	void AuthenticationComplete(const char*, const char*, bool);
 
 private:

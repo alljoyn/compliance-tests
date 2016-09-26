@@ -90,8 +90,7 @@ void BusAttachmentMgr::release()
 {
 	if (!m_AdvertisedName.empty())
 	{
-		QStatus status = m_BusAttachment->CancelAdvertiseName(m_AdvertisedName.c_str(),
-			TRANSPORT_IP);
+		QStatus status = m_BusAttachment->CancelAdvertiseName(m_AdvertisedName.c_str(), TRANSPORT_IP);
 
 		if (status != ER_OK)
 		{

@@ -13,16 +13,16 @@
 *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************************************************************/
-#include "stdafx.h"
-#include "InterfaceInfo.h"
+#pragma once
 
-InterfaceInfo::InterfaceInfo(const char* name, ajn::SessionPort port, const char* path, ajn::services::HaeAboutData& data, ajn::AboutObjectDescription& description) :
-	busName(name), sessionPort(port), sessionId(0), objectPath(path), aboutData(data), aboutDescription(description)
+enum class ServiceFramework
 {
-	ajn::MsgArg* arg;
-	data.GetField("DeviceName", arg, "en");
-	const char* bus_name;
-	arg->Get("s", &bus_name);
-
-	deviceName = bus_name;
-}
+	CORE,
+	NOTIFICATION,
+	CONFIGURATION,
+	CONTROL_PANEL,
+	ONBOARDING,
+	LSF_LAMP,
+	LSF_CONTROLLER,
+	HAE
+};

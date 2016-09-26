@@ -18,7 +18,7 @@
 
 #include "ArrayParser.h"
 
-//#include <qcc\GUID.h>
+#include <qcc\GUID.h>
 
 ECDHEPskListener::ECDHEPskListener(ECDHEPskHandlerImpl* t_ECDHEPskHandlerImpl, const std::string& t_DefaultECDHEPskPassword) :
 	m_PasswordHandler(t_ECDHEPskHandlerImpl), m_DefaultPassword(t_DefaultECDHEPskPassword) {}
@@ -35,13 +35,21 @@ bool ECDHEPskListener::RequestCredentials(const char* t_AuthMechanism,
 		password = storedPass;
 	}
 
-	qcc::String outpsk;
-	//outpsk.assign(reinterpret_cast<const char*>(qcc::GUID128(password).GetBytes()), qcc::GUID128::SIZE);
-	size_t byteArraySize;
-	uint8_t* bytes = ArrayParser::parseBytesFromHexString(password, byteArraySize);
-	outpsk.assign(reinterpret_cast<const char*>(bytes), byteArraySize);
-	t_Creds.SetPassword(outpsk);    /* The credentials class has only one way to store pre-shared credentials. */
+	size_t tempPassSize = qcc::String(password).length();
+	uint8_t* tempPass = new uint8_t[tempPassSize];
+	memcpy(tempPass, password, tempPassSize);
+
+	qcc::String outpsk(reinterpret_cast<const char*>(tempPass), tempPassSize);
+	t_Creds.SetPassword(outpsk);
 	outpsk.clear();
+
+	//qcc::String outpsk;
+	//size_t byteArraySize;
+	//uint8_t* bytes = ArrayParser::parseBytesFromHexString(password, byteArraySize);
+	//outpsk.assign(reinterpret_cast<const char*>(bytes), byteArraySize);
+	//t_Creds.SetPassword(outpsk);    /* The credentials class has only one way to store pre-shared credentials. */
+	//outpsk.clear();
+	//t_Creds.SetPassword(password);
 
 	return true;
 }

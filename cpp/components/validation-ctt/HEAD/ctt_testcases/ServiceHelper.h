@@ -16,7 +16,6 @@
 #pragma once
 
 #include "AuthListeners.h"
-//#include "AuthPasswordHandlerImpl.h"
 #include "BusAttachmentMgr.h"
 #include "DeviceAnnouncementHandler.h"
 #include "ECDHENullHandlerImpl.h"
@@ -26,9 +25,8 @@
 #include "ECDHEEcdsaStore.h"
 #include "ECDHESpekeHandlerImpl.h"
 #include "ECDHESpekeStore.h"
-//#include "PasswordStore.h"
+#include "Extended_SecurityApplicationProxy.h"
 #include "ServiceAvailabilityHandler.h"
-//#include "SrpAnonymousKeyListener.h"
 #include "SrpKeyXHandlerImpl.h"
 #include "SrpKeyXStore.h"
 #include "SrpLogonHandlerImpl.h"
@@ -46,13 +44,7 @@ class ServiceHelper
 
 public:
 	// About
-	QStatus initializeClient(const std::string&, const std::string&, const uint8_t*, 
-		const bool, const std::string&, 
-		const bool, const std::string&, const std::string&,
-		const bool, 
-		const bool, const std::string&, 
-		const bool, const std::string&, const std::string&, 
-		const bool, const std::string&);
+	QStatus initializeClient(const std::string&, const std::string&, const uint8_t*);
 	QStatus initializeSender(const std::string&, const std::string&, const uint8_t*);
 	AboutAnnouncementDetails* waitForNextDeviceAnnouncement(const long);
 	ajn::AboutProxy* connectAboutProxy(const AboutAnnouncementDetails&);
@@ -74,7 +66,13 @@ public:
 	// Configuration
 	ajn::services::ConfigClient* connectConfigClient(ajn::SessionId&);
 	void clearKeyStore();
-	QStatus enableAuthentication(const std::string&);
+	QStatus enableAuthentication(const char*,
+		const bool, const std::string&,
+		const bool, const std::string&, const std::string&,
+		const bool,
+		const bool, const std::string&,
+		const bool, const std::string&, const std::string&,
+		const bool, const std::string&);
 	bool isPeerAuthenticationSuccessful(const AboutAnnouncementDetails&);
 	void clearQueuedDeviceAnnouncements();
 
@@ -92,6 +90,9 @@ public:
 
 	// LSF_Lamp
 	//void waitForSessionToClose(const uint16_t);
+
+	// Security 2.0
+	Extended_SecurityApplicationProxy* connectSecurityApplicationProxy(const AboutAnnouncementDetails&);
 	
 private:
 	static uint32_t LINK_TIMEOUT_IN_SECONDS;
@@ -107,40 +108,35 @@ private:
 	// ALLJOYN_SRP_KEYX
 	SrpKeyXStore* m_SrpKeyXStore{ nullptr };
 	SrpKeyXHandlerImpl* m_SrpKeyXHandlerImpl{ nullptr };
-	bool m_SupportsSrpKeyX;
+	bool m_SupportsSrpKeyX = false;
 	std::string m_DefaultSrpKeyXPincode = std::string("");
 	// ALLJOYN_SRP_LOGON
 	SrpLogonStore* m_SrpLogonStore{ nullptr };
 	SrpLogonHandlerImpl* m_SrpLogonHandlerImpl{ nullptr };
-	bool m_SupportsSrpLogon;
+	bool m_SupportsSrpLogon = false;
 	std::string m_DefaultLogonUser = std::string("");
 	std::string m_DefaultLogonPass = std::string("");
 	// ALLJOYN_ECDHE_NULL
 	ECDHENullHandlerImpl* m_ECDHENullHandlerImpl{ nullptr };
-	bool m_SupportsEcdheNull;
+	bool m_SupportsEcdheNull = false;
 	// ALLJOYN_ECDHE_PSK
 	ECDHEPskStore* m_ECDHEPskStore{ nullptr };
 	ECDHEPskHandlerImpl* m_ECDHEPskHandlerImpl{ nullptr };
-	bool m_SupportsEcdhePsk;
+	bool m_SupportsEcdhePsk = false;
 	std::string m_DefaultECDHEPskPassword = std::string("");
 	// ALLJOYN_ECDHE_ECDSA
 	ECDHEEcdsaStore* m_ECDHEEcdsaStore{ nullptr };
 	ECDHEEcdsaHandlerImpl* m_ECDHEEcdsaHandlerImpl{ nullptr };
-	bool m_SupportsEcdheEcdsa;
+	bool m_SupportsEcdheEcdsa = false;
 	std::string m_DefaultECDHEEcdsaPrivateKey = std::string("");
 	std::string m_DefaultECDHEEcdsaCertChain = std::string("");
 	// ALLJOYN_ECDHE_SPEKE
 	ECDHESpekeStore* m_ECDHESpekeStore{ nullptr };
 	ECDHESpekeHandlerImpl* m_ECDHESpekeHandlerImpl{ nullptr };
-	bool m_SupportsEcdheSpeke;
+	bool m_SupportsEcdheSpeke = false;
 	std::string m_DefaultECDHESpekePassword = std::string("");
 	
-	QStatus initialize(const std::string&, const std::string&, const uint8_t*, const bool,
-		const bool, const std::string&,
-		const bool, const std::string&, const std::string&,
-		const bool,
-		const bool, const std::string&,
-		const bool, const std::string&, const std::string&,
-		const bool, const std::string&);
+	QStatus initialize(const std::string&, const std::string&, const uint8_t*, const bool);
+	void releaseAuthenticationClasses();
 	void disconnectBusAttachment();
 };

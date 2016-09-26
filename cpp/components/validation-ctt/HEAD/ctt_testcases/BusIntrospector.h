@@ -15,24 +15,17 @@
 ******************************************************************************/
 #pragma once
 
-#include <string>
-#include <alljoyn\AboutObjectDescription.h>
-#include <alljoyn\Session.h>
-#include <alljoyn/hae/HaeAboutData.h>
+#include "NodeDetail.h"
+#include "InterfaceDetail.h"
 
-class InterfaceInfo
+class BusIntrospector
 {
 public:
-	std::string busName;
-	std::string deviceName;
-	ajn::SessionPort sessionPort;
-	ajn::SessionId sessionId;
-	std::string objectPath;
-	ajn::services::HaeAboutData aboutData;
-	ajn::AboutObjectDescription aboutDescription;
-
-	InterfaceInfo()
-	{
-	}
-	InterfaceInfo(const char* name, ajn::SessionPort port, const char* path, ajn::services::HaeAboutData& data, ajn::AboutObjectDescription& description);
+	virtual NodeDetail* introspect(std::string) = 0;
+	virtual std::list<NodeDetail> introspectEntireTree(std::string) = 0;
+	virtual std::list<InterfaceDetail> getStandardizedInterfacesExposedOnBus() = 0;
+	virtual std::list<InterfaceDetail> getInterfacesExposedOnBusBasedOnName(std::string) = 0;
+	virtual std::list<InterfaceDetail> getInterfacesExposedOnBusUnderSpecifiedPathBasedOnName(std::string, std::string) = 0;
+	virtual bool isInterfacePresent(std::string, std::string) = 0;
+	virtual bool isAncestorInterfacePresent(std::string, std::string) = 0;
 };

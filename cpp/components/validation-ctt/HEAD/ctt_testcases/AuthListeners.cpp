@@ -118,7 +118,7 @@ std::vector<std::string> AuthListeners::getAuthMechanisms()
 std::string AuthListeners::getAuthMechanismsAsString()
 {
 	std::string separator(" ");
-	std::string mechanisms;
+	std::string mechanisms("");
 
 	for (auto mechanism : m_AuthListeners)
 	{

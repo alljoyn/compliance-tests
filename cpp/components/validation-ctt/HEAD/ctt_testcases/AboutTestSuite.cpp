@@ -53,19 +53,11 @@ void AboutTestSuite::SetUp()
 
 	m_ServiceHelper = new ServiceHelper();
 
-	QStatus status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId,
-		m_IcsMap.at("ICSCO_SrpKeyX"), m_IxitMap.at("IXITCO_SrpKeyXPincode"), 
-		m_IcsMap.at("ICSCO_SrpLogon"), m_IxitMap.at("IXITCO_SrpLogonUser"), m_IxitMap.at("IXITCO_SrpLogonPass"), 
-		m_IcsMap.at("ICSCO_EcdheNull"),
-		m_IcsMap.at("ICSCO_EcdhePsk"), m_IxitMap.at("IXITCO_EcdhePskPassword"), 
-		m_IcsMap.at("ICSCO_EcdheEcdsa"), m_IxitMap.at("IXITCO_EcdheEcdsaPrivateKey"), m_IxitMap.at("IXITCO_EcdheEcdsaCertChain"),
-		m_IcsMap.at("ICSCO_EcdheSpeke"), m_IxitMap.at("IXITCO_EcdheSpekePassword"));
+	QStatus status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId);
 	ASSERT_EQ(status, ER_OK) << "serviceHelper Initialize() failed: " << QCC_StatusText(status);
 
 	m_DeviceAboutAnnouncement = 
-		m_ServiceHelper->waitForNextDeviceAnnouncement(atol(
-		m_GeneralParameterMap.at("GPCO_AnnouncementTimeout").c_str()
-		) * 1000);
+		m_ServiceHelper->waitForNextDeviceAnnouncement(atol(m_GeneralParameterMap.at("GPCO_AnnouncementTimeout").c_str()) * 1000);
 
 	ASSERT_NE(m_DeviceAboutAnnouncement, nullptr) << "Timed out waiting for About announcement";
 
@@ -90,12 +82,13 @@ void AboutTestSuite::TearDown()
 
 void AboutTestSuite::releaseResources()
 {
-	if (m_ServiceHelper != nullptr)
+	if (nullptr != m_ServiceHelper)
 	{
 		QStatus status = m_ServiceHelper->release();
 
 		EXPECT_EQ(status, ER_OK) << "serviceHelper Release() failed: " << QCC_StatusText(status);
 		delete m_ServiceHelper;
+		m_ServiceHelper = nullptr;
 	}
 }
 
@@ -556,7 +549,7 @@ void AboutTestSuite::checkForNull(AboutData t_AboutData, string t_FieldName, str
 {
 	QStatus status = ER_OK;
 	MsgArg* value;
-	ASSERT_EQ(ER_OK, status = t_AboutData.GetField(t_FieldName.c_str(), value))
+	ASSERT_EQ(ER_OK, status = t_AboutData.GetField(t_FieldName.c_str(), value, t_Language.c_str()))
 		<< "Retrieving " << t_FieldName << " field from AboutData returned status code: " << QCC_StatusText(status);
 
 	if (value == nullptr)

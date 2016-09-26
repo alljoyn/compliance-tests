@@ -54,6 +54,13 @@ bool ECDHEEcdsaListener::RequestCredentials(const char* t_AuthMechanism,
 	return true;
 }
 
+bool ECDHEEcdsaListener::VerifyCredentials(const char* t_AuthMechanism,
+	const char* t_AuthPeer, const Credentials& t_Credentials)
+{
+	LOG(INFO) << "Verifying Credentials for peer " << t_AuthPeer << " with authMechanism " << t_AuthMechanism;
+	return true;
+}
+
 void ECDHEEcdsaListener::AuthenticationComplete(const char* t_AuthMechanism,
 	const char* t_AuthPeer, bool t_Success)
 {
