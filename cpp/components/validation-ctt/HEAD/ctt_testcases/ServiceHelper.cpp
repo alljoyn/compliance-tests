@@ -29,6 +29,15 @@ using namespace std;
 
 uint32_t ServiceHelper::LINK_TIMEOUT_IN_SECONDS = 120;
 
+static void DebugOut(DbgMsgType type, const char* module, const char* msg, void* context)
+{
+    QCC_UNUSED(type);
+    QCC_UNUSED(module);
+    QCC_UNUSED(msg);
+    QCC_UNUSED(context);
+    // Do nothing to suppress AJ error and debug prints
+}
+
 QStatus ServiceHelper::initializeClient(const string& t_BusApplicationName,
 	const string& t_DeviceId, const uint8_t* t_AppId)
 {
@@ -69,6 +78,10 @@ QStatus ServiceHelper::initialize(const string& t_BusApplicationName,
 		AllJoynShutdown();
 		return status;
 	}
+
+#if NDEBUG
+    QCC_RegisterOutputCallback(DebugOut, NULL);
+#endif
 
 	//--------------------------------------------------
 	// BUS ATTACHMENT INITIALIZATION

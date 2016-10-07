@@ -720,11 +720,13 @@ void OnboardingHelper::setPasscode(const AboutAnnouncementDetails& t_AboutAnnoun
 	{
 		m_ServiceHelper->setEcdheSpekePassword(t_AboutAnnouncement, t_Passcode);
 	}
-	else if (m_SupportsEcdhePsk)
+	
+    if (m_SupportsEcdhePsk)
 	{
 		m_ServiceHelper->setEcdhePskPassword(t_AboutAnnouncement, t_Passcode);
 	}
-	else if (m_SupportsSrpKeyX)
+	
+    if (m_SupportsSrpKeyX)
 	{
 		m_ServiceHelper->setSrpKeyXPincode(t_AboutAnnouncement, t_Passcode);
 	}

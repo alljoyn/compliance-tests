@@ -105,9 +105,9 @@ void IOManager::printIcs(ServiceFramework t_ServiceFramework)
 			filters.push_back("ICSLC");
 			break;
 		}
-		case(ServiceFramework::HAE) :
+		case(ServiceFramework::CDM) :
 		{
-			filters.push_back("ICSH");
+			filters.push_back("ICSCDM");
 			break;
 		}
 	}
@@ -161,9 +161,9 @@ void IOManager::printIxit(ServiceFramework t_ServiceFramework)
 			filters.push_back("IXITLC");
 			break;
 		}
-		case(ServiceFramework::HAE):
+		case(ServiceFramework::CDM):
 		{
-			filters.push_back("IXITH");
+			filters.push_back("IXITCDM");
 			break;
 		}
 	}
@@ -216,9 +216,9 @@ void IOManager::printGeneralParameter(ServiceFramework t_ServiceFramework)
 			filters.push_back("GPLC");
 			break;
 		}
-		case(ServiceFramework::HAE):
+		case(ServiceFramework::CDM):
 		{
-			filters.push_back("GPH");
+			filters.push_back("GPCDM");
 			break;
 		}
 	}

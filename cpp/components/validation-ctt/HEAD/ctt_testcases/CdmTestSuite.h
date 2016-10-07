@@ -16,50 +16,74 @@
 #pragma once
 
 #include "IOManager.h"
-#include "InterfaceInfo.h"
 #include "ServiceHelper.h"
 
 #include <iostream>
-#include <set>
 #include <vector>
 
-#include <alljoyn\AboutProxy.h>
-#include <alljoyn/hae/DeviceListener.h>
-#include <alljoyn/hae/HaeController.h>
+#include <alljoyn/cdm/DeviceListener.h>
+#include <alljoyn/cdm/CdmController.h>
 #include <qcc\Event.h>
 
-class HaeTestSuite : public ::testing::Test, public IOManager, public ajn::services::DeviceListener, public ajn::SessionListener
+#define TIMEOUT 30000
+
+using namespace ajn;
+using namespace services;
+
+#define TEST_LOG_1(logMsg)  \
+    LOG(INFO) << ++LOG_NO << ". " << logMsg
+#define TEST_LOG_2(logMsg)  \
+    LOG(INFO) << "  * " << logMsg
+#define TEST_LOG_3(logMsg)  \
+    LOG(INFO) << "    - " << logMsg
+#define TEST_LOG_OBJECT_PATH(logMsg)  \
+    LOG(INFO) << "[ObjectPath : " << logMsg << "]"
+
+class InterfaceInfo
 {
 public:
-	HaeTestSuite();
+	std::string busName;
+	std::string deviceName;
+	ajn::SessionPort sessionPort;
+	ajn::SessionId sessionId;
+	std::string objectPath;
+	ajn::services::CdmAboutData aboutData;
+	ajn::AboutObjectDescription aboutDescription;
+
+	InterfaceInfo()
+	{
+	}
+	InterfaceInfo(const char* name, ajn::SessionPort port, const char* path, ajn::services::CdmAboutData& data, ajn::AboutObjectDescription& description);
+};
+
+class CdmTestSuite : public ::testing::Test, public IOManager, public ajn::services::DeviceListener, public ajn::SessionListener
+{
+public:
+	CdmTestSuite();
 	void SetUp();
 	void TearDown();
 
-	virtual void OnDeviceAdded(const char* busname, ajn::SessionPort port, const ajn::services::HaeAboutData& data, const ajn::AboutObjectDescription& description);
+	virtual void OnDeviceAdded(const char* busname, ajn::SessionPort port, const ajn::services::CdmAboutData& data, const ajn::AboutObjectDescription& description);
 	virtual void OnDeviceRemoved(const char* busname);
 	virtual void OnDeviceSessionJoined(const ajn::services::DeviceInfoPtr& info);
 	virtual void OnDeviceSessionLost(ajn::SessionId sessionId);
 
-	QStatus WaitForControllee(ajn::services::HaeInterfaceType type = (ajn::services::HaeInterfaceType)-1);
+	QStatus WaitForControllee(ajn::services::CdmInterfaceType type = (ajn::services::CdmInterfaceType)-1);
 protected:
-	static const char* BUS_APPLICATION_NAME;
-	static const char* ALL_HAE_INTERFACE;
+	static AJ_PCSTR BUS_APPLICATION_NAME;
+	static AJ_PCSTR ALL_CDM_INTERFACE;
 
 	std::string m_DutDeviceId = std::string{ "" };
 	uint8_t* m_DutAppId{ nullptr };
 	uint32_t m_AnnouncementTimeout;
 	ServiceHelper* m_ServiceHelper{ nullptr };
 	AboutAnnouncementDetails* m_DeviceAboutAnnouncement{ nullptr };
-	ajn::AboutProxy* m_AboutProxy{ nullptr };
 
-	ajn::services::HaeController* m_Controller;
-	qcc::String m_InterfaceNameForTest;
-	std::vector<InterfaceInfo> m_Interfaces;
-	qcc::Event m_EventOnDeviceAdded;
+	ajn::services::CdmController* m_controller;
+	qcc::String m_interfaceNameForTest;
+	std::vector<InterfaceInfo> m_interfaces;
+	qcc::Event m_eventOnDeviceAdded;
+	int LOG_NO;
 
 	void releaseResources();
-
-	// HAE-v1-HaeAbout
-	bool HasDefaultInterfaces(const qcc::String& objPath, const ajn::AboutObjectDescription& description, std::vector<std::vector<qcc::String> >& defaultInterfaces);
-	void RemoveInterface(const qcc::String& iface, std::vector<std::vector<qcc::String> >& interfaces);
 };

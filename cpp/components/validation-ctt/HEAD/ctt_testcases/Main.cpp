@@ -96,7 +96,7 @@ std::string getTestFilter(const std::string& t_TestCaseName)
 	{
 		testSuite = "OnboardingTestSuite";
 	}
-	else if (0 == t_TestCaseName.compare(0, 8, "LsF_Lamp"))
+	else if (0 == t_TestCaseName.compare(0, 8, "LSF_Lamp"))
 	{
 		testSuite = "LSFLampTestSuite";
 	}
@@ -104,9 +104,9 @@ std::string getTestFilter(const std::string& t_TestCaseName)
 	{
 		testSuite = "LSFControllerTestSuite";
 	}
-	else if (0 == t_TestCaseName.compare(0, 3, "HAE"))
+	else if (0 == t_TestCaseName.compare(0, 3, "CDM"))
 	{
-		testSuite = "HaeTestSuite";
+		testSuite = "CdmTestSuite";
 	}
 
 	if (!testSuite.empty())
