@@ -1,17 +1,30 @@
 /******************************************************************************
-* Copyright AllSeen Alliance. All rights reserved.
+* * Copyright (c) Open Connectivity Foundation (OCF) and AllJoyn Open
+*    Source Project (AJOSP) Contributors and others.
 *
-*    Permission to use, copy, modify, and/or distribute this software for any
-*    purpose with or without fee is hereby granted, provided that the above
-*    copyright notice and this permission notice appear in all copies.
+*    SPDX-License-Identifier: Apache-2.0
 *
-*    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-*    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-*    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-*    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-*    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-*    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-*    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+*    All rights reserved. This program and the accompanying materials are
+*    made available under the terms of the Apache License, Version 2.0
+*    which accompanies this distribution, and is available at
+*    http://www.apache.org/licenses/LICENSE-2.0
+*
+*    Copyright (c) Open Connectivity Foundation and Contributors to AllSeen
+*    Alliance. All rights reserved.
+*
+*    Permission to use, copy, modify, and/or distribute this software for
+*    any purpose with or without fee is hereby granted, provided that the
+*    above copyright notice and this permission notice appear in all
+*    copies.
+*
+*     THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+*     WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+*     WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+*     AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+*     DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+*     PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+*     TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+*     PERFORMANCE OF THIS SOFTWARE.
 ******************************************************************************/
 #include "stdafx.h"
 #include "ControlPanelTestSuite.h"
@@ -58,12 +71,7 @@ void ControlPanelTestSuite::SetUp()
 	m_DutAppId = ArrayParser::parseAppIdFromString(m_IxitMap.at("IXITCO_AppId"));
 
 	m_ServiceHelper = new ServiceHelper();
-	QStatus status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId,
-		m_IcsMap.at("ICSCO_SrpKeyX"), m_IxitMap.at("IXITCO_SrpKeyXPincode"),
-		m_IcsMap.at("ICSCO_SrpLogon"), m_IxitMap.at("IXITCO_SrpLogonUser"), m_IxitMap.at("IXITCO_SrpLogonPass"),
-		m_IcsMap.at("ICSCO_EcdheNull"),
-		m_IcsMap.at("ICSCO_EcdhePsk"), m_IxitMap.at("IXITCO_EcdhePskPassword"),
-		m_IcsMap.at("ICSCO_EcdheEcdsa"), m_IxitMap.at("IXITCO_EcdheEcdsaPrivateKey"), m_IxitMap.at("IXITCO_EcdheEcdsaCertChain"));
+	QStatus status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId);
 	ASSERT_EQ(status, ER_OK) << "serviceHelper Initialize() failed: " << QCC_StatusText(status);
 
 	m_DeviceAboutAnnouncement =
@@ -78,7 +86,12 @@ void ControlPanelTestSuite::SetUp()
 	ASSERT_NE(m_AboutProxy, nullptr) << "AboutProxy connection failed";
 	SUCCEED() << "AboutProxy connected";
 
-	m_ServiceHelper->enableAuthentication("/Keystore");
+	m_ServiceHelper->enableAuthentication("/Keystore",
+		m_IcsMap.at("ICSCO_SrpKeyX"), m_IxitMap.at("IXITCO_SrpKeyXPincode"),
+		m_IcsMap.at("ICSCO_SrpLogon"), m_IxitMap.at("IXITCO_SrpLogonUser"), m_IxitMap.at("IXITCO_SrpLogonPass"),
+		m_IcsMap.at("ICSCO_EcdheNull"),
+		m_IcsMap.at("ICSCO_EcdhePsk"), m_IxitMap.at("IXITCO_EcdhePskPassword"),
+		m_IcsMap.at("ICSCO_EcdheEcdsa"), m_IxitMap.at("IXITCO_EcdheEcdsaPrivateKey"), m_IxitMap.at("IXITCO_EcdheEcdsaCertChain"));
 	m_BusIntrospector = new XMLBasedBusIntrospector(m_ServiceHelper->getBusIntrospector(*m_DeviceAboutAnnouncement));
 
 	LOG(INFO) << "test setUp done";
