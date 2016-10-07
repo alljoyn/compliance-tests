@@ -1,17 +1,30 @@
 /******************************************************************************
-* Copyright AllSeen Alliance. All rights reserved.
+* Copyright (c) Open Connectivity Foundation (OCF) and AllJoyn Open
+*    Source Project (AJOSP) Contributors and others.
 *
-*    Permission to use, copy, modify, and/or distribute this software for any
-*    purpose with or without fee is hereby granted, provided that the above
-*    copyright notice and this permission notice appear in all copies.
+*    SPDX-License-Identifier: Apache-2.0
 *
-*    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-*    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-*    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-*    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-*    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-*    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-*    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+*    All rights reserved. This program and the accompanying materials are
+*    made available under the terms of the Apache License, Version 2.0
+*    which accompanies this distribution, and is available at
+*    http://www.apache.org/licenses/LICENSE-2.0
+*
+*    Copyright (c) Open Connectivity Foundation and Contributors to AllSeen
+*    Alliance. All rights reserved.
+*
+*    Permission to use, copy, modify, and/or distribute this software for
+*    any purpose with or without fee is hereby granted, provided that the
+*    above copyright notice and this permission notice appear in all
+*    copies.
+*
+*     THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+*     WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+*     WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+*     AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+*     DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+*     PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+*     TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+*     PERFORMANCE OF THIS SOFTWARE.
 ******************************************************************************/
 #include "stdafx.h"
 #include "ServiceHelper.h"
@@ -27,36 +40,31 @@ using namespace ajn;
 using namespace services;
 using namespace std;
 
-const char* ServiceHelper::AUTH_MECHANISMS = "ALLJOYN_SRP_KEYX ALLJOYN_ECDHE_NULL ALLJOYN_ECDHE_PSK ALLJOYN_ECDHE_ECDSA";
 uint32_t ServiceHelper::LINK_TIMEOUT_IN_SECONDS = 120;
 
-QStatus ServiceHelper::initializeClient(const string& t_BusApplicationName,
-	const string& t_DeviceId, const uint8_t* t_AppId,
-	const bool t_SupportsSrpKeyX, const string& t_DefaultSrpXPincode,
-	const bool t_SupportsSrpLogon, const string& t_DefaultLogonUser, const string& t_DefaultLogonPass,
-	const bool t_SupportsEcdheNull,
-	const bool t_SupportsEcdhePsk, const string& t_DefaultECDHEPskPassword,
-	const bool t_SupportsEcdheEcdsa, const string& t_DefaultECDHEEcdsaPrivateKey, const string& t_DefaultECDHEEcdsaCertChain)
+static void DebugOut(DbgMsgType type, const char* module, const char* msg, void* context)
 {
-	return initialize(t_BusApplicationName, t_DeviceId, t_AppId, true,
-		t_SupportsSrpKeyX, t_DefaultSrpXPincode, t_SupportsSrpLogon, t_DefaultLogonUser, t_DefaultLogonPass,
-		t_SupportsEcdheNull, t_SupportsEcdhePsk, t_DefaultECDHEPskPassword, 
-		t_SupportsEcdheEcdsa, t_DefaultECDHEEcdsaPrivateKey, t_DefaultECDHEEcdsaCertChain);
+	QCC_UNUSED(type);
+	QCC_UNUSED(module);
+	QCC_UNUSED(msg);
+	QCC_UNUSED(context);
+	// Do nothing to suppress AJ error and debug prints
+}
+
+QStatus ServiceHelper::initializeClient(const string& t_BusApplicationName,
+	const string& t_DeviceId, const uint8_t* t_AppId)
+{
+	return initialize(t_BusApplicationName, t_DeviceId, t_AppId, true);
 }
 
 QStatus ServiceHelper::initializeSender(const string& t_BusApplicationName,
 	const string& t_DeviceId, const uint8_t* t_AppId)
 {
-	return initialize(t_BusApplicationName, t_DeviceId, t_AppId, false, false, "", false, "", "", false, false, "", false, "", "");
+	return initialize(t_BusApplicationName, t_DeviceId, t_AppId, false);
 }
 
 QStatus ServiceHelper::initialize(const string& t_BusApplicationName,
-	const string& t_DeviceId, const uint8_t* t_AppId, const bool t_Listener,
-	const bool t_SupportsSrpKeyX, const string& t_DefaultSrpXPincode,
-	const bool t_SupportsSrpLogon, const string& t_DefaultLogonUser, const string& t_DefaultLogonPass,
-	const bool t_SupportsEcdheNull,
-	const bool t_SupportsEcdhePsk, const string& t_DefaultECDHEPskPassword,
-	const bool t_SupportsEcdheEcdsa, const string& t_DefaultECDHEEcdsaPrivateKey, const string& t_DefaultECDHEEcdsaCertChain)
+	const string& t_DeviceId, const uint8_t* t_AppId, const bool t_Listener)
 {
 	QStatus status = AllJoynInit();
 	if (status != ER_OK)
@@ -73,43 +81,11 @@ QStatus ServiceHelper::initialize(const string& t_BusApplicationName,
 		return status;
 	}
 
+#if NDEBUG
+	QCC_RegisterOutputCallback(DebugOut, NULL);
+#endif
+
 	m_BusAttachmentMgr = new BusAttachmentMgr();
-
-	if (m_SupportsSrpKeyX = t_SupportsSrpKeyX)
-	{
-		m_SrpKeyXStore = new SrpKeyXStore();
-		m_SrpKeyXHandlerImpl = new SrpKeyXHandlerImpl(m_SrpKeyXStore, t_DefaultSrpXPincode);
-		m_DefaultSrpKeyXPincode = t_DefaultSrpXPincode;
-	}
-
-	if (m_SupportsSrpLogon = t_SupportsSrpLogon)
-	{
-		m_SrpLogonStore = new SrpLogonStore();
-		m_SrpLogonHandlerImpl = new SrpLogonHandlerImpl(m_SrpLogonStore, t_DefaultLogonUser, t_DefaultLogonPass);
-		m_DefaultLogonUser = t_DefaultLogonUser;
-		m_DefaultLogonPass = t_DefaultLogonPass;
-	}
-
-	if (m_SupportsEcdheNull = t_SupportsEcdheNull)
-	{
-		m_ECDHENullHandlerImpl = new ECDHENullHandlerImpl();
-	}
-
-	if (m_SupportsEcdhePsk = t_SupportsEcdhePsk)
-	{
-		m_ECDHEPskStore = new ECDHEPskStore();
-		m_ECDHEPskHandlerImpl = new ECDHEPskHandlerImpl(m_ECDHEPskStore, t_DefaultECDHEPskPassword);
-		m_DefaultECDHEPskPassword = t_DefaultECDHEPskPassword;
-	}
-
-	if (m_SupportsEcdheEcdsa = t_SupportsEcdheEcdsa)
-	{
-		m_ECDHEEcdsaStore = new ECDHEEcdsaStore();
-		m_ECDHEEcdsaHandlerImpl = new ECDHEEcdsaHandlerImpl(m_ECDHEEcdsaStore, t_DefaultECDHEEcdsaPrivateKey, t_DefaultECDHEEcdsaCertChain);
-		m_DefaultECDHEEcdsaPrivateKey = t_DefaultECDHEEcdsaPrivateKey;
-		m_DefaultECDHEEcdsaCertChain = t_DefaultECDHEEcdsaCertChain;
-	}
-
 	m_BusAttachmentMgr->create(t_BusApplicationName, true);
 	status = m_BusAttachmentMgr->connect();
 	if (status != ER_OK)
@@ -377,8 +353,48 @@ void ServiceHelper::clearKeyStore()
 
 }
 
-QStatus ServiceHelper::enableAuthentication(const std::string& t_KeyStoreFileName)
+QStatus ServiceHelper::enableAuthentication(const std::string& t_KeyStoreFileName,
+	const bool t_SupportsSrpKeyX, const string& t_DefaultSrpXPincode,
+	const bool t_SupportsSrpLogon, const string& t_DefaultLogonUser, const string& t_DefaultLogonPass,
+	const bool t_SupportsEcdheNull,
+	const bool t_SupportsEcdhePsk, const string& t_DefaultECDHEPskPassword,
+	const bool t_SupportsEcdheEcdsa, const string& t_DefaultECDHEEcdsaPrivateKey, const string& t_DefaultECDHEEcdsaCertChain)
 {
+	if (m_SupportsSrpKeyX = t_SupportsSrpKeyX)
+	{
+		m_SrpKeyXStore = new SrpKeyXStore();
+		m_SrpKeyXHandlerImpl = new SrpKeyXHandlerImpl(m_SrpKeyXStore, t_DefaultSrpXPincode);
+		m_DefaultSrpKeyXPincode = t_DefaultSrpXPincode;
+	}
+
+	if (m_SupportsSrpLogon = t_SupportsSrpLogon)
+	{
+		m_SrpLogonStore = new SrpLogonStore();
+		m_SrpLogonHandlerImpl = new SrpLogonHandlerImpl(m_SrpLogonStore, t_DefaultLogonUser, t_DefaultLogonPass);
+		m_DefaultLogonUser = t_DefaultLogonUser;
+		m_DefaultLogonPass = t_DefaultLogonPass;
+	}
+
+	if (m_SupportsEcdheNull = t_SupportsEcdheNull)
+	{
+		m_ECDHENullHandlerImpl = new ECDHENullHandlerImpl();
+	}
+
+	if (m_SupportsEcdhePsk = t_SupportsEcdhePsk)
+	{
+		m_ECDHEPskStore = new ECDHEPskStore();
+		m_ECDHEPskHandlerImpl = new ECDHEPskHandlerImpl(m_ECDHEPskStore, t_DefaultECDHEPskPassword);
+		m_DefaultECDHEPskPassword = t_DefaultECDHEPskPassword;
+	}
+
+	if (m_SupportsEcdheEcdsa = t_SupportsEcdheEcdsa)
+	{
+		m_ECDHEEcdsaStore = new ECDHEEcdsaStore();
+		m_ECDHEEcdsaHandlerImpl = new ECDHEEcdsaHandlerImpl(m_ECDHEEcdsaStore, t_DefaultECDHEEcdsaPrivateKey, t_DefaultECDHEEcdsaCertChain);
+		m_DefaultECDHEEcdsaPrivateKey = t_DefaultECDHEEcdsaPrivateKey;
+		m_DefaultECDHEEcdsaCertChain = t_DefaultECDHEEcdsaCertChain;
+	}
+
 	m_AuthListener = new AuthListeners(m_SupportsSrpKeyX, m_SrpKeyXHandlerImpl, m_DefaultSrpKeyXPincode,
 		m_SupportsSrpLogon, m_SrpLogonHandlerImpl, m_DefaultLogonUser, m_DefaultLogonPass,
 		m_SupportsEcdheNull, m_ECDHENullHandlerImpl,
