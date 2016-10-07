@@ -118,6 +118,8 @@ void BusAttachmentMgr::release()
 		LOG(INFO) << "Disconnecting BusAttachment";
 		m_BusAttachment->ClearKeyStore();
 		m_BusAttachment->Disconnect();
+		m_BusAttachment->Stop();
+		m_BusAttachment->Join();
 		delete m_BusAttachment;
 	}
 	
