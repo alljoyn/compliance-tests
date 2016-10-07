@@ -42,12 +42,7 @@ class ServiceHelper
 
 public:
 	// About
-	QStatus initializeClient(const std::string&, const std::string&, const uint8_t*,
-		const bool, const std::string&,
-		const bool, const std::string&, const std::string&,
-		const bool,
-		const bool, const std::string&,
-		const bool, const std::string&, const std::string&);
+	QStatus initializeClient(const std::string&, const std::string&, const uint8_t*);
 	QStatus initializeSender(const std::string&, const std::string&, const uint8_t*);
 	AboutAnnouncementDetails* waitForNextDeviceAnnouncement(const long);
 	ajn::AboutProxy* connectAboutProxy(const AboutAnnouncementDetails&);
@@ -70,7 +65,12 @@ public:
 	ajn::services::ConfigClient* connectConfigClient(ajn::SessionId&);
 	void setAuthPassword(const AboutAnnouncementDetails&, const char*);
 	void clearKeyStore();
-	QStatus enableAuthentication(const std::string&);
+	QStatus enableAuthentication(const std::string&,
+		const bool, const std::string&,
+		const bool, const std::string&, const std::string&,
+		const bool,
+		const bool, const std::string&,
+		const bool, const std::string&, const std::string&);
 	bool isPeerAuthenticationSuccessful(const AboutAnnouncementDetails&);
 	void clearQueuedDeviceAnnouncements();
 
@@ -89,7 +89,6 @@ public:
 	//void waitForSessionToClose(const uint16_t);
 	
 private:
-	static const char* AUTH_MECHANISMS;
 	static uint32_t LINK_TIMEOUT_IN_SECONDS;
 
 	BusAttachmentMgr* m_BusAttachmentMgr{ nullptr };
@@ -125,11 +124,6 @@ private:
 	std::string m_DefaultECDHEEcdsaPrivateKey = std::string("");
 	std::string m_DefaultECDHEEcdsaCertChain = std::string("");
 
-	QStatus initialize(const std::string&, const std::string&, const uint8_t*, const bool,
-		const bool, const std::string&,
-		const bool, const std::string&, const std::string&,
-		const bool,
-		const bool, const std::string&,
-		const bool, const std::string&, const std::string&);
+	QStatus initialize(const std::string&, const std::string&, const uint8_t*, const bool);
 	void disconnectBusAttachment();
 };
