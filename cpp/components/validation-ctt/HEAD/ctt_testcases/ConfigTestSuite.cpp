@@ -1,17 +1,30 @@
 /******************************************************************************
-* Copyright AllSeen Alliance. All rights reserved.
+*    Copyright (c) Open Connectivity Foundation (OCF) and AllJoyn Open
+*    Source Project (AJOSP) Contributors and others.
 *
-*    Permission to use, copy, modify, and/or distribute this software for any
-*    purpose with or without fee is hereby granted, provided that the above
-*    copyright notice and this permission notice appear in all copies.
+*    SPDX-License-Identifier: Apache-2.0
 *
-*    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-*    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-*    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-*    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-*    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-*    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-*    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+*    All rights reserved. This program and the accompanying materials are
+*    made available under the terms of the Apache License, Version 2.0
+*    which accompanies this distribution, and is available at
+*    http://www.apache.org/licenses/LICENSE-2.0
+*
+*    Copyright (c) Open Connectivity Foundation and Contributors to AllSeen
+*    Alliance. All rights reserved.
+*
+*    Permission to use, copy, modify, and/or distribute this software for
+*    any purpose with or without fee is hereby granted, provided that the
+*    above copyright notice and this permission notice appear in all
+*    copies.
+*
+*     THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+*     WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+*     WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+*     AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+*     DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+*     PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+*     TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+*     PERFORMANCE OF THIS SOFTWARE.
 ******************************************************************************/
 #include "stdafx.h"
 #include "ConfigTestSuite.h"
@@ -51,14 +64,7 @@ void ConfigTestSuite::SetUp()
 
 	m_ServiceHelper = new ServiceHelper();
 
-	QStatus status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId,
-		m_IcsMap.at("ICSCO_SrpKeyX"), m_IxitMap.at("IXITCO_SrpKeyXPincode"),
-		m_IcsMap.at("ICSCO_SrpLogon"), m_IxitMap.at("IXITCO_SrpLogonUser"), m_IxitMap.at("IXITCO_SrpLogonPass"),
-		m_IcsMap.at("ICSCO_EcdheNull"),
-		m_IcsMap.at("ICSCO_EcdhePsk"), m_IxitMap.at("IXITCO_EcdhePskPassword"),
-		m_IcsMap.at("ICSCO_EcdheEcdsa"), m_IxitMap.at("IXITCO_EcdheEcdsaPrivateKey"), m_IxitMap.at("IXITCO_EcdheEcdsaCertChain"),
-		m_IcsMap.at("ICSCO_RsaKeyX"), m_IxitMap.at("IXITCO_RsaKeyXPrivateKey"), m_IxitMap.at("IXITCO_RsaKeyXCertX509"),
-		m_IcsMap.at("ICSCO_PinKeyX"), m_IxitMap.at("IXITCO_PinKeyXPincode"));
+	QStatus status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId);
 	ASSERT_EQ(ER_OK, status) << "serviceHelper Initialize() failed: " << QCC_StatusText(status);
 
 	m_DeviceAboutAnnouncement = waitForDeviceAboutAnnouncement();
@@ -75,7 +81,14 @@ void ConfigTestSuite::SetUp()
 	ASSERT_NE(m_ConfigClient, nullptr) << "ConfigClient connection failed";
 	SUCCEED() << "ConfigClient connected";
 
-	status = m_ServiceHelper->enableAuthentication("/Keystore");
+	status = m_ServiceHelper->enableAuthentication("/Keystore",
+		m_IcsMap.at("ICSCO_SrpKeyX"), m_IxitMap.at("IXITCO_SrpKeyXPincode"),
+		m_IcsMap.at("ICSCO_SrpLogon"), m_IxitMap.at("IXITCO_SrpLogonUser"), m_IxitMap.at("IXITCO_SrpLogonPass"),
+		m_IcsMap.at("ICSCO_EcdheNull"),
+		m_IcsMap.at("ICSCO_EcdhePsk"), m_IxitMap.at("IXITCO_EcdhePskPassword"),
+		m_IcsMap.at("ICSCO_EcdheEcdsa"), m_IxitMap.at("IXITCO_EcdheEcdsaPrivateKey"), m_IxitMap.at("IXITCO_EcdheEcdsaCertChain"),
+		m_IcsMap.at("ICSCO_RsaKeyX"), m_IxitMap.at("IXITCO_RsaKeyXPrivateKey"), m_IxitMap.at("IXITCO_RsaKeyXCertX509"),
+		m_IcsMap.at("ICSCO_PinKeyX"), m_IxitMap.at("IXITCO_PinKeyXPincode"));
 	ASSERT_EQ(ER_OK, status);
 
 	if (m_IcsMap.at("ICSCO_SrpKeyX") || m_IcsMap.at("ICSCO_EcdhePsk") || m_IcsMap.at("ICSCO_PinKeyX"))
@@ -874,14 +887,7 @@ void ConfigTestSuite::reconnectClients(QStatus& status)
 	releaseResources();
 	
 	m_ServiceHelper = new ServiceHelper();
-	status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId,
-		m_IcsMap.at("ICSCO_SrpKeyX"), m_IxitMap.at("IXITCO_SrpKeyXPincode"),
-		m_IcsMap.at("ICSCO_SrpLogon"), m_IxitMap.at("IXITCO_SrpLogonUser"), m_IxitMap.at("IXITCO_SrpLogonPass"),
-		m_IcsMap.at("ICSCO_EcdheNull"),
-		m_IcsMap.at("ICSCO_EcdhePsk"), m_IxitMap.at("IXITCO_EcdhePskPassword"),
-		m_IcsMap.at("ICSCO_EcdheEcdsa"), m_IxitMap.at("IXITCO_EcdheEcdsaPrivateKey"), m_IxitMap.at("IXITCO_EcdheEcdsaCertChain"),
-		m_IcsMap.at("ICSCO_RsaKeyX"), m_IxitMap.at("IXITCO_RsaKeyXPrivateKey"), m_IxitMap.at("IXITCO_RsaKeyXCertX509"),
-		m_IcsMap.at("ICSCO_PinKeyX"), m_IxitMap.at("IXITCO_PinKeyXPincode"));
+	status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId);
 	ASSERT_EQ(ER_OK, status) << "serviceHelper Initialize() failed: " << QCC_StatusText(status);
 
 	m_DeviceAboutAnnouncement = waitForDeviceAboutAnnouncement();
@@ -899,7 +905,14 @@ void ConfigTestSuite::reconnectClients(QStatus& status)
 	ASSERT_NE(m_ConfigClient, nullptr) << "ConfigClient connection failed";
 	SUCCEED() << "ConfigClient connected";
 
-	status = m_ServiceHelper->enableAuthentication("/Keystore");
+	status = m_ServiceHelper->enableAuthentication("/Keystore",
+		m_IcsMap.at("ICSCO_SrpKeyX"), m_IxitMap.at("IXITCO_SrpKeyXPincode"),
+		m_IcsMap.at("ICSCO_SrpLogon"), m_IxitMap.at("IXITCO_SrpLogonUser"), m_IxitMap.at("IXITCO_SrpLogonPass"),
+		m_IcsMap.at("ICSCO_EcdheNull"),
+		m_IcsMap.at("ICSCO_EcdhePsk"), m_IxitMap.at("IXITCO_EcdhePskPassword"),
+		m_IcsMap.at("ICSCO_EcdheEcdsa"), m_IxitMap.at("IXITCO_EcdheEcdsaPrivateKey"), m_IxitMap.at("IXITCO_EcdheEcdsaCertChain"),
+		m_IcsMap.at("ICSCO_RsaKeyX"), m_IxitMap.at("IXITCO_RsaKeyXPrivateKey"), m_IxitMap.at("IXITCO_RsaKeyXCertX509"),
+		m_IcsMap.at("ICSCO_PinKeyX"), m_IxitMap.at("IXITCO_PinKeyXPincode"));
 	ASSERT_EQ(ER_OK, status);
 }
 
