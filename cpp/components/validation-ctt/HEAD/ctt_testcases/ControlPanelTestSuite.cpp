@@ -58,14 +58,7 @@ void ControlPanelTestSuite::SetUp()
 	m_DutAppId = ArrayParser::parseAppIdFromString(m_IxitMap.at("IXITCO_AppId"));
 
 	m_ServiceHelper = new ServiceHelper();
-	QStatus status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId,
-		m_IcsMap.at("ICSCO_SrpKeyX"), m_IxitMap.at("IXITCO_SrpKeyXPincode"),
-		m_IcsMap.at("ICSCO_SrpLogon"), m_IxitMap.at("IXITCO_SrpLogonUser"), m_IxitMap.at("IXITCO_SrpLogonPass"),
-		m_IcsMap.at("ICSCO_EcdheNull"),
-		m_IcsMap.at("ICSCO_EcdhePsk"), m_IxitMap.at("IXITCO_EcdhePskPassword"),
-		m_IcsMap.at("ICSCO_EcdheEcdsa"), m_IxitMap.at("IXITCO_EcdheEcdsaPrivateKey"), m_IxitMap.at("IXITCO_EcdheEcdsaCertChain"),
-		m_IcsMap.at("ICSCO_RsaKeyX"), m_IxitMap.at("IXITCO_RsaKeyXPrivateKey"), m_IxitMap.at("IXITCO_RsaKeyXCertX509"),
-		m_IcsMap.at("ICSCO_PinKeyX"), m_IxitMap.at("IXITCO_PinKeyXPincode"));
+	QStatus status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId);
 	ASSERT_EQ(status, ER_OK) << "serviceHelper Initialize() failed: " << QCC_StatusText(status);
 
 	m_DeviceAboutAnnouncement =
@@ -80,7 +73,14 @@ void ControlPanelTestSuite::SetUp()
 	ASSERT_NE(m_AboutProxy, nullptr) << "AboutProxy connection failed";
 	SUCCEED() << "AboutProxy connected";
 
-	m_ServiceHelper->enableAuthentication("/Keystore");
+	m_ServiceHelper->enableAuthentication("/Keystore",
+		m_IcsMap.at("ICSCO_SrpKeyX"), m_IxitMap.at("IXITCO_SrpKeyXPincode"),
+		m_IcsMap.at("ICSCO_SrpLogon"), m_IxitMap.at("IXITCO_SrpLogonUser"), m_IxitMap.at("IXITCO_SrpLogonPass"),
+		m_IcsMap.at("ICSCO_EcdheNull"),
+		m_IcsMap.at("ICSCO_EcdhePsk"), m_IxitMap.at("IXITCO_EcdhePskPassword"),
+		m_IcsMap.at("ICSCO_EcdheEcdsa"), m_IxitMap.at("IXITCO_EcdheEcdsaPrivateKey"), m_IxitMap.at("IXITCO_EcdheEcdsaCertChain"),
+		m_IcsMap.at("ICSCO_RsaKeyX"), m_IxitMap.at("IXITCO_RsaKeyXPrivateKey"), m_IxitMap.at("IXITCO_RsaKeyXCertX509"),
+		m_IcsMap.at("ICSCO_PinKeyX"), m_IxitMap.at("IXITCO_PinKeyXPincode"));
 	m_BusIntrospector = new XMLBasedBusIntrospector(m_ServiceHelper->getBusIntrospector(*m_DeviceAboutAnnouncement));
 
 	LOG(INFO) << "test setUp done";

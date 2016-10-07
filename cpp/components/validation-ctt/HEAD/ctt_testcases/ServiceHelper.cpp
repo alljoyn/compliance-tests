@@ -28,91 +28,35 @@ using namespace std;
 
 uint32_t ServiceHelper::LINK_TIMEOUT_IN_SECONDS = 120;
 
-QStatus ServiceHelper::initializeClient(const string& t_BusApplicationName,
-	const string& t_DeviceId, const uint8_t* t_AppId,
-	const bool t_SupportsSrpKeyX, const string& t_DefaultSrpXPincode,
-	const bool t_SupportsSrpLogon, const string& t_DefaultLogonUser, const string& t_DefaultLogonPass,
-	const bool t_SupportsEcdheNull,
-	const bool t_SupportsEcdhePsk, const string& t_DefaultECDHEPskPassword,
-	const bool t_SupportsEcdheEcdsa, const string& t_DefaultECDHEEcdsaPrivateKey, const string& t_DefaultECDHEEcdsaCertChain,
-	const bool t_SupportsRsaKeyX, const string& t_DefaultRsaKeyXPrivateKey, const string& t_DefaultRsaKeyXCertX509,
-	const bool t_SupportsPinKeyX, const string& t_DefaultPinKeyXPincode)
+static void DebugOut(DbgMsgType type, const char* module, const char* msg, void* context)
 {
-	return initialize(t_BusApplicationName, t_DeviceId, t_AppId, true,
-		t_SupportsSrpKeyX, t_DefaultSrpXPincode, t_SupportsSrpLogon, t_DefaultLogonUser, t_DefaultLogonPass,
-		t_SupportsEcdheNull, t_SupportsEcdhePsk, t_DefaultECDHEPskPassword, t_SupportsEcdheEcdsa, t_DefaultECDHEEcdsaPrivateKey,
-		t_DefaultECDHEEcdsaCertChain, t_SupportsRsaKeyX, t_DefaultRsaKeyXPrivateKey, t_DefaultRsaKeyXCertX509,
-		t_SupportsPinKeyX, t_DefaultPinKeyXPincode);
+	QCC_UNUSED(type);
+	QCC_UNUSED(module);
+	QCC_UNUSED(msg);
+	QCC_UNUSED(context);
+	// Do nothing to suppress AJ error and debug prints
+}
+
+QStatus ServiceHelper::initializeClient(const string& t_BusApplicationName,
+	const string& t_DeviceId, const uint8_t* t_AppId)
+{
+	return initialize(t_BusApplicationName, t_DeviceId, t_AppId, true);
 }
 
 QStatus ServiceHelper::initializeSender(const string& t_BusApplicationName,
 	const string& t_DeviceId, const uint8_t* t_AppId)
 {
-	return initialize(t_BusApplicationName, t_DeviceId, t_AppId, false, 
-		false, "", 
-		false, "", "", 
-		false, 
-		false, "", 
-		false, "", "", 
-		false, "", "",
-		false, "");
+	return initialize(t_BusApplicationName, t_DeviceId, t_AppId, false);
 }
 
 QStatus ServiceHelper::initialize(const string& t_BusApplicationName,
-	const string& t_DeviceId, const uint8_t* t_AppId, const bool t_Listener,
-	const bool t_SupportsSrpKeyX, const string& t_DefaultSrpXPincode,
-	const bool t_SupportsSrpLogon, const string& t_DefaultLogonUser, const string& t_DefaultLogonPass,
-	const bool t_SupportsEcdheNull,
-	const bool t_SupportsEcdhePsk, const string& t_DefaultECDHEPskPassword,
-	const bool t_SupportsEcdheEcdsa, const string& t_DefaultECDHEEcdsaPrivateKey, const string& t_DefaultECDHEEcdsaCertChain,
-	const bool t_SupportsRsaKeyX, const string& t_DefaultRsaKeyXPrivateKey, const string& t_DefaultRsaKeyXCertX509,
-	const bool t_SupportsPinKeyX, const string& t_DefaultPinKeyXPincode)
+	const string& t_DeviceId, const uint8_t* t_AppId, const bool t_Listener)
 {
+#if NDEBUG
+	QCC_RegisterOutputCallback(DebugOut, NULL);
+#endif
+
 	m_BusAttachmentMgr = new BusAttachmentMgr();
-
-	if (m_SupportsSrpKeyX = t_SupportsSrpKeyX)
-	{
-		m_SrpKeyXStore = new SrpKeyXStore();
-		m_SrpKeyXHandlerImpl = new SrpKeyXHandlerImpl(m_SrpKeyXStore, t_DefaultSrpXPincode);
-		m_DefaultSrpKeyXPincode = t_DefaultSrpXPincode;
-	}
-
-	if (m_SupportsSrpLogon = t_SupportsSrpLogon)
-	{
-		m_SrpLogonStore = new SrpLogonStore();
-		m_SrpLogonHandlerImpl = new SrpLogonHandlerImpl(m_SrpLogonStore, t_DefaultLogonUser, t_DefaultLogonPass);
-		m_DefaultLogonUser = t_DefaultLogonUser;
-		m_DefaultLogonPass = t_DefaultLogonPass;
-	}
-
-	if (m_SupportsEcdheNull = t_SupportsEcdheNull)
-	{
-		m_ECDHENullHandlerImpl = new ECDHENullHandlerImpl();
-	}
-
-	if (m_SupportsEcdhePsk = t_SupportsEcdhePsk)
-	{
-		m_ECDHEPskStore = new ECDHEPskStore();
-		m_ECDHEPskHandlerImpl = new ECDHEPskHandlerImpl(m_ECDHEPskStore, t_DefaultECDHEPskPassword);
-		m_DefaultECDHEPskPassword = t_DefaultECDHEPskPassword;
-	}
-
-	if (m_SupportsEcdheEcdsa = t_SupportsEcdheEcdsa)
-	{
-		m_ECDHEEcdsaStore = new ECDHEEcdsaStore();
-		m_ECDHEEcdsaHandlerImpl = new ECDHEEcdsaHandlerImpl(m_ECDHEEcdsaStore, t_DefaultECDHEEcdsaPrivateKey, t_DefaultECDHEEcdsaCertChain);
-		m_DefaultECDHEEcdsaPrivateKey = t_DefaultECDHEEcdsaPrivateKey;
-		m_DefaultECDHEEcdsaCertChain = t_DefaultECDHEEcdsaCertChain;
-	}
-
-	if (m_SupportsRsaKeyX = t_SupportsRsaKeyX)
-	{
-		m_RsaKeyXStore = new RsaKeyXStore();
-		m_RsaKeyXHandlerImpl = new RsaKeyXHandlerImpl(m_RsaKeyXStore, t_DefaultRsaKeyXPrivateKey, t_DefaultRsaKeyXCertX509);
-		m_DefaultRsaKeyXPrivateKey = t_DefaultRsaKeyXPrivateKey;
-		m_DefaultRsaKeyXCertX509 = t_DefaultRsaKeyXCertX509;
-	}
-
 	m_BusAttachmentMgr->create(t_BusApplicationName, true);
 	QStatus status = m_BusAttachmentMgr->connect();
 	if (status != ER_OK)
@@ -420,8 +364,58 @@ void ServiceHelper::clearKeyStore()
 
 }
 
-QStatus ServiceHelper::enableAuthentication(const std::string& t_KeyStoreFileName)
+QStatus ServiceHelper::enableAuthentication(const std::string& t_KeyStoreFileName,
+	const bool t_SupportsSrpKeyX, const string& t_DefaultSrpXPincode,
+	const bool t_SupportsSrpLogon, const string& t_DefaultLogonUser, const string& t_DefaultLogonPass,
+	const bool t_SupportsEcdheNull,
+	const bool t_SupportsEcdhePsk, const string& t_DefaultECDHEPskPassword,
+	const bool t_SupportsEcdheEcdsa, const string& t_DefaultECDHEEcdsaPrivateKey, const string& t_DefaultECDHEEcdsaCertChain,
+	const bool t_SupportsRsaKeyX, const string& t_DefaultRsaKeyXPrivateKey, const string& t_DefaultRsaKeyXCertX509,
+	const bool t_SupportsPinKeyX, const string& t_DefaultPinKeyXPincode)
 {
+	if (m_SupportsSrpKeyX = t_SupportsSrpKeyX)
+	{
+		m_SrpKeyXStore = new SrpKeyXStore();
+		m_SrpKeyXHandlerImpl = new SrpKeyXHandlerImpl(m_SrpKeyXStore, t_DefaultSrpXPincode);
+		m_DefaultSrpKeyXPincode = t_DefaultSrpXPincode;
+	}
+
+	if (m_SupportsSrpLogon = t_SupportsSrpLogon)
+	{
+		m_SrpLogonStore = new SrpLogonStore();
+		m_SrpLogonHandlerImpl = new SrpLogonHandlerImpl(m_SrpLogonStore, t_DefaultLogonUser, t_DefaultLogonPass);
+		m_DefaultLogonUser = t_DefaultLogonUser;
+		m_DefaultLogonPass = t_DefaultLogonPass;
+	}
+
+	if (m_SupportsEcdheNull = t_SupportsEcdheNull)
+	{
+		m_ECDHENullHandlerImpl = new ECDHENullHandlerImpl();
+	}
+
+	if (m_SupportsEcdhePsk = t_SupportsEcdhePsk)
+	{
+		m_ECDHEPskStore = new ECDHEPskStore();
+		m_ECDHEPskHandlerImpl = new ECDHEPskHandlerImpl(m_ECDHEPskStore, t_DefaultECDHEPskPassword);
+		m_DefaultECDHEPskPassword = t_DefaultECDHEPskPassword;
+	}
+
+	if (m_SupportsEcdheEcdsa = t_SupportsEcdheEcdsa)
+	{
+		m_ECDHEEcdsaStore = new ECDHEEcdsaStore();
+		m_ECDHEEcdsaHandlerImpl = new ECDHEEcdsaHandlerImpl(m_ECDHEEcdsaStore, t_DefaultECDHEEcdsaPrivateKey, t_DefaultECDHEEcdsaCertChain);
+		m_DefaultECDHEEcdsaPrivateKey = t_DefaultECDHEEcdsaPrivateKey;
+		m_DefaultECDHEEcdsaCertChain = t_DefaultECDHEEcdsaCertChain;
+	}
+
+	if (m_SupportsRsaKeyX = t_SupportsRsaKeyX)
+	{
+		m_RsaKeyXStore = new RsaKeyXStore();
+		m_RsaKeyXHandlerImpl = new RsaKeyXHandlerImpl(m_RsaKeyXStore, t_DefaultRsaKeyXPrivateKey, t_DefaultRsaKeyXCertX509);
+		m_DefaultRsaKeyXPrivateKey = t_DefaultRsaKeyXPrivateKey;
+		m_DefaultRsaKeyXCertX509 = t_DefaultRsaKeyXCertX509;
+	}
+
 	m_AuthListener = new AuthListeners(m_SupportsSrpKeyX, m_SrpKeyXHandlerImpl, m_DefaultSrpKeyXPincode,
 		m_SupportsSrpLogon, m_SrpLogonHandlerImpl, m_DefaultLogonUser, m_DefaultLogonPass,
 		m_SupportsEcdheNull, m_ECDHENullHandlerImpl,

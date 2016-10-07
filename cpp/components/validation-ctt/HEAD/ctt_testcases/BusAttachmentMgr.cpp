@@ -122,7 +122,6 @@ void BusAttachmentMgr::release()
 		m_BusAttachment->Join();
 		delete m_BusAttachment;
 	}
-	
 }
 
 BusAttachment* BusAttachmentMgr::createBusAttachment(const string& t_ApplicationName, 
