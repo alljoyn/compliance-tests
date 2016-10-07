@@ -1,17 +1,30 @@
 /******************************************************************************
-* Copyright AllSeen Alliance. All rights reserved.
+*    Copyright (c) Open Connectivity Foundation (OCF) and AllJoyn Open
+*    Source Project (AJOSP) Contributors and others.
 *
-*    Permission to use, copy, modify, and/or distribute this software for any
-*    purpose with or without fee is hereby granted, provided that the above
-*    copyright notice and this permission notice appear in all copies.
+*    SPDX-License-Identifier: Apache-2.0
 *
-*    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-*    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-*    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-*    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-*    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-*    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-*    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+*    All rights reserved. This program and the accompanying materials are
+*    made available under the terms of the Apache License, Version 2.0
+*    which accompanies this distribution, and is available at
+*    http://www.apache.org/licenses/LICENSE-2.0
+*
+*    Copyright (c) Open Connectivity Foundation and Contributors to AllSeen
+*    Alliance. All rights reserved.
+*
+*    Permission to use, copy, modify, and/or distribute this software for
+*    any purpose with or without fee is hereby granted, provided that the
+*    above copyright notice and this permission notice appear in all
+*    copies.
+*
+*    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+*    WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+*    WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+*    AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+*    DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+*    PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+*    TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+*    PERFORMANCE OF THIS SOFTWARE.
 ******************************************************************************/
 #include "stdafx.h"
 
@@ -96,7 +109,7 @@ std::string getTestFilter(const std::string& t_TestCaseName)
 	{
 		testSuite = "OnboardingTestSuite";
 	}
-	else if (0 == t_TestCaseName.compare(0, 8, "LsF_Lamp"))
+	else if (0 == t_TestCaseName.compare(0, 8, "LSF_Lamp"))
 	{
 		testSuite = "LSFLampTestSuite";
 	}
@@ -104,9 +117,9 @@ std::string getTestFilter(const std::string& t_TestCaseName)
 	{
 		testSuite = "LSFControllerTestSuite";
 	}
-	else if (0 == t_TestCaseName.compare(0, 3, "HAE"))
+	else if (0 == t_TestCaseName.compare(0, 3, "CDM"))
 	{
-		testSuite = "HaeTestSuite";
+		testSuite = "CdmTestSuite";
 	}
 
 	if (!testSuite.empty())
@@ -147,4 +160,4 @@ int main(int argc, char* argv[])
 
 	return retVal;
 }
-
+
