@@ -1,17 +1,30 @@
 /******************************************************************************
-* Copyright AllSeen Alliance. All rights reserved.
+* *    Copyright (c) Open Connectivity Foundation (OCF) and AllJoyn Open
+*    Source Project (AJOSP) Contributors and others.
 *
-*    Permission to use, copy, modify, and/or distribute this software for any
-*    purpose with or without fee is hereby granted, provided that the above
-*    copyright notice and this permission notice appear in all copies.
+*    SPDX-License-Identifier: Apache-2.0
 *
-*    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-*    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-*    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-*    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-*    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-*    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-*    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+*    All rights reserved. This program and the accompanying materials are
+*    made available under the terms of the Apache License, Version 2.0
+*    which accompanies this distribution, and is available at
+*    http://www.apache.org/licenses/LICENSE-2.0
+*
+*    Copyright (c) Open Connectivity Foundation and Contributors to AllSeen
+*    Alliance. All rights reserved.
+*
+*    Permission to use, copy, modify, and/or distribute this software for
+*    any purpose with or without fee is hereby granted, provided that the
+*    above copyright notice and this permission notice appear in all
+*    copies.
+*
+*     THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+*     WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+*     WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+*     AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+*     DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+*     PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+*     TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+*     PERFORMANCE OF THIS SOFTWARE.
 ******************************************************************************/
 #include "stdafx.h"
 #include "ServiceHelper.h"
@@ -28,6 +41,15 @@ using namespace services;
 using namespace std;
 
 uint32_t ServiceHelper::LINK_TIMEOUT_IN_SECONDS = 120;
+
+static void DebugOut(DbgMsgType type, const char* module, const char* msg, void* context)
+{
+    QCC_UNUSED(type);
+    QCC_UNUSED(module);
+    QCC_UNUSED(msg);
+    QCC_UNUSED(context);
+    // Do nothing to suppress AJ error and debug prints
+}
 
 QStatus ServiceHelper::initializeClient(const string& t_BusApplicationName,
 	const string& t_DeviceId, const uint8_t* t_AppId)
@@ -69,6 +91,10 @@ QStatus ServiceHelper::initialize(const string& t_BusApplicationName,
 		AllJoynShutdown();
 		return status;
 	}
+
+#if NDEBUG
+    QCC_RegisterOutputCallback(DebugOut, NULL);
+#endif
 
 	//--------------------------------------------------
 	// BUS ATTACHMENT INITIALIZATION
