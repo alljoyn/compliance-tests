@@ -91,7 +91,7 @@ public class TestCaseConsole implements Runnable
         {        	
         	if (runningAll)
         	{
-	    		executeTestCaseWindow.saveButtonAction();
+	    		//executeTestCaseWindow.saveButtonAction();
         	}
         	else
         	{

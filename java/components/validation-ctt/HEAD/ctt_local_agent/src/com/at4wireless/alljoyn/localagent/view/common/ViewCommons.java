@@ -30,6 +30,7 @@ import org.apache.logging.log4j.Logger;
 public class ViewCommons
 {
 	private static final Logger logger = LogManager.getLogger(ViewCommons.class.getName());
+	
     public static Rectangle setCenteredRectangle(int rectangleWidth, int rectangleHeight)
     {
     	Dimension screenDimensions = Toolkit.getDefaultToolkit().getScreenSize();

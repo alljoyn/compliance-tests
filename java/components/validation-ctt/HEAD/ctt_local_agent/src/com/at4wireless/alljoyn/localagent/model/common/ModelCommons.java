@@ -44,6 +44,8 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -60,6 +62,7 @@ import com.sun.jersey.api.representation.Form;
 
 public class ModelCommons
 {
+	private static final Logger logger = LogManager.getLogger(ModelCommons.class.getName());
 	private static final String configurationFileName = "config.xml";
 	private static final int CONNECTION_REQUEST_TIMEOUT_IN_MILLISECONDS = 5000;
 	private static final short NUMBER_OF_RETRIES = 3;
@@ -69,6 +72,7 @@ public class ModelCommons
 		ClientConfig configuration = new DefaultClientConfig();
 		Client client = Client.create(configuration);
 		URI uri = UriBuilder.fromUri(url).build();
+		logger.debug(String.format("Unsecured post request to: %s", uri.toString()));
 		WebResource postResource = client.resource(uri);
 		
 		return postResource.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, postForm);
@@ -332,7 +336,7 @@ public class ModelCommons
 		{
 
 		}
-		
+	
 		out.println(fileContent);
 		out.close();
 	}

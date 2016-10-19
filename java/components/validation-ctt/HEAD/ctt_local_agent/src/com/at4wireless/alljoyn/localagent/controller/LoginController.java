@@ -56,26 +56,30 @@ public class LoginController
 	public boolean loginWithWebServer(String userToAuthenticate, String passwordUsedInAuthentication) throws ClientHandlerException, JSONException
 	{
 		ClientResponse loginResponse = loginModel.getTokenFromWebServer(userToAuthenticate, passwordUsedInAuthentication);
-		JSONObject receivedJson = new JSONObject(loginResponse.getEntity(String.class));
-
+		
 		if (loginResponse.getStatus() == HttpStatus.SC_OK)
 		{
-				loginResponse = loginModel.refreshToken(receivedJson.optString("refresh_token"));
-				
-				if (loginResponse.getStatus() == HttpStatus.SC_OK)
-				{
-					JSONObject refreshJson = new JSONObject(loginResponse.getEntity(String.class));
+			String getTokenFromServerResponse = loginResponse.getEntity(String.class);
+			logger.debug(String.format("OAuth login response: %s", getTokenFromServerResponse));
+			JSONObject receivedJson = new JSONObject(getTokenFromServerResponse);
+			loginResponse = loginModel.refreshToken(receivedJson.optString("refresh_token"));
+			
+			if (loginResponse.getStatus() == HttpStatus.SC_OK)
+			{
+				String refreshTokenResponse = loginResponse.getEntity(String.class);
+				logger.debug(String.format("OAuth refresh response: %s", refreshTokenResponse));
+				JSONObject refreshJson = new JSONObject(refreshTokenResponse);
 
-					this.authenticatedUser = userToAuthenticate;
-					this.sessionToken = refreshJson.optString("access_token");;
-					
-					return true;
-				}
-				else
-				{
-					logger.warn(String.format("Response code: %s", loginResponse.getStatus()));
-					return false;
-				}
+				this.authenticatedUser = userToAuthenticate;
+				this.sessionToken = refreshJson.optString("access_token");
+				
+				return true;
+			}
+			else
+			{
+				logger.warn(String.format("Response code: %s", loginResponse.getStatus()));
+				return false;
+			}
 		}
 		else
 		{
