@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE Configuration>
 <Configuration>
-<TestCasesPackagePath>testcases/</TestCasesPackagePath>
-<ResultPath>results/</ResultPath>
-<LogPath>log/</LogPath>
-<!-- <TestToolWebAppUrl>https://certification-tool.allseenalliance.org/TestToolWebApp/</TestToolWebAppUrl>  -->
-<TestToolWebAppUrl>http://192.168.110.64:8080/TestToolWebApp/</TestToolWebAppUrl>
-<GetListOfProjectsUrl>rest/getList/</GetListOfProjectsUrl>
-<GetTestCases>rest/getProject/</GetTestCases>
-<GetResults>rest/getResults/</GetResults>
-<isLastTechnologyVersionUrl>rest/isLastTechnologyVersion/</isLastTechnologyVersionUrl>
-<GetTechnology>rest/getTechnology/</GetTechnology>
-<GetLog>rest/getFullLog/</GetLog>
-<SendResultsUrl>rest/sendResult/</SendResultsUrl>
-<AuthenticateUrl>oauth/token</AuthenticateUrl>
-<UploadLogFile>rest/uploadV2/</UploadLogFile>
-<InstalledTestToolPackages></InstalledTestToolPackages>
-<isLastVersion>rest/isLastVersion/</isLastVersion>
-<DownloadPath>downloads/</DownloadPath>
-<getLastVersion>rest/getLastVersion</getLastVersion>
-<keyExchange>rest/keyExchange/</keyExchange>
-<LogLevel>INFO</LogLevel>
-<ExistsRelease>rest/existsRelease/</ExistsRelease>
+	<TestCasesPackagePath>testcases/</TestCasesPackagePath>
+	<ResultPath>results/</ResultPath>
+	<LogPath>log/</LogPath>
+	<TestToolWebAppUrl>https://certification-tool.allseenalliance.org/TestToolWebApp/</TestToolWebAppUrl>
+	<GetListOfProjectsUrl>rest/getList/</GetListOfProjectsUrl>
+	<GetTestCases>rest/getProject/</GetTestCases>
+	<GetResults>rest/getResults/</GetResults>
+	<isLastTechnologyVersionUrl>rest/isLastTechnologyVersion/</isLastTechnologyVersionUrl>
+	<GetTechnology>rest/getTechnology/</GetTechnology>
+	<GetLog>rest/getFullLog/</GetLog>
+	<SendResultsUrl>rest/sendResult/</SendResultsUrl>
+	<AuthenticateUrl>oauth/token</AuthenticateUrl>
+	<UploadLogFile>rest/uploadV2/</UploadLogFile>
+	<InstalledTestToolPackages></InstalledTestToolPackages>
+	<isLastVersion>rest/isLastVersion/</isLastVersion>
+	<DownloadPath>downloads/</DownloadPath>
+	<getLastVersion>rest/getLastVersion</getLastVersion>
+	<keyExchange>rest/keyExchange/</keyExchange>
+	<LogLevel>ERROR</LogLevel>
+	<ExistsRelease>rest/existsRelease/</ExistsRelease>
 </Configuration>

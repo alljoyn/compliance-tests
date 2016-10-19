@@ -6,8 +6,8 @@
 
 !define APP_NAME "Certification Test Tool - Local Agent"
 !define COMP_NAME "AT4 wireless"
-!define VERSION "2.00.00.00"
-!define COPYRIGHT "AllSeen Alliance 2015"
+!define VERSION "2.02.00.00"
+!define COPYRIGHT "AllSeen Alliance 2016"
 !define DESCRIPTION "Installer for CTT-Local Agent"
 !define MAIN_APP_EXE "CTT_Local_Agent.exe"
 !define INSTALL_TYPE "SetShellVarContext current"
@@ -18,10 +18,11 @@
 !define REG_START_MENU "Start Menu Folder"
 ######################################################################
 ;Modify values to fit your project
-!define INSTALLER_NAME "C:\Users\jtf\Desktop\CTT_Local_Agent_v2.0.0_Installer.exe"
+!define INSTALLER_NAME "C:\Users\jtf\Desktop\CTT_Local_Agent_v2.2.0_Installer.exe"
 !define LOCAL_AGENT_PATH "C:\Users\jtf\Desktop\ctt_local_agent"
 !define MSVS2012_PATH "C:\Users\jtf\Desktop\MSVS2012"
 !define MSVS2013_PATH "C:\Users\jtf\Desktop\MSVS2013"
+!define MSVS2015_PATH "C:\Users\jtf\Desktop\MSVS2015"
 
 var SM_Folder
 
@@ -51,21 +52,22 @@ InstallDir "C:\Program Files\CTTLocalAgent"
 !include LogicLib.nsh
 
 Function .onInit
-UserInfo::GetAccountType
-pop $0
-${If} $0 != "admin" ;Require admin rights on NT4+
-    MessageBox mb_iconstop "Administrator rights required!"
-    SetErrorLevel 740 ;ERROR_ELEVATION_REQUIRED
-    Quit
-${EndIf}
+	UserInfo::GetAccountType
+	pop $0
+	${If} $0 != "admin" ;Require admin rights on NT4+
+		MessageBox mb_iconstop "Administrator rights required!"
+		SetErrorLevel 740 ;ERROR_ELEVATION_REQUIRED
+		Quit
+	${EndIf}
 FunctionEnd
 
 ######################################################################
 
-;Visual 2012 and 2013
+;Visual 2012, 2013 and 2015
 !define ICON_PATH "${LOCAL_AGENT_PATH}\res\drawable"
 !define MSVS2012_DIR "${MSVS2012_PATH}"
 !define MSVS2013_DIR "${MSVS2013_PATH}"
+!define MSVS2015_DIR "${MSVS2015_PATH}"
 
 
 ; Definitions for Java 8.0
@@ -93,22 +95,22 @@ AutoCloseWindow true
 
 !include "MUI.nsh"
 !define MUI_ICON "${ICON_PATH}\allseen128.ico"
- !define MUI_UNICON "${ICON_PATH}\allseen128.ico"
+!define MUI_UNICON "${ICON_PATH}\allseen128.ico"
 
 !insertmacro MUI_PAGE_WELCOME
 
 !ifdef LICENSE_TXT
-!insertmacro MUI_PAGE_LICENSE "${LICENSE_TXT}"
+	!insertmacro MUI_PAGE_LICENSE "${LICENSE_TXT}"
 !endif
 
 !insertmacro MUI_PAGE_DIRECTORY
 
 !ifdef REG_START_MENU
-!define MUI_STARTMENUPAGE_DEFAULTFOLDER "CTTLocalAgent"
-!define MUI_STARTMENUPAGE_REGISTRY_ROOT "${REG_ROOT}"
-!define MUI_STARTMENUPAGE_REGISTRY_KEY "${UNINSTALL_PATH}"
-!define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "${REG_START_MENU}"
-!insertmacro MUI_PAGE_STARTMENU Application $SM_Folder
+	!define MUI_STARTMENUPAGE_DEFAULTFOLDER "CTTLocalAgent"
+	!define MUI_STARTMENUPAGE_REGISTRY_ROOT "${REG_ROOT}"
+	!define MUI_STARTMENUPAGE_REGISTRY_KEY "${UNINSTALL_PATH}"
+	!define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "${REG_START_MENU}"
+	!insertmacro MUI_PAGE_STARTMENU Application $SM_Folder
 !endif
 
 !insertmacro MUI_PAGE_INSTFILES
@@ -134,16 +136,11 @@ SetOverwrite ifnewer
 SetOutPath "$INSTDIR"
 File "${LOCAL_AGENT_PATH}\config.xml"
 File "${LOCAL_AGENT_PATH}\CTT_Local_Agent.exe"
-
-SetOutPath "$INSTDIR\testcases"
-File "${LOCAL_AGENT_PATH}\testcases\*.jar"
-File "${LOCAL_AGENT_PATH}\testcases\*.exe"
+File /r "${LOCAL_AGENT_PATH}\lib"
+File /r "${LOCAL_AGENT_PATH}\testcases"
 
 SetOutPath "$INSTDIR\res\drawable"
 File "${LOCAL_AGENT_PATH}\res\drawable\*.*"
-
-SetOutPath "$INSTDIR\lib"
-File /r "${LOCAL_AGENT_PATH}\lib"
 
 SectionEnd
 
@@ -363,21 +360,30 @@ SetOutPath "$INSTDIR"
 Call  CheckRedistributable2012Installed
 Pop $R0
  
-${If} $R0 == "Error"
+${If} $R0 == 0
   SetOutPath "$INSTDIR\msvs2012"
   File "${MSVS2012_DIR}\vcredist_x64.exe" 	
   ExecWait '"$INSTDIR\msvs2012\vcredist_x64.exe"  /passive /norestart'
 ${EndIf}
 
-
 ;Check if we have redistributable 2013 installed
 Call  CheckRedistributable2013Installed
 Pop $R0
  
-${If} $R0 == "Error"
+${If} $R0 == 0
   SetOutPath "$INSTDIR\msvs2013"
   File "${MSVS2013_DIR}\vcredist_x64.exe" 	
   ExecWait '"$INSTDIR\msvs2013\vcredist_x64.exe"  /passive /norestart'
+${EndIf}
+
+;Check if we have redistributable 2015 installed
+Call  CheckRedistributable2015Installed
+Pop $R0
+ 
+${If} $R0 == 0
+  SetOutPath "$INSTDIR\msvs2015"
+  File "${MSVS2015_DIR}\vc_redist.x64.exe" 	
+  ExecWait '"$INSTDIR\msvs2015\vc_redist.x64.exe"  /passive /norestart'
 ${EndIf}
 
 SetOutPath "$INSTDIR"
@@ -388,46 +394,64 @@ SectionEnd
 
  
 Function CheckRedistributable2012Installed
- 
-  ;{F0C3E5D1-1ADE-321E-8167-68EF0DE699A5} - msvs2010 sp1
-  ;{CF2BEA3C-26EA-32F8-AA9B-331F7E34BA97} - msvs2012 sp1    HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{CF2BEA3C-26EA-32F8-AA9B-331F7E34BA97}
-  ;{A749D8E6-B613-3BE3-8F5F-045C84EBA29B}- msvs2013 sp1   
-  Push $R0
-  ClearErrors
+
+	; Microsoft Visual C++ 2012 Redistributable (x64) - 11.0.61030
+	
+	Push $R0
+	ClearErrors
    
-  ;try to read Version subkey to R0
-  ReadRegDword $R0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{CF2BEA3C-26EA-32F8-AA9B-331F7E34BA97}" "Version"
+	; try to read Installed subkey to R0
+	ReadRegDword $R0 HKLM "SOFTWARE\Wow6432Node\Microsoft\VisualStudio\11.0\VC\Runtimes\x64" "Installed"
  
-  ;was there error or not?
-  IfErrors 0 NoErrors
-   
-  ;error occured, copy "Error" to R0
-  StrCpy $R0 "Error"
- 
-  NoErrors:
+	; if there was an error, set as non installed
+	IfErrors 0 NoErrors
+	StrCpy $R0 0
+	NoErrors:
   
     Exch $R0 
 FunctionEnd
 
 Function CheckRedistributable2013Installed
- 
-   ;{A749D8E6-B613-3BE3-8F5F-045C84EBA29B}- msvs2013 sp1   minimum runtime
+
+	; Microsoft Visual C++ 2013 Redistributable (x64) - 12.0.30501
    
-  Push $R0
-  ClearErrors
+	Push $R0
+	ClearErrors
    
-  ;try to read Version subkey to R0
-  ReadRegDword $R0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{A749D8E6-B613-3BE3-8F5F-045C84EBA29B}" "Version"
+	; try to read Installed subkey to R0
+	ReadRegDword $R0 HKLM "SOFTWARE\Wow6432Node\Microsoft\VisualStudio\12.0\VC\Runtimes\x64" "Installed"
  
-  ;was there error or not?
-  IfErrors 0 NoErrors
-   
-  ;error occured, copy "Error" to R0
-  StrCpy $R0 "Error"
- 
-  NoErrors:
+	; if there was an error, set as non installed
+	IfErrors 0 NoErrors
+	StrCpy $R0 0
+	NoErrors:
   
     Exch $R0 
+FunctionEnd
+
+Function CheckRedistributable2015Installed
+
+	; Microsoft Visual C++ 2015 Redistributable (x64) - 14.0.23026
+   
+	Push $R0
+	ClearErrors
+   
+	; try to read Installed subkey to R0
+	ReadRegDword $R0 HKLM "SOFTWARE\Wow6432Node\Microsoft\VisualStudio\14.0\VC\Runtimes\x64" "Installed"
+ 
+	; if there was an error, set as non installed
+	IfErrors 0 NoErrors
+	StrCpy $R0 0
+	NoErrors:
+  
+	Exch $R0 
+FunctionEnd
+
+Function .onInstSuccess
+
+	RMDir /r "$INSTDIR\msvs2012"
+	RMDir /r "$INSTDIR\msvs2013"
+	RMDir /r "$INSTDIR\msvs2015"
 FunctionEnd
 
 
