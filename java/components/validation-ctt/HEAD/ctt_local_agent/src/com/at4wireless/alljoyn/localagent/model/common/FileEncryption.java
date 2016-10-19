@@ -88,7 +88,7 @@ public class FileEncryption
 	
 	public String decrypt(String in) throws IOException, InvalidKeyException
 	{
-		logger.info(in);
+		logger.debug(in);
 		aesCipher.init(Cipher.DECRYPT_MODE, aesSecretKey);
 
 		byte[] decodedValue = DatatypeConverter.parseBase64Binary(in);
@@ -113,7 +113,7 @@ public class FileEncryption
 	
 	public SecretKey decryptAESwithRSA(String encryptedKey) throws InvalidKeyException
 	{
-		logger.info(encryptedKey);
+		logger.debug(encryptedKey);
 		rsaCipher.init(Cipher.DECRYPT_MODE, rsaPrivateKey);
 		
 		SecretKey key = null;

@@ -64,7 +64,6 @@ public class LoginWindow extends JDialog
 	private static final Color LABELS_COLOR = Color.decode("#1d6482");
 	private static final String LOGIN_BUTTON = "ico_login.png";
 	private static final String CLOSE_BUTTON = "ico_close.jpg";
-	//private static final String CLOSE_BUTTON = "close_icon.jpg";
 	
 	private LoginController loginController;
 	private JFrame loginInvoker;
@@ -175,7 +174,6 @@ public class LoginWindow extends JDialog
     	getContentPane().add(loginButton);
     }
     
-    @SuppressWarnings("deprecation")
 	private void sendAuthentication()
     {
     	JIconTextField userInputField = (JIconTextField) getContentPane().getComponent(1);
@@ -185,7 +183,7 @@ public class LoginWindow extends JDialog
 		
 		try
 		{
-			if (loginController.loginWithWebServer(userInputField.getText(), passwordInputField.getText()))
+			if (loginController.loginWithWebServer(userInputField.getText(), String.valueOf(passwordInputField.getPassword())))
 			{
 				setVisible(false);
 				logger.info("Authentication succeeded");
@@ -238,6 +236,7 @@ public class LoginWindow extends JDialog
 		catch (JSONException e)
 		{
 			logger.warn("Incorrect response received");
+			logger.debug(e.getMessage());
 			JOptionPane.showMessageDialog(LoginWindow.this, "Incorrect response received");
 		}
     }
@@ -248,7 +247,6 @@ public class LoginWindow extends JDialog
     	
     	closeButton.setIcon(new ImageIcon(ViewCommons.readImageFromFile(ConfigParameter.RESOURCES_PATH, CLOSE_BUTTON)));
     	closeButton.setBounds(new Rectangle(157, 220, 83, 23));
-    	//closeButton.setBounds(new Rectangle(LOGIN_PANEL_WIDTH - 26, 0, 26, 23));
     	closeButton.addActionListener(new ActionListener()
     	{
 			@Override
@@ -312,7 +310,7 @@ public class LoginWindow extends JDialog
 		}
 		else
 		{
-			logger.info("CTT Local Agent version is newer than server version");
+			logger.warn("CTT Local Agent version is newer than server version");
 		}
     }
     

@@ -57,7 +57,8 @@ public class LoginModel
 		return ModelCommons.unsecuredPostRequest(ConfigParameter.AUTHENTICATION_URL, refreshForm);
 	}
 	
-	public HttpResponse exchangeCipherKeys(String authenticatedUser, String sessionToken, String localRsaPublicKey) throws URISyntaxException, IOException
+	public HttpResponse exchangeCipherKeys(String authenticatedUser, String sessionToken, String localRsaPublicKey)
+			throws URISyntaxException, IOException
 	{
 		HttpEntity requestBody = MultipartEntityBuilder.create()
 				.addTextBody("user", authenticatedUser)
@@ -68,6 +69,7 @@ public class LoginModel
 	
 	public HttpResponse isTestToolUpdated(String testToolLocalVersion, String sessionToken) throws URISyntaxException, IOException
 	{
-		return ModelCommons.securedGetRequest(ConfigParameter.TEST_TOOL_VERSION_URL + testToolLocalVersion.replace(".", "_").substring(1), sessionToken);
+		return ModelCommons.securedGetRequest(ConfigParameter.TEST_TOOL_VERSION_URL
+				+ testToolLocalVersion.replace(".", "_").substring(1), sessionToken);
 	}
 }
