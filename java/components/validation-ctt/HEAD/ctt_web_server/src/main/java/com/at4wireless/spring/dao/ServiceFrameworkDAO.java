@@ -20,31 +20,30 @@ import java.util.List;
 
 import com.at4wireless.spring.model.ServiceFramework;
 
-/**
- * 
- * Interface that manages database service-related access
- *
- */
-public interface ServiceFrameworkDAO {
-	
+public interface ServiceFrameworkDAO
+{
 	/**
-	 * @return		all available service frameworks
+	 * @return all available service frameworks
 	 */
 	public List<ServiceFramework> list();
 	
 	/**
 	 * Searches services associated to a project and returns their IDs
 	 * 
-	 * @param 	idProject	id of the project whose services have to be returned
-	 * @return				services IDs list
+	 * @param projectID
+	 * 			ID of the project whose services have to be returned
+	 * 
+	 * @return services IDs list
 	 */
-	public List<BigInteger> getServices(int idProject);
+	public List<BigInteger> getServices(int projectID);
 	
 	/**
 	 * Searches services associated to a project and returns their names
 	 * 
-	 * @param 	idProject	id of the project whose services have to be returned
-	 * @return				services names list
+	 * @param projectID
+	 * 			ID of the project whose services have to be returned
+	 * 
+	 * @return services names list
 	 */
-	public List<String> getServicesByName(int idProject);
+	public List<String> getServicesByName(int projectID);
 }

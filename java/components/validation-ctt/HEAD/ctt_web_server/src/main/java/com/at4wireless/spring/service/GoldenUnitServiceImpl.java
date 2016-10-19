@@ -16,6 +16,7 @@
 
 package com.at4wireless.spring.service;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,13 +46,13 @@ public class GoldenUnitServiceImpl implements GoldenUnitService
 		gu.setCreatedDate(date);
 		gu.setModifiedDate(date);
 
-		if (guDao.getGuByName(gu.getUser(), gu.getName()) != null)
+		if (guDao.getByName(gu.getUser(), gu.getName()) != null)
 		{
 			return null;
 		}
 		else
 		{
-			guDao.addGu(gu);
+			guDao.add(gu);
 			return gu;
 		}
 	}
@@ -65,16 +66,16 @@ public class GoldenUnitServiceImpl implements GoldenUnitService
 
 	@Override
 	@Transactional
-	public GoldenUnit getFormData(String username, int idGu)
+	public GoldenUnit getFormData(String username, BigInteger idGu)
 	{
-		return guDao.getGu(username,idGu);
+		return guDao.getByID(username,idGu);
 	}
 
 	@Override
 	@Transactional
 	public GoldenUnit update(GoldenUnit gu)
 	{
-		if (guDao.getGu(gu.getUser(), gu.getIdGolden()) != null)
+		if (guDao.getByID(gu.getUser(), gu.getIdGolden()) != null)
 		{
 			java.sql.Timestamp date = new java.sql.Timestamp(new java.util.Date().getTime());
 			gu.setModifiedDate(date);
@@ -89,11 +90,11 @@ public class GoldenUnitServiceImpl implements GoldenUnitService
 
 	@Override
 	@Transactional
-	public boolean delete(String username, int idGu)
+	public boolean delete(String username, BigInteger idGu)
 	{
-		if (guDao.getGu(username, idGu) != null)
+		if (guDao.getByID(username, idGu) != null)
 		{
-			guDao.delGu(idGu);
+			guDao.deleteByID(idGu);
 			return true;
 		}
 		else
@@ -113,20 +114,20 @@ public class GoldenUnitServiceImpl implements GoldenUnitService
 	@Transactional
 	public List<GoldenUnit> getGuList(int idProject)
 	{
-		return guDao.getGuList(idProject);
+		return guDao.listByProjectID(idProject);
 	}
 	
 	@Override
 	@Transactional
-	public boolean exists(String username, String name, int id)
+	public boolean exists(String username, String name, BigInteger id)
 	{	
-		GoldenUnit gu = guDao.getGuByName(username, name);
+		GoldenUnit gu = guDao.getByName(username, name);
 		
 		if (gu == null)
 		{
 			return false;
 		}
-		else if (gu.getIdGolden() == id)
+		else if (gu.getIdGolden().equals(id))
 		{
 			return false;
 		}
@@ -138,13 +139,13 @@ public class GoldenUnitServiceImpl implements GoldenUnitService
 	@Transactional
 	public Category getCategoryById(int idCategory)
 	{
-		return categoryDao.getCategoryById(idCategory);
+		return categoryDao.getById(idCategory);
 	}
 
 	@Override
 	@Transactional
 	public void deleteProjectGus(int idProject)
 	{
-		guDao.deleteProjectGus(idProject);
+		guDao.deleteByProjectID(idProject);
 	}
 }

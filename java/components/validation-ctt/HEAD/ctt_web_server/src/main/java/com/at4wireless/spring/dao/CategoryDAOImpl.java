@@ -17,9 +17,10 @@ package com.at4wireless.spring.dao;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
+
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,29 +36,30 @@ public class CategoryDAOImpl implements CategoryDAO
 	@Override
 	public List<Category> list()
 	{
-		@SuppressWarnings("unchecked")
-		List<Category> listCategory = (List<Category>) sessionFactory.getCurrentSession().createCriteria(Category.class)
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-
-		return listCategory;
+		TypedQuery<Category> query = sessionFactory.getCurrentSession()
+				.createQuery("from Category", Category.class);
+		
+		return query.getResultList();
 	}
 
 	@Override
 	@Transactional
-	public Category getCategoryById(int idCategory)
+	public Category getById(int categoryID)
 	{
-		@SuppressWarnings("unchecked")
-		List<Category> listCategory = (List<Category>) sessionFactory.getCurrentSession().createCriteria(Category.class)
-				.add(Restrictions.like("idCategory", idCategory)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
-				.list();
-
-		if (listCategory.isEmpty())
+		TypedQuery<Category> query = sessionFactory.getCurrentSession()
+				.createQuery("from Category where idCategory = :idCategory", Category.class)
+				.setParameter("idCategory", categoryID);
+		
+		Category foundCategory = null;
+		try
 		{
-			return null;
+			foundCategory = query.getSingleResult();
 		}
-		else
+		catch (NoResultException e)
 		{
-			return listCategory.get(0);
+			
 		}
+		
+		return foundCategory;
 	}
 }

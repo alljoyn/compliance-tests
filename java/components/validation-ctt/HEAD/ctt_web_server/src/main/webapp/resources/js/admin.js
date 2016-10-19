@@ -238,8 +238,8 @@ var admin = (function()
 					
 					$.each(data, function(i, tc)
 					{
-						newTcclTableBody.append("<tr><td class=\"hide\">"+tc[0]+"</td><td width=\"20%\">"
-								+tc[1]+"</td><td width=\"60%\">"+tc[8]+selector
+						newTcclTableBody.append("<tr><td class=\"hide\">"+tc["idTC"]+"</td><td width=\"20%\">"
+								+tc["name"]+"</td><td width=\"60%\">"+tc["description"]+selector
 								+"</td><td width=\"10%\" style=\"text-align: center\"><input class=\"is_checkbox\" type=\"checkbox\">");
 					});
 					
@@ -650,7 +650,7 @@ var admin = (function()
 		    	{
 		    		text += $(this).val() + ".";
 		    	});
-		    	alert(text);
+
 		    	newTcSupportedCrs.val(text);
 			}
 			

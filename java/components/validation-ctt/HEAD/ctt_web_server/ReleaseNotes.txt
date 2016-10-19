@@ -1,4 +1,4 @@
-CTT Web Server Version v1.6.0 Release Notes
+CTT Web Server Version v1.7.0 Release Notes
 ===========================================
  
 Fully Validated Platforms
@@ -7,36 +7,23 @@ Fully Validated Platforms
  2) Windows 7 (64 bit); Google Chrome version 42.0.2311.90
  3) Windows 7 (64 bit); Firefox version 37.0.2
 
-Features added in v1.6.0
+Features added in v1.7.0
 ------------------------
- 1) CTT Web Server v1.6.0 works with CTT Local Agent v1.6.0, v1.7.0, v1.8.0, v1.9.0 and v2.0.0.
+ 1) CTT Web Server v1.7.0 works with CTT Local Agent v1.6.0, v1.7.0, v1.8.0, v1.9.0, v2.0.0, v2.1.0 and v2.2.0.
   
-Issues Addressed in v1.6.0
+Issues Addressed in v1.7.0
 --------------------------
- ASACOMP-162  CTT Web Server / Improvents on Logs web-viewer
- ASACOMP-161  CTT Web Server / General improvements in Shortcuts area
- ASACOMP-160  CTT Web Server / General improvements in Tables management
- ASACOMP-159  CTT Web Server / General improvements in Forms management
- ASACOMP-158  CTT Web Server / Access to TCCLs visualization from user accounts
- ASACOMP-157  CTT Web Server / To apply the last availbale TCCL to Dev Projects
- ASACOMP-156  CTT Web Server / Fail creating Test Report when communication fails
- ASACOMP-155  CTT Web Server / To integrate the CRIs from CAWT into the CTT
- ASACOMP-154  CTT Web Server / Project with results shows "No Results"
- ASACOMP-153  CTT Web Server / ICS/IXIT loading fails when a new SF is added between 2
- ASACOMP-151  CTT Web Server / Import-Export actions for a testing project
- ASACOMP-150  CTT Web Server / Access to logs from the second page
- ASACOMP-149  Onboarding: Modes AUTO, Any, WPS do not work in "IXITON_SoftAPAuthType" 
+ ASACOMP-184  CTT Web Server / IXIT updates after DUT modifications
+ ASACOMP-183  CTT Web Server / XML Configuration Time
    
  For a complete list of fixed issues:
- https://jira.allseenalliance.org/browse/ASACOMP-63?jql=project%20%3D%20ASACOMP%20AND%20issuetype%20in%20standardIssueTypes()%20AND%20status%20in%20(Resolved%2C%20Closed) 
+ https://jira.allseenalliance.org/browse/ 
  
-Known Issues in v1.6.0
+Known Issues in v1.7.0
 ----------------------
- ASACOMP-119  IOP - GUs in the Test Report
- ASACOMP-117  IOP - GU Selection
-
+ 
  For a complete list of open issues:
- https://jira.allseenalliance.org/browse/ASACOMP-66?jql=project%20%3D%20ASACOMP%20AND%20issuetype%20in%20standardIssueTypes()%20AND%20status%20in%20(Open%2C%20%22In%20Progress%22%2C%20New)
+ https://jira.allseenalliance.org/browse/
 
 Change history
 --------------
@@ -47,3 +34,4 @@ Change history
  [20151009] - v1.4.0 - Works with CTT Local Agent v1.6.0 - v1.8.0 - Bug fixes: ASACOMP-128,127,81.
  [20151116] - v1.5.0 - Works with CTT Local Agent v1.6.0 - v1.9.0 - Bug fixes: ASACOMP-135,134,131.
  [20160411] - v1.6.0 - Works with CTT Local Agent v1.6.0 - v2.0.0 - Bug fixes: ASACOMP-149,150,151,153,154,155,156,157,158,159,160,161,162.
+ [20161017] - v1.7.0 - Works with CTT Local Agent v1.6.0 - v2.2.0 - Bug fixes: ASACOMP-183,184.

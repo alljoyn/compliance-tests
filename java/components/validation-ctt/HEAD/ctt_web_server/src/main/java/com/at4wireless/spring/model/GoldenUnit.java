@@ -16,22 +16,23 @@
 
 package com.at4wireless.spring.model;
 
+import java.math.BigInteger;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
-@Table(name="golden")
+@Table(name = "golden")
 public class GoldenUnit
 {
 	@Id @GeneratedValue
 	@Column(name="id_golden")
-	private int idGolden;
+	private BigInteger idGolden;
 	
 	@NotEmpty
 	@Column(name="name")
@@ -67,11 +68,11 @@ public class GoldenUnit
 	@Column(name="description")
 	private String description;
 	
-	public int getIdGolden()
+	public BigInteger getIdGolden()
 	{
 		return idGolden;
 	}
-	public void setIdGolden(int idGolden)
+	public void setIdGolden(BigInteger idGolden)
 	{
 		this.idGolden = idGolden;
 	}

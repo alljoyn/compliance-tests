@@ -13,7 +13,6 @@
  *      ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  *      OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *******************************************************************************/
-
 package com.at4wireless.spring.model;
 
 import javax.persistence.Column;
@@ -22,39 +21,23 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-
 @Entity
 @Table(name="category")
-public class Category {
-	
+public class Category
+{	
 	@Id @GeneratedValue
-	@Column(name="id_category")
+	@Column(name = "id_category", nullable = false)
 	private int idCategory;
+	public int getIdCategory() { return idCategory; }
+	public void setIdCategory(int idCategory) { this.idCategory = idCategory; }
 	
-	@Column(name="name")
+	@Column(name = "name", nullable = false)
 	private String name;
+	public String getName() { return name; }
+	public void setName(String name) { this.name = name; }
 	
-	@Column(name="enabled")
+	@Column(name = "enabled", nullable = false)
 	private boolean enabled;
-	
-	public int getIdCategory() {
-		return idCategory;
-	}
-	public void setIdCategory(int idCategory) {
-		this.idCategory = idCategory;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public boolean isEnabled() {
-		return enabled;
-	}
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
-	
-	
+	public boolean isEnabled() { return enabled; }
+	public void setEnabled(boolean enabled) { this.enabled = enabled; }
 }

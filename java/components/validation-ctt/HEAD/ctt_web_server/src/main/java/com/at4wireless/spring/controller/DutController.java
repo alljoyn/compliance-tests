@@ -53,13 +53,16 @@ public class DutController
 	private DutService dutService;
 	
 	/**
-	 * Loads data to be displayed if logged, redirects to login
-	 * otherwise.
+	 * Loads data to be displayed if logged, redirects to login otherwise.
 	 * 
-     * @param 	model 	model to add objects needed by the view
-     * @param 	error 	error type, if exists
-     * @param	field	field that causes error during validation, if exists
-     * @return 			target view
+     * @param model 
+     * 			model to add objects needed by the view
+     * @param error
+     * 			error type, if exists
+     * @param field
+     * 			field that causes error during validation, if exists
+     * 
+     * @return target view
      */
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView dut(Model model, @RequestParam(value = "error", required = false) String error,
@@ -102,45 +105,15 @@ public class DutController
 	}
 	
 	/**
-	 * Manages the creation of a new dut if authenticated, redirects
-	 * to login otherwise.
+	 * Manages the creation of a new DUT if authenticated, redirects to login otherwise.
 	 * 
-     * @param 	newDut 		DUT data to be validated and stored
-     * @param 	result 		validation result
-     * @return 				target view
-     */
-	/*@RequestMapping(value="/add", method=RequestMethod.POST)
-	public String addDut(@Valid @ModelAttribute("newDut") Dut newDut, BindingResult result)
-	{	
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		
-		if (!(auth instanceof AnonymousAuthenticationToken))
-		{		
-			if (result.hasErrors())
-			{
-				List<ObjectError> errorList = result.getAllErrors();
-				String[] str = errorList.get(0).getCodes()[1].split("[\\.]+");
-				
-				return "redirect:/dut?error=" + str[0] + "&field=" + str[1];
-			}
-			else
-			{
-				if(dutService.create(newDut))
-				{
-					return "redirect:/dut";
-				}
-				else
-				{
-					return "redirect:/dut?error=exists";
-				}
-			}
-		}
-		else
-		{
-			return "redirect:/login";
-		}
-	}*/
-	
+     * @param newDut
+     * 			DUT data to be validated and stored
+     * @param result 
+     * 			validation result
+     * 
+     * @return target view
+     */	
 	@RequestMapping(value="/add", method=RequestMethod.POST)
 	public @ResponseBody Dut addDut(@Valid @ModelAttribute("newDut") Dut newDut, BindingResult result)
 	{	
@@ -148,7 +121,7 @@ public class DutController
 		
 		if (!(auth instanceof AnonymousAuthenticationToken))
 		{		
-			if(dutService.create(newDut))
+			if (dutService.create(newDut))
 			{
 				return newDut;
 			}
@@ -166,8 +139,10 @@ public class DutController
 	/**
 	 * Loads DUT data to be edited
 	 * 
-     * @param 	request 	servlet request with dutId to be loaded
-     * @return 				DUT data
+     * @param request
+     * 			servlet request with dutId to be loaded
+     * 
+     * @return DUT data
      */
 	@RequestMapping(value="/edit", method=RequestMethod.GET)
 	public @ResponseBody Dut editDut(HttpServletRequest request)
@@ -176,18 +151,21 @@ public class DutController
 		
 		if (!(auth instanceof AnonymousAuthenticationToken))
 		{
-			return dutService.getFormData(auth.getName(),Integer.parseInt(request.getParameter("idDut")));
+			return dutService.getFormData(auth.getName(), Integer.parseInt(request.getParameter("idDut")));
 		}
+		
 		return new Dut();
 	}
 	
 	/**
-	 * Manages the modification of a DUT if authenticated, redirects
-	 * to login otherwise.
+	 * Manages the modification of a DUT if authenticated, redirects to login otherwise.
 	 * 
-     * @param 	newDut 		DUT data to be validated and modified
-     * @param 	result 		validation result
-     * @return 				target view
+     * @param newDut
+     * 			DUT data to be validated and modified
+     * @param result
+     * 			validation result
+     * 
+     * @return target view
      */
 	@RequestMapping(value="/edit", method=RequestMethod.POST)
 	public @ResponseBody Dut saveChanges(@Valid @ModelAttribute("newDut") Dut newDut, BindingResult result)
@@ -198,30 +176,26 @@ public class DutController
 		{
 			if (result.hasErrors())
 			{
-				/*List<ObjectError> errorList = result.getAllErrors();
-				String[] str2 = errorList.get(0).getCodes()[1].split("[\\.]+");
-				return "redirect:/dut?error=" + str2[0] + "&field=" + str2[1];*/
 				return null;
 			}
 			else
 			{
 				return dutService.update(newDut);
-				//return "redirect:/dut";
 			}
 		}
 		else
 		{
-			//return "redirect:/login";
 			return null;
 		}
 	}
 	
 	/**
-	 * Manages the removal of a DUT if authenticated, redirects to login
-	 * otherwise.
+	 * Manages the removal of a DUT if authenticated, redirects to login otherwise.
 	 * 
-     * @param 	request 	servlet request with the ID of the DUT to be deleted
-     * @return 				target view
+     * @param request
+     * 			servlet request with the ID of the DUT to be deleted
+     * 
+     * @return target view
      */
 	@RequestMapping(value="/delete", method=RequestMethod.POST)
 	public String delDut(HttpServletRequest request)
@@ -231,9 +205,12 @@ public class DutController
 		if (!(auth instanceof AnonymousAuthenticationToken))
 		{
 			String username = auth.getName();
-			projectService.clearConfigByDut(username, Integer.parseInt(request.getParameter("idDut")));
-			dutService.delete(username, Integer.parseInt(request.getParameter("idDut")));
+			int dutID = Integer.parseInt(request.getParameter("idDut"));
+			
+			projectService.clearConfigByDut(username, dutID);
+			dutService.delete(username, dutID);
 		}
+		
 		return "redirect:/dut";
 	}
 	
@@ -241,9 +218,12 @@ public class DutController
 	 * Stores the assigned DUT and redirects to the next view depending on the
 	 * project type
 	 * 
-	 * @param 	model		model to add objects needed by the view
-	 * @param 	newProject	project object with assigned DUT info
-	 * @return				target view
+	 * @param model
+	 * 			model to add objects needed by the view
+	 * @param newProject
+	 * 			project object with assigned DUT info
+	 * 
+	 * @return target view
 	 */
 	@RequestMapping(value="/save", method=RequestMethod.POST)
 	public @ResponseBody ModelAndView save(Model model, @ModelAttribute("newProject") Project newProject)
@@ -252,7 +232,7 @@ public class DutController
 		
 		if (!(auth instanceof AnonymousAuthenticationToken))
 		{
-			if(!projectService.setDut(auth.getName(),newProject).equals("Conformance"))
+			if(!projectService.setDut(auth.getName(), newProject).equals("Conformance"))
 			{
 				return new ModelAndView("redirect:/gu");
 			}
@@ -270,8 +250,10 @@ public class DutController
 	/**
 	 * Checks if a dut name already exists 
 	 * 
-	 * @param 	request	servlet request with the dut name to be checked
-	 * @return			false if exists, true otherwise
+	 * @param request
+	 * 			servlet request with the dut name to be checked
+	 * 
+	 * @return false if exists, true otherwise
 	 */
 	@RequestMapping(value="/validateName", method = RequestMethod.GET)
 	public @ResponseBody boolean validateName(HttpServletRequest request)
@@ -283,6 +265,7 @@ public class DutController
 			return (!(dutService.exists(auth.getName(), 
 					request.getParameter("name"), Integer.parseInt(request.getParameter("id")))));
 		}
+		
 		return true;
 	}
 	
@@ -290,9 +273,10 @@ public class DutController
 	 * Loads DUT's stored samples data to be displayed if authenticated, redirects
 	 * to login otherwise.
 	 * 
-	 * @param 	request		servlet request with the ID of the DUT whose samples
-	 * 						have to be loaded.
-	 * @return				list of samples
+	 * @param request
+	 * 			servlet request with the ID of the DUT whose samples have to be loaded.
+	 * 
+	 * @return list of samples
 	 */
 	@RequestMapping(value="/samples", method=RequestMethod.GET)
 	public @ResponseBody List<Sample> samples(HttpServletRequest request)
@@ -303,23 +287,26 @@ public class DutController
 	/**
 	 * Manages the creation of a new sample if authenticated.
 	 * 
-	 * @param 	newSample	sample data to be stored
-	 * @return				target view
+	 * @param newSample
+	 * 			sample data to be stored
+	 * 
+	 * @return target view
 	 */
 	@RequestMapping(value="/samples/add", method=RequestMethod.POST)
 	public @ResponseBody Sample addSample(@ModelAttribute("newSample") Sample newSample)
 	{	
 		dutService.createSample(newSample);
+		
 		return newSample;
-		//return "redirect:/dut";
 	}
 	
 	/**
-	 * Manages the removal of a sample if authenticated, returns to login
-	 * otherwise.
+	 * Manages the removal of a sample if authenticated, returns to login otherwise.
 	 * 
-	 * @param 	request		servlet request with the ID of the sample to be removed.
-	 * @return				target view
+	 * @param request
+	 * 			servlet request with the ID of the sample to be removed.
+	 * 
+	 * @return target view
 	 */
 	@RequestMapping(value="/samples/delete", method=RequestMethod.POST)
 	public String delSample(HttpServletRequest request)
@@ -329,11 +316,12 @@ public class DutController
 	}
 	
 	/**
-	 * Manages the modification of a sample if authenticated, redirects
-	 * to login otherwise.
+	 * Manages the modification of a sample if authenticated, redirects to login otherwise.
 	 * 
-     * @param 	request		servlet request with the ID of the sample to be modified
-     * @return 				sample data
+     * @param request
+     * 			servlet request with the ID of the sample to be modified
+     * 
+     * @return sample data
      */
 	@RequestMapping(value="/samples/edit", method=RequestMethod.GET)
 	public @ResponseBody Sample editSample(HttpServletRequest request)
@@ -344,16 +332,19 @@ public class DutController
 		{
 			return dutService.getSampleFormData(Integer.parseInt(request.getParameter("idSample")));
 		}
+		
 		return new Sample();
 	}
 	
 	/**
-	 * Manages the modification of a sample if authenticated, redirects
-	 * to login otherwise.
+	 * Manages the modification of a sample if authenticated, redirects to login otherwise.
 	 * 
-     * @param 	newSample 	Sample data to be validated and modified
-     * @param 	result 		validation result
-     * @return 				target view
+     * @param newSample 
+     * 			Sample data to be validated and modified
+     * @param result
+     * 			validation result
+     * 
+     * @return target view
      */
 	@RequestMapping(value="/samples/edit", method=RequestMethod.POST)
 	public @ResponseBody Sample saveSampleChanges(@Valid @ModelAttribute("newSample") Sample newSample,
@@ -363,21 +354,18 @@ public class DutController
 		
 		if (!(auth instanceof AnonymousAuthenticationToken))
 		{
-			if(result.hasErrors())
+			if (result.hasErrors())
 			{
-				//return "redirect:/dut?error=name";
 				return null;
 			}
 			else
 			{
-				dutService.updateSample(newSample);
-				//return "redirect:/dut";
+				dutService.updateSample(newSample, auth.getName());
 				return newSample;
 			}
 		}
 		else
 		{
-			//return "redirect:/login";
 			return null;
 		}
 	}

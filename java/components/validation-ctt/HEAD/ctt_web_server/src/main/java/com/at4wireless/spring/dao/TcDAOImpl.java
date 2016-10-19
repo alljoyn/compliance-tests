@@ -16,78 +16,87 @@
 
 package com.at4wireless.spring.dao;
 
+import java.math.BigInteger;
 import java.util.List;
 
-import org.hibernate.Criteria;
+import javax.persistence.TypedQuery;
+
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.at4wireless.spring.model.TestCase;
 
 @Repository
-public class TcDAOImpl implements TcDAO {
+public class TcDAOImpl implements TcDAO
+{
 	@Autowired
 	private SessionFactory sessionFactory;
 
 	@Override
-	public List<TestCase> list() {
-		@SuppressWarnings("unchecked")
-		List<TestCase> listTC = (List<TestCase>) sessionFactory.getCurrentSession()
-				.createCriteria(TestCase.class)
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-
-		return listTC;
-	}
-	
-	@Override
-	public List<TestCase> getService(String type, int idService) {
-		@SuppressWarnings("unchecked")
-		List<TestCase> listTc = (List<TestCase>) sessionFactory.getCurrentSession()
-				.createCriteria(TestCase.class)
-					.add(Restrictions.like("serviceGroup", idService))
-					.add(Restrictions.like("type",type))
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-
-		return listTc;
-	}
-	
-	@Override
-	public List<TestCase> list(int idCertRel) {
-		@SuppressWarnings("unchecked")
-		List<TestCase> tcList = (List<TestCase>) sessionFactory.getCurrentSession()
-				.createSQLQuery("select tc.* from testcases tc where tc.id_test in"
-						+"(select tcr.id_test from testcases_certrel tcr where tcr.id_certrel="+idCertRel+");").list();
-
-		return tcList;
-	}
-	
-	@Override
-	public List<TestCase> getServiceWithRestriction(String type, int idService, List<Integer> intList) {
-		@SuppressWarnings("unchecked")
-		List<TestCase> tcList = (List<TestCase>) sessionFactory.getCurrentSession()
-				.createCriteria(TestCase.class)
-					.add(Restrictions.like("serviceGroup", idService))
-					.add(Restrictions.like("type",type))
-					.add(Restrictions.in("idTC", intList))
-			.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
+	public List<TestCase> list()
+	{
+		TypedQuery<TestCase> query = sessionFactory.getCurrentSession()
+				.createQuery("from TestCase", TestCase.class);
 		
-		return tcList;
+		return query.getResultList();
+	}
+	
+	@Override
+	public List<TestCase> listByCertRel(int certRelID)
+	{
+		/*
+		 * TODO : Change NativeQuery to TypedQuery
+		 * 
+		 */
+		NativeQuery<TestCase> query = sessionFactory.getCurrentSession()
+				.createNativeQuery("select tc.* from testcases tc where tc.id_test in "
+						+ "(select tcr.id_test from testcases_certrel tcr where tcr.id_certrel = :idCertrel)", TestCase.class)
+				.setParameter("idCertrel", certRelID);
+		
+		return query.getResultList();
+	}
+	
+	@Override
+	public List<TestCase> getByTypeAndService(String type, BigInteger serviceID)
+	{
+		TypedQuery<TestCase> query = sessionFactory.getCurrentSession()
+				.createQuery("from TestCase where serviceGroup = :serviceGroup and type = :type", TestCase.class)
+				.setParameter("serviceGroup", serviceID)
+				.setParameter("type", type);
+		
+		return query.getResultList();
+	}
+	
+	@Override
+	public List<TestCase> getServiceWithRestriction(String type, BigInteger idService, List<BigInteger> testCaseIDsFromCR)
+	{
+		TypedQuery<TestCase> query = sessionFactory.getCurrentSession()
+				.createQuery("from TestCase where serviceGroup = :serviceGroup and type = :type and idTC in (:ids)", TestCase.class)
+				.setParameter("serviceGroup", idService)
+				.setParameter("type", type)
+				.setParameterList("ids", testCaseIDsFromCR);
+		
+		return query.getResultList();
 	}
 
 	@Override
-	public void assignTestCasesToCertificationRelease(int certificationReleaseId) {
-		StringBuilder values = new StringBuilder();
+	public void assignTestCasesToCertificationRelease(int certificationReleaseId)
+	{
+		/*
+		 * TODO : Improve the insertion of test cases to a new certification release, starting with the View.
+		 * 
+		 */
 		List<TestCase> listTC = list();
-		
-		for(int i=0; i<listTC.size(); i++) {
-			String s = "("+listTC.get(i).getIdTC()+","+certificationReleaseId+")";
-			values.append(s);
-			if(i != (listTC.size() -1)) values.append(",");
+		for(int i=0; i<listTC.size(); i++)
+		{
+			sessionFactory.getCurrentSession()
+					.createNativeQuery("insert into testcases_certrel (id_test, id_certrel) values (:idTest, :idCertrel)")
+					.setParameter("idTest", listTC.get(i).getIdTC())
+					.setParameter("idCertrel", certificationReleaseId)
+					.executeUpdate();
 		}
-		sessionFactory.getCurrentSession().createSQLQuery("insert into testcases_certrel(id_test,id_certrel)"
-				+" values "+values+";").executeUpdate();
 	}
 	
 	@Override
@@ -95,36 +104,62 @@ public class TcDAOImpl implements TcDAO {
 	{
 		sessionFactory.getCurrentSession().save(testCase);
 		
-		String[] var = testCase.getSupportedCrs().split("[\\.]+");
-		StringBuilder str = new StringBuilder("values ");
-		for (int i=0; i<var.length; i++) {
-			str.append("("+Integer.toString(testCase.getIdTC())+","+var[i]+")");
-			if(i!=(var.length-1)) str.append(",");
-			else str.append(";");
+		/*
+		 * TODO : Change NativeQuery to TypedQuery
+		 * 
+		 */
+		BigInteger idTestCase = testCase.getIdTC();
+		String[] supportedCertificationReleases = testCase.getSupportedCrs().split("[\\.]+");
+		for (int i = 0; i < supportedCertificationReleases.length; i++)
+		{
+			sessionFactory.getCurrentSession()
+					.createNativeQuery("insert into testcases_certrel (id_test, id_certrel) values (:idTest, :idCertrel)")
+					.setParameter("idTest", idTestCase)
+					.setParameter("idCertre", supportedCertificationReleases[i])
+					.executeUpdate();
 		}
-		sessionFactory.getCurrentSession().createSQLQuery("insert into testcases_certrel (id_test,id_certrel) "
-				+str.toString()).executeUpdate();
 	}
 	
 	@Override
 	public void update(TestCase testCase)
 	{
-		sessionFactory.getCurrentSession().createQuery("update TestCase set name = '"+testCase.getName()
-		+"', type = '"+testCase.getType()+"', applicability = '"+testCase.getApplicability()
-		+"', serviceGroup = '"+testCase.getServiceGroup()+"', description = '"+testCase.getDescription()
-		+"' where idTC = '"+testCase.getIdTC()+"'").executeUpdate();
+		/*
+		 * TODO : Look for a shorter way to update existent Object
+		 * 
+		 */
+		BigInteger idTestCase = testCase.getIdTC();
+		sessionFactory.getCurrentSession()
+				.createQuery("update TestCase set name = :name, type = :type, applicability = :applicability, "
+						+ "serviceGroup = :serviceGroup, description = :description where idTC = :idTC")
+				.setParameter("name", testCase.getName())
+				.setParameter("type", testCase.getType())
+				.setParameter("applicability", testCase.getApplicability())
+				.setParameter("serviceGroup", testCase.getServiceGroup())
+				.setParameter("description", testCase.getDescription())
+				.setParameter("idTC", idTestCase)
+				.executeUpdate();
 		
-		sessionFactory.getCurrentSession().createSQLQuery("delete from testcases_certrel where id_test="
-				+testCase.getIdTC()+";").executeUpdate();
+		/*
+		 * TODO : Change NativeQuery to TypedQuery
+		 * 
+		 */
+		sessionFactory.getCurrentSession()
+				.createNativeQuery("delete from testcases_certrel where id_test = :idTest")
+				.setParameter("idTest", idTestCase)
+				.executeUpdate();
 		
-		String[] var = testCase.getSupportedCrs().split("[\\.]+");
-		StringBuilder str = new StringBuilder("values ");
-		for (int i=0; i<var.length; i++) {
-			str.append("("+Integer.toString(testCase.getIdTC())+","+var[i]+")");
-			if(i!=(var.length-1)) str.append(",");
-			else str.append(";");
+		/*
+		 * TODO : Change NativeQuery to TypedQuery
+		 * 
+		 */
+		String[] supportedCertificationReleases = testCase.getSupportedCrs().split("[\\.]+");
+		for (int i = 0; i < supportedCertificationReleases.length; i++)
+		{
+			sessionFactory.getCurrentSession()
+					.createNativeQuery("insert into testcases_certrel (id_test, id_certrel) values (:idTest, :idCertrel)")
+					.setParameter("idTest", idTestCase)
+					.setParameter("idCertre", supportedCertificationReleases[i])
+					.executeUpdate();
 		}
-		sessionFactory.getCurrentSession().createSQLQuery("insert into testcases_certrel (id_test,id_certrel) "
-				+str.toString()).executeUpdate();
 	}
 }

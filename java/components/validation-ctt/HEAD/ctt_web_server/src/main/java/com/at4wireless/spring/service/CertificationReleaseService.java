@@ -24,20 +24,49 @@ import com.at4wireless.spring.model.CertificationRelease;
  * Interface with methods that allow controllers to communicate with certification release table
  *
  */
-public interface CertificationReleaseService {
-
+public interface CertificationReleaseService
+{
 	/**
-	 * Returns available Certification Releases
+	 * Returns available Certification Releases (DEBUG and RELEASE)
 	 * 
 	 * @return	list of Certification Releases
 	 */
 	public List<CertificationRelease> list();
 	
+	/**
+	 * Returns available Certification Releases (RELEASE)
+	 * 
+	 * @return	list of Certification Releases
+	 */
 	public List<CertificationRelease> listReleaseVersions();
 	
-	public String getCertificationReleaseDescription(String certificationRelease);
+	/**
+	 * Retrieves the description of a certain Certification Release
+	 * 
+	 * @param certRelName
+	 * 			name of the Certification Release whose description is going to be returned
+	 * 
+	 * @return description if exists, null otherwise
+	 */
+	public String getCertificationReleaseDescription(String certRelName);
 	
-	public String getCertificationReleaseName(int certificationReleaseId);
+	/**
+	 * Retrieves the name of a certain Certification Release
+	 * 
+	 * @param certRelID
+	 * 			ID of the Certification Release whose name is going to be returned
+	 * 
+	 * @return name if exists, null otherwise
+	 */
+	public String getCertificationReleaseName(int certRelID);
 	
-	public boolean isReleaseVersion(int certificationReleaseId);
+	/**
+	 * Checks if a certain Certification Release is RELEASE version
+	 * 
+	 * @param certRelID
+	 * 			ID of the Certification Release to be checked
+	 * 
+	 * @return true if RELEASE, false if DEBUG
+	 */
+	public boolean isReleaseVersion(int certRelID);
 }

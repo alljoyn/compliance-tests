@@ -19,50 +19,57 @@ import java.util.List;
 
 import com.at4wireless.spring.model.Dut;
 
-/**
- * Interface that manages database DUT-related access
- *
- */
-public interface DutDAO {
-	
+public interface DutDAO
+{
 	/**
 	 * Retrieves DUTs of a certain user
-	 * @param 	user	user whose DUT are going to be retrieved
-	 * @return			DUT list
+	 * 
+	 * @param user
+	 * 			user whose DUT are going to be retrieved
+	 * 
+	 * @return DUT list
 	 */
 	public List<Dut> list(String user);
 	
 	/**
-	 * Creates a new DUT
-	 * @param 	dut		data of the DUT that is going to be created
-	 */
-	public void addDut(Dut dut);
-	
-	/**
-	 * Removes a DUT
-	 * @param 	dutId	ID of the DUT to be removed
-	 */
-	public void delDut(int dutId);
-	
-	/**
-	 * Updates information of a DUT
-	 * @param 	dut		DUT object with the information to be updated
-	 */
-	public void saveChanges(Dut dut);
-	
-	/**
 	 * Retrieves information of a certain DUT using its ID in query
-	 * @param 	user	DUT user
-	 * @param 	idDut	DUT ID
-	 * @return			DUT object
+	 * 
+	 * @param dutID
+	 * 			ID of the DUT to be retrieved
+	 * @param user
+	 * 			user who created the DUT to be retrieved
+	 * 
+	 * @return DUT object
 	 */
-	public Dut getDut(String user, int idDut);
+	public Dut get(int dutID, String user);
 	
 	/**
 	 * Retrieves information of a certain DUT using its name in query
-	 * @param 	user	DUT user
-	 * @param 	name	DUT name
-	 * @return			DUT object
+	 * 
+	 * @param name
+	 * 			name of the DUT to be retrieved
+	 * @param user
+	 * 			user who created the DUT to be retrieved
+	 * 
+	 * @return DUT object
 	 */
-	public Dut getDutByName(String user, String name);
+	public Dut get(String name, String user);
+	
+	/**
+	 * Creates a new DUT
+	 * 
+	 * @param newDut
+	 * 			data of the new DUT to be stored
+	 */
+	public void add(Dut newDut);
+	
+	/**
+	 * Removes a DUT using its ID in query
+	 * 
+	 * @param dutID
+	 * 			ID of the DUT to be removed
+	 * 
+	 * @return the number of entities deleted
+	 */
+	public int delete(int dutID);
 }

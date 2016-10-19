@@ -19,41 +19,43 @@ import java.util.List;
 
 import com.at4wireless.spring.model.Sample;
 
-/**
- * Interface that manages database sample-related access
- *
- */
-public interface SampleDAO {
-	
+public interface SampleDAO
+{
 	/**
 	 * Retrieves the list of samples of a certain DUT
-	 * @param 	dut		DUT ID
-	 * @return			list of samples
+	 * 
+	 * @param dutID
+	 * 			ID of the DUT whose samples are going to be retrieved
+	 * 
+	 * @return list of samples
 	 */
-	public List<Sample> list(int dut);
+	public List<Sample> list(int dutID);
 	
 	/**
-	 * Adds a new sample
-	 * @param 	sample	sample to be added
+	 * Retrieves information of a certain sample using its ID in query
+	 * 
+	 * @param sampleID
+	 * 			ID of the sample to be retrieved
+	 * 
+	 * @return sample object
 	 */
-	public void addSample(Sample sample);
+	public Sample get(int sampleID);
 	
 	/**
-	 * Removes a sample
-	 * @param 	idSample	ID of the sample to be removed
+	 * Creates a new sample
+	 * 
+	 * @param sample
+	 * 			data of the new sample to be stored
 	 */
-	public void delSample(int idSample);
+	public void add(Sample newSample);
 	
 	/**
-	 * Updates a sample
-	 * @param 	sample	sample information to be updated
+	 * Removes a sample using its ID in query
+	 * 
+	 * @param sampleID
+	 * 			ID of the sample to be removed
+	 * 
+	 * @return the number of entities deleted
 	 */
-	public void saveChanges(Sample sample);
-	
-	/**
-	 * Retrieves a certain sample
-	 * @param 	idSample	ID of the sample to be returned
-	 * @return				sample
-	 */
-	public Sample getSample(int idSample);
+	public int delete(int sampleID);
 }

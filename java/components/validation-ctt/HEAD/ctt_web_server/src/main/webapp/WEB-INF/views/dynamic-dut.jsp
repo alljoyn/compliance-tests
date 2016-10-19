@@ -221,7 +221,9 @@
 					<button id="sampleBack" class="btn btn-custom" data-dismiss="modal">Back</button>
 					<button id="addSample" class="btn btn-default" data-dismiss="modal" data-toggle="modal" data-target="#newSampleModal">Add Sample</button>
 					<button id="editSample" disabled class="btn btn-default disabled" data-dismiss="modal" data-toggle="modal" data-target="#editSampleModal">Edit Sample</button>
-					<button id="deleteSample" disabled class="btn btn-default disabled">Delete Sample</button>
+					<span id="deleteSampleButtonTooltip" class="helper" data-toggle="tooltip" title="At least one sample must be stored for each existing DUT">
+						<button id="deleteSample" disabled class="btn btn-default disabled">Delete Sample</button>
+					</span>
 				</div>
 			</div>
 		</div>

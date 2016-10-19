@@ -35,7 +35,6 @@ import com.at4wireless.spring.service.UserService;
 
 public class CustomCas20ServiceTicketValidator implements TicketValidator
 {
-	//private Logger logger = LogManager.getLogger(this.getClass().getName());
 	private boolean renew;
 	private Map<String, String> customParameters;
 	private final String casServerUrlPrefix;
@@ -52,22 +51,16 @@ public class CustomCas20ServiceTicketValidator implements TicketValidator
 		this.casServerUrlPrefix = casServerUrlPrefix;
 		CommonUtils.assertNotNull(this.casServerUrlPrefix, "casServerUrlPrefix cannot be null.");
 
-		this.proxyRetriever = new Cas20ProxyRetriever(casServerUrlPrefix);
+		this.proxyRetriever = new Cas20ProxyRetriever(casServerUrlPrefix, getEncoding());
 	}
 
 	@Override
-	public Assertion validate(String ticket, String service)
-			throws TicketValidationException
+	public Assertion validate(String ticket, String service) throws TicketValidationException
 	{
 		try
 		{
-			//logger.debug(" *** In validate() method of CustomCas20ServiceTicketValidator *** ");
-
 			String validationUrl = constructValidationUrl(ticket, service);
-
-			//logger.debug("#### The  Validation URL is:"+validationUrl);
 			String serverResponse = retrieveResponseFromServer(new URL(validationUrl), ticket);
-			//logger.debug("#### The Server Response is123:"+serverResponse);
 
 			if (serverResponse == null)
 			{
@@ -78,7 +71,6 @@ public class CustomCas20ServiceTicketValidator implements TicketValidator
 		}
 		catch (MalformedURLException e)
 		{
-			//logger.equals(e);
 			throw new TicketValidationException(e);
 		}
 	}
@@ -97,9 +89,7 @@ public class CustomCas20ServiceTicketValidator implements TicketValidator
 			urlParameters.put("renew", "true");
 		}
 		
-		//logger.debug("Calling template URL attribute map.");
 		populateUrlAttributeMap(urlParameters);
-		//logger.debug("Loading custom parameters from configuration.");
 		
 		if (this.customParameters != null) 
 		{
@@ -151,7 +141,7 @@ public class CustomCas20ServiceTicketValidator implements TicketValidator
 			throw new TicketValidationException("No principal was found in the response from the CAS server.");
 		}
 		
-		Map<String,String> attributes = extractCustomAttributes(response);
+		Map<String, Object> attributes = extractCustomAttributes(response);
 		Assertion assertion;
 
 		if (userService.exists(principal))
@@ -160,12 +150,12 @@ public class CustomCas20ServiceTicketValidator implements TicketValidator
 
 			if (attributes.containsKey("group"))
 			{
-				if (attributes.get("group").equalsIgnoreCase("asa-testtool-admin"))
+				if (((String)attributes.get("group")).equalsIgnoreCase("asa-testtool-admin"))
 				{
 					role = "ROLE_ADMIN";
 				}
 			}
-			else if (attributes.get("drupal_roles").equalsIgnoreCase("authenticated user"))
+			else if (((String)attributes.get("drupal_roles")).equalsIgnoreCase("authenticated user"))
 			{
 				role = "ROLE_USER";
 			}
@@ -181,12 +171,12 @@ public class CustomCas20ServiceTicketValidator implements TicketValidator
 			
 			if (attributes.containsKey("group"))
 			{
-				if (attributes.get("group").equalsIgnoreCase("asa-testtool-admin"))
+				if (((String)attributes.get("group")).equalsIgnoreCase("asa-testtool-admin"))
 				{
 					u.setRole("ROLE_ADMIN");
 				}
 			}
-			else if (attributes.get("drupal_roles").equalsIgnoreCase("authenticated user"))
+			else if (((String)attributes.get("drupal_roles")).equalsIgnoreCase("authenticated user"))
 			{
 				u.setRole("ROLE_USER");
 			}
@@ -222,9 +212,9 @@ public class CustomCas20ServiceTicketValidator implements TicketValidator
 	{
 		if (this.hostnameVerifier != null)
 		{
-			return CommonUtils.getResponseFromServer(validationUrl);
+			return CommonUtils.getResponseFromServer(validationUrl, getEncoding());
 		}
-		return CommonUtils.getResponseFromServer(validationUrl);
+		return CommonUtils.getResponseFromServer(validationUrl, getEncoding());
 	}
 	private String encodeUrl(String url)
 	{
@@ -251,9 +241,9 @@ public class CustomCas20ServiceTicketValidator implements TicketValidator
 	protected String getUrlSuffix()
 	{
 		return "serviceValidate";
-		//return "samlValidate";
 	}
-	private Map<String, String> extractCustomAttributes(String xml)
+	
+	private Map<String, Object> extractCustomAttributes(String xml)
 	{
 		int pos1 = xml.indexOf("<cas:attributes>");
 		int pos2 = xml.indexOf("</cas:attributes>");
@@ -263,7 +253,7 @@ public class CustomCas20ServiceTicketValidator implements TicketValidator
 			return Collections.emptyMap();
 		}
 		
-		Map<String,String> attributes = new HashMap<String,String>();
+		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		try
 		{

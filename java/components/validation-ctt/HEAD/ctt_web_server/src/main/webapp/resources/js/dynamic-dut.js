@@ -78,6 +78,9 @@ var duts = (function()
 	var _$backFromSampleToDutButton = jQuery('#sampleBack');
 	var _$editSampleButton = jQuery('#editSample');
 	var _$deleteSampleButton = jQuery('#deleteSample');
+	
+	var _$deleteSampleTooltip = jQuery('#deleteSampleButtonTooltip');
+	//var _oneSampleMessage = 'At least one sample must be stored for each existing DUT';
 	//-------------------------------------------------
 	// SAMPLE CREATION MODAL
 	//-------------------------------------------------
@@ -114,6 +117,7 @@ var duts = (function()
 	{
 		_initStepTexts();	
 		_initDataTable();
+		_initTooltips();
 		
 		onClickFunctions();
 		_validateForms();
@@ -175,6 +179,12 @@ var duts = (function()
 		}
 		
 		button.prop("disabled", isDisabled);
+	}
+	
+	var _initTooltips = function()
+	{
+		_$deleteSampleTooltip.tooltip({'placement': 'bottom'});
+		_$deleteSampleTooltip.tooltip('disable');
 	}
 	
 	var onClickFunctions = function()
@@ -277,7 +287,15 @@ var duts = (function()
 			   	var id = $(this).find('td:first').html();
 			   	sessionStorage.setItem("idSample", id);
 			   	
-			   	_sampleSectionButtonsEnabled(true);
+			   	if (_$sampleTable.find('tbody tr').length > 1)
+		   		{
+			   		_sampleSectionButtonsEnabled(true);
+		   		}
+			   	else
+		   		{
+			   		_disableButton(_$editSampleButton, false);
+			   		_$deleteSampleTooltip.tooltip('enable');
+		   		}
 			}
 		});
 	}
@@ -286,6 +304,7 @@ var duts = (function()
 	{
 		_disableButton(_$editSampleButton, !status);
 		_disableButton(_$deleteSampleButton, !status);
+		_$deleteSampleTooltip.tooltip('disable');
 	}
 	
 	var _onClickSectionButtons = function()
@@ -501,6 +520,12 @@ var duts = (function()
 	    			_$newSampleModal.modal('hide');
 	    			_clearSampleFormFields(_$newSampleForm, _$newSampleDeviceIdField, _$newSampleAppIdField, _$newSampleSwField, _$newSampleHwField);
 	    			_$samplesTableModal.modal('show');
+	    			
+	    			_$deleteSampleTooltip.tooltip('disable');
+	    			if (_$sampleTable.find('tbody tr.selected'))
+    				{
+	    				_disableButton(_$deleteSampleButton, false);
+    				}
 	    		}
 	    	})
 		})
@@ -624,7 +649,7 @@ var duts = (function()
 							{
 								$(sampleTableRows[i]).fadeOut(400, function()
 								{
-									$(sampleTableRows[i]).remove();
+									$(this).remove();
 								});
 							}
 						}

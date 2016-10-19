@@ -23,104 +23,129 @@ import com.at4wireless.spring.model.Project;
  * Interface that manages database project-related access
  *
  */
-public interface ProjectDAO {
-	
+public interface ProjectDAO
+{
 	/**
-	 * Searches user's project into database
+	 * Retrieves projects associated to a certain user
 	 * 
-	 * @param 	user	user whose projects have to be loaded	
-	 * @return			user's assigned project
+	 * @param username
+	 * 			user whose projects have to be retrieved
+	 * 
+	 * @return user's stored projects
 	 */
-	public List<Project> list(String user);
+	public List<Project> list(String username);
 	
 	/**
-	 * Searches GU associated to a project and returns their names
-	 * @param 	idProject	id of the project whose GU have to be returned
-	 * @return				GU names list
+	 * Retrieves a certain project by ID
+	 * 
+	 * @param username
+	 * 			name of the user whose project is going to be retrieved
+	 * @param projectID
+	 * 			ID of the project to be retrieved
+	 * 
+	 * @return project information if exists, null otherwise
 	 */
-	public List<String> getGoldenByName(int idProject);
+	public Project getByID(String username, int projectID);
+	
+	/**
+	 * Retrieves a certain project by Name
+	 * 
+	 * @param username
+	 * 			name of the user whose project is going to be retrieved
+	 * @param projectName
+	 * 			name of the project to be retrieved
+	 * 
+	 * @return project information if exists, null otherwise
+	 */
+	public Project getByName(String username, String projectName);
+	
+	/**
+	 * Retrieves all projects with a certain assigned DUT
+	 * 
+	 * @param username
+	 * 			name of the user whose project is going to be retrieved
+	 * @param dutID
+	 * 			ID of the DUT assigned to the project
+	 * 
+	 * @return the list of projects whose DUT is the one chosen
+	 */
+	public List<Project> getByDUT(String username, int dutID);
+	
+	/**
+	 * Retrieves the names of the Golden Units associated to a certain project
+	 * 
+	 * @param projectID
+	 * 			ID of the project whose Golden Units are going to be returned
+	 * 
+	 * @return Golden Unit names list
+	 */
+	public List<String> getGoldenUnitsByProjectID(int projectID);
 	
 	/**
 	 * Adds a project entry to database
 	 * 
-	 * @param 	project	project information to be stored
-	 * @return 			ID of the new entry
-	 */
-	public int addProject(Project project);
-	
-	/**
-	 * Drops a project entry from database
+	 * @param newProject
+	 * 			project information to be stored
 	 * 
-	 * @param 	projectId	ID of the project to be deleted
+	 * @return ID of the new entry
 	 */
-	public void delProject(int projectId);
-	
-	/**
-	 * Stores project configuration location
-	 * 
-	 * @param 	idProject	project ID
-	 * @param 	url			location of the configuration file
-	 */
-	public void configProject(String idProject, String url);
-	
-	/**
-	 * Stores project results location
-	 * 
-	 * @param 	idProject	project ID
-	 * @param 	url			location of the results file
-	 */
-	public void resultProject(int idProject, String url);
+	public int add(Project newProject);
 	
 	/**
 	 * Updates a project
 	 * 
-	 * @param 	project		project object with the information to be updated
+	 * @param project
+	 * 			project object with the information to be updated
 	 */
-	public void saveChanges(Project project);
+	public void update(Project project);
+	
+	/**
+	 * Drops a project entry from database
+	 * 
+	 * @param projectID
+	 * 			ID of the project to be deleted
+	 */
+	public void delete(int projectID);
 	
 	/**
 	 * Assigns a DUT to a project
-	 * @param 	project		project object with the DUT to be assigned
+	 * 
+	 * @param project
+	 * 			project object with the DUT to be assigned
 	 */
 	public void setDut(Project project);
 	
-	public void unassignGoldenUnits(int projectId);
-	
 	public void assignGoldenUnits(Project project);
 	
-	/**
-	 * Retrieves a certain project by id
-	 * 
-	 * @param 	user		project user
-	 * @param 	idProject	project id
-	 * @return				project data
-	 */
-	public Project getProject(String user, int idProject);
+	public void unassignGoldenUnits(int projectId);
 	
 	/**
-	 * Retrieves a certain project by name
+	 * Stores project configuration location
 	 * 
-	 * @param 	user		project user
-	 * @param 	name		project name
-	 * @return				project data
+	 * @param projectID
+	 * 			ID of the project whose configuration path is going to be set
+	 * @param configurationPath
+	 * 			location of the configuration file
 	 */
-	public Project getProjectByName(String user, String name);
+	public void setConfig(int projectID, String configurationPath);
 	
 	/**
-	 * Retrieves all project with a certain assigned DUT
+	 * Stores project results location
 	 * 
-	 * @param 	user	project user
-	 * @param 	idDut	project assigned DUT
-	 * @return			list of projects
+	 * @param projectID
+	 * 			ID of the project whose results path is going to be set
+	 * @param resultsPath
+	 * 			location of the results file
 	 */
-	public List<Project> getProjectByDut(String user, int idDut);
+	public void setResults(int projectID, String resultsPath);
 	
 	/**
 	 * Stores project test report location
 	 * 
-	 * @param 	idProject	project ID
-	 * @param 	path		location of the test report file
+	 * @param projectID
+	 * 			ID of the project whose test report path is going to be set
+	 * @param testReportPath
+	 * 			location of the test report file
 	 */
-	public void setTestReport(int idProject, String path);
-
+	public void setTestReport(int projectID, String testReportPath);
 }

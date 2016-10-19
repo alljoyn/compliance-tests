@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,6 +40,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.at4wireless.security.FileEncryption;
+import com.at4wireless.spring.common.XMLManager;
 import com.at4wireless.spring.model.Project;
 import com.at4wireless.spring.model.TestCaseResult;
 import com.at4wireless.spring.model.dto.SendResultsDT;
@@ -63,6 +65,12 @@ public class ResultsController
 	private ResultService resultService;
 	@Autowired
 	private UserService userService;
+	
+	@Value("${cawt.url}")
+	private String cawtUrl;
+	
+	@Value("${cawt.secret}")
+	private String cawtSecret;
 	
 	/**
 	 * Loads data to be displayed if logged, redirects to login
@@ -145,10 +153,6 @@ public class ResultsController
 			String username = auth.getName();
 			Project p = projectService.getFormData(username,
 					Integer.parseInt(request.getParameter("idProject")));
-			String outputFileName = File.separator+"Allseen"
-					+File.separator+"Users"+File.separator+username+File.separator
-					+p.getIdProject()
-					+File.separator+"TestReport.pdf";
 			
 			if(tcService.ranAll(p.getConfiguration(), p.getResults()))
 			{
@@ -210,7 +214,7 @@ public class ResultsController
 			{	
 				if (logsNotFound.isEmpty())
 				{
-					String xmlResponse = resultService.uploadZipFileToCawt(p.getUser(), p.getCarId(), p.getIdProject());
+					String xmlResponse = resultService.uploadZipFileToCawt(p.getUser(), p.getCarId(), p.getIdProject(), cawtUrl, cawtSecret);
 					XMLManager xmlManager = new XMLManager();
 					
 					sendResultsDt.setResultCode(Integer.parseInt(xmlManager.retrieveNodeValuesFromXMLString(xmlResponse, "/Output/result_code").get(0)));

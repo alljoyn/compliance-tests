@@ -16,6 +16,7 @@
 
 package com.at4wireless.spring.controller;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,7 +104,7 @@ public class TestCaseController
 				
 				for (TestCase tc : tcList)
 				{
-					tcListDt.add(new TestCaseDT(tc, configuredTc.contains(tc.getIdTC())));
+					tcListDt.add(new TestCaseDT(tc, configuredTc.contains(tc.getIdTC().intValue())));
 				}
 			}
 			else
@@ -131,11 +132,11 @@ public class TestCaseController
      * @return 				target view
      */
 	@RequestMapping(value="disabled", method=RequestMethod.GET)
-	public @ResponseBody List<Integer> disabled(HttpServletRequest request)
+	public @ResponseBody List<BigInteger> disabled(HttpServletRequest request)
 	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		
-		List<Integer> disabledTccls = new ArrayList<Integer>();
+		List<BigInteger> disabledTccls = new ArrayList<BigInteger>();
 		
 		if (!(auth instanceof AnonymousAuthenticationToken))
 		{
@@ -145,10 +146,17 @@ public class TestCaseController
 			if ((targetTccl == 0) && (crService.isReleaseVersion(p.getIdCertrel())))
 			{
 				List<Tccl> tcclList = tcclService.listByCR(p.getIdCertrel());
-				targetTccl = tcclList.get(tcclList.size() - 1).getIdTccl();
+				
+				if (tcclList.size() > 0)
+				{
+					targetTccl = tcclList.get(tcclList.size() - 1).getIdTccl();
+				}
 			}
 			
-			disabledTccls = tcService.getDisabled(targetTccl);
+			if (targetTccl > 0)
+			{
+				disabledTccls = tcService.getDisabled(targetTccl);
+			}
 		}
 		
 		return disabledTccls;

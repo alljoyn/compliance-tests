@@ -76,22 +76,22 @@ public class TestCaseServiceImpl implements TestCaseService
 		
 		for (BigInteger bi : projectService.getServicesData(p.getIdProject()))
 		{
-			listIcs.addAll(icsDao.getService(bi.intValue()));
+			listIcs.addAll(icsDao.getByService(bi.intValue()));
 			
 			if (bi.intValue() == 3)
 			{
-				listIcs.addAll(icsDao.getService(5)); //JTF: Change to a generic way
+				listIcs.addAll(icsDao.getByService(5)); //JTF: Change to a generic way
 			}
-			List<Integer> intList = crDao.getIds(p.getIdCertrel());
+			List<BigInteger> intList = crDao.getTestCasesByID(p.getIdCertrel());
 			
 			if (type.equals("Development") || type.equals("Conformance and Interoperability"))
 			{
-				listTC.addAll(tcDao.getServiceWithRestriction("Conformance", bi.intValue(), intList));
-				listTC.addAll(tcDao.getServiceWithRestriction("Interoperability", bi.intValue(), intList));
+				listTC.addAll(tcDao.getServiceWithRestriction("Conformance", bi, intList));
+				listTC.addAll(tcDao.getServiceWithRestriction("Interoperability", bi, intList));
 			}
 			else
 			{
-				listTC.addAll(tcDao.getServiceWithRestriction(type, bi.intValue(), intList));
+				listTC.addAll(tcDao.getServiceWithRestriction(type, bi, intList));
 			}
 		}
 		return checkApplicability(p, listTC, listIcs, map);
@@ -229,8 +229,9 @@ public class TestCaseServiceImpl implements TestCaseService
 
 	@Override
 	@Transactional
-	public List<TestCase> getService(String type, int idService) {
-		return tcDao.getService(type, idService);
+	public List<TestCase> getService(String type, BigInteger idService)
+	{
+		return tcDao.getByTypeAndService(type, idService);
 	}
 
 	@Override
@@ -242,7 +243,7 @@ public class TestCaseServiceImpl implements TestCaseService
 	@Override
 	@Transactional
 	public List<TestCase> list(int idCertRel) {
-		return tcDao.list(idCertRel);
+		return tcDao.listByCertRel(idCertRel);
 	}
 	
 	@Override
@@ -253,7 +254,7 @@ public class TestCaseServiceImpl implements TestCaseService
 	
 	@Override
 	@Transactional
-	public List<Integer> getDisabled(int idTccl)
+	public List<BigInteger> getDisabled(int idTccl)
 	{
 		return tcclDao.getIdsDisabled(idTccl);
 	}

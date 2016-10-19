@@ -13,7 +13,6 @@
  *      ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  *      OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *******************************************************************************/
-
 package com.at4wireless.spring.model;
 
 import javax.persistence.Column;
@@ -24,54 +23,31 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="certrel")
-public class CertificationRelease {
-	
+public class CertificationRelease
+{
 	@Id @GeneratedValue
-	@Column(name="id_certrel")
+	@Column(name = "id_certrel", nullable = false)
 	private int idCertrel;
+	public int getIdCertrel() { return idCertrel; }
+	public void setIdCertrel(int idCertrel) { this.idCertrel = idCertrel; }
 	
-	@Column(name="name")
+	@Column(name = "name", nullable = false)
 	private String name;
+	public String getName() { return name; }
+	public void setName(String name) { this.name = name; }
 	
-	@Column(name="enabled")
+	@Column(name = "enabled", nullable = false)
 	private boolean enabled;
+	public boolean isEnabled() { return enabled; }
+	public void setEnabled(boolean enabled) { this.enabled = enabled; }
 	
-	@Column(name="isRelease")
+	@Column(name = "isRelease", nullable = false)
 	private boolean release;
+	public boolean isRelease() { return release; }
+	public void setRelease(boolean release) { this.release = release; }
 	
-	@Column(name="description")
+	@Column(name = "description")
 	private String description;
-	
-	public int getIdCertrel() {
-		return idCertrel;
-	}
-	public void setIdCertrel(int idCertrel) {
-		this.idCertrel = idCertrel;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public boolean isEnabled() {
-		return enabled;
-	}
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
-	public boolean isRelease() {
-		return release;
-	}
-	public void setRelease(boolean release) {
-		this.release = release;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	
-	
+	public String getDescription() { return description; }
+	public void setDescription(String description) { this.description = description; }
 }

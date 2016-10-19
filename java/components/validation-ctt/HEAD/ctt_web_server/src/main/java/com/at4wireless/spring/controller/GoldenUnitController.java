@@ -15,6 +15,7 @@
  *******************************************************************************/
 package com.at4wireless.spring.controller;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -180,7 +181,7 @@ public class GoldenUnitController
 		
 		if (!(auth instanceof AnonymousAuthenticationToken))
 		{
-			return guService.getFormData(auth.getName(), Integer.parseInt(request.getParameter("idGu")));
+			return guService.getFormData(auth.getName(), new BigInteger(request.getParameter("idGu")));
 		}
 		return new GoldenUnit();
 	}
@@ -234,7 +235,7 @@ public class GoldenUnitController
 		if (!(auth instanceof AnonymousAuthenticationToken))
 		{
 			String username = auth.getName();
-			guService.delete(username, Integer.parseInt(request.getParameter("idGu")));
+			guService.delete(username, new BigInteger(request.getParameter("idGu")));
 			return "redirect:/gu";
 		}
 		else
@@ -284,7 +285,7 @@ public class GoldenUnitController
 		if (!(auth instanceof AnonymousAuthenticationToken))
 		{
 			return (!(guService.exists(auth.getName(), 
-					request.getParameter("name"), Integer.parseInt(request.getParameter("id")))));
+					request.getParameter("name"), new BigInteger(request.getParameter("id")))));
 		}
 		return true;
 	}

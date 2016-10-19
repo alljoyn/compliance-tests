@@ -26,187 +26,98 @@ import javax.persistence.Transient;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
-@Table(name="project")
-public class Project {
-	
+@Table(name = "project")
+public class Project
+{	
 	@Id @GeneratedValue
-	@Column(name="id_project")
+	@Column(name = "id_project", nullable = false)
 	private int idProject;
+	public int getIdProject() { return idProject; }
+	public void setIdProject(int idProject) { this.idProject = idProject; }
 	
 	@NotEmpty
-	@Column(name="name")
+	@Column(name = "name", nullable = false)
 	private String name;
+	public String getName() { return name; }
+	public void setName(String name) { this.name = name; }
 	
-	@Column(name="user")
+	@Column(name = "user", nullable = false)
 	private String user;
+	public String getUser() { return user; }
+	public void setUser(String user) { this.user = user; }
 	
-	@Column(name="created_date")
+	@Column(name = "created_date", nullable = false, updatable = false)
 	private java.sql.Timestamp createdDate;
+	public java.sql.Timestamp getCreatedDate() { return createdDate; }
+	public void setCreatedDate(java.sql.Timestamp createdDate) { this.createdDate = createdDate; }
 	
-	@Column(name="modified_date")
+	@Column(name = "modified_date", nullable = false)
 	private java.sql.Timestamp modifiedDate;
+	public java.sql.Timestamp getModifiedDate() { return modifiedDate; }
+	public void setModifiedDate(java.sql.Timestamp modifiedDate) { this.modifiedDate = modifiedDate; }
 	
-	@Column(name="type")
+	@Column(name = "type", nullable = false)
 	private String type;
+	public String getType() { return type; }
+	public void setType(String type) { this.type = type; }
 	
-	@Transient
-	private String supportedServices;
-	
-	@Column(name="id_certrel")
+	@Column(name = "id_certrel", nullable = false)
 	private int idCertrel;
+	public int getIdCertrel() { return idCertrel; }
+	public void setIdCertrel(int idCertrel) { this.idCertrel = idCertrel; }
 	
-	@Column(name="id_tccl")
+	@Column(name = "id_tccl")
 	private int idTccl;
+	public int getIdTccl() { return idTccl; }
+	public void setIdTccl(int idTccl) { this.idTccl = idTccl; }
 	
-	@Column(name="car_id")
+	@Column(name = "car_id")
 	private String carId;
+	public String getCarId() { return carId; }
+	public void setCarId(String carId) { this.carId = carId; }
 	
-	@Column(name="is_configured")
+	@Column(name = "is_configured", nullable = false)
 	private boolean isConfigured;
+	public boolean isIsConfigured() { return isConfigured; }
+	public void setIsConfigured(boolean isConfigured) { this.isConfigured = isConfigured; }
 	
-	@Column(name="configuration")
+	@Column(name = "configuration")
 	private String configuration;
+	public String getConfiguration() { return configuration; }
+	public void setConfiguration(String configuration) { this.configuration = configuration; }
 	
-	@Column(name="id_dut")
+	@Column(name = "id_dut")
 	private int idDut;
+	public int getIdDut() { return idDut; }
+	public void setIdDut(int idDut) { this.idDut = idDut; }
 	
-	/*@Column(name="id_golden")
-	private int idGolden;*/
-	
-	@Transient
-	private String gUnits;
-	
-	@Column(name="has_results")
+	@Column(name = "has_results", nullable = false)
 	private boolean hasResults;
+	public boolean isHasResults() { return hasResults; }
+	public void setHasResults(boolean hasResults) { this.hasResults = hasResults; }
 	
-	@Column(name="results")
+	@Column(name = "results")
 	private String results;
+	public String getResults() { return results; }
+	public void setResults(String results) { this.results = results; }
 	
-	@Column(name="has_testreport")
+	@Column(name = "has_testreport", nullable = false)
 	private boolean hasTestReport;
+	public boolean isHasTestReport() { return hasTestReport; }
+	public void setHasTestReport(boolean hasTestReport) { this.hasTestReport = hasTestReport; }
 	
 	@Column(name="test_report")
 	private String testReport;
+	public String getTestReport() { return testReport; }
+	public void setTestReport(String testReport) { this.testReport = testReport; }
 	
-	public String getCarId() {
-		return carId;
-	}
-	public void setCarId(String carId) {
-		this.carId = carId;
-	}
-	public int getIdDut() {
-		return idDut;
-	}
-	public void setIdDut(int idDut) {
-		this.idDut = idDut;
-	}
-
-	public String getType() {
-		return type;
-	}
-	public void setType(String type) {
-		this.type = type;
-	}
-	public String getUser() {
-		return user;
-	}
-	public void setUser(String user) {
-		this.user = user;
-	}
+	@Transient
+	private String supportedServices;
+	public String getSupportedServices() { return supportedServices; }
+	public void setSupportedServices(String supportedServices) { this.supportedServices = supportedServices; }
 	
-	public int getIdProject() {
-		return idProject;
-	}
-	public void setIdProject(int idProject) {
-		this.idProject = idProject;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public boolean isIsConfigured() {
-		return isConfigured;
-	}
-	public void setIsConfigured(boolean isConfigured) {
-		this.isConfigured = isConfigured;
-	}
-	public String getConfiguration() {
-		return configuration;
-	}
-	public void setConfiguration(String configuration) {
-		this.configuration = configuration;
-	}
-	public boolean isHasResults() {
-		return hasResults;
-	}
-	public void setHasResults(boolean hasResults) {
-		this.hasResults = hasResults;
-	}
-	public String getResults() {
-		return results;
-	}
-	public void setResults(String results) {
-		this.results = results;
-	}
-	public java.sql.Timestamp getCreatedDate() {
-		return createdDate;
-	}
-	public void setCreatedDate(java.sql.Timestamp createdDate) {
-		this.createdDate = createdDate;
-	}
-	public java.sql.Timestamp getModifiedDate() {
-		return modifiedDate;
-	}
-	public void setModifiedDate(java.sql.Timestamp modifiedDate) {
-		this.modifiedDate = modifiedDate;
-	}
-	public String getSupportedServices() {
-		return supportedServices;
-	}
-	public void setSupportedServices(String supportedServices) {
-		this.supportedServices = supportedServices;
-	}
-	public int getIdCertrel() {
-		return idCertrel;
-	}
-	public void setIdCertrel(int idCertrel) {
-		this.idCertrel = idCertrel;
-	}
-	public int getIdTccl() {
-		return idTccl;
-	}
-	public void setIdTccl(int idTccl) {
-		this.idTccl = idTccl;
-	}
-	/*public int getIdGolden() {
-		return idGolden;
-	}
-	public void setIdGolden(int idGolden) {
-		this.idGolden = idGolden;
-	}*/
-	public boolean isHasTestReport() {
-		return hasTestReport;
-	}
-	public void setHasTestReport(boolean hasTestReport) {
-		this.hasTestReport = hasTestReport;
-	}
-	public String getTestReport() {
-		return testReport;
-	}
-	public void setTestReport(String testReport) {
-		this.testReport = testReport;
-	}
-	
-	public String getgUnits() {
-		return gUnits;
-	}
-	public void setgUnits(String gUnits) {
-		this.gUnits = gUnits;
-	}
-	public String toString() {
-		return (idProject+" : "+name+" : "+modifiedDate+" : "+idCertrel+" : "+type+" : "
-				+idDut);
-	}
+	@Transient
+	private String gUnits;
+	public String getgUnits() { return gUnits; }
+	public void setgUnits(String gUnits) { this.gUnits = gUnits; }
 }

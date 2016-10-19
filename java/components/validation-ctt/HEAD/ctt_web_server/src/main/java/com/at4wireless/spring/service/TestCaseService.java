@@ -16,6 +16,7 @@
 
 package com.at4wireless.spring.service;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +45,7 @@ public interface TestCaseService {
 	 * @param 	idService	service ID
 	 * @return				list of testcases
 	 */
-	public List<TestCase> getService(String type, int idService);
+	public List<TestCase> getService(String type, BigInteger idService);
 	
 	/**
 	 * Returns all stored testcases
@@ -74,7 +75,7 @@ public interface TestCaseService {
 	 * @param 	idTccl	applied TCCL
 	 * @return			list of not allowed testcases
 	 */
-	public List<Integer> getDisabled(int idTccl);
+	public List<BigInteger> getDisabled(int idTccl);
 	
 	/**
 	 * Returns data to be included in Test Report

@@ -15,40 +15,102 @@
  *******************************************************************************/
 package com.at4wireless.spring.dao;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import com.at4wireless.spring.model.CertificationRelease;
 
-/**
- * Interface that manages database CR-related access
- *
- */
-public interface CertificationReleaseDAO {
+public interface CertificationReleaseDAO
+{
 	/**
-	 * Retrieves from database the list of available certification release
-	 * @return	list of CR
+	 * Retrieves from database the list of available certification release (DEBUG and RELEASE)
+	 * 
+	 * @return list of CR
 	 */
 	public List<CertificationRelease> list();
 	
 	/**
-	 * Retrieves from database the name of a certification release
-	 * @param 	id	ID of the CR whose name is going to be returned
-	 * @return		CR name
+	 * Retrieves from database the list of available certification release (RELEASE)
+	 * 
+	 * @return list of CR
 	 */
-	public String getName(int id);
+	public List<CertificationRelease> listRelease();
+	
+	/**
+	 * Retrieves a certain Certification Release using its ID in query
+	 * 
+	 * @param certRelID
+	 * 			ID of the Certification Release to be retrieved
+	 * 
+	 * @return the required Certification Release if exists, null otherwise
+	 */
+	public CertificationRelease getByID(int certRelID);
+	
+	/**
+	 * Retrieves a certain Certification Release's description using its name in the query
+	 * 
+	 * @param certRelName
+	 * 			Name of the Certification Release whose description is going to be retrieved
+	 * 
+	 * @return the required Certification Release's description if exists, null otherwise
+	 */
+	public String getDescription(String certRelName);
 	
 	/**
 	 * Retrieves from database all available test cases in a certification release
-	 * @param 	idCertRel	if of the CR whose test cases are going to be returned
-	 * @return				list of test cases
+	 * 
+	 * @param certRelID
+	 * 			if of the CR whose test cases are going to be returned
+	 * 
+	 * @return list of test cases
 	 */
-	public List<Integer> getIds(int idCertRel);
+	public List<BigInteger> getTestCasesByID(int certRelID);
 	
-	public boolean certificationReleaseExists(String certificationRelease);
-	public int addCertificationRelease(CertificationRelease certificationRelease);
-	public List<CertificationRelease> listReleaseVersions();
-	public boolean isReleaseVersion(String certificationRelease);
-	public void fromDebugToRelease(String certificationRelease);
-	public String getCertificationReleaseDescription(String certificationRelease);
-	public void updateDescription(String certificationRelease, String description);
+	/**
+	 * Adds a new Certification Release to the database
+	 * 
+	 * @param certificationRelease
+	 * 			information about the Certification Release to be added
+	 * 
+	 * @return ID of the newly added Certification Release
+	 */
+	public int add(CertificationRelease certificationRelease);
+	
+	/**
+	 * Changes the value of a Certification Release from DEBUG to RELEASE using its name in the query
+	 * 
+	 * @param certRelName
+	 * 			Name of the Certification Release that is going to be changed
+	 */
+	public void fromDebugToRelease(String certRelName);
+	
+	/**
+	 * Updates the description field of a Certification Release using its name in the query
+	 * 
+	 * @param certRelName
+	 * 			name of the Certification Release whose description is going to be updated
+	 * @param description
+	 * 			text to be set as description of the target Certification Release
+	 */
+	public void updateDescription(String certRelName, String description);
+	
+	/**
+	 * Checks if a certain Certification Release exists
+	 * 
+	 * @param certRelName
+	 * 			Name of the Certification Release whose status is going to be checked
+	 * 
+	 * @return true if the Certification Release exists, false otherwise
+	 */
+	public boolean exists(String certRelName);
+	
+	/**
+	 * Checks if a certain Certification Release is RELEASE version
+	 * 
+	 * @param certRelName
+	 * 			Name of the Certification Release whose status is going to be checked
+	 * 
+	 * @return true if the Certification Release is RELEASE, false otherwise
+	 */
+	public boolean isRelease(String certRelName);
 }

@@ -19,14 +19,10 @@ import java.util.List;
 
 import com.at4wireless.spring.model.Category;
 
-/**
- * Interface that manages database category-related access
- *
- */
 public interface CategoryDAO
 {
 	/**
-	 * Retrieves from database a list of devices categories for Interoperability
+	 * Retrieves a list of devices categories for Interoperability from database 
 	 * 
 	 * @return list of categories
 	 */
@@ -35,10 +31,10 @@ public interface CategoryDAO
 	/**
 	 * Retrieves a category from database
 	 * 
-	 * @param idCategory
+	 * @param categoryID
 	 * 			ID of the category to be retrieved
 	 * 
 	 * @return category if found, null otherwise
 	 */
-	public Category getCategoryById(int idCategory);
+	public Category getById(int categoryID);
 }

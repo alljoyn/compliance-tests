@@ -20,28 +20,40 @@ import java.util.List;
 
 import com.at4wireless.spring.model.Ixit;
 
-/**
- * Interface that manages database IXIT-related access
- *
- */
-public interface IxitDAO {
-	
+public interface IxitDAO
+{
 	/**
 	 * Retrieves the list of IXIT
 	 * 
-	 * @return	list of IXIT
+	 * @return list of IXIT
 	 */
 	public List<Ixit> list();
 	
 	/**
+	 * Retrieves an IXIT using its name in query
+	 * 
+	 * @param name
+	 * 			name of the IXIT to be retrieved
+	 * 
+	 * @return retrieved IXIT
+	 */
+	public Ixit get(String name);
+	
+	/**
 	 * Retrieves a list of IXIT of a certain service framework
 	 * 
-	 * @param 	idService	service framework ID
-	 * @return				list of IXIT
+	 * @param serviceID
+	 * 			ID of the Service Framework whose IXIT are going to be retrieved
+	 * 
+	 * @return list of IXIT
 	 */
-	public List<Ixit> getService(int idService);
+	public List<Ixit> getByService(int serviceID);
 	
-	public void add(Ixit ixit);
-	
-	public void update(Ixit ixit);
+	/**
+	 * Creates a new IXIT
+	 * 
+	 * @param newIxit
+	 * 			information of the new IXIT to be added to database
+	 */
+	public void add(Ixit newIxit);
 }
