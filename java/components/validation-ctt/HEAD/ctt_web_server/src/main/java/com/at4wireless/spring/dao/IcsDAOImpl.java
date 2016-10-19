@@ -18,9 +18,10 @@ package com.at4wireless.spring.dao;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
+
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,43 +29,54 @@ import org.springframework.transaction.annotation.Transactional;
 import com.at4wireless.spring.model.Ics;
 
 @Repository
-public class IcsDAOImpl implements IcsDAO {
+public class IcsDAOImpl implements IcsDAO
+{
 	@Autowired
 	private SessionFactory sessionFactory;
 
 	@Override
-	public List<Ics> list() {
-		@SuppressWarnings("unchecked")
-		List<Ics> listIcs = (List<Ics>) sessionFactory.getCurrentSession()
-				.createCriteria(Ics.class)
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-
-		return listIcs;
+	public List<Ics> list()
+	{
+		TypedQuery<Ics> query = sessionFactory.getCurrentSession()
+				.createNamedQuery("select_all_ics", Ics.class);
+		
+		return query.getResultList();
 	}
 
 	@Override
 	@Transactional
-	public List<Ics> getService(int idService) {
-		@SuppressWarnings("unchecked")
-		List<Ics> listIcs = (List<Ics>) sessionFactory.getCurrentSession()
-				.createCriteria(Ics.class)
-					.add(Restrictions.like("serviceGroup", idService))
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-
-		return listIcs;
+	public List<Ics> getByService(int serviceID)
+	{
+		TypedQuery<Ics> query = sessionFactory.getCurrentSession()
+				.createNamedQuery("select_ics_by_service_group", Ics.class)
+				.setParameter("serviceGroup", serviceID);
+		
+		return query.getResultList();
 	}
 
 	@Override
-	public void add(Ics ics)
+	public void add(Ics newIcs)
 	{
-		sessionFactory.getCurrentSession().saveOrUpdate(ics);
+		sessionFactory.getCurrentSession().saveOrUpdate(newIcs);
 	}
 
 	@Override
-	public void update(Ics ics)
+	public Ics get(String name)
 	{
-		sessionFactory.getCurrentSession().createQuery("update Ics set name = '"+ics.getName()
-		+"', serviceGroup = '"+ics.getServiceGroup()+"', scrExpression = '"+ics.getScrExpression()
-		+"', description = '"+ics.getDescription()+"' where id = '"+ics.getId()+"'").executeUpdate();
+		TypedQuery<Ics> query = sessionFactory.getCurrentSession()
+				.createNamedQuery("select_ics_by_name", Ics.class)
+				.setParameter("name", name);
+		
+		Ics foundIcs = null;
+		try
+		{
+			foundIcs = query.getSingleResult();
+		}
+		catch (NoResultException e)
+		{
+			
+		}
+		
+		return foundIcs;
 	}
 }

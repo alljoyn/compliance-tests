@@ -22,56 +22,50 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
+
+@NamedQueries({
+	@NamedQuery(
+		name = "select_all_ixit",
+		query = "from Ixit"
+		),
+	@NamedQuery(
+		name = "select_ixit_by_service_group",
+		query = "from Ixit where serviceGroup = :serviceGroup"
+		),
+	@NamedQuery(
+		name = "select_ixit_by_name",
+		query = "from Ixit where name = :name"
+		)
+})
 @Entity
-@Table(name="ixit")
-public class Ixit {
-	
+@Table(name = "ixit")
+public class Ixit
+{	
 	@Id @GeneratedValue
-	@Column(name="id_ixit")
+	@Column(name = "id_ixit", nullable = false)
 	private int idIxit;
+	public int getIdIxit() { return idIxit; }
+	public void setIdIxit(int idIxit) { this.idIxit = idIxit; }
 	
-	@Column(name="name")
+	@Column(name = "name", nullable = false)
 	private String name;
+	public String getName() { return name; }
+	public void setName(String name) { this.name = name; }
 	
-	@Column(name="value")
+	@Column(name = "value", nullable = false)
 	private String value;
+	public String getValue() { return value; }
+	public void setValue(String value) { this.value = value; }
 	
-	@Column(name="service_group")
+	@Column(name = "service_group", nullable = false)
 	private int serviceGroup;
+	public int getServiceGroup() { return serviceGroup; }
+	public void setServiceGroup(int serviceGroup) { this.serviceGroup = serviceGroup; }
 	
-	@Column(name="description")
+	@Column(name = "description")
 	private String description;
-	
-	public int getIdIxit() {
-		return idIxit;
-	}
-	public void setIdIxit(int idIxit) {
-		this.idIxit = idIxit;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getValue() {
-		return value;
-	}
-	public void setValue(String value) {
-		this.value = value;
-	}
-	public int getServiceGroup() {
-		return serviceGroup;
-	}
-	public void setServiceGroup(int serviceGroup) {
-		this.serviceGroup = serviceGroup;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	
-	
+	public String getDescription() { return description; }
+	public void setDescription(String description) { this.description = description; }
 }

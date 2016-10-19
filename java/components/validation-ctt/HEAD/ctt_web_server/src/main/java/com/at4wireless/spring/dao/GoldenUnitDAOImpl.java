@@ -20,9 +20,11 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.Criteria;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
+
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -35,112 +37,141 @@ public class GoldenUnitDAOImpl implements GoldenUnitDAO
 	private SessionFactory sessionFactory;
 
 	@Override
-	public List<GoldenUnit> list(String user)
+	public List<GoldenUnit> list(String username)
 	{
+		TypedQuery<GoldenUnit> query = sessionFactory.getCurrentSession()
+				.createQuery("from GoldenUnit where user = :user", GoldenUnit.class)
+				.setParameter("user", username);
+		
+		return query.getResultList();
+	}
+	
+	@Override
+	public GoldenUnit getByID(String username, BigInteger goldenUnitID)
+	{
+		TypedQuery<GoldenUnit> query = sessionFactory.getCurrentSession()
+				.createQuery("from GoldenUnit where user = :user and idGolden = :idGolden", GoldenUnit.class)
+				.setParameter("user", username)
+				.setParameter("idGolden", goldenUnitID);
+		
+		GoldenUnit foundGoldenUnit = null;
+		try
+		{
+			foundGoldenUnit = query.getSingleResult();
+		}
+		catch (NoResultException e)
+		{
+			
+		}
+		
+		return foundGoldenUnit;
+	}
+
+	@Override
+	public void add(GoldenUnit newGoldenUnit)
+	{
+		sessionFactory.getCurrentSession().save(newGoldenUnit);		
+	}
+	
+	@Override
+	public void deleteByID(BigInteger goldenUnitID)
+	{
+		/*
+		 * TODO : Change NativeQuery to TypedQuery
+		 *  
+		 */
+		sessionFactory.getCurrentSession().createNativeQuery("delete from project_golden where id_golden = :idGolden")
+				.setParameter("idGolden", goldenUnitID)
+				.executeUpdate();
+		
+		sessionFactory.getCurrentSession()
+				.createQuery("delete from GoldenUnit where idGolden = :idGolden")
+				.setParameter("idGolden", goldenUnitID)
+				.executeUpdate();
+	}
+	
+	@Override
+	public void saveChanges(GoldenUnit goldenUnit)
+	{
+		/*
+		 * TODO : Check if there is a shorter way to update an existent Object
+		 * 
+		 */
+		sessionFactory.getCurrentSession()
+				.createQuery("update GoldenUnit set name = :name, modifiedDate = :modifiedDate, "
+						+ "category = :category, manufacturer = :manufacturer, model = :model, "
+						+ "swVer = :swVer, hwVer = :hwVer, description = :description where idGolden = :idGolden")
+				.setParameter("name", goldenUnit.getName())
+				.setParameter("modifiedDate", goldenUnit.getModifiedDate())
+				.setParameter("category", goldenUnit.getCategory())
+				.setParameter("manufacturer", goldenUnit.getManufacturer())
+				.setParameter("model", goldenUnit.getModel())
+				.setParameter("swVer", goldenUnit.getSwVer())
+				.setParameter("hwVer", goldenUnit.getHwVer())
+				.setParameter("description", goldenUnit.getDescription())
+				.setParameter("idGolden", goldenUnit.getIdGolden())
+				.executeUpdate();
+	}
+
+	@Override
+	public GoldenUnit getByName(String username, String goldenUnitName)
+	{
+		TypedQuery<GoldenUnit> query = sessionFactory.getCurrentSession()
+				.createQuery("from GoldenUnit where user = :user and name = :name", GoldenUnit.class)
+				.setParameter("user", username)
+				.setParameter("name", goldenUnitName);
+		
+		GoldenUnit foundGoldenUnit = null;
+		try
+		{
+			foundGoldenUnit = query.getSingleResult();
+		}
+		catch (NoResultException e)
+		{
+			
+		}
+		
+		return foundGoldenUnit;
+	}
+
+	@Override
+	public List<GoldenUnit> listByProjectID(int projectID)
+	{
+		/*
+		 * TODO :	Change NativeQuery to TypedQuery
+		 * 			Casting BigInteger to Integer
+		 * 			Add ManyToMany to Project and GoldenUnit models in order to retrieve them using one query
+		 * 
+		 */
 		@SuppressWarnings("unchecked")
-		List<GoldenUnit> listGolden = (List<GoldenUnit>) sessionFactory.getCurrentSession()
-				.createCriteria(GoldenUnit.class)
-					.add(Restrictions.like("user", user))
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-
-		return listGolden;
-	}
-	
-	@Override
-	public GoldenUnit getGu(String user, int idGolden)
-	{
-		@SuppressWarnings("unchecked")
-		List<GoldenUnit> listGolden = (List<GoldenUnit>) sessionFactory.getCurrentSession()
-				.createCriteria(GoldenUnit.class)
-					.add(Restrictions.like("user", user))
-					.add(Restrictions.like("idGolden", idGolden))
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
+		NativeQuery<Integer> query = sessionFactory.getCurrentSession()
+				.createNativeQuery("select id_golden from project_golden where id_project = :idProject")
+				.setParameter("idProject", projectID);
 		
-		if (listGolden.isEmpty())
+		List<Integer> goldenUnitIDs = query.getResultList();
+		List<GoldenUnit> goldenUnitList = new ArrayList<GoldenUnit>();
+		
+		if (!goldenUnitIDs.isEmpty())
 		{
-			return null;
+			TypedQuery<GoldenUnit> guQuery = sessionFactory.getCurrentSession()
+					.createQuery("from GoldenUnit where idGolden in (:ids)", GoldenUnit.class)
+					.setParameterList("ids", goldenUnitIDs);
+			
+			goldenUnitList = guQuery.getResultList();
 		}
-		else
-		{
-			return listGolden.get(0);
-		}
+		
+		return goldenUnitList;
 	}
 
 	@Override
-	public void addGu(GoldenUnit gu)
+	public void deleteByProjectID(int projectID)
 	{
-		sessionFactory.getCurrentSession().save(gu);		
-	}
-	
-	@Override
-	public void delGu(int idGolden)
-	{
-		sessionFactory.getCurrentSession().createSQLQuery("delete from project_golden where id_golden="+idGolden).executeUpdate();
-		sessionFactory.getCurrentSession().createSQLQuery("delete from golden where id_golden ="+idGolden).executeUpdate();
-	}
-	
-	@Override
-	public void saveChanges(GoldenUnit gu)
-	{
-		sessionFactory.getCurrentSession().createQuery("update GoldenUnit set name = '"+gu.getName()
-				+"', modifiedDate = '"+gu.getModifiedDate()+"', category = '"+gu.getCategory()
-				+"', manufacturer = '"+gu.getManufacturer()+"', model = '"+gu.getModel()
-				+"', swVer = '"+gu.getSwVer()+"', hwVer='"+gu.getHwVer()
-				+"', description = '"+gu.getDescription()
-				+"' where idGolden = '"+gu.getIdGolden()+"'").executeUpdate();
-	}
-
-	@Override
-	public GoldenUnit getGuByName(String user, String name)
-	{
-		@SuppressWarnings("unchecked")
-		List<GoldenUnit> listGolden = (List<GoldenUnit>) sessionFactory.getCurrentSession()
-				.createCriteria(GoldenUnit.class)
-					.add(Restrictions.like("user", user))
-					.add(Restrictions.like("name", name))
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-
-		if (listGolden.isEmpty())
-		{
-			return null;	
-		}
-		else
-		{
-			return listGolden.get(0);
-		}
-	}
-
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<GoldenUnit> getGuList(int idProject)
-	{
-		List<BigInteger> listIds = (List<BigInteger>) sessionFactory.getCurrentSession()
-				.createSQLQuery("select id_golden from project_golden where id_project="+idProject).list();
-		
-		List<Integer> cast = new ArrayList<Integer>();
-		
-		for (BigInteger bi : listIds)
-		{
-			cast.add(bi.intValue());
-		}
-		
-		List<GoldenUnit> guList = new ArrayList<GoldenUnit>();
-		
-		if (!cast.isEmpty())
-		{
-			guList = (List<GoldenUnit>) sessionFactory.getCurrentSession()
-					.createCriteria(GoldenUnit.class)
-						.add(Restrictions.in("idGolden", cast))
-					.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-		}
-		
-		return guList;
-	}
-
-	@Override
-	public void deleteProjectGus(int idProject)
-	{
-		sessionFactory.getCurrentSession().createSQLQuery("delete from project_golden where id_project="+idProject).executeUpdate();
+		/*
+		 * TODO : Change NativeQuery to TypedQuery
+		 */
+		sessionFactory.getCurrentSession()
+				.createNativeQuery("delete from project_golden where id_project = :idProject")
+				.setParameter("idProject", projectID)
+				.executeUpdate();
 	}
 }

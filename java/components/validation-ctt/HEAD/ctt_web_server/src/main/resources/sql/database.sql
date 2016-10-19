@@ -241,7 +241,11 @@ INSERT INTO certrel (id_certrel,name,enabled,isRelease,description) VALUES (4,'v
 INSERT INTO certrel (id_certrel,name,enabled,isRelease,description) VALUES (5,'v15.04.00',1, 1, "CORE v15.04.00, BASE v15.04.00");
 INSERT INTO certrel (id_certrel,name,enabled,isRelease,description) VALUES (6,'v15.04.00a',1, 1, "CORE v15.04.00a, BASE v15.04.00");
 INSERT INTO certrel (id_certrel,name,enabled,isRelease,description) VALUES (7,'v15.04.00b',1, 1, "CORE v15.04.00b, BASE v15.04.00");
-INSERT INTO certrel (id_certrel,name,enabled,isRelease,description) VALUES (8,'v15.09.00',1, 0, "CORE v15.09.00, BASE v15.04.00");
+INSERT INTO certrel (id_certrel,name,enabled,isRelease,description) VALUES (8,'v15.09.00',1, 1, "CORE v15.09.00, BASE v15.09.00");
+INSERT INTO certrel (id_certrel,name,enabled,isRelease,description) VALUES (9,'v15.09.00a', 1, 1, "CORE v15.09.00a, BASE v15.09.00");
+INSERT INTO certrel (id_certrel,name,enabled,isRelease,description) VALUES (10,'v16.04.00', 1, 1, "CORE v16.04.00, BASE v16.04.00");
+INSERT INTO certrel (id_certrel,name,enabled,isRelease,description) VALUES (11,'v16.04.00a', 1, 1, "CORE v16.04.00a, BASE v16.04.00");
+INSERT INTO certrel (id_certrel,name,enabled,isRelease,description) VALUES (12,'v16.10.00',1,0, "CORE v16.10.00, BASE v16.04.00");
 
 
 INSERT INTO services (id_service,name,enabled) VALUES (1,'Core Interface',1);
@@ -255,6 +259,7 @@ INSERT INTO services (id_service,name,enabled) VALUES (8,'Gateway',1);
 INSERT INTO services (id_service,name,enabled) VALUES (9,'Smart Home',1);
 INSERT INTO services (id_service,name,enabled) VALUES (10,'Time',1);
 INSERT INTO services (id_service,name,enabled) VALUES (11,'LSF Lamp Controller',1);
+INSERT INTO services (id_service,name,enabled) VALUES (12,'CDM',1);
 
 
 INSERT INTO ics (id_ics,name,value,service_group,scr_expression,description) VALUES (1,'ICSCO_DateOfManufacture',0,1,null,'Support of About Interface GetAboutData method DateOfManufacture data field');
@@ -343,6 +348,18 @@ INSERT INTO ics (id_ics,name,value,service_group,scr_expression,description) VAL
 INSERT INTO ics (id_ics,name,value,service_group,scr_expression,description) VALUES (85,'ICSLC_ControllerServiceMasterSceneInterface',0,11,'((ICSLC_LightingControllerServiceFramework)&(ICSLC_ControllerServiceMasterSceneInterface))|((!(ICSLC_LightingControllerServiceFramework))&(!(ICSLC_ControllerServiceMasterSceneInterface)))','Support of ControllerService.MasterScene Interface');
 INSERT INTO ics (id_ics,name,value,service_group,scr_expression,description) VALUES (86,'ICSLC_LeaderElectionAndStateSyncInterface',0,11,'((ICSLC_LightingControllerServiceFramework)&(ICSLC_LeaderElectionAndStateSyncInterface))|((!(ICSLC_LightingControllerServiceFramework))&(!(ICSLC_LeaderElectionAndStateSyncInterface)))','Support of LeaderElectionAndStateSync Interface');
 INSERT INTO ics (id_ics,name,value,service_group,scr_expression,description) VALUES (87,'ICSCO_DeviceName',0,1,null,'Support of About Interface GetAboutData method DeviceName data field');
+INSERT INTO ics (id_ics,name,value,service_group,scr_expression,description) VALUES (88,'ICSCO_SrpKeyX',false,1,'((ICSCO_SrpKeyX)|(ICSCO_SrpLogon)|(ICSCO_EcdheNull)|(ICSCO_EcdhePsk)|(ICSCO_EcdheEcdsa)|(ICSCO_EcdheSpeke)|(ICSCO_RsaKeyX))','Support of ALLJOYN_SRP_KEYX auth mechanism');
+INSERT INTO ics (id_ics,name,value,service_group,scr_expression,description) VALUES (89,'ICSCO_SrpLogon',false,1,'((ICSCO_SrpKeyX)|(ICSCO_SrpLogon)|(ICSCO_EcdheNull)|(ICSCO_EcdhePsk)|(ICSCO_EcdheEcdsa)|(ICSCO_EcdheSpeke)|(ICSCO_RsaKeyX)|(ICSCO_PinKeyX))','Support of ALLJOYN_SRP_LOGON auth mechanism');
+INSERT INTO ics (id_ics,name,value,service_group,scr_expression,description) VALUES (90,'ICSCO_EcdheNull',false,1,'(ICSCO_Security20 & ICSCO_EcdheNull)|((!(ICSCO_Security20))&((ICSCO_SrpKeyX)|(ICSCO_SrpLogon)|(ICSCO_EcdheNull)|(ICSCO_EcdhePsk)|(ICSCO_EcdheEcdsa)|(ICSCO_EcdheSpeke)|(ICSCO_RsaKeyX)|(ICSCO_PinKeyX)))','Support of ALLJOYN_ECDHE_NULL auth mechanism');
+INSERT INTO ics (id_ics,name,value,service_group,scr_expression,description) VALUES (91,'ICSCO_EcdhePsk',false,1,'((ICSCO_SrpKeyX)|(ICSCO_SrpLogon)|(ICSCO_EcdheNull)|(ICSCO_EcdhePsk)|(ICSCO_EcdheEcdsa)|(ICSCO_EcdheSpeke)|(ICSCO_RsaKeyX)|(ICSCO_PinKeyX))','Support of ALLJOYN_ECDHE_PSK auth mechanism');
+INSERT INTO ics (id_ics,name,value,service_group,scr_expression,description) VALUES (93,'ICSCO_EcdheEcdsa',false,1,'(ICSCO_Security20 & ICSCO_EcdheEcdsa)|((!(ICSCO_Security20))&((ICSCO_SrpKeyX)|(ICSCO_SrpLogon)|(ICSCO_EcdheNull)|(ICSCO_EcdhePsk)|(ICSCO_EcdheEcdsa)|(ICSCO_EcdheSpeke)|(ICSCO_RsaKeyX)|(ICSCO_PinKeyX)))','Support of ALLJOYN_ECDHE_ECDSA auth mechanism');
+INSERT INTO ics (id_ics,name,value,service_group,scr_expression,description) VALUES (94,'ICSCO_EcdheSpeke',false,1,'((ICSCO_SrpKeyX)|(ICSCO_SrpLogon)|(ICSCO_EcdheNull)|(ICSCO_EcdhePsk)|(ICSCO_EcdheEcdsa)|(ICSCO_EcdheSpeke))','Support of ALLJOYN_ECDHE_SPEKE auth mechanism');
+INSERT INTO ics (id_ics,name,value,service_group,scr_expression,description) VALUES (95,'ICSCO_RsaKeyX',false,1,'((ICSCO_SrpKeyX)|(ICSCO_SrpLogon)|(ICSCO_EcdheNull)|(ICSCO_EcdhePsk)|(ICSCO_EcdheEcdsa)|(ICSCO_RsaKeyX)|(ICSCO_PinKeyX))','Support of ALLJOYN_RSA_KEYX auth mechanism');
+INSERT INTO ics (id_ics,name,value,service_group,scr_expression,description) VALUES (96,'ICSCO_PinKeyX',false,1,'((ICSCO_SrpKeyX)|(ICSCO_SrpLogon)|(ICSCO_EcdheNull)|(ICSCO_EcdhePsk)|(ICSCO_EcdheEcdsa)|(ICSCO_RsaKeyX)|(ICSCO_PinKeyX))','Support of ALLJOYN_PIN_KEYX auth mechanism');
+INSERT INTO ics (id_ics,name,value,service_group,scr_expression,description) VALUES (97,'ICSCO_Security20',false,1,null,'Support of Security 2.0 feature');
+INSERT INTO ics (id_ics,name,value,service_group,scr_expression,description) VALUES (98,'ICSCO_ApplicationInterface',false,1,'(ICSCO_Security20 & ICSCO_ApplicationInterface)','Support of Security.Application interface');
+INSERT INTO ics (id_ics,name,value,service_group,scr_expression,description) VALUES (99,'ICSCO_ManagedApplicationInterface',false,1,'(ICSCO_Security20 & ICSCO_ManagedApplicationInterface)','Support of Security.ManagedApplication interface');
+
 
 INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (1,'IXITCO_AboutVersion','1',1,'About Interface version number');
 INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (2,'IXITCO_AppId','',1,'The globally unique identifier for the application');
@@ -424,6 +441,28 @@ INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (77,'IXIT
 INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (78,'IXITCO_Description','',1,'Detailed description expressed in language tags as in RFC 5646');
 INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (79,'IXITCO_DateOfManufacture','',1,'Date of manufacture (input format depends on web browser used)');
 INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (80,'IXITCO_SupportUrl','',1,'Support URL (populated by the manufacturer)');
+INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (81,'IXITCO_SrpKeyXPincode','000000',1,'Pincode to use when ALLJOYN_SRP_KEYX authentication is required');
+INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (82,'IXITCO_SrpLogonUser','',1,'User to use when ALLJOYN_SRP_LOGON authentication is required');
+INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (83,'IXITCO_SrpLogonPass','',1,'Pass to use when ALLJOYN_SRP_LOGON authentication is required');
+INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (84,'IXITCO_EcdhePskPassword','000000',1,'Password to use when ALLJOYN_ECDHE_PSK authentication is required');
+INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (85,'IXITCO_EcdheEcdsaPrivateKey','',1,'Private Key to use when ALLJOYN_ECDHE_ECDSA authentication is required');
+INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (86,'IXITCO_EcdheEcdsaCertChain','',1,'Cert chain to use when ALLJOYN_ECDHE_ECDSA authentication is required');
+INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (87,'IXITCO_EcdheSpekePassword','000000',1,'Password to use when ALLJOYN_ECDHE_SPEKE authentication is required');
+INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (88,'IXITCO_SrpKeyXWrongPincode','123456',1,'Wrong pincode to test ALLJOYN_SRP_KEYX authentication');
+INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (89,'IXITCO_SrpLogonWrongPass','wrongPass',1,'Wrong password to test ALLJOYN_SRP_LOGON authentication');
+INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (90,'IXITCO_EcdhePskWrongPassword','123456',1,'Wrong password to use with ALLJOYN_ECDHE_PSK authentication');
+INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (91,'IXITCO_EcdheEcdsaWrongPrivateKey','',1,'Wrong private key to use with ALLJOYN_ECDHE_ECDSA authentication');
+INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (92,'IXITCO_EcdheEcdsaWrongCertChain','',1,'Wrong cert chain to use with ALLJOYN_ECDHE_ECDSA authentication');
+INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (93,'IXITCO_EcdheSpekeWrongPassword','123456',1,'Wrong password to use with ALLJOYN_ECDHE_SPEKE authentication');
+INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (94,'IXITCO_RsaKeyXPrivateKey','',1,'Private Key to use when ALLJOYN_RSA_KEYX authentication is required');
+INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (95,'IXITCO_RsaKeyXCertX509','',1,'X.509 Certificate to use when ALLJOYN_RSA_KEYX authentication is required');
+INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (96,'IXITCO_RsaKeyXWrongPrivateKey','',1,'Wrong private key to use with ALLJOYN_RSA_KEYX authentication');
+INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (97,'IXITCO_RsaKeyXWrongCertX509','',1,'Wrong X.509 Certificate to use with ALLJOYN_RSA_KEYX authentication');
+INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (98,'IXITCO_PinKeyXPincode','000000',1,'Pincode to use when ALLJOYN_PIN_KEYX authentication is required');
+INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (99,'IXITCO_PinKeyXWrongPincode','123456',1,'Wrong pincode to test ALLJOYN_PIN_KEYX authentication');
+INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (100,'IXITCO_ApplicationVersion','1',1,'Security.Application interface version number');
+INSERT INTO ixit (id_ixit,name,value,service_group,description) VALUES (101,'IXITCO_ManagedApplicationVersion','2',1,'Security.ManagedApplication interface version number');
+
 
 INSERT INTO parameters (id_param,name,value,description) VALUES (1,'GPCO_AnnouncementTimeout','30','About announcement timeout in seconds');
 INSERT INTO parameters (id_param,name,value,description) VALUES (2,'GPON_WaitSoftAP','12000','Onboarding Service Framework time to wait for Soft AP in ms');
@@ -469,10 +508,10 @@ INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_pro
 INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (24,'Onboarding-v1-06','Conformance','(ICSON_OnboardingInterface)',3,null,null,null,'Invalid passphrase for personal AP provided to ConfigWiFi()');
 INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (25,'Onboarding-v1-07','Conformance','(ICSON_OnboardingInterface)',3,null,null,null,'AuthType value of "any" provided to ConfigWiFi()');
 INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (26,'Onboarding-v1-08','Conformance','(ICSON_OnboardingInterface)',3,null,null,null,'GetScanInfo() returns results or FeatureNotAvailable error');
-INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (27,'Onboarding-v1-09','Conformance','(ICSON_OnboardingInterface)',3,null,null,null,'Call onboarding method without proper authentication');
-INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (28,'Onboarding-v1-10','Conformance','(ICSON_OnboardingInterface)&(ICSCF_ConfigurationInterface)',3,null,null,null,'Call Onboarding method after changing the passcode');
-INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (29,'Onboarding-v1-11','Conformance','(ICSON_OnboardingInterface)&(ICSCF_FactoryResetMethod)',3,null,null,null,'Factory reset');
-INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (30,'Onboarding-v1-12','Conformance','(ICSON_OnboardingInterface)&(ICSCF_FactoryResetMethod)',3,null,null,null,'Factory reset resets passcode');
+INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (27,'Onboarding-v1-09','Conformance','(ICSON_OnboardingInterface)&((ICSCO_SrpKeyX)|(ICSCO_EcdhePsk)|(ICSCO_EcdheSpeke)|(ICSCO_PinKeyX))',3,null,null,null,'Call onboarding method without proper authentication');
+INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (28,'Onboarding-v1-10','Conformance','(ICSON_OnboardingInterface)&(ICSCF_ConfigurationInterface)&((ICSCO_SrpKeyX)|(ICSCO_EcdhePsk)|(ICSCO_EcdheSpeke)|(ICSCO_PinKeyX))',3,null,null,null,'Call Onboarding method after changing the passcode');
+INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (29,'Onboarding-v1-11','Conformance','(ICSON_OnboardingInterface)&(ICSCF_FactoryResetMethod)&((ICSCO_SrpKeyX)|(ICSCO_EcdhePsk)|(ICSCO_EcdheSpeke)|(ICSCO_PinKeyX))',3,null,null,null,'Factory reset');
+INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (30,'Onboarding-v1-12','Conformance','(ICSON_OnboardingInterface)&(ICSCF_FactoryResetMethod)&((ICSCO_SrpKeyX)|(ICSCO_EcdhePsk)|(ICSCO_EcdheSpeke)|(ICSCO_PinKeyX))',3,null,null,null,'Factory reset resets passcode');
 INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (31,'ControlPanel-v1-01','Conformance','((ICSCP_ControlPanelInterface)&((ICSCP_ContainerInterface)|(ICSCP_SecuredContainerInterface)))',4,null,null,null,'Verify all ControlPanel bus objects');
 INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (32,'ControlPanel-v1-02','Conformance','((ICSCP_ContainerInterface)|(ICSCP_SecuredContainerInterface))',4,null,null,null,'Verify all Container bus objects');
 INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (33,'ControlPanel-v1-03','Conformance','(ICSCP_PropertyInterface)|(ICSCP_SecuredPropertyInterface)',4,null,null,null,'Verify all Property bus objects');
@@ -484,7 +523,7 @@ INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_pro
 INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (39,'ControlPanel-v1-09','Conformance','(ICSCP_HTTPControlInterface)',4,null,null,null,'Verify all HTTPControl bus objects');
 INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (40,'ControlPanel-v1-10','Conformance','((ICSCP_SecuredContainerInterface)|(ICSCP_SecuredPropertyInterface)|(ICSCP_SecuredActionInterface)|(ICSCP_SecuredDialogInterface)|(ICSCP_SecuredListPropertyInterface))',4,null,null,null,'Verify all secured ControlPanel bus objects');
 INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (41,'Config-v1-01','Conformance','(ICSCF_ConfigurationInterface)',5,null,null,null,'System App AppId equals DeviceId');
-INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (42,'Config-v1-02','Conformance','(ICSCF_ConfigurationInterface)',5,null,null,null,'Call a Config interface method without proper authentication');
+INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (42,'Config-v1-02','Conformance','(ICSCF_ConfigurationInterface)&((ICSCO_SrpKeyX)|(ICSCO_SrpLogon)|(ICSCO_EcdhePsk)|(ICSCO_EcdheEcdsa)|(ICSCO_EcdheSpeke)|(ICSCO_PinKeyX)|(ICSCO_RsaKeyX))',5,null,null,null,'Call a Config interface method without proper authentication');
 INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (43,'Config-v1-04','Conformance','(ICSCF_ConfigurationInterface)',5,null,null,null,'GetConfigurations() method with default language');
 INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (44,'Config-v1-05','Conformance','(ICSCF_ConfigurationInterface)',5,null,null,null,'GetConfigurations() method with unspecified language');
 INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (45,'Config-v1-06','Conformance','(ICSCF_ConfigurationInterface)',5,null,null,null,'GetConfigurations() method for each supported language');
@@ -503,10 +542,10 @@ INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_pro
 INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (58,'Config-v1-25','Conformance','(ICSCF_ConfigurationInterface)',5,null,null,null,'ResetConfigurations() method for an invalid field');
 INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (59,'Config-v1-26','Conformance','(ICSCF_ConfigurationInterface)',5,null,null,null,'Restart() method');
 INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (60,'Config-v1-27','Conformance','(ICSCF_ConfigurationInterface)',5,null,null,null,'Restart() method persists configuration changes');
-INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (61,'Config-v1-29','Conformance','(ICSCF_ConfigurationInterface)',5,null,null,null,'SetPasscode() method with a new value');
-INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (62,'Config-v1-30','Conformance','(ICSCF_ConfigurationInterface)',5,null,null,null,'SetPasscode() method with a one-character value');
-INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (63,'Config-v1-31','Conformance','(ICSCF_ConfigurationInterface)',5,null,null,null,'SetPasscode() method with special characters');
-INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (64,'Config-v1-32','Conformance','(ICSCF_ConfigurationInterface)',5,null,null,null,'Restart() method persists changed passcode');
+INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (61,'Config-v1-29','Conformance','(ICSCF_ConfigurationInterface)&((ICSCO_SrpKeyX)|(ICSCO_EcdhePsk)|(ICSCO_EcdheSpeke)|(ICSCO_PinKeyX))',5,null,null,null,'SetPasscode() method with a new value');
+INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (62,'Config-v1-30','Conformance','(ICSCF_ConfigurationInterface)&((ICSCO_SrpKeyX)|(ICSCO_EcdhePsk)|(ICSCO_EcdheSpeke)|(ICSCO_PinKeyX))',5,null,null,null,'SetPasscode() method with a one-character value');
+INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (63,'Config-v1-31','Conformance','(ICSCF_ConfigurationInterface)&((ICSCO_SrpKeyX)|(ICSCO_EcdhePsk)|(ICSCO_EcdheSpeke)|(ICSCO_PinKeyX))',5,null,null,null,'SetPasscode() method with special characters');
+INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (64,'Config-v1-32','Conformance','(ICSCF_ConfigurationInterface)&((ICSCO_SrpKeyX)|(ICSCO_EcdhePsk)|(ICSCO_EcdheSpeke)|(ICSCO_PinKeyX))',5,null,null,null,'Restart() method persists changed passcode');
 INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (65,'Config-v1-33','Conformance','(ICSCF_FactoryResetMethod)',5,null,null,null,'FactoryReset() method');
 INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (66,'Config-v1-34','Conformance','(ICSCF_FactoryResetMethod)',5,null,null,null,'FactoryReset() method clears configured data');
 INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (67,'Config-v1-35','Conformance','(ICSCF_FactoryResetMethod)',5,null,null,null,'FactoryReset() method resets the passcode');
@@ -668,6 +707,13 @@ INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_pro
 INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (223,'IOP_AudioSource-v1-05','Interoperability','(ICSAU_PortAudioSourceInterface)',7,null,null,null,'Command playback stop');
 INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (224,'IOP_AudioSource-v1-06','Interoperability','(ICSAU_PortAudioSourceInterface)',7,null,null,null,'Command mute state');
 INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (225,'IOP_AudioSource-v1-07','Interoperability','(ICSAU_PortAudioSourceInterface)',7,null,null,null,'Command volume control');
+INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (226,'Security20-v1-01','Conformance','(ICSCO_ApplicationInterface)',1,null,null,null,'Claimable DUT emits Application.State signal');
+INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (227,'Security20-v1-02','Conformance','(ICSCO_ApplicationInterface)',1,null,null,null,'Retrieve Security.Application properties before claiming');
+INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (228,'Security20-v1-03','Conformance','(ICSCO_ApplicationInterface)',1,null,null,null,'Verify that Security.Application properties are read only');
+INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (229,'Security20-v1-04','Conformance','(ICSCO_ApplicationInterface)',1,null,null,null,'Verify that DUT can be claimed successfully');
+INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (230,'Security20-v1-05','Conformance','(ICSCO_ManagedApplicationInterface)',1,null,null,null,'Retrieve Security.ManagedApplication properties on claimed device');
+INSERT INTO testcases (id_test,name,type,applicability,service_group,last_id_project,last_execution,last_result,description) VALUES (231,'Security20-v1-06','Conformance','(ICSCO_ManagedApplicationInterface)',1,null,null,null,'Verify that Security.ManagedApplication properties are read only');
+
 
 INSERT INTO tccl (id_tccl,name,created_date,modified_date,id_certrel,num_tc) VALUES (1,'TCCL_14.06.00a_v0.1',{ts '2015-04-17 13:39:32.'},{ts '2015-04-17 13:39:32.'},1,225);
 INSERT INTO tccl (id_tccl,name,created_date,modified_date,id_certrel,num_tc) VALUES (2,'TCCL_14.12.00_v0.1',{ts '2015-04-17 13:35:47.'},{ts '2015-04-17 13:40:24.'},2,223);
@@ -677,6 +723,9 @@ INSERT INTO tccl (id_tccl,name,created_date,modified_date,id_certrel,num_tc) VAL
 INSERT INTO tccl (id_tccl,name,created_date,modified_date,id_certrel,num_tc) VALUES (6,'TCCL_15.04.00a_v0.1',{ts '2015-09-24 15:58:32.'},{ts '2015-09-24 15:58:32.'},6,223);
 INSERT INTO tccl (id_tccl,name,created_date,modified_date,id_certrel,num_tc) VALUES (7,'TCCL_15.04.00b_v0.1',{ts '2015-09-24 15:58:32.'},{ts '2015-09-24 15:58:32.'},7,223);
 INSERT INTO tccl (id_tccl,name,created_date,modified_date,id_certrel,num_tc) VALUES (8,'TCCL_15.09.00_v0.1',{ts '2015-09-24 15:58:32.'},{ts '2015-09-24 15:58:32.'},8,223);
+INSERT INTO tccl (id_tccl,name,created_date,modified_date,id_certrel,num_tc) VALUES (9,'TCCL_15.09.00a_v0.1',{ts '2015-12-20 15:58:32.'},{ts '2015-12-20 15:58:32.'},9,223);
+INSERT INTO tccl (id_tccl,name,created_date,modified_date,id_certrel,num_tc) VALUES (10,'TCCL_16.04.00_v0.1',{ts '2016-05-02 15:58:32.'},{ts '2016-05-02 15:58:32.'},10,223);
+INSERT INTO tccl (id_tccl,name,created_date,modified_date,id_certrel,num_tc) VALUES (11,'TCCL_16.04.00a_v0.1',{ts '2016-07-24 15:58:32.'},{ts '2016-07-24 15:58:32.'},11,223);
 
 DELIMITER $$
 
@@ -693,7 +742,12 @@ BEGIN
 	WHILE (i<=crs) DO
 		SELECT i;
 		WHILE (j<=tcs) DO
-			IF (i = 1) OR ((j != 66) AND (j !=67)) THEN INSERT INTO testcases_certrel (id_test,id_certrel) VALUES (j,i);
+			IF (i = 1)
+				OR (((i > 1) AND (i <= 7)) AND ((j != 66) AND (j != 67) AND (j <= 225)))
+				OR (((i > 7) AND (i <= 9)) AND ((j != 9) AND (j != 46) AND (j != 66) AND (j != 67) AND (j <= 225)))
+				OR (((i > 9) AND (i <= 11)) AND ((j != 9) AND (j != 37) AND (j != 46) AND (j != 66) AND (j != 67) AND (j <= 225)))
+				OR ((i > 11) AND ((j != 9) AND (j != 37) AND (j != 46) AND (j != 66) AND (j != 67)))
+				THEN INSERT INTO testcases_certrel (id_test,id_certrel) VALUES (j,i);
 			END IF;
 			SET j=j+1;
 		END WHILE;
@@ -717,7 +771,12 @@ BEGIN
 	WHILE (i <= tccls) DO
 		SELECT i;
 		WHILE (j <= tcs) DO
-			IF (i = 1) OR ((j != 66) AND (j !=67)) THEN
+			IF (i = 1) 
+				OR (((i > 1) AND (i <= 7)) AND ((j != 66) AND (j != 67) AND (j <= 225)))
+				OR (((i > 7) AND (i <= 9)) AND ((j != 9) AND (j != 46) AND (j != 66) AND (j != 67) AND (j <= 225)))
+				OR (((i > 9) AND (i <= 11)) AND ((j != 9) AND (j != 37) AND (j != 46) AND (j != 66) AND (j != 67) AND (j <= 225)))
+				OR ((i > 11) AND ((j != 9) AND (j != 37) AND (j != 46) AND (j != 66) AND (j != 67)))
+				THEN
 				IF ((j = 12) OR ((j >= 127) AND (j <= 139)) OR ((i = 1) AND (j >= 140) AND (j <= 172))) THEN
 					SET tc_type='P';
 					SET tc_enabled='0';

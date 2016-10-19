@@ -75,7 +75,7 @@ public interface ProjectService {
 	 * @param 	idProject	id of the project
 	 * @param 	url			location of the configuration file	
 	 */
-	public void configProject(String idProject, String url);
+	public void configProject(int idProject, String url);
 	
 	/**
 	 * Saves project results location

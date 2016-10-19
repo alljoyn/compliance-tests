@@ -6,6 +6,7 @@
   <session-factory>
     <property name="dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
     <property name="show_sql">false</property>
+    <property name="id.new_generator_mappings">false</property>
     <!-- <property name="hibernate.current_session_context_class">thread</property>   -->
   </session-factory>
 </hibernate-configuration>

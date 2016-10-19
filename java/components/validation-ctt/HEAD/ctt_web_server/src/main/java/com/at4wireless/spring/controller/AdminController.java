@@ -59,11 +59,11 @@ import com.at4wireless.spring.service.TestCaseService;
 @RequestMapping(value = "/admin")
 public class AdminController
 {
-	private static final String testCasesRegex = "TestCases_Package_v[0-9]{2}\\.[0-9]{2}\\.[0-0]{2}[a-z]?_[DR][0-9]+\\.jar";
-	private static final String localAgentsRegex = "CTT_Local_Agent_v[0-9]+\\.[0-9]+\\.[0-9]+_Installer\\.exe";
-	private static final String crParameterName = "idCertRel";
-	private static final String tcclParameterName = "idTccl";
-	private static final String descriptionParameterName = "description";
+	private static final String TEST_CASES_REGEX = "TestCases_Package_v[0-9]{2}\\.[0-9]{2}\\.[0-0]{2}[a-z]?_[DR][0-9]+\\.jar";
+	private static final String LOCAL_AGENTS_REGEX = "CTT_Local_Agent_v[0-9]+\\.[0-9]+\\.[0-9]+_Installer\\.exe";
+	private static final String CR_PARAMETER_NAME = "idCertRel";
+	private static final String TCCL_PARAMETER_NAME = "idTccl";
+	private static final String DESCRIPTION_PARAMETER_NAME = "description";
 	
 	@Autowired
 	private ServiceFrameworkService sfService;
@@ -116,7 +116,7 @@ public class AdminController
 	@RequestMapping(value = "/testcases", method = RequestMethod.GET)
 	public @ResponseBody List<TestCase> testcases(HttpServletRequest request)
 	{
-		return tcService.list(Integer.parseInt(request.getParameter(crParameterName)));
+		return tcService.list(Integer.parseInt(request.getParameter(CR_PARAMETER_NAME)));
 	}
 	
 	@RequestMapping(value = "/tccl/add", method = RequestMethod.POST)
@@ -131,7 +131,7 @@ public class AdminController
 	@RequestMapping(value = "/tccl/edit", method = RequestMethod.GET)
 	public @ResponseBody List<TestCaseTccl> editTccl(HttpServletRequest request)
 	{
-		return tcclService.getTccl(Integer.parseInt(request.getParameter(tcclParameterName)));
+		return tcclService.getTccl(Integer.parseInt(request.getParameter(TCCL_PARAMETER_NAME)));
 	}
 	
 	@RequestMapping(value = "/tccl/edit", method = RequestMethod.POST)
@@ -146,7 +146,7 @@ public class AdminController
 	@RequestMapping(value = "/tccl/delete", method = RequestMethod.POST)
 	public @ResponseBody void delete(HttpServletRequest request)
 	{
-		tcclService.delete(Integer.parseInt(request.getParameter(tcclParameterName)));
+		tcclService.delete(Integer.parseInt(request.getParameter(TCCL_PARAMETER_NAME)));
 	}
 	
 	//---------------------------------------------------------------------------------
@@ -204,7 +204,7 @@ public class AdminController
 		MultipartFile mpf = request.getFile(request.getFileNames().next());
 		UploadMessage uMessage = null;
 		
-		if (mpf.getOriginalFilename().matches(localAgentsRegex))
+		if (mpf.getOriginalFilename().matches(LOCAL_AGENTS_REGEX))
 		{
 			try
 			{
@@ -231,7 +231,7 @@ public class AdminController
 		
 		String fileToBeDeleted = request.getParameter("fileToDelete").replaceAll(" ", "");
 		
-		if (fileToBeDeleted.matches(localAgentsRegex))
+		if (fileToBeDeleted.matches(LOCAL_AGENTS_REGEX))
 		{
 			File file = new File(ConfigParam.INSTALLERS_PATH + fileToBeDeleted);
 			
@@ -313,14 +313,14 @@ public class AdminController
 		MultipartFile mpf = request.getFile(request.getFileNames().next());
 		UploadMessage uMessage = null;
 		
-		if (mpf.getOriginalFilename().matches(testCasesRegex))
+		if (mpf.getOriginalFilename().matches(TEST_CASES_REGEX))
 		{
 			try
 			{
 				CrAndVersion crAndVersion = new CrAndVersion(mpf);
 
 				tcclService.addCertificationReleaseIfNotExists(crAndVersion.getPackageCr(), crAndVersion.getPackageVersion(),
-						request.getParameter(descriptionParameterName));
+						request.getParameter(DESCRIPTION_PARAMETER_NAME));
 				mpf.transferTo(new File(ConfigParam.PACKAGES_PATH + mpf.getOriginalFilename()));
 				uMessage = new UploadMessage("Success", mpf.getOriginalFilename() + " uploaded!");
 			}
@@ -344,7 +344,7 @@ public class AdminController
 		
 		String fileToBeDeleted = request.getParameter("fileToDelete").replaceAll(" ", "");
 		
-		if (fileToBeDeleted.matches(testCasesRegex))
+		if (fileToBeDeleted.matches(TEST_CASES_REGEX))
 		{
 			File file = new File(ConfigParam.PACKAGES_PATH + fileToBeDeleted);
 			

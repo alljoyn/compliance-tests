@@ -27,126 +27,74 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
-@Table(name="dut")
-public class Dut {
-	
+@Table(name = "dut")
+public class Dut
+{
 	@Id @GeneratedValue
-	@Column(name="id_dut")
+	@Column(name = "id_dut", nullable = false)
 	private int idDut;
+	public int getIdDut() { return idDut; }
+	public void setIdDut(int idDut) { this.idDut = idDut; }
 	
 	@NotEmpty
 	@Length(min=1, max=255)
-	@Column(name="name")
+	@Column(name = "name", nullable = false)
 	private String name;
+	public String getName() { return name; }
+	public void setName(String name) { this.name = name; }
 	
-	@Column(name="user")
+	@Column(name = "user", nullable = false)
 	private String user;
+	public String getUser() { return user; }
+	public void setUser(String user) { this.user = user; }
 	
-	@Column(name="created_date")
+	@Column(name = "created_date", nullable = false, updatable = false)
 	private java.sql.Timestamp createdDate;
+	public java.sql.Timestamp getCreatedDate() { return createdDate; }
+	public void setCreatedDate(java.sql.Timestamp createdDate) { this.createdDate = createdDate; }
 	
-	@Column(name="modified_date")
+	@Column(name = "modified_date", nullable = false)
 	private java.sql.Timestamp modifiedDate;
+	public java.sql.Timestamp getModifiedDate() { return modifiedDate; }
+	public void setModifiedDate(java.sql.Timestamp modifiedDate) { this.modifiedDate = modifiedDate; }
 	
 	@NotEmpty
 	@Length(min=1, max=60)
-	@Column(name="manufacturer")
+	@Column(name = "manufacturer", nullable = false)
 	private String manufacturer;
+	public String getManufacturer() { return manufacturer; }
+	public void setManufacturer(String manufacturer) { this.manufacturer = manufacturer; }
 	
 	@NotEmpty
 	@Length(min=1, max=60)
-	@Column(name="model")
+	@Column(name = "model", nullable = false)
 	private String model;
+	public String getModel() { return model; }
+	public void setModel(String model) { this.model = model; }
+	
+	@Length(max=255)
+	@Column(name = "description")
+	private String description;
+	public String getDescription() { return description; }
+	public void setDescription(String description) { this.description = description; }
 	
 	@Transient
 	private String deviceId;
+	public String getDeviceId() { return deviceId; }
+	public void setDeviceId(String deviceId) { this.deviceId = deviceId; }
 	
 	@Transient
 	private String appId;
+	public String getAppId() { return appId; }
+	public void setAppId(String appId) { this.appId = appId; }
 	
 	@Transient
 	private String swVer;
+	public String getSwVer() { return swVer; }
+	public void setSwVer(String swVer) { this.swVer = swVer; }
 	
 	@Transient
 	private String hwVer;
-	
-	@Length(max=255)
-	@Column(name="description")
-	private String description;
-	
-	public String getDeviceId() {
-		return deviceId;
-	}
-	public void setDeviceId(String deviceId) {
-		this.deviceId = deviceId;
-	}
-	public String getAppId() {
-		return appId;
-	}
-	public void setAppId(String appId) {
-		this.appId = appId;
-	}
-	public int getIdDut() {
-		return idDut;
-	}
-	public void setIdDut(int idDut) {
-		this.idDut = idDut;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getUser() {
-		return user;
-	}
-	public void setUser(String user) {
-		this.user = user;
-	}
-	public java.sql.Timestamp getCreatedDate() {
-		return createdDate;
-	}
-	public void setCreatedDate(java.sql.Timestamp createdDate) {
-		this.createdDate = createdDate;
-	}
-	public java.sql.Timestamp getModifiedDate() {
-		return modifiedDate;
-	}
-	public void setModifiedDate(java.sql.Timestamp modifiedDate) {
-		this.modifiedDate = modifiedDate;
-	}
-	public String getManufacturer() {
-		return manufacturer;
-	}
-	public void setManufacturer(String manufacturer) {
-		this.manufacturer = manufacturer;
-	}
-	public String getModel() {
-		return model;
-	}
-	public void setModel(String model) {
-		this.model = model;
-	}
-	public String getSwVer() {
-		return swVer;
-	}
-	public void setSwVer(String swVer) {
-		this.swVer = swVer;
-	}
-	public String getHwVer() {
-		return hwVer;
-	}
-	public void setHwVer(String hwVer) {
-		this.hwVer = hwVer;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	
-	
-	
+	public String getHwVer() { return hwVer; }
+	public void setHwVer(String hwVer) { this.hwVer = hwVer; }
 }

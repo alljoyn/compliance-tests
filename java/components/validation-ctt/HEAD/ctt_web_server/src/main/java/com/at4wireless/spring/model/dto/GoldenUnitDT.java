@@ -6,20 +6,9 @@ import com.at4wireless.spring.model.GoldenUnit;
 
 public class GoldenUnitDT
 {
-	private int id;
-	private String name;
-	private Timestamp created;
-	private Timestamp modified;
-	private String category;
-	private String manufacturer;
-	private String model;
-	private String swVer;
-	private String hwVer;
-	private String description;
-	
 	public GoldenUnitDT(GoldenUnit gu, String category)
 	{
-		this.id = gu.getIdGolden();
+		this.id = gu.getIdGolden().intValue();
 		this.name = gu.getName();
 		this.created = gu.getCreatedDate();
 		this.modified = gu.getModifiedDate();
@@ -31,66 +20,43 @@ public class GoldenUnitDT
 		this.description = gu.getDescription();
 	}
 	
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public Timestamp getCreated() {
-		return created;
-	}
-	public void setCreated(Timestamp created) {
-		this.created = created;
-	}
-	public Timestamp getModified() {
-		return modified;
-	}
-	public void setModified(Timestamp modified) {
-		this.modified = modified;
-	}
-	public String getCategory() {
-		return category;
-	}
-	public void setCategory(String category) {
-		this.category = category;
-	}
-	public String getManufacturer() {
-		return manufacturer;
-	}
-	public void setManufacturer(String manufacturer) {
-		this.manufacturer = manufacturer;
-	}
-	public String getModel() {
-		return model;
-	}
-	public void setModel(String model) {
-		this.model = model;
-	}
-	public String getSwVer() {
-		return swVer;
-	}
-	public void setSwVer(String swVer) {
-		this.swVer = swVer;
-	}
-	public String getHwVer() {
-		return hwVer;
-	}
-	public void setHwVer(String hwVer) {
-		this.hwVer = hwVer;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
+	private int id;
+	public int getId() { return id; }
+	public void setId(int id) { this.id = id; }
 	
+	private String name;
+	public String getName() { return name; }
+	public void setName(String name) { this.name = name; }
+	
+	private Timestamp created;
+	public Timestamp getCreated() { return created; }
+	public void setCreated(Timestamp created) { this.created = created; }
+	
+	private Timestamp modified;
+	public Timestamp getModified() { return modified; }
+	public void setModified(Timestamp modified) { this.modified = modified; }
+	
+	private String category;
+	public String getCategory() { return category; }
+	public void setCategory(String category) { this.category = category; }
+	
+	private String manufacturer;
+	public String getManufacturer() { return manufacturer; }
+	public void setManufacturer(String manufacturer) { this.manufacturer = manufacturer; }
+	
+	private String model;
+	public String getModel() { return model; }
+	public void setModel(String model) { this.model = model; }
+	
+	private String swVer;
+	public String getSwVer() { return swVer; }
+	public void setSwVer(String swVer) { this.swVer = swVer; }
+	
+	private String hwVer;
+	public String getHwVer() { return hwVer; }
+	public void setHwVer(String hwVer) { this.hwVer = hwVer; }
+	
+	private String description;
+	public String getDescription() { return description; }
+	public void setDescription(String description) { this.description = description; }
 }

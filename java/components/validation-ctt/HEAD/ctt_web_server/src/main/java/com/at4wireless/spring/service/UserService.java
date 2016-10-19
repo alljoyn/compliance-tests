@@ -23,8 +23,8 @@ import com.at4wireless.spring.model.User;
  * Interface with methods that allow user controller to communicate with database
  *
  */
-public interface UserService {
-	
+public interface UserService
+{
 	/**
 	 * Adds new user to dabatase
 	 * @param 	u	user to be added

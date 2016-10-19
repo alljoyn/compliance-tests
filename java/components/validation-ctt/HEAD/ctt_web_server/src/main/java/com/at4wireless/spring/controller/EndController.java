@@ -109,25 +109,35 @@ public class EndController
 	/**
 	 * Saves project configuration 
 	 * 
-	 * @param 	request		servlet request with the project information to be saved
-	 * @return				target view
+	 * @param request
+	 * 			request containing the project information to be saved
+	 * 
+	 * @return target view
 	 */
 	@RequestMapping(value="/save", method=RequestMethod.POST)
 	public ModelAndView save(HttpServletRequest request)
 	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		
+		// Checks if user is authenticated
 		if (!(auth instanceof AnonymousAuthenticationToken))
 		{
-			if (request.getParameter("data[isConfigured]").equals("true"))
+			boolean isProjectConfigured = Boolean.parseBoolean(request.getParameter("data[isConfigured]"));
+			
+			if (isProjectConfigured)
 			{
+				log.debug("Project is already configured. Modifying configuration file...");
 				endService.modifyXML(auth.getName(), request.getParameterMap());
 			}
 			else
 			{
 				String url = endService.createXML(auth.getName(), request.getParameterMap());
-				projectService.configProject(request.getParameter("data[idProject]"), url);
+				projectService.configProject(Integer.parseInt(request.getParameter("data[idProject]")), url);
 			}
+		}
+		else
+		{
+			// An status code should be returned to front-end
 		}
 
 		return new ModelAndView("redirect:/project");

@@ -24,68 +24,38 @@ import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name="users")
-public class User {
-	@Id @Column(name="username")
+@Table(name = "users")
+public class User
+{
+	@Id @Column(name = "username", nullable = false)
 	@Size(min=5, max=13)
 	private String user;
+	public String getUser() { return user; }
+	public void setUser(String user) { this.user = user; }
 	
-	@Column(name="password")
+	@Column(name = "password", nullable = false)
 	@Size(min=5, max=13)
 	private String password;
+	public String getPassword() { return password; }
+	public void setPassword(String password) { this.password = password; }
 	
 	@Transient
-	//@Size(min=5, max=13)
 	private String repPassword;
+	public String getRepPassword() { return repPassword; }
+	public void setRepPassword(String repPassword) { this.repPassword = repPassword; }
 	
 	@Transient
 	private String role;
+	public String getRole() { return role; }
+	public void setRole(String role) { this.role = role; }
 	
-	@Column(name="aes_cipher_key")
+	@Column(name = "aes_cipher_key", nullable = false)
 	private String aesSecretKey;
+	public String getAesSecretKey() { return aesSecretKey; }
+	public void setAesSecretKey(String aesSecretKey) { this.aesSecretKey = aesSecretKey; }
 	
 	@AssertTrue(message="Repeat password field should be equal than password field")
 	private boolean isValid() {
 		return this.password.equals(this.repPassword);
-	}
-	
-	/*@NotEmpty @Email
-	private String email;*/
-	
-	/*public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
-	}*/
-	public String getUser() {
-		return user;
-	}
-	public void setUser(String user) {
-		this.user = user;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	public String getRepPassword() {
-		return repPassword;
-	}
-	public void setRepPassword(String repPassword) {
-		this.repPassword = repPassword;
-	}
-	public String getRole() {
-		return role;
-	}
-	public void setRole(String role) {
-		this.role = role;
-	}
-	public String getAesSecretKey() {
-		return aesSecretKey;
-	}
-	public void setAesSecretKey(String aesSecretKey) {
-		this.aesSecretKey = aesSecretKey;
 	}
 }

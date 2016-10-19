@@ -16,6 +16,7 @@
 
 package com.at4wireless.spring.service;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import com.at4wireless.spring.model.Category;
@@ -49,7 +50,7 @@ public interface GoldenUnitService {
 	 * @param 	idGu		id of the requested Golden Unit
 	 * @return				requested Golden Unit, if exists
 	 */
-	public GoldenUnit getFormData(String username, int idGu);
+	public GoldenUnit getFormData(String username, BigInteger idGu);
 	
 	/**
 	 * Updates a Golden Unit
@@ -66,7 +67,7 @@ public interface GoldenUnitService {
 	 * @param 	idGu		ID of the Golden Unit to be deleted
 	 * @return				true if Golden Unit is successfully removed, false otherwise
 	 */
-	public boolean delete(String username, int idGu);
+	public boolean delete(String username, BigInteger idGu);
 	
 	/**
 	 * Returns a list with defined device categories for interoperability testing
@@ -90,7 +91,7 @@ public interface GoldenUnitService {
 	 * @param	id			id to check
 	 * @return				true if exists, false otherwise
 	 */
-	public boolean exists(String username, String name, int id);
+	public boolean exists(String username, String name, BigInteger id);
 	
 	public Category getCategoryById(int idCategory);
 	

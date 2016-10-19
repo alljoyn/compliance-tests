@@ -16,126 +16,167 @@
 package com.at4wireless.spring.dao;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.Criteria;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
+
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.at4wireless.spring.model.CertificationRelease;
 
 @Repository
-public class CertificationReleaseDAOImpl implements CertificationReleaseDAO{
-	
+public class CertificationReleaseDAOImpl implements CertificationReleaseDAO
+{
 	@Autowired
 	private SessionFactory sessionFactory;
 
 	@Override
-	public List<CertificationRelease> list() {
-		@SuppressWarnings("unchecked")
-		List<CertificationRelease> listCertrel = (List<CertificationRelease>) sessionFactory.getCurrentSession()
-				.createCriteria(CertificationRelease.class)
-					.add(Restrictions.like("enabled", true))
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-
-		return listCertrel;
+	public List<CertificationRelease> list()
+	{
+		TypedQuery<CertificationRelease> query = sessionFactory.getCurrentSession()
+				.createQuery("from CertificationRelease where enabled = :enabled", CertificationRelease.class)
+				.setParameter("enabled", true);
+		
+		return query.getResultList();
+	}
+	
+	@Override
+	public List<CertificationRelease> listRelease()
+	{	
+		TypedQuery<CertificationRelease> query = sessionFactory.getCurrentSession()
+				.createQuery("from CertificationRelease where enabled = :enabled and release = :release", CertificationRelease.class)
+				.setParameter("enabled", true)
+				.setParameter("release", true);
+		
+		return query.getResultList();
 	}
 
 	@Override
-	public String getName(int id) {
+	public CertificationRelease getByID(int certRelID)
+	{
+		TypedQuery<CertificationRelease> query = sessionFactory.getCurrentSession()
+				.createQuery("from CertificationRelease where idCertrel = :idCertrel", CertificationRelease.class)
+				.setParameter("idCertrel", certRelID);
 		
-		@SuppressWarnings("unchecked")
-		List<String> listCertrel = (List<String>) sessionFactory.getCurrentSession()
-				.createSQLQuery("select name from certrel where id_certrel='"+id+"';").list();
-		
-		if(listCertrel.isEmpty()) {
-			return null;
-		} else {
-			return listCertrel.get(0);
+		CertificationRelease foundCertificationRelease = null;
+		try
+		{
+			foundCertificationRelease = query.getSingleResult();
 		}
-	}
-
-	@Override
-	public List<Integer> getIds(int idCertRel) {
-		@SuppressWarnings("unchecked")
-		List<BigInteger> idList = (List<BigInteger>) sessionFactory.getCurrentSession()
-				.createSQLQuery("select id_test from testcases_certrel where id_certrel="
-						+idCertRel+";").list();
-		
-		List<Integer> intList = new ArrayList<Integer>();
-		for (BigInteger bi : idList) {
-			intList.add(bi.intValue());
+		catch (NoResultException e)
+		{
+			
 		}
-		return intList;
+		
+		return foundCertificationRelease;
 	}
 
 	@Override
-	public boolean certificationReleaseExists(String certificationRelease) {
+	public String getDescription(String certRelName)
+	{
 		@SuppressWarnings("unchecked")
-		List<CertificationRelease> listCertrel = (List<CertificationRelease>) sessionFactory.getCurrentSession()
-				.createCriteria(CertificationRelease.class)
-					.add(Restrictions.like("name", certificationRelease))
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-
-		return (listCertrel.size() != 0);
+		TypedQuery<String> query = sessionFactory.getCurrentSession()
+				.createQuery("select description from CertificationRelease where name = :name")
+				.setParameter("name", certRelName);
+		
+		String crDescription = null;
+		try
+		{
+			crDescription = query.getSingleResult();
+		}
+		catch (NoResultException e)
+		{
+			
+		}
+		
+		return crDescription;
 	}
-
+	
 	@Override
-	public int addCertificationRelease(CertificationRelease certificationRelease) {
+	public List<BigInteger> getTestCasesByID(int certRelID)
+	{
+		/*
+		 * TODO : Change query from NativeQuery to TypedQuery
+		 * 
+		 * */
+		@SuppressWarnings("unchecked")
+		NativeQuery<BigInteger> query = sessionFactory.getCurrentSession()
+				.createNativeQuery("select id_test from testcases_certrel where id_certrel = :idCertrel")
+				.setParameter("idCertrel", certRelID);
+		
+		return query.getResultList();
+	}
+	
+	@Override
+	public int add(CertificationRelease certificationRelease)
+	{
 		sessionFactory.getCurrentSession().save(certificationRelease);
 		
 		return certificationRelease.getIdCertrel();
 	}
-
+	
 	@Override
-	public List<CertificationRelease> listReleaseVersions() {
-		@SuppressWarnings("unchecked")
-		List<CertificationRelease> listCertrel = (List<CertificationRelease>) sessionFactory.getCurrentSession()
-				.createCriteria(CertificationRelease.class)
-					.add(Restrictions.like("enabled", true))
-					.add(Restrictions.like("release", true))
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-
-		return listCertrel;
+	public void fromDebugToRelease(String certificationRelease)
+	{
+		sessionFactory.getCurrentSession()
+				.createQuery("update CertificationRelease set release = :release where name = :name")
+				.setParameter("release", true)
+				.setParameter("name", certificationRelease)
+				.executeUpdate();
 	}
 
 	@Override
-	public boolean isReleaseVersion(String certificationRelease) {
-		@SuppressWarnings("unchecked")
-		List<CertificationRelease> listCertrel = (List<CertificationRelease>) sessionFactory.getCurrentSession()
-				.createCriteria(CertificationRelease.class)
-					.add(Restrictions.like("name", certificationRelease))
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-
-		return listCertrel.get(0).isRelease();
+	public void updateDescription(String certificationRelease, String description)
+	{
+		sessionFactory.getCurrentSession()
+				.createQuery("update CertificationRelease set description = :description where name = :name")
+				.setParameter("description", description)
+				.setParameter("name", certificationRelease)
+				.executeUpdate();
 	}
 
 	@Override
-	public void fromDebugToRelease(String certificationRelease) {
-		sessionFactory.getCurrentSession().createQuery("update CertificationRelease set release = '"
-				+1+"' where name = '"+certificationRelease+"'").executeUpdate();
-	}
-
-	@Override
-	public String getCertificationReleaseDescription(String certificationRelease) {
-		@SuppressWarnings("unchecked")
-		List<String> listCertrel = (List<String>) sessionFactory.getCurrentSession()
-				.createSQLQuery("select description from certrel where name='"
-						+certificationRelease+"';").list();
+	public boolean exists(String certificationRelease)
+	{
+		TypedQuery<CertificationRelease> query = sessionFactory.getCurrentSession()
+				.createQuery("from CertificationRelease where name = :name", CertificationRelease.class)
+				.setParameter("name", certificationRelease);
 		
-		if(listCertrel.isEmpty()) {
-			return null;
-		} else {
-			return listCertrel.get(0);
+		boolean certificationReleaseExists = true;
+		try
+		{
+			query.getSingleResult();
 		}
+		catch (NoResultException e)
+		{
+			certificationReleaseExists = false;
+		}
+		
+		return certificationReleaseExists;
 	}
 
 	@Override
-	public void updateDescription(String certificationRelease, String description) {
-		sessionFactory.getCurrentSession().createQuery("update CertificationRelease set description = '"
-				+description+"' where name = '"+certificationRelease+"'").executeUpdate();
+	public boolean isRelease(String certificationRelease)
+	{
+		@SuppressWarnings("unchecked")
+		TypedQuery<Boolean> query = sessionFactory.getCurrentSession()
+				.createQuery("select release from CertificationRelease where name = :name")
+				.setParameter("name", certificationRelease);
+		
+		boolean isReleaseVersion;
+		try
+		{
+			isReleaseVersion = query.getSingleResult().booleanValue();
+		}
+		catch (NoResultException e)
+		{
+			isReleaseVersion = false;
+		}
+		
+		return isReleaseVersion;
 	}
 }

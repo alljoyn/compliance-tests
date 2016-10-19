@@ -49,6 +49,7 @@ public class CustomAccessDeniedHandler extends AccessDeniedHandlerImpl
 				|| accessDeniedException instanceof InvalidCsrfTokenException)
 		{
 			response.sendRedirect(request.getContextPath() + "/login?session_expired");
+			// [AT4] This has to be changed since session is atm set not to expire
 		}
 	}
 }

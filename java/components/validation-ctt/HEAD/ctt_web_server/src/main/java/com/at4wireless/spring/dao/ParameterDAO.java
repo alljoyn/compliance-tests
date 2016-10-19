@@ -20,15 +20,12 @@ import java.util.List;
 
 import com.at4wireless.spring.model.Parameter;
 
-/**
- * Interface that manages database GP-related access
- *
- */
-public interface ParameterDAO {
+public interface ParameterDAO
+{
 	/**
 	 * Retrieves the list of General Parameters
 	 * 
-	 * @return	list of General Parameters
+	 * @return list of General Parameters
 	 */
 	public List<Parameter> list();
 }

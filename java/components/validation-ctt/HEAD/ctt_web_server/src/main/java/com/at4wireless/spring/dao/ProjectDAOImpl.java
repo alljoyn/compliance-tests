@@ -17,212 +17,263 @@ package com.at4wireless.spring.dao;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
+
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.at4wireless.spring.model.Project;
 
 @Repository
-public class ProjectDAOImpl implements ProjectDAO {
-	
+public class ProjectDAOImpl implements ProjectDAO
+{
 	@Autowired
 	private SessionFactory sessionFactory;
 
 	@Override
-	public List<Project> list(String user) {
-		@SuppressWarnings("unchecked")
-		List<Project> listProject = (List<Project>) sessionFactory.getCurrentSession()
-				.createCriteria(Project.class)
-					.add(Restrictions.like("user", user))
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-
-		return listProject;
+	public List<Project> list(String user)
+	{
+		TypedQuery<Project> query = sessionFactory.getCurrentSession()
+				.createQuery("from Project where user = :user", Project.class)
+				.setParameter("user", user);
+		
+		return query.getResultList();
 	}
 	
 	@Override
-	public Project getProject(String user, int idProject) {
-		@SuppressWarnings("unchecked")
-		List<Project> listProject = (List<Project>) sessionFactory.getCurrentSession()
-				.createCriteria(Project.class)
-					.add(Restrictions.like("user", user))
-					.add(Restrictions.like("idProject", idProject))
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
+	public Project getByID(String username, int projectID)
+	{
+		TypedQuery<Project> query = sessionFactory.getCurrentSession()
+				.createQuery("from Project where user = :user and idProject = :idProject", Project.class)
+				.setParameter("user", username)
+				.setParameter("idProject", projectID);
 		
-		if(listProject.isEmpty()) {
-			return null;
-		} else {
-			return listProject.get(0);
-		}
-	}
-	
-	@Override
-	public Project getProjectByName(String user, String name) {
-		@SuppressWarnings("unchecked")
-		List<Project> listProject = (List<Project>) sessionFactory.getCurrentSession()
-				.createCriteria(Project.class)
-					.add(Restrictions.like("user", user))
-					.add(Restrictions.like("name", name))
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-		
-		if (listProject.isEmpty()) {
-			return null;
-		} else {
-			return listProject.get(0);
-		}
-	}
-
-	@Override
-	public int addProject(Project project) {
-		sessionFactory.getCurrentSession().save(project);
-
-		String[] var = project.getSupportedServices().split("[\\.]+");
-		StringBuilder str = new StringBuilder("values ");
-		for (int i=0; i<var.length; i++) {
-			str.append("("+Integer.toString(project.getIdProject())+","+var[i]+")");
-			if(i!=(var.length-1)) str.append(",");
-			else str.append(";");
-		}
-		sessionFactory.getCurrentSession().createSQLQuery("insert into project_services (id_project,id_service) "
-				+str.toString()).executeUpdate();
-		
-		return project.getIdProject();
-
-	}
-	
-	@Override
-	public void delProject(int projectId) {
-		
-		sessionFactory.getCurrentSession().createSQLQuery("delete from project_services where id_project="
-				+projectId+";").executeUpdate();
-		
-		sessionFactory.getCurrentSession().createSQLQuery("delete from project_golden where id_project="
-				+projectId+";").executeUpdate();
-		
-		sessionFactory.getCurrentSession().createQuery("delete from Project p where p.idProject ='"+projectId+"'").executeUpdate();
-		
-
-	}
-	
-	@Override
-	public void configProject(String idProject, String url) {
-		
-		String query;
-		if (url != null)
+		Project foundProject = null;
+		try
 		{
-			query = String.format("update Project set configuration='%s', isConfigured=1 where idProject='%s'", url, idProject);
+			foundProject = query.getSingleResult();
 		}
-		else
+		catch (NoResultException e)
 		{
-			query = String.format("update Project set configuration=null, isConfigured=0 where idProject='%s'", idProject);
+			
 		}
 		
-		int result = sessionFactory.getCurrentSession().createQuery(query).executeUpdate();
+		return foundProject;
 	}
 	
 	@Override
-	public void resultProject(int idProject, String url) {
-		sessionFactory.getCurrentSession().createQuery("update Project set results = '"
-				+url+"', hasResults = '1'"+
-				" where idProject = '"+idProject+"'").executeUpdate();
+	public Project getByName(String username, String projectName)
+	{
+		TypedQuery<Project> query = sessionFactory.getCurrentSession()
+				.createQuery("from Project where user = :user and name = :name", Project.class)
+				.setParameter("user", username)
+				.setParameter("name", projectName);
+		
+		Project foundProject = null;
+		try
+		{
+			foundProject = query.getSingleResult();
+		}
+		catch (NoResultException e)
+		{
+			
+		}
+		
+		return foundProject;
+	}
+
+	@Override
+	public List<Project> getByDUT(String username, int dutID)
+	{
+		TypedQuery<Project> query = sessionFactory.getCurrentSession()
+				.createQuery("from Project where user = :user and idDut = :idDut", Project.class)
+				.setParameter("user", username)
+				.setParameter("idDut", dutID);
+		
+		return query.getResultList();
 	}
 	
 	@Override
-	public void saveChanges(Project project) {
+	public List<String> getGoldenUnitsByProjectID(int projectID)
+	{
+		/*
+		 * TODO : Change NativeQuery to TypedQuery
+		 * 
+		 */
+		@SuppressWarnings("unchecked")
+		NativeQuery<String> query = sessionFactory.getCurrentSession()
+				.createNativeQuery("select (name) from golden where id_golden in "
+						+ "(select id_golden from project_golden where id_project = :idProject)")
+				.setParameter("idProject", projectID);
 		
-		String carIdToSave = project.getCarId() != null ? "'"+project.getCarId()+"'" : null;
-		sessionFactory.getCurrentSession().createQuery("update Project set name = '"+project.getName()
-				+"', modifiedDate = '"+project.getModifiedDate()+"', idCertrel = '"+project.getIdCertrel()
-				+"', type = '"+project.getType()+"', carId = "+carIdToSave
-				+", idTccl = '"+project.getIdTccl()
-				+"' where idProject = '"+project.getIdProject()+"'").executeUpdate();
+		return query.getResultList();
+	}
+	
+	@Override
+	public int add(Project newProject)
+	{
+		sessionFactory.getCurrentSession().save(newProject);
 		
-		sessionFactory.getCurrentSession().createSQLQuery("delete from project_services where id_project="
-				+project.getIdProject()+";").executeUpdate();
-		
-		String[] var = project.getSupportedServices().split("[\\.]+");
-		StringBuilder str = new StringBuilder("values ");
-		for (int i=0; i<var.length; i++) {
-			str.append("("+Integer.toString(project.getIdProject())+","+var[i]+")");
-			if(i!=(var.length-1)) str.append(",");
-			else str.append(";");
+		/*
+		 * TODO : Change NativeQuery to TypedQuery
+		 * 
+		 */
+		int idProject = newProject.getIdProject();
+		String[] supportedServices = newProject.getSupportedServices().split("[\\.]+");
+		for (int i = 0; i < supportedServices.length; i++)
+		{
+			sessionFactory.getCurrentSession()
+					.createNativeQuery("insert into project_services (id_project, id_service) values (:idProject, :idService)")
+					.setParameter("idProject", idProject)
+					.setParameter("idService", supportedServices[i])
+					.executeUpdate();
 		}
-		sessionFactory.getCurrentSession().createSQLQuery("insert into project_services (id_project,id_service) "
-				+str.toString()).executeUpdate();
+		
+		return idProject;
+	}
+	
+	@Override
+	public void update(Project project)
+	{
+		/*
+		 * TODO : Look for a shorter way to update an existent Object
+		 * 
+		 */
+		int idProject = project.getIdProject();
+		sessionFactory.getCurrentSession()
+				.createQuery("update Project set name = :name, modifiedDate = :modifiedDate, "
+						+ "idCertrel = :idCertrel, type = :type, carId = :carId, idTccl = :idTccl where idProject = :idProject")
+				.setParameter("name", project.getName())
+				.setParameter("modifiedDate", project.getModifiedDate())
+				.setParameter("idCertrel", project.getIdCertrel())
+				.setParameter("type", project.getType())
+				.setParameter("carId", project.getCarId())
+				.setParameter("idTccl", project.getIdTccl())
+				.setParameter("idProject", idProject)
+				.executeUpdate();
+		/*
+		 * TODO : Change NativeQuery to TypedQuery
+		 * 
+		 */
+		sessionFactory.getCurrentSession()
+				.createNativeQuery("delete from project_services where id_project = :idProject")
+				.setParameter("idProject", idProject)
+				.executeUpdate();
+		
+		/*
+		 * TODO : Change NativeQuery to TypedQuery
+		 * 
+		 */
+		String[] supportedServices = project.getSupportedServices().split("[\\.]+");
+		for (int i = 0; i < supportedServices.length; i++)
+		{
+			sessionFactory.getCurrentSession()
+					.createNativeQuery("insert into project_services (id_project, id_service) values (:idProject, :idService)")
+					.setParameter("idProject", idProject)
+					.setParameter("idService", supportedServices[i])
+					.executeUpdate();
+		}
+	}
+	
+	@Override
+	public void delete(int projectID)
+	{
+		/*
+		 * TODO : Change NativeQuery to TypedQuery
+		 * 
+		 */
+		sessionFactory.getCurrentSession()
+				.createNativeQuery("delete from project_services where id_project = :idProject")
+				.setParameter("idProject", projectID)
+				.executeUpdate();
+		
+		/*
+		 * TODO : Change NativeQuery to TypedQuery
+		 * 
+		 */
+		sessionFactory.getCurrentSession()
+				.createNativeQuery("delete from project_golden where id_project = :idProject")
+				.setParameter("idProject", projectID)
+				.executeUpdate();
+		
+		sessionFactory.getCurrentSession()
+				.createQuery("delete from Project where idProject = :idProject")
+				.setParameter("idProject", projectID)
+				.executeUpdate();
 	}
 	
 	@Override
 	public void setDut(Project project)
 	{
-		sessionFactory.getCurrentSession().createQuery("update Project set idDut = '"
-				+project.getIdDut()+"' where idProject = '"+project.getIdProject()+"'").executeUpdate();
-	}
-	
-	@Override
-	public void unassignGoldenUnits(int projectId) throws HibernateException
-	{
-		
-		sessionFactory.getCurrentSession().createSQLQuery("delete from project_golden where id_project="
-				+ projectId + ";").executeUpdate();
+		sessionFactory.getCurrentSession()
+				.createQuery("update Project set idDut = :idDut where idProject = :idProject")
+				.setParameter("idDut", project.getIdDut())
+				.setParameter("idProject", project.getIdProject())
+				.executeUpdate();
 	}
 	
 	@Override
 	public void assignGoldenUnits(Project project)
 	{
-		String[] var = project.getgUnits().split("[\\.]+");
-		StringBuilder str = new StringBuilder("values ");
-		
-		for (int i = 0; i < var.length; i++)
+		int idProject = project.getIdProject();
+		String[] goldenUnitIDs = project.getgUnits().split("[\\.]+");
+		for (int i = 0; i < goldenUnitIDs.length; i++)
 		{
-			str.append("(" + Integer.toString(project.getIdProject()) + "," + var[i] + ")");
-			
-			if (i != (var.length - 1))
-			{
-				str.append(",");
-			}
-			else
-			{
-				str.append(";");
-			}
-		}
-		
-		sessionFactory.getCurrentSession().createSQLQuery("insert into project_golden (id_project,id_golden) "
-				+str.toString()).executeUpdate();
-	}
-
-	@Override
-	public List<Project> getProjectByDut(String user, int idDut) {
-		@SuppressWarnings("unchecked")
-		List<Project> listProject = (List<Project>) sessionFactory.getCurrentSession()
-				.createCriteria(Project.class)
-					.add(Restrictions.like("user", user))
-					.add(Restrictions.like("idDut", idDut))
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-		
-		if (listProject.isEmpty()) {
-			return null;
-		} else {
-			return listProject;
+			sessionFactory.getCurrentSession()
+					.createNativeQuery("insert into project_golden (id_project, id_golden) values (:idProject, :idGolden)")
+					.setParameter("idProject", idProject)
+					.setParameter("idGolden", goldenUnitIDs[i])
+					.executeUpdate();
 		}
 	}
-
+	
 	@Override
-	public void setTestReport(int idProject, String path) {
-		sessionFactory.getCurrentSession().createQuery("update Project set testReport = '"
-				+path+"', hasTestReport = 1"+
-				" where idProject = '"+idProject+"'").executeUpdate();
+	public void unassignGoldenUnits(int projectId)
+	{
+		/*
+		 * TODO : Change NativeQuery to TypedQuery
+		 * 
+		 */
+		sessionFactory.getCurrentSession()
+				.createNativeQuery("delete from project_golden where id_project = :idProject")
+				.setParameter("idProject", projectId)
+				.executeUpdate();
+	}
+	
+	@Override
+	public void setConfig(int projectID, String configurationPath)
+	{
+		sessionFactory.getCurrentSession()
+				.createQuery("update Project set configuration = :configuration, "
+						+ "isConfigured = :isConfigured where idProject = :idProject")
+				.setParameter("configuration", configurationPath)
+				.setParameter("isConfigured", true)
+				.setParameter("idProject", projectID)
+				.executeUpdate();
+	}
+	
+	@Override
+	public void setResults(int projectID, String resultsPath)
+	{
+		sessionFactory.getCurrentSession()
+				.createQuery("update Project set results = :results, hasResults = :hasResults where idProject = :idProject")
+				.setParameter("results", resultsPath)
+				.setParameter("hasResults", true)
+				.setParameter("idProject", projectID)
+				.executeUpdate();
 	}
 
 	@Override
-	public List<String> getGoldenByName(int idProject) {
-		@SuppressWarnings("unchecked")
-		List<String> stringList = (List<String>) sessionFactory.getCurrentSession()
-				.createSQLQuery("select (name) from golden where id_golden in"
-						+"(select id_golden from project_golden where id_project="+idProject+");").list();
-		return stringList;
+	public void setTestReport(int projectID, String testReportPath)
+	{
+		sessionFactory.getCurrentSession()
+				.createQuery("update Project set testReport = :testReport, hasTestReport = :hasTestReport where idProject = :idProject")
+				.setParameter("testReport", testReportPath)
+				.setParameter("hasTestReport", true)
+				.setParameter("idProject", projectID)
+				.executeUpdate();
 	}
-
 }

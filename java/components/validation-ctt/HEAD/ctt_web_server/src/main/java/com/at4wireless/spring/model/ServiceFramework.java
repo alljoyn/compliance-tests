@@ -23,27 +23,17 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="services")
-public class ServiceFramework {
-	
+@Table(name = "services")
+public class ServiceFramework
+{
 	@Id @GeneratedValue
-	@Column(name="id_service")
+	@Column(name = "id_service", nullable = false)
 	private int idService;
+	public int getIdService() { return idService; }
+	public void setIdService(int idService) { this.idService = idService; }
 	
-	@Column(name="name")
+	@Column(name = "name", nullable = false)
 	private String name;
-	
-	public int getIdService() {
-		return idService;
-	}
-	public void setIdService(int idService) {
-		this.idService = idService;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	
+	public String getName() { return name; }
+	public void setName(String name) { this.name = name; }
 }

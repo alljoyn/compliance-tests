@@ -16,49 +16,59 @@
 
 package com.at4wireless.spring.dao;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import com.at4wireless.spring.model.TestCase;
 
-/**
- * Interface that manages database TC-related access
- *
- */
-public interface TcDAO {
-	
+public interface TcDAO
+{
 	/**
-	 * Retrieves all stored testcases
-	 * @return	list of testcases
+	 * Retrieves all stored test cases
+	 * 
+	 * @return list of test cases
 	 */
 	public List<TestCase> list();
 	
 	/**
-	 * Retrieves testcases of a certain type and service
-	 * @param type			testcases type
-	 * @param idService		testcases service framework
-	 * @return				list of testcases
+	 * Retrieves all stored test cases of a certain Certification Release
+	 * 
+	 * @param certRelID
+	 * 			ID of the Certification Release whose test cases are going to be retrieved
+	 * 
+	 * @return list of test cases
 	 */
-	public List<TestCase> getService(String type, int idService);
+	public List<TestCase> listByCertRel(int certRelID);
 	
 	/**
-	 * Retrieves all stored testcases of a certain certification release
-	 * @param 	idCertRel	certification release ID
-	 * @return				list of testcases
+	 * Retrieves test cases of a certain type and service
+	 * 
+	 * @param type
+	 * 			test cases' type
+	 * @param serviceID
+	 * 			test cases' Service Framework
+	 * 
+	 * @return list of test cases
 	 */
-	public List<TestCase> list(int idCertRel);
+	public List<TestCase> getByTypeAndService(String type, BigInteger serviceID);
 	
 	/**
 	 * Retrieves all stored testcases allowed by TCCL
-	 * @param 	type		testcases type
-	 * @param 	idService	tescases service ID
-	 * @param 	intList		list of IDs of allowed testcases
-	 * @return				list of allowed testcases
+	 * 
+	 * @param type
+	 * 			testcases type
+	 * @param serviceID
+	 * 			tescases service ID
+	 * @param testCaseIDsFromCR
+	 * 			list of IDs of allowed testcases
+	 * 
+	 * @return list of allowed testcases
 	 */
-	public List<TestCase> getServiceWithRestriction(String type, int idService, List<Integer> intList);
+	public List<TestCase> getServiceWithRestriction(String type, BigInteger serviceID, List<BigInteger> testCaseIDsFromCR);
 	
-	public void assignTestCasesToCertificationRelease(int certificationReleaseId);
+	public void assignTestCasesToCertificationRelease(int certRelID);
 	
-	public void add(TestCase testCase);
+	public void add(TestCase newTestCase);
 	
 	public void update(TestCase testCase);
 }

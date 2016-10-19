@@ -13,52 +13,67 @@
  *      ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  *      OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *******************************************************************************/
-
 package com.at4wireless.spring.dao;
 
 import com.at4wireless.spring.model.User;
 
-/**
- * Interface that manages database user-related access
- *
- */
-public interface UserDAO {
-	
+public interface UserDAO
+{
 	/**
-	 * Adds a new user
-	 * @param 	user	user to be added
+	 * Adds a new user into database
+	 * 
+	 * @param newUser
+	 * 			user to be added
 	 */
-	public void addUser(User user);
+	public void add(User newUser);
 	
 	/**
 	 * Retrieves a user
-	 * @param 	name	name of the user to be retrieved
-	 * @return			user
+	 * 
+	 * @param username
+	 * 			name of the user to be retrieved
+	 * 
+	 * @return user if exists, null otherwise
 	 */
-	public User getUser(String name);
+	public User get(String username);
 	
 	/**
 	 * Updates user's information
-	 * @param 	name	name of the user to be updated
-	 * @param 	role	role of the user to be updated
+	 * 
+	 * @param username
+	 * 			name of the user to be updated
+	 * @param role
+	 * 			role of the user to be updated
 	 */
-	public void update(String name, String role);
+	public void update(String username, String role);
 	
 	/**
-	 * Stores local agent API key
+	 * Stores the Local Agent's API Key of a certain user
 	 * 
-	 * @param	name	user's name
-	 * @param 	key		API key
+	 * @param username
+	 * 			name of the user whose Local Agent API Key is going to be stored
+	 * @param laApiKey
+	 * 			API key
 	 */
-	public void setKey(String name, String key);
+	public void setKey(String username, String laApiKey);
 	
 	/**
-	 * Retrieves stored key that is used to cipher logs
+	 * Retrieves stored key of a certain user that is used to cipher logs 
 	 * 
-	 * @param 	user	user whose key is retrieved
-	 * @return			cipher key
+	 * @param username
+	 * 			name of the user whose key is retrieved
+	 * 
+	 * @return cipher key
 	 */
-	public String getAesCipherKey(String user);
+	public String getAesCipherKey(String username);
 	
-	public void setAesCipherKey(String user, String aesCipherKey);
+	/**
+	 * Stores key of a certain user that will be used to cipher logs
+	 * 
+	 * @param username
+	 * 			name of the user whose key is going to be stored
+	 * @param aesCipherKey
+	 * 			key that will be used to cipher logs
+	 */
+	public void setAesCipherKey(String username, String aesCipherKey);
 }

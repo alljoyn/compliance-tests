@@ -17,12 +17,13 @@
 package com.at4wireless.spring.dao;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.Criteria;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
+
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -38,144 +39,167 @@ public class TcclDAOImpl implements TcclDAO
 	@Override
 	public List<Tccl> list()
 	{
-		@SuppressWarnings("unchecked")
-		List<Tccl> listTccl = (List<Tccl>) sessionFactory.getCurrentSession()
-				.createCriteria(Tccl.class)
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-
-		return listTccl;
+		TypedQuery<Tccl> query = sessionFactory.getCurrentSession()
+				.createQuery("from Tccl", Tccl.class);
+		
+		return query.getResultList();
 	}
 
 	@Override
 	public int getNumber(String certRel)
 	{
-		@SuppressWarnings("unchecked")
-		List<Tccl> listTccl = (List<Tccl>) sessionFactory.getCurrentSession()
-				.createSQLQuery("select * from tccl where name like '%" + certRel + "_v"+"%';").list();
+		/*
+		 * TODO : Modify query to retrieve count
+		 * 
+		 */
+		TypedQuery<Tccl> query = sessionFactory.getCurrentSession()
+				.createQuery("from Tccl where name like :nameFilter", Tccl.class)
+				.setParameter("nameFilter", "%" + certRel + "_v%");
 		
-		if (listTccl.isEmpty())
-		{
-			return 0;
-		}
-		else
-		{
-			return listTccl.size();
-		}
+		List<Tccl> listTccl = query.getResultList();
+		return listTccl.isEmpty() ? 0 : listTccl.size();
 	}
 
 	@Override
-	public int addTccl(Tccl tccl)
+	public int add(Tccl tccl)
 	{
 		sessionFactory.getCurrentSession().save(tccl);
 		return tccl.getIdTccl();
 	}
-
+	
 	@Override
-	public void saveList(String values)
+	public void storeAssociatedTestCases(int tcclID, List<String> types, List<Boolean> enables, List<BigInteger> testcaseIDs)
 	{
-		sessionFactory.getCurrentSession().createSQLQuery("insert into tccl_testcase(id_tccl,type,enable,id_test)"
-				+ " values " + values + ";").executeUpdate();
+		/*
+		 * TODO: Change NativeQuery to TypedQuery
+		 * 
+		 */
+		for (int i = 0; i < testcaseIDs.size(); i++)
+		{
+			sessionFactory.getCurrentSession()
+					.createNativeQuery("insert into tccl_testcase (id_tccl, type, enable, id_test) values (:idTccl, :type, :enable, :idTest)")
+					.setParameter("idTccl", tcclID)
+					.setParameter("type", types.get(i))
+					.setParameter("enable", enables.get(i))
+					.setParameter("idTest", testcaseIDs.get(i))
+					.executeUpdate();
+		}
 	}
 
 	@Override
 	public void deleteList(int idTccl)
 	{
-		sessionFactory.getCurrentSession().createSQLQuery("delete from tccl_testcase where id_tccl="
-				+ idTccl + ";").executeUpdate();
-		
+		/*
+		 * TODO : Change NativeQuery to TypedQuery
+		 * 
+		 */
+		sessionFactory.getCurrentSession()
+				.createNativeQuery("delete from tccl_testcase where id_tccl = :idTccl")
+				.setParameter("idTccl", idTccl)
+				.executeUpdate();
 	}
 
 	@Override
 	public void deleteTccl(int idTccl)
 	{
 		sessionFactory.getCurrentSession()
-				.createQuery("delete from Tccl t where t.idTccl ='" + idTccl + "'").executeUpdate();
-		
+				.createQuery("delete from Tccl where idTccl = :idTccl")
+				.setParameter("idTccl", idTccl)
+				.executeUpdate();
 	}
 
 	@Override
 	public List<TestCaseTccl> getList(int idTccl)
 	{
+		/*
+		 * TODO : Change NativeQuery to TypedQuery
+		 * 
+		 */
 		@SuppressWarnings("unchecked")
-		List<TestCaseTccl> tcclList = (List<TestCaseTccl>) sessionFactory.getCurrentSession()
-				.createSQLQuery("SELECT b.id_test, b.name, b.description, a.type, a.enable FROM tccl_testcase a"
-						+ " INNER JOIN testcases b ON a.id_test = b.id_test"
-						+ " where a.id_tccl='" + idTccl + "';").list();
-		return tcclList;
+		NativeQuery<TestCaseTccl> query = sessionFactory.getCurrentSession()
+				.createNativeQuery("SELECT b.id_test, b.name, b.description, a.type, a.enable FROM tccl_testcase a "
+						+ "INNER JOIN testcases b ON a.id_test = b.id_test where a.id_tccl = :idTccl")
+				.setParameter("idTccl", idTccl);
+		
+		return query.getResultList();
 	}
 	
 	@Override
 	public void updateTccl(int idTccl, java.sql.Timestamp date)
 	{
-		sessionFactory.getCurrentSession().createQuery("update Tccl set modifiedDate = '" + date
-				+ "' where idTccl = '" + idTccl + "'").executeUpdate();
+		sessionFactory.getCurrentSession()
+				.createQuery("update Tccl set modifiedDate = :modifiedDate where idTccl = :idTccl")
+				.setParameter("modifiedDate", date)
+				.setParameter("idTccl", idTccl)
+				.executeUpdate();
 	}
 
 	@Override
 	public List<Tccl> listByCR(int idCertRel)
 	{
-		@SuppressWarnings("unchecked")
-		List<Tccl> listTccl = (List<Tccl>) sessionFactory.getCurrentSession()
-				.createCriteria(Tccl.class)
-					.add(Restrictions.like("idCertrel", idCertRel))
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
+		TypedQuery<Tccl> query = sessionFactory.getCurrentSession()
+				.createQuery("from Tccl where idCertrel = :idCertrel", Tccl.class)
+				.setParameter("idCertrel", idCertRel);
 		
-		if (listTccl.isEmpty())
-		{
-			return null;
-		}
-		else
-		{
-			return listTccl;
-		}
+		return query.getResultList();
 	}
 
 	@Override
 	public List<Integer> getIds(int idTccl)
 	{
+		/*
+		 * TODO : 	Change NativeQuery to TypedQuery
+		 * 			Casting BigInteger to Integer
+		 * 
+		 */
 		@SuppressWarnings("unchecked")
-		List<BigInteger> idList = (List<BigInteger>) sessionFactory.getCurrentSession()
-				.createSQLQuery("select id_test from tccl_testcase where id_tccl="
-						+ idTccl + " and enable=true").list();
+		NativeQuery<Integer> query = sessionFactory.getCurrentSession()
+				.createNativeQuery("select id_test from tccl_testcase where id_tccl = :idTccl and enable = :enable")
+				.setParameter("idTccl", idTccl)
+				.setParameter("enable", true);
 		
-		List<Integer> intList = new ArrayList<Integer>();
-		for (BigInteger bi : idList)
-		{
-			intList.add(bi.intValue());
-		}
-		return intList;
+		return query.getResultList();
 	}
 
 	@Override
-	public List<Integer> getIdsDisabled(int idTccl)
+	public List<BigInteger> getIdsDisabled(int idTccl)
 	{
+		/*
+		 * TODO : 	Change NativeQuery to TypedQuery
+		 * 			Casting BigInteger to Integer
+		 * 
+		 */
 		@SuppressWarnings("unchecked")
-		List<BigInteger> idList = (List<BigInteger>) sessionFactory.getCurrentSession()
-				.createSQLQuery("select id_test from tccl_testcase where id_tccl="
-						+ idTccl + " and enable=false").list();
+		NativeQuery<BigInteger> query = sessionFactory.getCurrentSession()
+				.createNativeQuery("select id_test from tccl_testcase where id_tccl = :idTccl and enable = :enable")
+				.setParameter("idTccl", idTccl)
+				.setParameter("enable", false);
 		
-		List<Integer> intList = new ArrayList<Integer>();
-		for (BigInteger bi : idList)
-		{
-			intList.add(bi.intValue());
-		}
-		return intList;
+		return query.getResultList();
 	}
 
 	@Override
 	public String getTcclName(int idTccl)
 	{
+		/*
+		 * TODO : Handle NoResultException properly
+		 * 
+		 */
 		@SuppressWarnings("unchecked")
-		List<String> listTccl = (List<String>) sessionFactory.getCurrentSession()
-				.createSQLQuery("select name from tccl where id_tccl='" + idTccl + "';").list();
+		TypedQuery<String> query = sessionFactory.getCurrentSession()
+				.createQuery("select name from Tccl where idTccl = :idTccl")
+				.setParameter("idTccl", idTccl);
 		
-		if (listTccl.isEmpty())
+		String tcclName = null;
+		try
 		{
-			return null;
+			tcclName = query.getSingleResult();
 		}
-		else
+		catch (NoResultException e)
 		{
-			return listTccl.get(0);
+			// It means there is no Tccl with this ID
 		}
+		
+		return tcclName;
 	}
 }

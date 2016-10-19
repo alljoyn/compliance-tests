@@ -16,34 +16,24 @@
 
 package com.at4wireless.spring.model;
 
-public class Result {
+public class Result
+{	
+	public Result(int id, int idService, boolean result)
+	{
+		this.id = id;
+		this.idService = idService;
+		this.result = result;
+	}
+	
 	private int id;
+	public int getId() { return id; }
+	public void setId(int id) { this.id = id; }
+	
 	private int idService;
+	public int getIdService() { return idService; }
+	public void setIdService(int idService) { this.idService = idService; }
+	
 	private boolean result;
-	
-	public Result(int id, int idService, boolean result) {
-		this.id = id;
-		this.idService = idService;
-		this.result = result;
-	}
-	
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
-	public int getIdService() {
-		return idService;
-	}
-	public void setIdService(int idService) {
-		this.idService = idService;
-	}
-	public boolean isResult() {
-		return result;
-	}
-	public void setResult(boolean result) {
-		this.result = result;
-	}
-	
+	public boolean isResult() { return result; }
+	public void setResult(boolean result) { this.result = result; }
 }

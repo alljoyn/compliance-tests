@@ -9,6 +9,7 @@ public class DataTablesData
 	public int recordsTotal;
 	public int recordsFiltered;
 	
+	@SuppressWarnings("rawtypes")
 	public Collection data;
 	
 	public DataTablesData()

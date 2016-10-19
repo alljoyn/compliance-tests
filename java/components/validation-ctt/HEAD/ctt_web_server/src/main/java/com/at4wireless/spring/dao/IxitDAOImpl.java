@@ -18,9 +18,10 @@ package com.at4wireless.spring.dao;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
+
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,43 +29,54 @@ import org.springframework.transaction.annotation.Transactional;
 import com.at4wireless.spring.model.Ixit;
 
 @Repository
-public class IxitDAOImpl implements IxitDAO {
+public class IxitDAOImpl implements IxitDAO
+{
 	@Autowired
 	private SessionFactory sessionFactory;
 
 	@Override
-	public List<Ixit> list() {
-		@SuppressWarnings("unchecked")
-		List<Ixit> listIxit = (List<Ixit>) sessionFactory.getCurrentSession()
-				.createCriteria(Ixit.class)
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-
-		return listIxit;
+	public List<Ixit> list()
+	{	
+		TypedQuery<Ixit> query = sessionFactory.getCurrentSession()
+				.createNamedQuery("select_all_ixit", Ixit.class);
+		
+		return query.getResultList();
+	}
+	
+	@Override
+	public Ixit get(String name)
+	{
+		TypedQuery<Ixit> query = sessionFactory.getCurrentSession()
+				.createNamedQuery("select_ixit_by_name", Ixit.class)
+				.setParameter("name", name);
+		
+		Ixit foundIxit = null;
+		try
+		{
+			foundIxit = query.getSingleResult();
+		}
+		catch (NoResultException e)
+		{
+			
+		}
+		
+		return foundIxit;
 	}
 	
 	@Override
 	@Transactional
-	public List<Ixit> getService(int idService) {
-		@SuppressWarnings("unchecked")
-		List<Ixit> listIxit = (List<Ixit>) sessionFactory.getCurrentSession()
-				.createCriteria(Ixit.class)
-					.add(Restrictions.like("serviceGroup", idService))
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-
-		return listIxit;
+	public List<Ixit> getByService(int serviceID)
+	{	
+		TypedQuery<Ixit> query = sessionFactory.getCurrentSession()
+				.createNamedQuery("select_ixit_by_service_group", Ixit.class)
+				.setParameter("serviceGroup", serviceID);
+		
+		return query.getResultList();
 	}
 
 	@Override
 	public void add(Ixit ixit)
 	{
 		sessionFactory.getCurrentSession().save(ixit);
-	}
-	
-	@Override
-	public void update(Ixit ixit)
-	{
-		sessionFactory.getCurrentSession().createQuery("update Ixit set name = '"+ixit.getName()
-		+"', serviceGroup = '"+ixit.getServiceGroup()+"', value = '"+ixit.getValue()
-		+"', description = '"+ixit.getDescription()+"' where idIxit = '"+ixit.getIdIxit()+"'").executeUpdate();
 	}
 }

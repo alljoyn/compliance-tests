@@ -80,6 +80,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.at4wireless.spring.common.XMLManager;
 import com.at4wireless.spring.model.Project;
 import com.at4wireless.spring.model.RestProject;
 import com.at4wireless.spring.model.Sample;
@@ -107,7 +108,6 @@ public class RestController
 	
 	private static final String USERS_PATH = File.separator + "Allseen"
 			+File.separator+"Users"+File.separator;
-	private static final String RESULTS_XML_NAME = "result.xml";
 	
 	static final Logger log = LogManager.getLogger(RestController.class);
 	
@@ -834,12 +834,6 @@ public class RestController
 					return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);	
 				}
 				
-				// Modify results path format (File.separator -> File.separator + File.separator)
-				// to add path to database
-				resultsXmlPath = File.separator+File.separator+"Allseen"
-						+File.separator+File.separator+"Users"+File.separator+File.separator
-						+user+File.separator+File.separator+id
-						+File.separator+File.separator+"result.xml";
 				projectService.resultProject(id, resultsXmlPath);
 				
 				// Store log

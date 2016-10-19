@@ -22,68 +22,55 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
-@Table(name="ics")
-public class Ics {
-	
-	@Id @GeneratedValue
-	@Column(name="id_ics")
-	private int id;
-	
-	@Column(name="name")
-	private String name;
-	
-	@Column(name="description")
-	private String description;
-	
-	@Column(name="value")
-	private boolean value;
-	
-	@Column(name="scr_expression")
-	private String scrExpression;
-	
-	@Column(name="service_group")
-	private int serviceGroup;
-	
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
-	
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	
-	public boolean isValue() {
-		return value;
-	}
-	public void setValue(boolean value) {
-		this.value = value;
-	}
-	
-	public int getServiceGroup() {
-		return serviceGroup;
-	}
-	public void setServiceGroup(int service_group) {
-		this.serviceGroup = service_group;
-	}
-	public String getScrExpression() {
-		return scrExpression;
-	}
-	public void setScrExpression(String scrExpression) {
-		this.scrExpression = scrExpression;
-	}
+import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
 
+@NamedQueries({
+	@NamedQuery(
+		name = "select_all_ics",
+		query = "from Ics"
+		),
+	@NamedQuery(
+		name = "select_ics_by_service_group",
+		query = "from Ics where serviceGroup = :serviceGroup"
+		),
+	@NamedQuery(
+		name = "select_ics_by_name",
+		query = "from Ics where name = :name"
+		)
+})
+@Entity
+@Table(name = "ics")
+public class Ics
+{	
+	@Id @GeneratedValue
+	@Column(name = "id_ics", nullable = false)
+	private int id;
+	public int getId() { return id; }
+	public void setId(int id) { this.id = id; }
+	
+	@Column(name = "name", nullable = false)
+	private String name;
+	public String getName() { return name; }
+	public void setName(String name) { this.name = name; }
+	
+	@Column(name = "value", nullable = false)
+	private boolean value;
+	public boolean isValue() { return value; }
+	public void setValue(boolean value) { this.value = value; }
+	
+	@Column(name = "service_group", nullable = false)
+	private int serviceGroup;
+	public int getServiceGroup() { return serviceGroup; }
+	public void setServiceGroup(int service_group) { this.serviceGroup = service_group; }
+	
+	@Column(name = "scr_expression")
+	private String scrExpression;
+	public String getScrExpression() { return scrExpression; }
+	public void setScrExpression(String scrExpression) { this.scrExpression = scrExpression; }
+	
+	@Column(name = "description")
+	private String description;
+	public String getDescription() { return description; }
+	public void setDescription(String description) { this.description = description; }
 }

@@ -93,13 +93,13 @@ public class ProjectServiceImpl implements ProjectService
 		p.setCreatedDate(date);
 		p.setModifiedDate(date);
 
-		if (projectDao.getProjectByName(p.getUser(), p.getName()) != null)
+		if (projectDao.getByName(p.getUser(), p.getName()) != null)
 		{
 			return null;
 		}
 		else
 		{
-			projectDao.addProject(p);
+			projectDao.add(p);
 			checkTcclContent(p);
 			parseSupportedServices(p);
 			parseGoldenUnits(p);
@@ -111,7 +111,7 @@ public class ProjectServiceImpl implements ProjectService
 	{
 		if ((!p.getType().equals("Development")) && (tcclDao.getTcclName(p.getIdTccl()) == null))
 		{
-			if (tcclDao.getNumber(crDao.getName(p.getIdCertrel()).substring(1)) > 0)
+			if (tcclDao.getNumber(crDao.getByID(p.getIdCertrel()).getName().substring(1)) > 0)
 			{
 				List<Tccl> listAvailableTccl = tcclDao.listByCR(p.getIdCertrel());
 				p.setIdTccl(listAvailableTccl.get(listAvailableTccl.size() - 1).getIdTccl());
@@ -144,7 +144,7 @@ public class ProjectServiceImpl implements ProjectService
 	
 	private void parseGoldenUnits(Project p)
 	{
-		List<String> sList = projectDao.getGoldenByName(p.getIdProject());
+		List<String> sList = projectDao.getGoldenUnitsByProjectID(p.getIdProject());
 		if (!sList.isEmpty())
 		{
 			StringBuilder str= new StringBuilder();
@@ -193,9 +193,9 @@ public class ProjectServiceImpl implements ProjectService
 	@Transactional
 	public Project getFormData(String username, int idProject)
 	{
-		Project p = projectDao.getProject(username,idProject);
+		Project p = projectDao.getByID(username,idProject);
 		
-		log.trace(guDao.getGuList(p.getIdProject()).size());
+		log.trace(guDao.listByProjectID(p.getIdProject()).size());
 
 		List<BigInteger> biList = serviceDao.getServices(p.getIdProject());
 		
@@ -215,7 +215,7 @@ public class ProjectServiceImpl implements ProjectService
 	@Transactional
 	public Project update(Project p)
 	{
-		Project saved = projectDao.getProject(p.getUser(), p.getIdProject());
+		Project saved = projectDao.getByID(p.getUser(), p.getIdProject());
 		
 		if (saved != null)
 		{
@@ -232,7 +232,7 @@ public class ProjectServiceImpl implements ProjectService
 				i++;
 			}
 			
-			projectDao.saveChanges(p);
+			projectDao.update(p);
 
 			checkTcclContent(p);
 			parseSupportedServices(p);
@@ -253,7 +253,7 @@ public class ProjectServiceImpl implements ProjectService
 	@Transactional
 	public boolean delete(String username, int idProject)
 	{
-		Project p = projectDao.getProject(username, idProject);
+		Project p = projectDao.getByID(username, idProject);
 		
 		if (p != null)
 		{
@@ -283,7 +283,7 @@ public class ProjectServiceImpl implements ProjectService
 			{
 				e.printStackTrace();
 			}
-			projectDao.delProject(idProject);
+			projectDao.delete(idProject);
 			return true;
 		}
 		else
@@ -294,23 +294,23 @@ public class ProjectServiceImpl implements ProjectService
 
 	@Override
 	@Transactional
-	public void configProject(String idProject, String url)
+	public void configProject(int idProject, String url)
 	{
-		projectDao.configProject(idProject, url);
+		projectDao.setConfig(idProject, url);
 	}
 
 	@Override
 	@Transactional
 	public void resultProject(int idProject, String url)
 	{
-		projectDao.resultProject(idProject, url);
+		projectDao.setResults(idProject, url);
 	}
 
 	@Override
 	@Transactional
 	public String setDut(String username, Project project)
 	{
-		Project p = projectDao.getProject(username, project.getIdProject());
+		Project p = projectDao.getByID(username, project.getIdProject());
 		
 		if (project.getIdDut() != 0)
 		{
@@ -334,7 +334,7 @@ public class ProjectServiceImpl implements ProjectService
 					e.printStackTrace();
 				}
 				projectDao.configProject(Integer.toString(project.getIdProject()), null);*/
-				modifyIxit(p.getConfiguration(), dutDao.getDut(username, p.getIdDut()));
+				modifyIxit(p.getConfiguration(), dutDao.get(p.getIdDut(), username));
 			}
 			projectDao.setDut(project);
 		}
@@ -471,9 +471,10 @@ public class ProjectServiceImpl implements ProjectService
 		
 		try
 		{
+			projectDao.unassignGoldenUnits(project.getIdProject());
+			
 			if (!project.getgUnits().isEmpty())
 			{
-				projectDao.unassignGoldenUnits(project.getIdProject());
 				projectDao.assignGoldenUnits(project);
 			}
 		}
@@ -513,7 +514,7 @@ public class ProjectServiceImpl implements ProjectService
 			
 			if (p.getIdDut() != 0)
 			{
-				rp.setDut(dutDao.getDut(username, p.getIdDut()).getName());
+				rp.setDut(dutDao.get(p.getIdDut(), username).getName());
 			}
 			rp.setGolden(p.getgUnits());
 			
@@ -533,11 +534,11 @@ public class ProjectServiceImpl implements ProjectService
 	@Transactional
 	public boolean clearConfigByDut(String username, int idDut)
 	{
-		List<Project> lp = projectDao.getProjectByDut(username, idDut);
+		List<Project> lp = projectDao.getByDUT(username, idDut);
 		
 		if (lp != null)
 		{
-			for (Project p : projectDao.getProjectByDut(username, idDut))
+			for (Project p : projectDao.getByDUT(username, idDut))
 			{
 				if (p.isIsConfigured())
 				{	
@@ -559,7 +560,7 @@ public class ProjectServiceImpl implements ProjectService
 					{
 						e.printStackTrace();
 					}
-					projectDao.configProject(Integer.toString(p.getIdProject()), null);
+					projectDao.setConfig(p.getIdProject(), null);
 				}
 				Project p2 = new Project();
 				p2.setIdProject(p.getIdProject());
@@ -582,7 +583,7 @@ public class ProjectServiceImpl implements ProjectService
 	@Transactional
 	public List<String> pdfData(String username, int idProject)
 	{
-		Project p = projectDao.getProject(username,idProject);
+		Project p = projectDao.getByID(username,idProject);
 		List<String> sList = serviceDao.getServicesByName(p.getIdProject());
 		
 		StringBuilder str = new StringBuilder();
@@ -608,8 +609,8 @@ public class ProjectServiceImpl implements ProjectService
 		listString.add("Certification Application Request ID"+separator+p.getCarId());
 		listString.add("Type of Project"+separator+p.getType());
 		listString.add("Supported Services"+separator+p.getSupportedServices());
-		listString.add("Certification Release Version"+separator+crDao.getName(p.getIdCertrel())
-				+" ("+crDao.getCertificationReleaseDescription(crDao.getName(p.getIdCertrel()))+")");
+		listString.add("Certification Release Version"+separator+crDao.getByID(p.getIdCertrel()).getName()
+				+" ("+crDao.getDescription(crDao.getByID(p.getIdCertrel()).getName())+")");
 		listString.add("TCCL Version"+separator+tcclDao.getTcclName(p.getIdTccl()));
 		
 		return listString;
@@ -627,7 +628,7 @@ public class ProjectServiceImpl implements ProjectService
 	@Transactional
 	public boolean exists(String username, String name, int id)
 	{
-		Project p = projectDao.getProjectByName(username, name);
+		Project p = projectDao.getByName(username, name);
 		
 		if (p == null)
 		{

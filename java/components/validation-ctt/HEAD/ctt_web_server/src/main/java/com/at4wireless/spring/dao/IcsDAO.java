@@ -19,28 +19,40 @@ import java.util.List;
 
 import com.at4wireless.spring.model.Ics;
 
-/**
- * Interface that manages database ICS-related access
- *
- */
-public interface IcsDAO {
-	
+public interface IcsDAO
+{
 	/**
 	 * Retrieves the list of ICS
 	 * 
-	 * @return	list of ICS
+	 * @return list of ICS
 	 */
 	public List<Ics> list();
 	
 	/**
+	 * Retrieves an ICS using its name in query
+	 * 
+	 * @param name
+	 * 			name of the ICS to be retrieved
+	 * 
+	 * @return retrieved ICS
+	 */
+	public Ics get(String name);
+	
+	/**
 	 * Retrieves a list of ICS of a certain service framework
 	 * 
-	 * @param 	idService	service framework ID
-	 * @return				list of ICS
+	 * @param serviceID
+	 * 			ID of the service framework whose ICS are going to be retrieved
+	 * 
+	 * @return list of ICS
 	 */
-	public List<Ics> getService(int idService);
+	public List<Ics> getByService(int serviceID);
 	
-	public void add(Ics ics);
-	
-	public void update(Ics ics);
+	/**
+	 * Stores a new ICS in database
+	 * 
+	 * @param newIcs
+	 * 			information of the new ICS to be added to database
+	 */
+	public void add(Ics newIcs);
 }

@@ -26,40 +26,43 @@ import com.at4wireless.spring.dao.CertificationReleaseDAO;
 import com.at4wireless.spring.model.CertificationRelease;
 
 @Service
-public class CertificationReleaseServiceImpl implements CertificationReleaseService {
-
+public class CertificationReleaseServiceImpl implements CertificationReleaseService
+{
 	@Autowired
-	private CertificationReleaseDAO certRelDao;
+	private CertificationReleaseDAO certificationReleaseDAO;
 	
 	@Override
-	@Transactional
-	public List<CertificationRelease> list() {
-		return certRelDao.list();
+	@Transactional(readOnly = true)
+	public List<CertificationRelease> list()
+	{
+		return certificationReleaseDAO.list();
 	}
 
 	@Override
-	@Transactional
-	public List<CertificationRelease> listReleaseVersions() {
-		return certRelDao.listReleaseVersions();
+	@Transactional(readOnly = true)
+	public List<CertificationRelease> listReleaseVersions()
+	{
+		return certificationReleaseDAO.listRelease();
 	}
 
 	@Override
-	@Transactional
-	public String getCertificationReleaseDescription(String certificationRelease) {
-		return certRelDao.getCertificationReleaseDescription(certificationRelease);
+	@Transactional(readOnly = true)
+	public String getCertificationReleaseDescription(String certificationRelease)
+	{
+		return certificationReleaseDAO.getDescription(certificationRelease);
 	}
 	
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public String getCertificationReleaseName(int certificationReleaseId)
 	{
-		return certRelDao.getName(certificationReleaseId);
+		return certificationReleaseDAO.getByID(certificationReleaseId).getName();
 	}
 
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public boolean isReleaseVersion(int certificationReleaseId)
 	{
-		return certRelDao.isReleaseVersion(certRelDao.getName(certificationReleaseId));
+		return certificationReleaseDAO.getByID(certificationReleaseId).isRelease();
 	}
 }

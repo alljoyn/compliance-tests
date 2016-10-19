@@ -42,7 +42,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.at4wireless.spring.controller.XMLManager;
+import com.at4wireless.spring.common.XMLManager;
 import com.at4wireless.spring.dao.IxitDAO;
 import com.at4wireless.spring.model.Ixit;
 
@@ -64,7 +64,7 @@ public class IxitServiceImpl implements IxitService
 		// First of all, load all available IXIT for supported services
 		for (BigInteger bi : services)
 		{
-			listIxit.addAll(ixitDao.getService(bi.intValue()));
+			listIxit.addAll(ixitDao.getByService(bi.intValue()));
 		}
 		
 		// if the project is already configured, update the values of the IXIT to return with the configured values
@@ -107,10 +107,10 @@ public class IxitServiceImpl implements IxitService
 	}
 
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<Ixit> getService(int idService)
 	{
-		return ixitDao.getService(idService);
+		return ixitDao.getByService(idService);
 	}
 	
 	@Override
@@ -157,23 +157,27 @@ public class IxitServiceImpl implements IxitService
 
 	@Override
 	@Transactional
-	public String add(Ixit ixit)
+	public String add(Ixit newIxit)
 	{
-		String name = ixit.getName();
+		String stringToReturn = null;
+		Ixit existingIxit = ixitDao.get(newIxit.getName());
 		
-		for (Ixit i : ixitDao.list())
+		if (existingIxit != null)
 		{
-			if (i.getName().equals(name))
-			{
-				ixit.setIdIxit(i.getIdIxit());
-				ixitDao.update(ixit);
-				return String.format("%s already existed. It was successfully updated", name);
-			}
+			existingIxit.setName(newIxit.getName());
+			existingIxit.setServiceGroup(newIxit.getServiceGroup());
+			existingIxit.setValue(newIxit.getValue());
+			existingIxit.setDescription(newIxit.getDescription());
+			
+			stringToReturn = String.format("%s already existed. It was successfully updated", newIxit.getName());
+		}
+		else
+		{
+			ixitDao.add(newIxit);
+			
+			stringToReturn = String.format("%s successfully added to database", newIxit.getName());
 		}
 		
-		ixitDao.add(ixit);
-		
-		return String.format("%s successfully added to database", ixit.getName());
+		return stringToReturn;
 	}
-
 }

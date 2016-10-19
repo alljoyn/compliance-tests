@@ -184,13 +184,7 @@ public class ResultServiceImpl implements ResultService
 			document.save(outputFileName);
 			document.close();
 
-			outputFileName = File.separator+File.separator+"Allseen"
-					+File.separator+File.separator+"Users"+File.separator
-					+File.separator+username+File.separator+File.separator
-					+p.getIdProject()+File.separator
-					+File.separator+"TestReport.pdf";
-
-			projectService.testReport(p.getIdProject(),outputFileName);
+			projectService.testReport(p.getIdProject(), outputFileName);
 			return true;
 		}
 		catch (IOException e)
@@ -434,12 +428,9 @@ public class ResultServiceImpl implements ResultService
 	}
 	
 	@Override
-	public String uploadZipFileToCawt(String username, String cri, int idProject) throws Exception
+	public String uploadZipFileToCawt(String username, String cri, int idProject, String cawtUrl, String cawtSecret) throws Exception
 	{
-		String cawtUrl = "https://certify.alljoyn.org";
-		String secret = "ask the alliance for the secret";
-
-		CawtWebService ws = new CawtWebService(cawtUrl, secret);
+		CawtWebService ws = new CawtWebService(cawtUrl, cawtSecret);
 		String zipPath = File.separator + "Allseen" + File.separator + "Users" + File.separator
 				+ username + File.separator + idProject + File.separator + "TestReport.zip";
 		

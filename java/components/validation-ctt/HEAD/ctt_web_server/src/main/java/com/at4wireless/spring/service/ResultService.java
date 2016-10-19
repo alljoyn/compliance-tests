@@ -36,7 +36,7 @@ public interface ResultService {
 	
 	public List<String> createZipFile(String username, int idProject, SecretKey aesSecretKey) throws IOException;
 	
-	public String uploadZipFileToCawt(String username, String cri, int idProject) throws Exception;
+	public String uploadZipFileToCawt(String username, String cri, int idProject, String cawtUrl, String cawtSecret) throws Exception;
 	
 	public void downloadZipFile(HttpServletResponse response, String username, int idProject) throws IOException;
 	

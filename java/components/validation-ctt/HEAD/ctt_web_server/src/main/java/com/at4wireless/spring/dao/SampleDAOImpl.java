@@ -13,60 +13,67 @@
  *      ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  *      OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *******************************************************************************/
-
 package com.at4wireless.spring.dao;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
+
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.at4wireless.spring.model.Sample;
 
 @Repository
-public class SampleDAOImpl implements SampleDAO {
+public class SampleDAOImpl implements SampleDAO
+{
 	@Autowired
 	private SessionFactory sessionFactory;
 
 	@Override
-	public List<Sample> list(int dut) {
-		@SuppressWarnings("unchecked")
-		List<Sample> listSample = (List<Sample>) sessionFactory.getCurrentSession()
-				.createCriteria(Sample.class)
-					.add(Restrictions.like("associatedDut", dut))
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-
-		return listSample;
-	}
-
-	@Override
-	public void addSample(Sample sample) {
-		sessionFactory.getCurrentSession().save(sample);		
+	public List<Sample> list(int dutID)
+	{
+		TypedQuery<Sample> query = sessionFactory.getCurrentSession()
+				.createQuery("from Sample where associatedDut = :idDut", Sample.class)
+				.setParameter("idDut", dutID);
+		
+		return query.getResultList();
 	}
 	
 	@Override
-	public void delSample(int idSample) {
-		sessionFactory.getCurrentSession().createQuery("delete from Sample s where s.idSample ='"+idSample+"'").executeUpdate();
+	public Sample get(int sampleID)
+	{
+		TypedQuery<Sample> query = sessionFactory.getCurrentSession()
+				.createQuery("from Sample where idSample = :idSample", Sample.class)
+				.setParameter("idSample", sampleID);
+		
+		Sample foundSample = null;
+		try
+		{
+			foundSample = query.getSingleResult();
+		}
+		catch (NoResultException e)
+		{
+			
+		}
+		
+		return foundSample;
 	}
-	
-	@Override
-	public Sample getSample(int idSample) {
-		@SuppressWarnings("unchecked")
-		List<Sample> listSample = (List<Sample>) sessionFactory.getCurrentSession()
-				.createCriteria(Sample.class)
-					.add(Restrictions.like("idSample", idSample))
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
 
-		return listSample.get(0);
+	@Override
+	public void add(Sample newSample)
+	{
+		sessionFactory.getCurrentSession().save(newSample);		
 	}
 	
 	@Override
-	public void saveChanges(Sample sample) {
-		sessionFactory.getCurrentSession().createQuery("update Sample set deviceId = '"+sample.getDeviceId()
-				+"', appId = '"+sample.getAppId()+"', swVer = '"+sample.getSwVer()
-				+"', hwVer = '"+sample.getHwVer()+"' where idSample = '"+sample.getIdSample()+"'").executeUpdate();
+	public int delete(int sampleID)
+	{
+		return sessionFactory.getCurrentSession()
+				.createQuery("delete Sample where idSample = :idSample")
+				.setParameter("idSample", sampleID)
+				.executeUpdate();
 	}
 }

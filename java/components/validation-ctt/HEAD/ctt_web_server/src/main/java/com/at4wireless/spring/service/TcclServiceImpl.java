@@ -18,6 +18,8 @@ package com.at4wireless.spring.service;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -63,24 +65,28 @@ public class TcclServiceImpl implements TcclService
 		tccl.setModifiedDate(date);
 		tccl.setIdCertrel(Integer.parseInt(map.get("certrel[id]")[0]));
 		tccl.setNumTc((map.size()-2)/3);
-		tccl.setNameCertrel(certrelDao.getName(Integer.parseInt(map.get("certrel[id]")[0])));
-		int idTccl = tcclDao.addTccl(tccl);
-		
+		tccl.setNameCertrel(certrelDao.getByID(Integer.parseInt(map.get("certrel[id]")[0])).getName());
+		int idTccl = tcclDao.add(tccl);
+				
 		if (idTccl != 0)
 		{
-			StringBuilder str = new StringBuilder();
+			List<String> types = new ArrayList<String>();
+			List<Boolean> enables = new ArrayList<Boolean>();
+			List<BigInteger> testcaseIDs = new ArrayList<BigInteger>();
 			
-			for (int j = 0; j < ((map.size() - 2)/3); j++)
+			String typeKey = "json[%d][type]";
+			String enabledKey = "json[%d][enabled]";
+			String testCaseIdKey = "json[%d][id]";
+			for (int i = 0; i < ((map.size() - 2) / 3); i++)
 			{
-				String s = String.format("(%d, '%s', %s, %s)", idTccl, map.get(String.format("json[%d][type]", j))[0], 
-						map.get(String.format("json[%d][enabled]", j))[0], map.get(String.format("json[%d][id]", j))[0]);
-				str.append(s);
-				
-				if (j != (((map.size() - 2)/3) - 1)) str.append(",");
+				types.add(map.get(String.format(typeKey, i))[0]);
+				enables.add(Boolean.valueOf(map.get(String.format(enabledKey, i))[0]));
+				testcaseIDs.add(new BigInteger(map.get(String.format(testCaseIdKey, i))[0]));
 			}
-
-			tcclDao.saveList(str.toString());
+			
+			tcclDao.storeAssociatedTestCases(idTccl, types, enables, testcaseIDs);
 		}
+		
 		return tccl;
 	}
 
@@ -114,19 +120,23 @@ public class TcclServiceImpl implements TcclService
 		
 		if (idTccl != 0)
 		{
-			StringBuilder str = new StringBuilder();
+			List<String> types = new ArrayList<String>();
+			List<Boolean> enables = new ArrayList<Boolean>();
+			List<BigInteger> testcaseIDs = new ArrayList<BigInteger>();
 			
-			for (int j = 0; j < ((map.size() - 2)/3); j++)
+			String typeKey = "json[%d][type]";
+			String enabledKey = "json[%d][enabled]";
+			String testCaseIdKey = "json[%d][id]";
+			for (int i = 0; i < ((map.size() - 2) / 3); i++)
 			{
-				String s = String.format("(%d, '%s', %s, %s)", idTccl, map.get(String.format("json[%d][type]", j))[0], 
-						map.get(String.format("json[%d][enabled]", j))[0], map.get(String.format("json[%d][id]", j))[0]);
-				str.append(s);
-				
-				if (j != (((map.size() - 2)/3) - 1)) str.append(",");
+				types.add(map.get(String.format(typeKey, i))[0]);
+				enables.add(Boolean.valueOf(map.get(String.format(enabledKey, i))[0]));
+				testcaseIDs.add(new BigInteger(map.get(String.format(testCaseIdKey, i))[0]));
 			}
-
-			tcclDao.saveList(str.toString());
+			
+			tcclDao.storeAssociatedTestCases(idTccl, types, enables, testcaseIDs);
 		}
+		
 		return tccl;
 	}
 
@@ -142,19 +152,19 @@ public class TcclServiceImpl implements TcclService
 	public void addCertificationReleaseIfNotExists(String certificationRelease, String packageVersion,
 			String description) throws Exception
 	{
-		if (!certrelDao.certificationReleaseExists(certificationRelease))
+		if (!certrelDao.exists(certificationRelease))
 		{
 			CertificationRelease cRelease = new CertificationRelease();
 			cRelease.setName(certificationRelease);
 			cRelease.setEnabled(true);
 			cRelease.setRelease(isReleaseVersion(packageVersion));
 			cRelease.setDescription(description);
-			int crId = certrelDao.addCertificationRelease(cRelease);
+			int crId = certrelDao.add(cRelease);
 			tcDao.assignTestCasesToCertificationRelease(crId);
 		}
 		else
 		{
-			if (certrelDao.isReleaseVersion(certificationRelease))
+			if (certrelDao.isRelease(certificationRelease))
 			{
 				if (!isReleaseVersion(packageVersion))
 				{

@@ -18,76 +18,85 @@ package com.at4wireless.spring.dao;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
+
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.at4wireless.spring.model.Dut;
 
 @Repository
-public class DutDAOImpl implements DutDAO {
+public class DutDAOImpl implements DutDAO
+{
 	@Autowired
 	private SessionFactory sessionFactory;
 
 	@Override
-	public List<Dut> list(String user) {
-		@SuppressWarnings("unchecked")
-		List<Dut> listDut = (List<Dut>) sessionFactory.getCurrentSession()
-				.createCriteria(Dut.class)
-					.add(Restrictions.like("user", user))
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-
-		return listDut;
+	public List<Dut> list(String user)
+	{		
+		TypedQuery<Dut> query = sessionFactory.getCurrentSession()
+				.createQuery("from Dut where user = :user", Dut.class)
+				.setParameter("user", user);
+		
+		return query.getResultList();
 	}
 	
 	@Override
-	public Dut getDut(String user, int idDut) {
-		@SuppressWarnings("unchecked")
-		List<Dut> listDut = (List<Dut>) sessionFactory.getCurrentSession()
-				.createCriteria(Dut.class)
-					.add(Restrictions.like("user", user))
-					.add(Restrictions.like("idDut", idDut))
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-		if(listDut.isEmpty()) {
-			return null;
-		} else {
-			return listDut.get(0);
+	public Dut get(int dutID, String user)
+	{
+		TypedQuery<Dut> query = sessionFactory.getCurrentSession()
+				.createQuery("from Dut where idDut = :idDut and user = :user", Dut.class)
+				.setParameter("idDut", dutID)
+				.setParameter("user", user);
+		
+		Dut foundDut = null;	
+		try
+		{
+			foundDut = query.getSingleResult();
 		}
-	}
-	
-	@Override
-	public Dut getDutByName(String user, String name) {
-		@SuppressWarnings("unchecked")
-		List<Dut> listDut = (List<Dut>) sessionFactory.getCurrentSession()
-				.createCriteria(Dut.class)
-					.add(Restrictions.like("user", user))
-					.add(Restrictions.like("name", name))
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-
-		if(listDut.isEmpty()) {
-			return null;
-		} else {
-			return listDut.get(0);
+		catch (NoResultException e)
+		{
+			
 		}
+		
+		return foundDut;
+	}
+	
+	@Override
+	public Dut get(String name, String user)
+	{		
+		TypedQuery<Dut> query = sessionFactory.getCurrentSession()
+				.createQuery("from Dut where name = :name and user = :user", Dut.class)
+				.setParameter("name", name)
+				.setParameter("user", user);
+		
+		Dut foundDut = null;
+		try
+		{
+			foundDut = query.getSingleResult();
+		}
+		catch (NoResultException e)
+		{
+			
+		}
+		
+		return foundDut;
 	}
 
 	@Override
-	public void addDut(Dut dut) {
-		sessionFactory.getCurrentSession().save(dut);		
+	public void add(Dut newDut)
+	{
+		sessionFactory.getCurrentSession().save(newDut);		
 	}
 	
 	@Override
-	public void delDut(int dutId) {
-		sessionFactory.getCurrentSession().createQuery("delete from Dut d where d.idDut ='"+dutId+"'").executeUpdate();
-	}
-	
-	@Override
-	public void saveChanges(Dut dut) {
-		sessionFactory.getCurrentSession().createQuery("update Dut set name = '"+dut.getName()
-				+"', modifiedDate = '"+dut.getModifiedDate()+"', manufacturer = '"+dut.getManufacturer()
-				+"', model = '"+dut.getModel()+"', description = '"+dut.getDescription()
-				+"' where idDut = '"+dut.getIdDut()+"'").executeUpdate();
+	public int delete(int dutID)
+	{
+		return sessionFactory.getCurrentSession()
+				.createQuery("delete Dut where idDut = :idDut")
+				.setParameter("idDut", dutID)
+				.executeUpdate();
 	}
 }

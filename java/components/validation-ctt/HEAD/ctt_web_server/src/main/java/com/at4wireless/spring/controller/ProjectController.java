@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,6 +38,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.at4wireless.spring.common.DataTablesData;
+import com.at4wireless.spring.common.XMLManager;
 import com.at4wireless.spring.model.CertificationRelease;
 import com.at4wireless.spring.model.Project;
 import com.at4wireless.spring.model.ServiceFramework;
@@ -70,6 +72,12 @@ public class ProjectController
 	private TcclService tcclService;	
 	@Autowired
 	private UserService userService;
+	
+	@Value("${cawt.url}")
+	private String cawtUrl;
+	
+	@Value("${cawt.secret}")
+	private String cawtSecret;
 
 	/**
 	 * Loads data to be displayed if logged, redirects to login
@@ -133,7 +141,6 @@ public class ProjectController
 			
 			dtData.data = listOfDataTablesProjects;
 		}
-		
 		
 		return dtData;
 	}
@@ -309,8 +316,10 @@ public class ProjectController
 	/**
 	 * Async load of Certification Releases of a given project type
 	 * 
-     * @param 	request 	servlet request with the type of the project
-     * @return 				list of Certification Releases related to the project type
+     * @param request 
+     * 			servlet request with the type of the project
+     * 
+     * @return list of Certification Releases related to the project type
      */
 	@RequestMapping(value="/loadCertRel", method = RequestMethod.GET)
 	public @ResponseBody List<CertificationRelease> loadCertRel(HttpServletRequest request)
@@ -366,14 +375,11 @@ public class ProjectController
 	}
 	
 	private List<String> obtainCriList(String username)
-	{
-		String cawtUrl = "https://certify.alljoyn.org";
-		String secret = "ask the alliance for the secret";
-		
+	{		
 		List<String> retrievedCris = new ArrayList<String>();
 		try
 		{
-			CawtWebService ws = new CawtWebService(cawtUrl, secret);
+			CawtWebService ws = new CawtWebService(cawtUrl, cawtSecret);
 			String output = ws.acceptedApplicationsRaw(username);
 			XMLManager xmlManager = new XMLManager();
 			retrievedCris = xmlManager.retrieveNodeValuesFromXMLString(output, "/Output/Applications/Application/cri");

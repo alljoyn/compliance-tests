@@ -57,12 +57,14 @@ public class IxitController
 	private ServiceFrameworkService sfService;
 	
 	/**
-	 * Loads data to be displayed if logged, redirects to login
-	 * otherwise.
+	 * Loads data to be displayed if logged, redirects to login otherwise.
 	 * 
-     * @param 	model 		model to add objects needed by the view
-     * @param 	newProject 	ID of the project whose services have to be loaded
-     * @return 				target view
+     * @param model
+     * 			model to add objects needed by the view
+     * @param newProject
+     * 			ID of the project whose services have to be loaded
+     * 
+     * @return target view
      */
 	@RequestMapping(method = RequestMethod.GET)
 	public @ResponseBody ModelAndView ixit(Model model, @ModelAttribute("newProject") Project newProject)
@@ -78,15 +80,16 @@ public class IxitController
 			listIxit = ixitService.load(projectService.getServicesData(p.getIdProject()), p.isIsConfigured(),
 					p.getConfiguration());
 			
-			dutService.setValues(auth.getName(), p.getIdDut(), listIxit);
+			dutService.loadIxitValues(auth.getName(), p.getIdDut(), listIxit);
 			
 			for (BigInteger bi : projectService.getServicesData(newProject.getIdProject()))
 			{
 				listService.add(sfService.list().get(bi.intValue()-1));
 			}
+			
 			model.addAttribute("ixitList", ControllerCommons.dataToHtml(listIxit));
-			//model.addAttribute("ixitList", listIxit);
 			model.addAttribute("serviceList", listService);
+			
 			return new ModelAndView("dynamic-ixit");
 		}
 		else

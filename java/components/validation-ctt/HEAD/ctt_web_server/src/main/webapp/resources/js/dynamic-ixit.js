@@ -113,7 +113,7 @@ var ixits = (function()
 			}
 			
 			// disable IXIT that are loaded from DUT and sample info
-			if ((id == "2") || (id == "4") || (id == "5") || (id == "7") || (id == "8") || (id == "9") || (id == "11"))
+			if ((id == "2") || (id == "4") || (id == "5") || (id == "7") || (id == "8") || (id == "9") || (id == "11") || (id == "78"))
 			{
 				//
 				$(_ixitsTablesRows[i]).find('.form-control').addClass('disabled');

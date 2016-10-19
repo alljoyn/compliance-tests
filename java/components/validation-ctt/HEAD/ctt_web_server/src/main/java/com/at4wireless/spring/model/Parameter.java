@@ -23,51 +23,27 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="parameters")
-public class Parameter {
-	
+@Table(name = "parameters")
+public class Parameter
+{	
 	@Id @GeneratedValue
-	@Column(name="id_param")
+	@Column(name = "id_param", nullable = false)
 	private int idParam;
+	public int getIdParam() { return idParam; }
+	public void setIdParam(int idParam) { this.idParam = idParam; }
 	
-	@Column(name="name")
+	@Column(name = "name", nullable = false)
 	private String name;
+	public String getName() { return name; }
+	public void setName(String name) { this.name = name; }
 	
-	@Column(name="value")
+	@Column(name = "value", nullable = false)
 	private String value;
+	public String getValue() { return value; }
+	public void setValue(String value) { this.value = value; }
 	
-	@Column(name="description")
+	@Column(name = "description")
 	private String description;
-
-	public int getIdParam() {
-		return idParam;
-	}
-
-	public void setIdParam(int idParam) {
-		this.idParam = idParam;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
+	public String getDescription() { return description; }
+	public void setDescription(String description) { this.description = description; }
 }

@@ -44,14 +44,14 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.at4wireless.spring.controller.XMLManager;
+import com.at4wireless.spring.common.XMLManager;
 import com.at4wireless.spring.dao.IcsDAO;
 import com.at4wireless.spring.model.Ics;
 import com.at4wireless.spring.model.Result;
 
 @Service
-public class IcsServiceImpl implements IcsService {
-	
+public class IcsServiceImpl implements IcsService
+{
 	@Autowired
 	private IcsDAO icsDao;
 	
@@ -66,7 +66,7 @@ public class IcsServiceImpl implements IcsService {
 		// get all available ICS for supported services
 		for (BigInteger bi : services)
 		{
-			listIcs.addAll(icsDao.getService(bi.intValue()));
+			listIcs.addAll(icsDao.getByService(bi.intValue()));
 		}
 		
 		// if project is configured, load configured values
@@ -110,45 +110,57 @@ public class IcsServiceImpl implements IcsService {
 	
 	@Override
 	@Transactional
-	public List<Result> check(List<BigInteger> services, Map<String,String[]> map) {
+	public List<Result> check(List<BigInteger> services, Map<String,String[]> map)
+	{
 		List<Ics> listIcs = new ArrayList<Ics>();
 		
-		for (BigInteger bi : services) {
-			listIcs.addAll(icsDao.getService(bi.intValue()));
+		for (BigInteger bi : services)
+		{
+			listIcs.addAll(icsDao.getByService(bi.intValue()));
 		}
 	
 		return checkScr(listIcs, map);
 	}
 	
-	private List<Result> checkScr(List<Ics> listIcs, 
-			Map<String, String[]> map) {
-		
+	private List<Result> checkScr(List<Ics> listIcs, Map<String, String[]> map)
+	{
 		String condition = new String();
 		List<Result> listResult = new ArrayList<Result>();
 		boolean b = false;
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("JavaScript");
 		
-		for (Ics ics : listIcs) {
+		for (Ics ics : listIcs)
+		{
 			b = Boolean.parseBoolean(map.get("data["+ics.getName()+"]")[0]);
-			try {
+			
+			try
+			{
 				if (b) engine.eval(ics.getName()+" = 1");
 				else engine.eval(ics.getName()+" = 0");
-			} catch (ScriptException e) {
+			}
+			catch (ScriptException e)
+			{
 				e.printStackTrace();
 			}
 		}
 		
-		for (Ics ics : listIcs) {
+		for (Ics ics : listIcs)
+		{
 			condition = ics.getScrExpression();
 			
 			Result r = new Result(ics.getId(), ics.getServiceGroup(), true);
-			if((condition!=null)&&(!condition.isEmpty())) {
-				try {
+			if ((condition!=null)&&(!condition.isEmpty()))
+			{
+				try
+				{
 					r.setResult((Integer)engine.eval(condition)==1.0);
-				} catch (ScriptException e) {
+				}
+				catch (ScriptException e)
+				{
 					e.printStackTrace();
 				}
 			}
+			
 			listResult.add(r);
 		}
 		
@@ -157,18 +169,21 @@ public class IcsServiceImpl implements IcsService {
 
 	@Override
 	@Transactional
-	public List<Ics> getService(int idService) {
-		return icsDao.getService(idService);
+	public List<Ics> getService(int idService)
+	{
+		return icsDao.getByService(idService);
 	}
 
 	@Override
-	public List<String> pdfData(String configuration) {
+	public List<String> pdfData(String configuration)
+	{
 		DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = null;
 		String separator=": ";
 		List<String> listString = new ArrayList<String>();
 		
-		try {
+		try
+		{
 			builder = builderFactory.newDocumentBuilder();
 			Document source = builder.parse(new FileInputStream(configuration));
 			
@@ -180,17 +195,26 @@ public class IcsServiceImpl implements IcsService {
 			NodeList nodeList2 = (NodeList) xPath.compile(expression2).evaluate(source, XPathConstants.NODESET);
 			
 			listString.add("2. Configured ICS");
-			for (int i = 0; i < nodeList.getLength(); i++) {
+			for (int i = 0; i < nodeList.getLength(); i++)
+			{
 			    listString.add(nodeList2.item(i).getFirstChild().getNodeValue()+separator
 			    		+nodeList.item(i).getFirstChild().getNodeValue());
 			}
-		} catch (ParserConfigurationException e) {
+		}
+		catch (ParserConfigurationException e)
+		{
 			e.printStackTrace();
-		} catch (SAXException e) {
+		}
+		catch (SAXException e)
+		{
 			e.printStackTrace();
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			e.printStackTrace();
-		} catch (XPathExpressionException e) {
+		}
+		catch (XPathExpressionException e)
+		{
 			e.printStackTrace();
 		}
 		
@@ -199,22 +223,27 @@ public class IcsServiceImpl implements IcsService {
 
 	@Override
 	@Transactional
-	public String add(Ics ics)
-	{		
-		String name = ics.getName();
-		for (Ics i : icsDao.list())
+	public String add(Ics newIcs)
+	{
+		String stringToReturn = null;
+		Ics existingIcs = icsDao.get(newIcs.getName());
+		
+		if (existingIcs != null)
 		{
-			if (i.getName().equals(name))
-			{
-				ics.setId(i.getId());
-				icsDao.update(ics);
-				return String.format("%s already existed. It was successfully updated", name);
-			}
+			existingIcs.setName(newIcs.getName());
+			existingIcs.setScrExpression(newIcs.getScrExpression());
+			existingIcs.setServiceGroup(newIcs.getServiceGroup());
+			existingIcs.setValue(false);
+			existingIcs.setDescription(newIcs.getDescription());
+			
+			stringToReturn = String.format("%s already existed. It was successfully updated", newIcs.getName());
 		}
-		
-		icsDao.add(ics);
-		
-		return String.format("%s successfully added to database", ics.getName());
-	}
+		else
+		{
+			icsDao.add(newIcs);
+			stringToReturn = String.format("%s successfully added to database", newIcs.getName());
+		}
 
+		return stringToReturn;
+	}
 }

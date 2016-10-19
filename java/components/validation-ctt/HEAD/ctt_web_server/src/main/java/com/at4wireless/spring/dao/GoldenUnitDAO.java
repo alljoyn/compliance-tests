@@ -15,63 +15,86 @@
  *******************************************************************************/
 package com.at4wireless.spring.dao;
 
-/**
- * Interface that manages database GU-related access
- *
- */
+import java.math.BigInteger;
 import java.util.List;
 
 import com.at4wireless.spring.model.GoldenUnit;
 
-public interface GoldenUnitDAO {
+public interface GoldenUnitDAO
+{
+	/**
+	 * Retrieves the list of Golden Units of a certain user
+	 * 
+	 * @param username
+	 * 			name of the user whose Golden Units are going to be retrieved
+	 * 
+	 * @return list of Golden Units
+	 */
+	public List<GoldenUnit> list(String username);
 	
 	/**
-	 * Retrieves Golden Units of a certain user
-	 * @param 	user	user whose GUs are going to be retrieves
-	 * @return			list of GUs
+	 * Adds a new Golden Unit to the database
+	 * 
+	 * @param goldenUnit
+	 * 			Golden Unit to be added
 	 */
-	public List<GoldenUnit> list(String user);
+	public void add(GoldenUnit newGoldenUnit);
 	
 	/**
-	 * Adds a new GU
-	 * @param 	gu	GU to be added
+	 * Removes a Golden Unit using its ID in the query
+	 * 
+	 * @param goldenUnitID
+	 * 			ID of the Golden Unit to be removed
 	 */
-	public void addGu(GoldenUnit gu);
+	public void deleteByID(BigInteger goldenUnitID);
 	
 	/**
-	 * Removes a GU
-	 * @param 	idGolden	ID of the GU to be removed
+	 * Updates a Golden Unit
+	 * 
+	 * @param goldenUnit
+	 * 			information of the Golden Unit to be updated
 	 */
-	public void delGu(int idGolden);
+	public void saveChanges(GoldenUnit goldenUnit);
 	
 	/**
-	 * Updates a GU
-	 * @param 	gu	information of the GU to be updated
+	 * Retrieves a certain Golden Unit using its ID in query
+	 * 
+	 * @param username
+	 * 			name of the user that manages the target Golden Unit
+	 * @param goldenUnitID
+	 * 			ID of the Golden Unit to be retrieved
+	 * 
+	 * @return Golden Unit
 	 */
-	public void saveChanges(GoldenUnit gu);
+	public GoldenUnit getByID(String username, BigInteger goldenUnitID);
 	
 	/**
-	 * Retrieves a certain GU using its ID in query
-	 * @param 	user		GU user
-	 * @param 	idGolden	GU ID
-	 * @return				GU object
+	 * Retrieves a certain Golden Unit using its name in query
+	 * 
+	 * @param username
+	 * 			name of the user that manages the target Golden Unit
+	 * @param goldenUnitName
+	 * 			name of the Golden Unit to be retrieved
+	 * 
+	 * @return Golden Unit
 	 */
-	public GoldenUnit getGu(String user, int idGolden);
+	public GoldenUnit getByName(String username, String goldenUnitName);
 	
 	/**
-	 * Retrieves a certain GU using its name in query
-	 * @param 	user		GU user
-	 * @param 	name		GU name
-	 * @return				GU object
+	 * Retrieves assigned Golden Units of a certain project
+	 * 
+	 * @param projectID
+	 * 			ID of the project whose assigned Golden Units are going to be retrieved
+	 * 
+	 * @return list of project's assigned Golden Units
 	 */
-	public GoldenUnit getGuByName(String user, String name);
+	public List<GoldenUnit> listByProjectID(int projectID);
 	
 	/**
-	 * Retrieves assigned	GUs of a certain project
-	 * @param 	idProject	project ID
-	 * @return				list of GU
+	 * Removes assigned Golden Units of a certain project
+	 * 
+	 * @param projectID
+	 * 			ID of the project whose assigned Golden Units are going to be removed
 	 */
-	public List<GoldenUnit> getGuList(int idProject);
-	
-	public void deleteProjectGus(int idProject);
+	public void deleteByProjectID(int projectID);
 }
