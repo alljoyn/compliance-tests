@@ -27,6 +27,16 @@ import javax.validation.constraints.Size;
 @Table(name = "users")
 public class User
 {
+	public User() {}
+	public User(String user, String password, String repPassword, String role, String aesSecretKey)
+	{
+		this.user = user;
+		this.password = password;
+		this.repPassword = repPassword;
+		this.role = role;
+		this.aesSecretKey = aesSecretKey;
+	}
+	
 	@Id @Column(name = "username", nullable = false)
 	@Size(min=5, max=13)
 	private String user;
@@ -34,7 +44,6 @@ public class User
 	public void setUser(String user) { this.user = user; }
 	
 	@Column(name = "password", nullable = false)
-	@Size(min=5, max=13)
 	private String password;
 	public String getPassword() { return password; }
 	public void setPassword(String password) { this.password = password; }

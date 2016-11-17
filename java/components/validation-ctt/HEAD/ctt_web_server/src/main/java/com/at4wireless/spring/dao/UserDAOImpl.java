@@ -20,6 +20,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -35,9 +36,10 @@ public class UserDAOImpl implements UserDAO
 	public void add(User newUser)
 	{
 		sessionFactory.getCurrentSession().save(newUser);
-		
+		sessionFactory.getCurrentSession().flush();
 		/*
 		 * TODO : Change NativeQuery to TypedQuery
+		 * 		  flush() method is needed because second query needs the first one to be inserted. Look for a better way to achieve this.
 		 * 
 		 */
 		sessionFactory.getCurrentSession()
@@ -65,6 +67,27 @@ public class UserDAOImpl implements UserDAO
 		}
 		
 		return foundUser;
+	}
+	
+	@Override
+	public String getUserRole(String username)
+	{
+		@SuppressWarnings("unchecked")
+		NativeQuery<String> query = sessionFactory.getCurrentSession()
+				.createNativeQuery("SELECT ur.ROLE FROM user_roles ur WHERE ur.username = :user")
+				.setParameter("user", username);
+		
+		String foundRole = null;
+		try
+		{
+			foundRole = query.getSingleResult();
+		}
+		catch (NoResultException e)
+		{
+			
+		}
+		
+		return foundRole;
 	}
 
 	@Override

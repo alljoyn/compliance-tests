@@ -162,4 +162,11 @@ public class UserServiceImpl implements UserService
 	{
 		userDao.setAesCipherKey(user, aesSecretKey);
 	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public String getUserRole(String username)
+	{
+		return userDao.getUserRole(username);
+	}
 }

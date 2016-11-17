@@ -27,10 +27,11 @@ public interface UserService
 {
 	/**
 	 * Adds new user to dabatase
-	 * @param 	u	user to be added
-	 * @return		true if the user is successfully added, false if user already exists
+	 * 
+	 * @param newUser user to be added
+	 * @return true if the user is successfully added, false if user already exists
 	 */
-	public boolean addUser(User u);
+	public boolean addUser(User newUser);
 	
 	/**
 	 * Checks if a user already exists
@@ -73,4 +74,6 @@ public interface UserService
 	public boolean hasCipherKey(String user);
 	
 	public void setCipherKey(String user, String aesSecretKey);
+	
+	public String getUserRole(String username);
 }

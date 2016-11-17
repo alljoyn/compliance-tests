@@ -1,4 +1,4 @@
-package com.at4wireless.test.core;
+package com.at4wireless.database.core;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.at4wireless.spring.dao.IcsDAO;
 import com.at4wireless.spring.model.Ics;
-import com.at4wireless.test.Helper;
+import com.at4wireless.database.Helper;
 
 @ContextConfiguration(locations = "classpath:spring-database.xml")
 @RunWith(SpringJUnit4ClassRunner.class)

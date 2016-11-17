@@ -1,4 +1,4 @@
-package com.at4wireless.test;
+package com.at4wireless.database;
 
 import java.text.StringCharacterIterator;
 import java.util.ArrayList;
