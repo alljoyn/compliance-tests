@@ -30,6 +30,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.at4wireless.spring.common.ConfigParam;
 import com.at4wireless.spring.dao.CategoryDAO;
 import com.at4wireless.spring.model.GoldenUnit;
 import com.at4wireless.spring.model.Ics;
@@ -67,7 +68,6 @@ public class EndServiceImpl implements EndService
 	private CategoryDAO categoryDao;
 	
 	static final Logger log = LogManager.getLogger(EndServiceImpl.class);
-	private static final String LOCAL_AGENT_PATH = File.separator + "AllSeen" + File.separator + "localAgent";
 	private static final String USERS_PATH = File.separator + "Allseen" + File.separator + "Users" + File.separator;
 	
 	@Override
@@ -653,7 +653,7 @@ public class EndServiceImpl implements EndService
 	
 	public String lastUpload()
 	{		
-		File localAgentsFolder = new File(LOCAL_AGENT_PATH);
+		File localAgentsFolder = new File(ConfigParam.INSTALLERS_PATH);
 		File[] localAgents = localAgentsFolder.listFiles();
 		String higher = null;
 		
