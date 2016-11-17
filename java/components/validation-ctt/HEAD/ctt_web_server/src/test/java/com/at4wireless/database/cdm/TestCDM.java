@@ -1,4 +1,4 @@
-package com.at4wireless.test.cdm;
+package com.at4wireless.database.cdm;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;

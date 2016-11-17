@@ -1,4 +1,4 @@
-package com.at4wireless.test.cdm;
+package com.at4wireless.database.cdm;
 
 import static org.junit.Assert.*;
 
@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.at4wireless.spring.dao.IcsDAO;
 import com.at4wireless.spring.model.Ics;
-import com.at4wireless.test.Helper;
+import com.at4wireless.database.Helper;
 
 @ContextConfiguration(locations = "classpath:spring-database.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
