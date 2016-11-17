@@ -1,13 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Don't forget to set system property
+-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
+to make all loggers asynchronous.
+This is set at log4j.component.properties file. -->
 <Configuration status="WARN">
   <Appenders>
-    <Console name="Console" target="SYSTEM_OUT">
+    <Console name="console" target="SYSTEM_OUT">
       <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
     </Console>
   </Appenders>
   <Loggers>
-    <Root level="info">
-      <AppenderRef ref="Console"/>
+  	<AsyncLogger name="org.jasig" level="error" additivity="false">
+  		<AppenderRef ref="console"/>
+  	</AsyncLogger>
+  	<AsyncLogger name="org.springframework" level="error" />
+  	<AsyncLogger name="org.springframework.webflow" level="error" />
+  	<AsyncLogger name="org.springframework.web" level="error" />
+  	<AsyncLogger name="org.springframework.security" level="error" />
+  	
+  	<AsyncLogger name="org.jasig.cas.web.flow" level="error" additivity="true">
+  		<AppenderRef ref="console" />
+  	</AsyncLogger>
+  	
+  	<AsyncLogger name="org.jasig.inspektr.audit.support" level="error">
+  		<AppenderRef ref="console" />
+  	</AsyncLogger>
+  	
+  	<AsyncLogger name="org.jasig.inspektr.audit.support.Slf4jLoggingAuditTrailManager" level="error" />
+  	
+  	<AsyncLogger name="com.at4wireless.security" level="trace" />
+  	
+    <Root level="error">
+      <AppenderRef ref="console"/>
     </Root>
   </Loggers>
 </Configuration>
