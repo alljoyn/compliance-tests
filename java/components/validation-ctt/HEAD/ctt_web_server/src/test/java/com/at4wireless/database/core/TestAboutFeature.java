@@ -1,4 +1,4 @@
-package com.at4wireless.test.core;
+package com.at4wireless.database.core;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
