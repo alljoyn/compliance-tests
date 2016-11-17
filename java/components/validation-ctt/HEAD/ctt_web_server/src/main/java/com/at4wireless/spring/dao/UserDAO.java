@@ -38,6 +38,16 @@ public interface UserDAO
 	public User get(String username);
 	
 	/**
+	 * Retrieves the role of a certain user
+	 * 
+	 * @param username
+	 * 			name of the user whose role will be retrieved
+	 * 
+	 * @return role if exists, null otherwise
+	 */
+	public String getUserRole(String username);
+	
+	/**
 	 * Updates user's information
 	 * 
 	 * @param username

@@ -12,18 +12,39 @@
 			/WEB-INF/spring/spring-database.xml	
 		</param-value>
 	</context-param>
-	
-	<listener>
-		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	</listener>
+	<!-- Include the character encoding Filter as per JASIG recommendation when doing Single Sign Out https://wiki.jasig.org/display/CASC/Configuring+Single+Sign+Out -->
+	<filter>
+		<filter-name>characterEncodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
 	<filter>
 		<filter-name>springSecurityFilterChain</filter-name>
 		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
 	</filter>
 	<filter-mapping>
+		<filter-name>characterEncodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
 		<filter-name>springSecurityFilterChain</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+
+	<!-- Included to support Single Logout. Note that the SingleSignOutFilter is included in the spring-security-config-CAS. 
+	However, it could also be placed as the first filter-mapping in the web.xml -->
+	<listener>
+		<listener-class>org.jasig.cas.client.session.SingleSignOutHttpSessionListener</listener-class>
+	</listener>
+	<!-- Loads the root application context of this web app at startup.
+	The application context is then available via - WebApplicationContextUtils.getWebApplicationContext(servletContext) -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	
 	<servlet>
 		<servlet-name>appServlet</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -37,26 +58,7 @@
 		<servlet-name>appServlet</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
-	
-	<listener>
-		<listener-class>org.jasig.cas.client.session.SingleSignOutHttpSessionListener</listener-class>
-	</listener>
-	<filter>
-		<filter-name>CAS Single Sign Out Filter</filter-name>
-		<filter-class>org.jasig.cas.client.session.SingleSignOutFilter</filter-class>
-		<init-param>
-			<param-name>artifactParameterName</param-name>
-			<param-value>SAMLart</param-value>
-		</init-param>
-		<init-param>
-			<param-name>casServerUrlPrefix</param-name>
-			<param-value>https://identity.linuxfoundation.org/cas/login</param-value>
-		</init-param>
-	</filter>
-	<filter-mapping>
-		<filter-name>CAS Single Sign Out Filter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+
 	<session-config>
 		<session-timeout>-1</session-timeout>
 	</session-config>
