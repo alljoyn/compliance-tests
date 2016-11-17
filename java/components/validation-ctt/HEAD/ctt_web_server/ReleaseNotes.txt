@@ -1,4 +1,4 @@
-CTT Web Server Version v1.7.0 Release Notes
+CTT Web Server Version v1.8.0 Release Notes
 ===========================================
  
 Fully Validated Platforms
@@ -7,19 +7,19 @@ Fully Validated Platforms
  2) Windows 7 (64 bit); Google Chrome version 42.0.2311.90
  3) Windows 7 (64 bit); Firefox version 37.0.2
 
-Features added in v1.7.0
+Features added in v1.8.0
 ------------------------
- 1) CTT Web Server v1.7.0 works with CTT Local Agent v1.6.0, v1.7.0, v1.8.0, v1.9.0, v2.0.0, v2.1.0 and v2.2.0.
+ 1) CTT Web Server v1.8.0 works with CTT Local Agent v1.6.0, v1.7.0, v1.8.0, v1.9.0, v2.0.0, v2.1.0 and v2.2.0.
+ 2) CTT Web Server v1.8.0 supports new CDM Service Framework and Security 2.0 features.
   
-Issues Addressed in v1.7.0
+Issues Addressed in v1.8.0
 --------------------------
- ASACOMP-184  CTT Web Server / IXIT updates after DUT modifications
- ASACOMP-183  CTT Web Server / XML Configuration Time
-   
+ ASACOMP-185  CTT Web Server / Multiple groups in CAS response
+    
  For a complete list of fixed issues:
  https://jira.allseenalliance.org/browse/ 
  
-Known Issues in v1.7.0
+Known Issues in v1.8.0
 ----------------------
  
  For a complete list of open issues:
@@ -35,3 +35,4 @@ Change history
  [20151116] - v1.5.0 - Works with CTT Local Agent v1.6.0 - v1.9.0 - Bug fixes: ASACOMP-135,134,131.
  [20160411] - v1.6.0 - Works with CTT Local Agent v1.6.0 - v2.0.0 - Bug fixes: ASACOMP-149,150,151,153,154,155,156,157,158,159,160,161,162.
  [20161017] - v1.7.0 - Works with CTT Local Agent v1.6.0 - v2.2.0 - Bug fixes: ASACOMP-183,184.
+ [20161108] - v1.8.0 - Works with CTT Local Agent v1.6.0 - v2.2.0 - Bug fixes: ASACOMP-185.

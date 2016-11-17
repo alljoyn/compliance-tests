@@ -37,7 +37,7 @@
 											width="120" height="120"></img>
 								</div>				 
 								<form name='loginForm' class="form-signin"
-										action="<c:url value='j_spring_security_check' />" method='POST'>
+										action="<c:url value='/login' />" method='POST'>
 										 
 								  	<input type="hidden" name="${_csrf.parameterName}"
 									value="${_csrf.token}" />
@@ -52,7 +52,7 @@
 								<span class="glyphicon glyphicon-ok"></span>
 								${msg}
 								<div class="row">
-								<a class="btn btn-info" href="j_spring_cas_security_logout">Logout of CAS</a>
+								<a class="btn btn-info" href="logout/cas">Logout of CAS</a>
 								</div>
 							</div>
 						</c:if>
