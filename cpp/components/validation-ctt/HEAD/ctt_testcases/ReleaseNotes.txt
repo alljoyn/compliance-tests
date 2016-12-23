@@ -1,25 +1,25 @@
-CTT Test Cases Package Version 16.04.00a_R3 (TestCases_Package_v16.04.00a_R3.jar) Release Notes
-===============================================================================================
+CTT Test Cases Package Version 16.10.00_R2 (TestCases_Package_v16.10.00_R2.jar) Release Notes
+=============================================================================================
  
 Fully Validated Platforms
 -------------------------
  1) Windows 7 (64 bit)
  2) Java 8 (64 bits)
 
-Features added in Version 16.04.00a_R3 
---------------------------------------
- 1) New CDM Service Framework support. 
+Features added in Version 16.10.00_R2 
+-------------------------------------
+ 1) Added new Security 2.0 conformance test cases. 
  
-Issues Addressed in Version 16.04.00a_R3 
-----------------------------------------
- ASACOMP-182  CTT Base Test Cases - CDM 16.04 integration into CTT
- ASACOMP-180  CTT Local Agent / Improvements in C/C++ log version 
-           
+Issues Addressed in Version 16.10.00_R2 
+---------------------------------------
+ ASACOMP-186  CTT Base Test Cases - Config-v1-30. SetPasscode() method with a one-character value           
+ ASACOMP-187  CTT Base Test Cases - Onboarding-v1-08. Using ASSERT_LT, ASSERT_GT
+ 
  For a complete list of fixed issues:
  https://jira.allseenalliance.org/browse/ASACOMP-63?jql=project%20%3D%20ASACOMP%20AND%20issuetype%20in%20standardIssueTypes()%20AND%20status%20in%20(Resolved%2C%20Closed) 
  
-Known Issues in Version 16.04.00a_R3 
-------------------------------------
+Known Issues in Version 16.10.00_R2 
+-----------------------------------
  
  
  For a complete list of open issues:
@@ -27,6 +27,20 @@ Known Issues in Version 16.04.00a_R3
 
 Change history
 --------------
+ 
+ [20161222] - 16.10.00_R2   - Core(16.10)  Base(16.04) - Bug fixes: ASACOMPs: 186,187.
+ [20161222] - 16.04.00a_R4  - Core(16.04a) Base(16.04) Lighting(15.04) - Bug fixes: ASACOMPs: 186,187. 
+ [20161222] - 16.04.00_R6   - Core(16.04)  Base(16.04) Lighting(15.04) - Bug fixes: ASACOMPs: 186,187.
+ [20161222] - 15.09.00a_R8  - Core(15.09a) Base(15.09) Lighting(15.04) - Bug fixes: ASACOMPs: 186,187.
+ [20161222] - 15.09.00_R12  - Core(15.09)  Base(15.09) Lighting(15.04) - Bug fixes: ASACOMPs: 186,187.
+ [20161222] - 15.04.00b_R15 - Core(15.04b) Base(15.04) Lighting(15.04) - Bug fixes: ASACOMPs: 186,187.
+ [20161222] - 15.04.00a_R20 - Core(15.04a) Base(15.04) Lighting(15.04) - Bug fixes: ASACOMPs: 186,187.
+ [20161222] - 15.04.00_R18  - Core(15.04)  Base(15.04) Lighting(15.04) - Bug fixes: ASACOMPs: 186,187.
+ [20161222] - 14.12.00b_R14 - Core(14.12b) Base(14.12) Gateway(14.12) - Bug fixes: ASACOMPs: 186,187.
+ [20161222] - 14.12.00a_R13 - Core(14.12a) Base(14.12) Gateway(14.12) - Bug fixes: ASACOMPs: 186,187.
+ [20161222] - 14.12.00_R11  - Core(14.12)  Base(14.12) Gateway(14.12) - Bug fixes: ASACOMPs: 186,187.
+ [20161212] - 15.04.00b_R14 - Core(15.04b) Base(15.04) Lighting(15.04) - Bug fixes: ASACOMPs: 186.
+ [20161128] - 16.10.00_R1   - Core(16.10)  Base(16.04) - Bug fixes: ASACOREs: 3225,3310,3213,3302,2908,3305,3306,3329,3314,2761,3339,3330,3331,3333,3334,3332,3346,3347,3340,3317,3348,3344,3353,3156,3341,3365,3323,3359,3371,2165,3350,3381,3379,3435,3380,3292,3439,3438,3461,3383,3463,3464,3142,3390,3467,3477,3483,3487.
  [20161007] - 16.04.00a_R3  - Core(16.04a) Base(16.04) Lighting(15.04) - Bug fixes: ASACOMPs: 182,180. 
  [20161007] - 16.04.00_R5   - Core(16.04)  Base(16.04) Lighting(15.04) - Bug fixes: 
  [20161007] - 15.09.00a_R7  - Core(15.09a) Base(15.09) Lighting(15.04) - Bug fixes:
