@@ -22,23 +22,23 @@ class LampStateBusObject : ajn::MessageReceiver
 public:
 	LampStateBusObject(ajn::BusAttachment&, const std::string&, const ajn::SessionId = 0);
 
-	void LampStateChangedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg);
+	void LampStateChangedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg);
 	bool DidLampStateChanged();
 
 	QStatus GetVersion(uint32_t&);
 	QStatus GetOnOff(bool&);
-	QStatus SetOnOff(const bool);
+	QStatus SetOnOff(bool);
 	QStatus GetHue(uint32_t&);
-	QStatus SetHue(const uint32_t);
+	QStatus SetHue(uint32_t);
 	QStatus GetSaturation(uint32_t&);
-	QStatus SetSaturation(const uint32_t);
+	QStatus SetSaturation(uint32_t);
 	QStatus GetColorTemp(uint32_t&);
-	QStatus SetColorTemp(const uint32_t);
+	QStatus SetColorTemp(uint32_t);
 	QStatus GetBrightness(uint32_t&);
-	QStatus SetBrightness(const uint32_t);
+	QStatus SetBrightness(uint32_t);
 
-	QStatus TransitionLampState(const uint64_t, ajn::MsgArg*, const uint32_t, uint32_t&);
-	QStatus ApplyPulseEffect(ajn::MsgArg*, ajn::MsgArg*, const uint32_t, const uint32_t, const uint32_t, const uint64_t, uint32_t&);
+	QStatus TransitionLampState(uint64_t, ajn::MsgArg*, uint32_t, uint32_t&);
+	QStatus ApplyPulseEffect(ajn::MsgArg*, ajn::MsgArg*, uint32_t, uint32_t, uint32_t, uint64_t, uint32_t&);
 
 private:
 	ajn::BusAttachment* m_BusAttachment;

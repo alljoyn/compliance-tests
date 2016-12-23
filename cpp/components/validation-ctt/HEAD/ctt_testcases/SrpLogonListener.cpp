@@ -27,17 +27,17 @@ SrpLogonListener::SrpLogonListener(SrpLogonHandlerImpl* t_SrpLogonHandler, const
 	A pre-computed token called the logon entry may also be supplied instead of the given
 	password. See LogonEntryRequest
 */
-bool SrpLogonListener::RequestCredentials(const char* t_AuthMechanism,
-	const char* t_AuthPeer, uint16_t t_AuthCount, const char* t_UserID,
+bool SrpLogonListener::RequestCredentials(AJ_PCSTR t_AuthMechanism,
+	AJ_PCSTR t_AuthPeer, uint16_t t_AuthCount, AJ_PCSTR t_UserID,
 	uint16_t t_CredMask, Credentials& t_Creds)
 {
 	if (t_CredMask & AuthListener::CRED_USER_NAME)
 	{
-		const char* currentUser = m_DefaultUser.c_str();
-		const char* currentPass = m_DefaultPass.c_str();
+		AJ_PCSTR currentUser = m_DefaultUser.c_str();
+		AJ_PCSTR currentPass = m_DefaultPass.c_str();
 
-		const char* storedUser = m_PasswordHandler->getUser(t_AuthPeer);
-		const char* storedPass = m_PasswordHandler->getPass(t_AuthPeer);
+		AJ_PCSTR storedUser = m_PasswordHandler->getUser(t_AuthPeer);
+		AJ_PCSTR storedPass = m_PasswordHandler->getPass(t_AuthPeer);
 
 		if (m_PasswordHandler != nullptr && storedUser != nullptr && storedPass != nullptr)
 		{
@@ -52,8 +52,8 @@ bool SrpLogonListener::RequestCredentials(const char* t_AuthMechanism,
 	return true;
 }
 
-void SrpLogonListener::AuthenticationComplete(const char* t_AuthMechanism,
-	const char* t_AuthPeer, bool t_Success)
+void SrpLogonListener::AuthenticationComplete(AJ_PCSTR t_AuthMechanism,
+	AJ_PCSTR t_AuthPeer, bool t_Success)
 {
 	if (!t_Success)
 	{

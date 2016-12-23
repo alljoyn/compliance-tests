@@ -31,13 +31,13 @@ public:
 	void TearDown();
 
 protected:
-	static const char* BUS_APPLICATION_NAME;
+	static AJ_PCSTR BUS_APPLICATION_NAME;
 	static const short OBS_CONFIGURE_WIFI_RETURN_NO_CHANNEL_SWITCHING;
 	static const short OBS_CONFIGURE_WIFI_RETURN_SUPPORTS_CHANNEL_SWITCHING;
-	static const char* INVALID_NETWORK_NAME;
-	static const char* INVALID_PASSCODE;
-	static const char* TEMP_PASSCODE;
-	static const char* NEW_DEVICE_NAME;
+	static AJ_PCSTR INVALID_NETWORK_NAME;
+	static AJ_PCSTR INVALID_PASSCODE;
+	static AJ_PCSTR TEMP_PASSCODE;
+	static AJ_PCSTR NEW_DEVICE_NAME;
 
 	std::string m_DutDeviceId = std::string{ "" };
 	uint8_t* m_DutAppId{ nullptr };
@@ -63,16 +63,16 @@ protected:
 
 	// Onboarding-v1-02
 	QStatus makeSureDeviceIsInOffboardedState();
-	void verifyConfigureWiFiReturnValue(const short);
-	QStatus verifyOnboardingState(const short);
-	void verifyOnboardingErrorCode(const short);
+	void verifyConfigureWiFiReturnValue(short);
+	QStatus verifyOnboardingState(short);
+	void verifyOnboardingErrorCode(short);
 
 	// Onboarding-v1-03
 	AboutAnnouncementDetails* connectToDUTInOffboardedState();
 
 	// Onboarding-v1-08
-	void validateScanResult(const ajn::services::OBScanInfo&);
-	void validateAuthType(const ajn::services::OBAuthType&);
+	void validateScanResult(ajn::services::OBScanInfo);
+	void validateAuthType(ajn::services::OBAuthType);
 
 	// Onboarding-v1-10
 	void setDefaultAuthentication(AboutAnnouncementDetails, const std::string&, ajn::SessionId);

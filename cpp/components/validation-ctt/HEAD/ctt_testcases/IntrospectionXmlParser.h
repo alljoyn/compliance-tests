@@ -28,7 +28,7 @@ public:
 	IntrospectionNode parseXMLFile(std::string);
 
 private:
-	void parse(std::string, IntrospectionXmlHandler*, const bool);
+	void parse(std::string, IntrospectionXmlHandler*, bool);
 
 	xercesc::SAX2XMLReader* t_Parser{ nullptr };
 };

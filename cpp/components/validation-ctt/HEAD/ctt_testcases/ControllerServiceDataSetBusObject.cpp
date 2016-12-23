@@ -19,8 +19,8 @@
 #define CHECK_BREAK(x) if ((status = x) != ER_OK) { break; }
 #define CHECK_RETURN(x) if ((status = x) != ER_OK) { return status; }
 
-static const char* CONTROLLERSERVICE_OBJECT_PATH = "/org/allseen/LSF/ControllerService";
-static const char* DATASET_INTERFACE_NAME = "org.allseen.LSF.ControllerService.DataSet";
+static AJ_PCSTR CONTROLLERSERVICE_OBJECT_PATH = "/org/allseen/LSF/ControllerService";
+static AJ_PCSTR DATASET_INTERFACE_NAME = "org.allseen.LSF.ControllerService.DataSet";
 
 ControllerServiceDataSetBusObject::ControllerServiceDataSetBusObject(ajn::BusAttachment& t_BusAttachment, const std::string& t_BusName, const ajn::SessionId t_SessionId) :
 m_BusAttachment(&t_BusAttachment), m_BusName(t_BusName), m_SessionId(t_SessionId)
@@ -67,7 +67,7 @@ QStatus ControllerServiceDataSetBusObject::GetVersion(uint32_t& version)
 	return status;
 }
 
-QStatus ControllerServiceDataSetBusObject::GetLampDataSet(const char* t_LampID, const char* t_Language, uint32_t& t_ResponseCode,
+QStatus ControllerServiceDataSetBusObject::GetLampDataSet(AJ_PCSTR t_LampID, AJ_PCSTR t_Language, uint32_t& t_ResponseCode,
 	qcc::String& t_RetrievedLampID, qcc::String& t_RetrievedLanguage, qcc::String& t_LampName, std::vector<ajn::MsgArg>& t_LampDetails, std::vector<ajn::MsgArg>& t_LampState, std::vector<ajn::MsgArg>& t_LampParameters)
 {
 	QStatus status = ER_OK;
@@ -90,15 +90,15 @@ QStatus ControllerServiceDataSetBusObject::GetLampDataSet(const char* t_LampID, 
 		CHECK_RETURN(proxyBusObj->MethodCall(DATASET_INTERFACE_NAME, "GetLampDataSet", msgArg, 2, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedLampID;
+	    AJ_PSTR tempRetrievedLampID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampID));
 		t_RetrievedLampID = qcc::String(tempRetrievedLampID);
 
-		char* tempRetrievedLanguage;
+        AJ_PSTR tempRetrievedLanguage;
 		CHECK_RETURN(responseMessage->GetArg(2)->Get("s", &tempRetrievedLanguage));
 		t_RetrievedLanguage = qcc::String(tempRetrievedLanguage);
 
-		char* tempLampName;
+        AJ_PSTR tempLampName;
 		CHECK_RETURN(responseMessage->GetArg(3)->Get("s", &tempLampName));
 		t_LampName = qcc::String(tempLampName);
 

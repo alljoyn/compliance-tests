@@ -24,11 +24,11 @@ class ControllerServicePresetBusObject : public ajn::MessageReceiver
 public:
 	ControllerServicePresetBusObject(ajn::BusAttachment&, const std::string&, const ajn::SessionId = 0);
 
-	void DefaultLampStateChangedSignalHandler(const ajn::InterfaceDescription::Member* member, const char*, ajn::Message&);
-	void PresetNameChangedSignalHandler(const ajn::InterfaceDescription::Member* member, const char*, ajn::Message&);
-	void PresetsCreatedSignalHandler(const ajn::InterfaceDescription::Member* member, const char*, ajn::Message&);
-	void PresetsUpdatedSignalHandler(const ajn::InterfaceDescription::Member* member, const char*, ajn::Message&);
-	void PresetsDeletedSignalHandler(const ajn::InterfaceDescription::Member* member, const char*, ajn::Message&);
+	void DefaultLampStateChangedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR, ajn::Message&);
+	void PresetNameChangedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR, ajn::Message&);
+	void PresetsCreatedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR, ajn::Message&);
+	void PresetsUpdatedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR, ajn::Message&);
+	void PresetsDeletedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR, ajn::Message&);
 	bool DidDefaultLampStateChanged();
 	bool DidPresetNameChanged();
 	bool DidPresetsCreated();
@@ -40,12 +40,12 @@ public:
 	QStatus GetDefaultLampState(uint32_t&, std::vector<ajn::MsgArg>&);
 	QStatus SetDefaultLampState(ajn::MsgArg*, uint32_t&);
 	QStatus GetAllPresetIDs(uint32_t&, std::vector<qcc::String>&);
-	QStatus GetPresetName(const char*, const char*, uint32_t&, qcc::String&, qcc::String&, qcc::String&);
-	QStatus SetPresetName(const char*, const char*, const char*, uint32_t&, qcc::String&, qcc::String&);
-	QStatus CreatePreset(ajn::MsgArg*, const char*, const char*, uint32_t&, qcc::String&);
-	QStatus UpdatePreset(const char*, ajn::MsgArg*, uint32_t&, qcc::String&);
-	QStatus DeletePreset(const char*, uint32_t&, qcc::String&);
-	QStatus GetPreset(const char*, uint32_t&, qcc::String&, std::vector<ajn::MsgArg>&);
+	QStatus GetPresetName(AJ_PCSTR, AJ_PCSTR, uint32_t&, qcc::String&, qcc::String&, qcc::String&);
+	QStatus SetPresetName(AJ_PCSTR, AJ_PCSTR, AJ_PCSTR, uint32_t&, qcc::String&, qcc::String&);
+	QStatus CreatePreset(ajn::MsgArg*, AJ_PCSTR, AJ_PCSTR, uint32_t&, qcc::String&);
+	QStatus UpdatePreset(AJ_PCSTR, ajn::MsgArg*, uint32_t&, qcc::String&);
+	QStatus DeletePreset(AJ_PCSTR, uint32_t&, qcc::String&);
+	QStatus GetPreset(AJ_PCSTR, uint32_t&, qcc::String&, std::vector<ajn::MsgArg>&);
 
 private:
 	ajn::BusAttachment* m_BusAttachment;

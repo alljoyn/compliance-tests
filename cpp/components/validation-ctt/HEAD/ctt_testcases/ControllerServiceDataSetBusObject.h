@@ -26,7 +26,8 @@ public:
 
 	QStatus GetVersion(uint32_t&);
 
-	QStatus GetLampDataSet(const char*, const char*, uint32_t&, qcc::String&, qcc::String&, qcc::String&, std::vector<ajn::MsgArg>&, std::vector<ajn::MsgArg>&, std::vector<ajn::MsgArg>&);
+	QStatus GetLampDataSet(AJ_PCSTR, AJ_PCSTR, uint32_t&, qcc::String&, qcc::String&, qcc::String&,
+        std::vector<ajn::MsgArg>&, std::vector<ajn::MsgArg>&, std::vector<ajn::MsgArg>&);
 
 private:
 	ajn::BusAttachment* m_BusAttachment;

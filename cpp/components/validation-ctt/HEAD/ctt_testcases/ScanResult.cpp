@@ -17,7 +17,7 @@
 #include "ScanResult.h"
 
 ScanResult::ScanResult(const std::string& t_Ssid, const std::string& t_Bssid,
-	const std::string& t_Capabilities, const int t_Level, const int t_Frequency)
+	const std::string& t_Capabilities, int t_Level, int t_Frequency)
 	: m_Ssid(t_Ssid), m_Bssid(t_Bssid), m_Capabilities(t_Capabilities), m_Level(t_Level),
 	m_Frequency(t_Frequency) {}
 

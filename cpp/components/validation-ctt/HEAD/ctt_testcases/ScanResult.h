@@ -20,7 +20,7 @@
 class ScanResult
 {
 public:
-	ScanResult(const std::string&, const std::string&, const std::string&, const int, const int);
+	ScanResult(const std::string&, const std::string&, const std::string&, int, int);
 	std::string getSsid();
 	std::string getBssid();
 	std::string getCapabilities();

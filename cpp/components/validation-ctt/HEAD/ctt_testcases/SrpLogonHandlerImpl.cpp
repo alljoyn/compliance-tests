@@ -19,9 +19,9 @@
 SrpLogonHandlerImpl::SrpLogonHandlerImpl(SrpLogonStore* t_PasswordStore, const std::string& t_DefaultUser, const std::string& t_DefaultPass) :
 	m_PasswordStore(t_PasswordStore), m_DefaultUser(t_DefaultUser), m_DefaultPass(t_DefaultPass) {}
 
-const char* SrpLogonHandlerImpl::getUser(const std::string& t_PeerName)
+AJ_PCSTR SrpLogonHandlerImpl::getUser(const std::string& t_PeerName)
 {
-	const char* securedSessionUser = m_PasswordStore->getUser(t_PeerName);
+	AJ_PCSTR securedSessionUser = m_PasswordStore->getUser(t_PeerName);
 
 	securedSessionUser = (securedSessionUser != nullptr) ? securedSessionUser : m_DefaultUser.c_str();
 	LOG(INFO) << "Providing credentials for " << t_PeerName << " as user: " << securedSessionUser;
@@ -29,9 +29,9 @@ const char* SrpLogonHandlerImpl::getUser(const std::string& t_PeerName)
 	return securedSessionUser;
 }
 
-const char* SrpLogonHandlerImpl::getPass(const std::string& t_PeerName)
+AJ_PCSTR SrpLogonHandlerImpl::getPass(const std::string& t_PeerName)
 {
-	const char* securedSessionPass = m_PasswordStore->getPass(t_PeerName);
+	AJ_PCSTR securedSessionPass = m_PasswordStore->getPass(t_PeerName);
 
 	securedSessionPass = (securedSessionPass != nullptr) ? securedSessionPass : m_DefaultPass.c_str();
 	LOG(INFO) << "Providing credentials for " << t_PeerName << " as pass: " << securedSessionPass;

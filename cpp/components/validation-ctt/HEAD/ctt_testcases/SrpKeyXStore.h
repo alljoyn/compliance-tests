@@ -21,8 +21,8 @@
 class SrpKeyXStore
 {
 public:
-	const char* getPincode(std::string);
-	void setPincode(std::string, const char*);
+	AJ_PCSTR getPincode(std::string);
+	void setPincode(std::string, AJ_PCSTR);
 private:
-	std::map<std::string, const char*> m_PincodeStore;
+	std::map<std::string, AJ_PCSTR> m_PincodeStore;
 };

@@ -24,10 +24,10 @@ class ControllerServiceTransitionEffectBusObject : public ajn::MessageReceiver
 public:
 	ControllerServiceTransitionEffectBusObject(ajn::BusAttachment&, const std::string&, const ajn::SessionId = 0);
 
-	void TransitionEffectsNameChangedSignalHandler(const ajn::InterfaceDescription::Member* member, const char*, ajn::Message&);
-	void TransitionEffectsCreatedSignalHandler(const ajn::InterfaceDescription::Member* member, const char*, ajn::Message&);
-	void TransitionEffectsUpdatedSignalHandler(const ajn::InterfaceDescription::Member* member, const char*, ajn::Message&);
-	void TransitionEffectsDeletedSignalHandler(const ajn::InterfaceDescription::Member* member, const char*, ajn::Message&);
+	void TransitionEffectsNameChangedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR, ajn::Message&);
+	void TransitionEffectsCreatedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR, ajn::Message&);
+	void TransitionEffectsUpdatedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR, ajn::Message&);
+	void TransitionEffectsDeletedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR, ajn::Message&);
 	bool DidTransitionEffectsNameChanged();
 	bool DidTransitionEffectsCreated();
 	bool DidTransitionEffectsUpdated();
@@ -35,15 +35,15 @@ public:
 
 	QStatus GetVersion(uint32_t&);
 
-	QStatus ApplyTransitionEffectOnLampGroups(const char*, const std::vector<const char*>&, uint32_t&, qcc::String&, std::vector<qcc::String>&);
-	QStatus ApplyTransitionEffectOnLamps(const char*, const std::vector<const char*>&, uint32_t&, qcc::String&, std::vector<qcc::String>&);
-	QStatus CreateTransitionEffect(ajn::MsgArg*, const char*, const uint32_t, const char*, const char*, uint32_t&, qcc::String&);
-	QStatus DeleteTransitionEffect(const char*, uint32_t&, qcc::String&);
+	QStatus ApplyTransitionEffectOnLampGroups(AJ_PCSTR, const std::vector<AJ_PCSTR>&, uint32_t&, qcc::String&, std::vector<qcc::String>&);
+	QStatus ApplyTransitionEffectOnLamps(AJ_PCSTR, const std::vector<AJ_PCSTR>&, uint32_t&, qcc::String&, std::vector<qcc::String>&);
+	QStatus CreateTransitionEffect(ajn::MsgArg*, AJ_PCSTR, uint32_t, AJ_PCSTR, AJ_PCSTR, uint32_t&, qcc::String&);
+	QStatus DeleteTransitionEffect(AJ_PCSTR, uint32_t&, qcc::String&);
 	QStatus GetAllTransitionEffectIDs(uint32_t&, std::vector<qcc::String>&);
-	QStatus GetTransitionEffect(const char*, uint32_t&, qcc::String&, std::vector<ajn::MsgArg>&, qcc::String&, uint32_t&);
-	QStatus GetTransitionEffectName(const char*, const char*, uint32_t&, qcc::String&, qcc::String&, qcc::String&);
-	QStatus SetTransitionEffectName(const char*, const char*, const char*, uint32_t&, qcc::String&, qcc::String&);
-	QStatus UpdateTransitionEffect(const char*, ajn::MsgArg*, const char*, const uint32_t, uint32_t&, qcc::String&);
+	QStatus GetTransitionEffect(AJ_PCSTR, uint32_t&, qcc::String&, std::vector<ajn::MsgArg>&, qcc::String&, uint32_t&);
+	QStatus GetTransitionEffectName(AJ_PCSTR, AJ_PCSTR, uint32_t&, qcc::String&, qcc::String&, qcc::String&);
+	QStatus SetTransitionEffectName(AJ_PCSTR, AJ_PCSTR, AJ_PCSTR, uint32_t&, qcc::String&, qcc::String&);
+	QStatus UpdateTransitionEffect(AJ_PCSTR, ajn::MsgArg*, AJ_PCSTR, uint32_t, uint32_t&, qcc::String&);
 
 private:
 	ajn::BusAttachment* m_BusAttachment;

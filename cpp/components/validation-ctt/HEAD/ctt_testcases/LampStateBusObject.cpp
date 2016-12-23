@@ -19,8 +19,8 @@
 #define CHECK_BREAK(x) if ((status = x) != ER_OK) { break; }
 #define CHECK_RETURN(x) if ((status = x) != ER_OK) { return status; }
 
-static const char* LAMPSERVICE_OBJECT_PATH = "/org/allseen/LSF/Lamp";
-static const char* LAMPSTATE_INTERFACE_NAME = "org.allseen.LSF.LampState";
+static AJ_PCSTR LAMPSERVICE_OBJECT_PATH = "/org/allseen/LSF/Lamp";
+static AJ_PCSTR LAMPSTATE_INTERFACE_NAME = "org.allseen.LSF.LampState";
 
 LampStateBusObject::LampStateBusObject(ajn::BusAttachment& t_BusAttachment, const std::string& t_BusName, const ajn::SessionId t_SessionId) :
 m_BusAttachment(&t_BusAttachment), m_BusName(t_BusName), m_SessionId(t_SessionId),
@@ -55,7 +55,7 @@ m_LampStateChangedSignalReceived(false)
 	} //if (!getIface)
 }
 
-void LampStateBusObject::LampStateChangedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void LampStateBusObject::LampStateChangedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "LampStateChanged signal received";
 	m_LampStateChangedSignalReceived = true;
@@ -112,7 +112,7 @@ QStatus LampStateBusObject::GetOnOff(bool& t_OnOff)
 	return status;
 }
 
-QStatus LampStateBusObject::SetOnOff(const bool t_OnOff)
+QStatus LampStateBusObject::SetOnOff(bool t_OnOff)
 {
 	QStatus status = ER_OK;
 
@@ -158,7 +158,7 @@ QStatus LampStateBusObject::GetHue(uint32_t& t_Hue)
 	return status;
 }
 
-QStatus LampStateBusObject::SetHue(const uint32_t t_Hue)
+QStatus LampStateBusObject::SetHue(uint32_t t_Hue)
 {
 	QStatus status = ER_OK;
 
@@ -204,7 +204,7 @@ QStatus LampStateBusObject::GetSaturation(uint32_t& t_Saturation)
 	return status;
 }
 
-QStatus LampStateBusObject::SetSaturation(const uint32_t t_Saturation)
+QStatus LampStateBusObject::SetSaturation(uint32_t t_Saturation)
 {
 	QStatus status = ER_OK;
 
@@ -250,7 +250,7 @@ QStatus LampStateBusObject::GetColorTemp(uint32_t& t_ColorTemp)
 	return status;
 }
 
-QStatus LampStateBusObject::SetColorTemp(const uint32_t t_ColorTemp)
+QStatus LampStateBusObject::SetColorTemp(uint32_t t_ColorTemp)
 {
 	QStatus status = ER_OK;
 
@@ -296,7 +296,7 @@ QStatus LampStateBusObject::GetBrightness(uint32_t& t_Brightness)
 	return status;
 }
 
-QStatus LampStateBusObject::SetBrightness(const uint32_t t_Brightness)
+QStatus LampStateBusObject::SetBrightness(uint32_t t_Brightness)
 {
 	QStatus status = ER_OK;
 
@@ -319,7 +319,8 @@ QStatus LampStateBusObject::SetBrightness(const uint32_t t_Brightness)
 	return status;
 }
 
-QStatus LampStateBusObject::TransitionLampState(const uint64_t t_Timestamp, ajn::MsgArg* t_NewState, const uint32_t t_TransitionPeriod, uint32_t& t_LampResponseCode)
+QStatus LampStateBusObject::TransitionLampState(uint64_t t_Timestamp, ajn::MsgArg* t_NewState,
+    uint32_t t_TransitionPeriod, uint32_t& t_LampResponseCode)
 {
 	QStatus status = ER_OK;
 
@@ -348,7 +349,8 @@ QStatus LampStateBusObject::TransitionLampState(const uint64_t t_Timestamp, ajn:
 	return status;
 }
 
-QStatus LampStateBusObject::ApplyPulseEffect(ajn::MsgArg* t_FromState, ajn::MsgArg* t_ToState, const uint32_t t_Period, const uint32_t t_Duration, const uint32_t t_NumPulses, const uint64_t t_Timestamp, uint32_t& t_LampResponseCode)
+QStatus LampStateBusObject::ApplyPulseEffect(ajn::MsgArg* t_FromState, ajn::MsgArg* t_ToState,
+    uint32_t t_Period, uint32_t t_Duration, uint32_t t_NumPulses, uint64_t t_Timestamp, uint32_t& t_LampResponseCode)
 {
 	QStatus status = ER_OK;
 

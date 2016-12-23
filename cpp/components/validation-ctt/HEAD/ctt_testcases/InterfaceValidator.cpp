@@ -20,9 +20,9 @@
 using namespace std;
 
 #if _DEBUG
-const char* InterfaceValidator::INTROSPECTION_XML_PATH = "../lib/";
+AJ_PCSTR InterfaceValidator::INTROSPECTION_XML_PATH = "../lib/";
 #else
-const char* InterfaceValidator::INTROSPECTION_XML_PATH = "lib/";
+AJ_PCSTR InterfaceValidator::INTROSPECTION_XML_PATH = "lib/";
 #endif
 
 ValidationResult InterfaceValidator::validate(InterfaceDetail t_InterfaceDetail)
@@ -69,7 +69,7 @@ ValidationResult InterfaceValidator::validate(list<InterfaceDetail> t_InterfaceD
 
 list<string> InterfaceValidator::getXmlFilesToBeLoaded()
 {
-	const char* x[] = { "introspection-xml/About.xml", "introspection-xml/Action.xml", "introspection-xml/Audio.xml",
+	AJ_PCSTR x[] = { "introspection-xml/About.xml", "introspection-xml/Action.xml", "introspection-xml/Audio.xml",
 		"introspection-xml/Config.xml", "introspection-xml/Container.xml", "introspection-xml/ControlPanel.xml",
 		"introspection-xml/DeviceIcon.xml", "introspection-xml/Dialog.xml", "introspection-xml/HTTPControl.xml",
 		"introspection-xml/LabelProperty.xml", "introspection-xml/ListProperty.xml", "introspection-xml/Notification.xml",

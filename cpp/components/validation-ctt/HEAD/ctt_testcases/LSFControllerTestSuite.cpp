@@ -31,21 +31,21 @@ using namespace std;
 
 #define WAIT_MILLISECONDS(x) std::this_thread::sleep_for(std::chrono::milliseconds(x));
 
-const char* LSFControllerTestSuite::BUS_APPLICATION_NAME = "LSFControllerTestSuite";
-const char* LSFControllerTestSuite::CONTROLLER_BUS_OBJECT_PATH = "/org/allseen/LSF/ControllerService";
+AJ_PCSTR LSFControllerTestSuite::BUS_APPLICATION_NAME = "LSFControllerTestSuite";
+AJ_PCSTR LSFControllerTestSuite::CONTROLLER_BUS_OBJECT_PATH = "/org/allseen/LSF/ControllerService";
 
-const char* LSFControllerTestSuite::CONTROLLERSERVICE_INTERFACE_NAME = "org.allseen.LSF.ControllerService";
-const char* LSFControllerTestSuite::LAMP_INTERFACE_NAME = "org.allseen.LSF.ControllerService.Lamp";
-const char* LSFControllerTestSuite::LAMPGROUP_INTERFACE_NAME = "org.allseen.LSF.ControllerService.LampGroup";
-const char* LSFControllerTestSuite::PRESET_INTERFACE_NAME = "org.allseen.LSF.ControllerService.Preset";
-const char* LSFControllerTestSuite::SCENE_INTERFACE_NAME = "org.allseen.LSF.ControllerService.Scene";
-const char* LSFControllerTestSuite::MASTERSCENE_INTERFACE_NAME = "org.allseen.LSF.ControllerService.MasterScene";
-const char* LSFControllerTestSuite::LEADER_ELECTION_INTERFACE_NAME = "org.allseen.LeaderElectionAndStateSync";
-const char* LSFControllerTestSuite::TRANSITION_EFFECT_INTERFACE_NAME = "org.allseen.LSF.ControllerService.TransitionEffect";
-const char* LSFControllerTestSuite::PULSE_EFFECT_INTERFACE_NAME = "org.allseen.LSF.ControllerService.PulseEffect";
-const char* LSFControllerTestSuite::SCENE_WITH_SCENE_ELEMENTS_INTERFACE_NAME = "org.allseen.LSF.ControllerService.SceneWithSceneElements";
-const char* LSFControllerTestSuite::SCENE_ELEMENT_INTERFACE_NAME = "org.allseen.LSF.ControllerService.SceneElement";
-const char* LSFControllerTestSuite::DATA_SET_INTERFACE_NAME = "org.allseen.LSF.ControllerService.DataSet";
+AJ_PCSTR LSFControllerTestSuite::CONTROLLERSERVICE_INTERFACE_NAME = "org.allseen.LSF.ControllerService";
+AJ_PCSTR LSFControllerTestSuite::LAMP_INTERFACE_NAME = "org.allseen.LSF.ControllerService.Lamp";
+AJ_PCSTR LSFControllerTestSuite::LAMPGROUP_INTERFACE_NAME = "org.allseen.LSF.ControllerService.LampGroup";
+AJ_PCSTR LSFControllerTestSuite::PRESET_INTERFACE_NAME = "org.allseen.LSF.ControllerService.Preset";
+AJ_PCSTR LSFControllerTestSuite::SCENE_INTERFACE_NAME = "org.allseen.LSF.ControllerService.Scene";
+AJ_PCSTR LSFControllerTestSuite::MASTERSCENE_INTERFACE_NAME = "org.allseen.LSF.ControllerService.MasterScene";
+AJ_PCSTR LSFControllerTestSuite::LEADER_ELECTION_INTERFACE_NAME = "org.allseen.LeaderElectionAndStateSync";
+AJ_PCSTR LSFControllerTestSuite::TRANSITION_EFFECT_INTERFACE_NAME = "org.allseen.LSF.ControllerService.TransitionEffect";
+AJ_PCSTR LSFControllerTestSuite::PULSE_EFFECT_INTERFACE_NAME = "org.allseen.LSF.ControllerService.PulseEffect";
+AJ_PCSTR LSFControllerTestSuite::SCENE_WITH_SCENE_ELEMENTS_INTERFACE_NAME = "org.allseen.LSF.ControllerService.SceneWithSceneElements";
+AJ_PCSTR LSFControllerTestSuite::SCENE_ELEMENT_INTERFACE_NAME = "org.allseen.LSF.ControllerService.SceneElement";
+AJ_PCSTR LSFControllerTestSuite::DATA_SET_INTERFACE_NAME = "org.allseen.LSF.ControllerService.DataSet";
 
 LSFControllerTestSuite::LSFControllerTestSuite() : IOManager(ServiceFramework::LSF_CONTROLLER)
 {
@@ -62,13 +62,7 @@ void LSFControllerTestSuite::SetUp()
 
 	m_ServiceHelper = new ServiceHelper();
 
-	QStatus status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId,
-		m_IcsMap.at("ICSCO_SrpKeyX"), m_IxitMap.at("IXITCO_SrpKeyXPincode"),
-		m_IcsMap.at("ICSCO_SrpLogon"), m_IxitMap.at("IXITCO_SrpLogonUser"), m_IxitMap.at("IXITCO_SrpLogonPass"),
-		m_IcsMap.at("ICSCO_EcdheNull"),
-		m_IcsMap.at("ICSCO_EcdhePsk"), m_IxitMap.at("IXITCO_EcdhePskPassword"),
-		m_IcsMap.at("ICSCO_EcdheEcdsa"), m_IxitMap.at("IXITCO_EcdheEcdsaPrivateKey"), m_IxitMap.at("IXITCO_EcdheEcdsaCertChain"),
-		m_IcsMap.at("ICSCO_EcdheSpeke"), m_IxitMap.at("IXITCO_EcdheSpekePassword"));
+	QStatus status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId);
 	ASSERT_EQ(status, ER_OK) << "serviceHelper Initialize() failed: " << QCC_StatusText(status);
 
 	m_DeviceAboutAnnouncement =
@@ -154,7 +148,7 @@ void LSFControllerTestSuite::verifyInterfacesFromAnnouncement()
 	XMLBasedBusIntrospector introspector = m_ServiceHelper->getBusIntrospector(*m_DeviceAboutAnnouncement);
 
 	size_t num_paths = m_DeviceAboutAnnouncement->getObjectDescriptions()->GetPaths(NULL, 0);
-	const char** paths = new const char*[num_paths];
+	AJ_PCSTR* paths = new AJ_PCSTR[num_paths];
 	m_DeviceAboutAnnouncement->getObjectDescriptions()->GetPaths(paths, num_paths);
 
 	for (size_t i = 0; i < num_paths; ++i)
@@ -162,7 +156,7 @@ void LSFControllerTestSuite::verifyInterfacesFromAnnouncement()
 		if (string(CONTROLLER_BUS_OBJECT_PATH).compare(paths[i]) == 0)
 		{
 			size_t num_interfaces = m_DeviceAboutAnnouncement->getObjectDescriptions()->GetInterfaces(paths[i], NULL, 0);
-			const char** interfaces = new const char*[num_interfaces];
+			AJ_PCSTR* interfaces = new AJ_PCSTR[num_interfaces];
 			m_DeviceAboutAnnouncement->getObjectDescriptions()->GetInterfaces(paths[i], interfaces, num_interfaces);
 
 			for (size_t j = 0; j < num_interfaces; ++j)
@@ -370,14 +364,14 @@ TEST_F(LSFControllerTestSuite, LSF_Controller_v1_06)
 
 	for (auto& lampDetail : lampDetails)
 	{
-		char* detailName;
+        AJ_PSTR detailName;
 		uint32_t uDetail;
 		if ((status = lampDetail.Get("{su}", &detailName, &uDetail)) == ER_BUS_SIGNATURE_MISMATCH)
 		{
 			bool bDetail;
 			if ((status = lampDetail.Get("{sb}", &detailName, &bDetail)) == ER_BUS_SIGNATURE_MISMATCH)
 			{
-				char* cDetail;
+                AJ_PSTR cDetail;
 				status = lampDetail.Get("{ss}", &detailName, &cDetail);
 				LOG(INFO) << detailName << " : " << cDetail;
 			}
@@ -428,14 +422,14 @@ TEST_F(LSFControllerTestSuite, LSF_Controller_v1_07)
 QStatus LSFControllerTestSuite::getParamNameAndValue(const ajn::MsgArg& t_Param, std::string& t_Name, std::string& t_Value)
 {
 	QStatus status = ER_OK;
-	char* pName;
+    AJ_PSTR pName;
 	uint32_t uValue;
 	if ((status = t_Param.Get("{su}", &pName, &uValue)) == ER_BUS_SIGNATURE_MISMATCH)
 	{
 		bool bValue;
 		if ((status = t_Param.Get("{sb}", &pName, &bValue)) == ER_BUS_SIGNATURE_MISMATCH)
 		{
-			char* cValue;
+            AJ_PSTR cValue;
 			status = t_Param.Get("{ss}", &pName, &cValue);
 			t_Value = std::string(cValue);
 		}
@@ -539,8 +533,8 @@ TEST_F(LSFControllerTestSuite, LSF_Controller_v1_09)
 	}
 }
 
-MsgArg* LSFControllerTestSuite::newLampState(const bool t_on_off, const uint32_t t_brightness,
-	const uint32_t t_hue, const uint32_t t_saturation, const uint32_t t_color_temp)
+MsgArg* LSFControllerTestSuite::newLampState(bool t_on_off, uint32_t t_brightness,
+	uint32_t t_hue, uint32_t t_saturation, uint32_t t_color_temp)
 {
 	MsgArg* msg_arg = new MsgArg[5];
 	msg_arg[0].Set("{sv}", "OnOff", new MsgArg("b", t_on_off));
@@ -677,7 +671,7 @@ TEST_F(LSFControllerTestSuite, LSF_Controller_v1_14)
 	QStatus status = getConnectedLamp(lampID);
 	ASSERT_EQ(ER_OK, status) << "A connected lamp could not be retrieved";
 
-	std::vector<const char*> lampIDs = { lampID.c_str() };
+	std::vector<AJ_PCSTR> lampIDs = { lampID.c_str() };
 	uint32_t responseCode;
 	qcc::String lampGroupID;
 	status = createLampGroup(lampIDs, responseCode, lampGroupID);
@@ -698,12 +692,12 @@ TEST_F(LSFControllerTestSuite, LSF_Controller_v1_14)
 
 	LOG(INFO) << "Test UpdateLampGroup";
 
-	std::vector<const char*> newLampIDs = {
+	std::vector<AJ_PCSTR> newLampIDs = {
 		lampID.c_str(),
 		lampID.c_str()
 	};
 
-	std::vector<const char*> lampGroupIDs;
+	std::vector<AJ_PCSTR> lampGroupIDs;
 	for (auto& lgID : retrievedLampGroupIDs)
 	{
 		lampGroupIDs.push_back(lgID.c_str());
@@ -739,11 +733,11 @@ TEST_F(LSFControllerTestSuite, LSF_Controller_v1_14)
 	ASSERT_TRUE(signalReceived) << "Did no t receive signal LampGroupsDeleted";
 }
 
-QStatus LSFControllerTestSuite::createLampGroup(const std::vector<const char*>& t_LampIDs, uint32_t& t_ResponseCode,
+QStatus LSFControllerTestSuite::createLampGroup(const std::vector<AJ_PCSTR>& t_LampIDs, uint32_t& t_ResponseCode,
 	qcc::String& t_LampGroupID)
 {
-	std::vector<const char*> lampGroupIDs;
-	const char* lampGroupName = "ControllerTestGroup";
+	std::vector<AJ_PCSTR> lampGroupIDs;
+	AJ_PCSTR lampGroupName = "ControllerTestGroup";
 	return m_LampGroupBusObject->CreateLampGroup(t_LampIDs, lampGroupIDs, lampGroupName, "en", t_ResponseCode, t_LampGroupID);
 }
 
@@ -753,7 +747,7 @@ TEST_F(LSFControllerTestSuite, LSF_Controller_v1_15)
 	QStatus status = getConnectedLamp(lampID);
 	ASSERT_EQ(ER_OK, status) << "A connected lamp could not be retrieved";
 
-	std::vector<const char*> lampIDs = { lampID.c_str() };
+	std::vector<AJ_PCSTR> lampIDs = { lampID.c_str() };
 	uint32_t responseCode;
 	qcc::String lampGroupID;
 	status = createLampGroup(lampIDs, responseCode, lampGroupID);
@@ -784,7 +778,7 @@ TEST_F(LSFControllerTestSuite, LSF_Controller_v1_16)
 	QStatus status = getConnectedLamp(lampID);
 	ASSERT_EQ(ER_OK, status) << "A connected lamp could not be retrieved";
 
-	std::vector<const char*> lampIDs = { lampID.c_str() };
+	std::vector<AJ_PCSTR> lampIDs = { lampID.c_str() };
 	uint32_t responseCode;
 	qcc::String lampGroupID;
 	status = createLampGroup(lampIDs, responseCode, lampGroupID);
@@ -835,7 +829,7 @@ bool LSFControllerTestSuite::compareLampStates(const std::vector<ajn::MsgArg>& t
 	return equal;
 }
 
-ajn::MsgArg LSFControllerTestSuite::getValueFromLampState(const std::vector<ajn::MsgArg>& t_RetrievedLampState, const char* t_Value)
+ajn::MsgArg LSFControllerTestSuite::getValueFromLampState(const std::vector<ajn::MsgArg>& t_RetrievedLampState, AJ_PCSTR t_Value)
 {
 	for (auto& state : t_RetrievedLampState)
 	{
@@ -854,7 +848,7 @@ TEST_F(LSFControllerTestSuite, LSF_Controller_v1_17)
 	QStatus status = getConnectedLamp(lampID);
 	ASSERT_EQ(ER_OK, status) << "A connected lamp could not be retrieved";
 
-	std::vector<const char*> lampIDs = { lampID.c_str() };
+	std::vector<AJ_PCSTR> lampIDs = { lampID.c_str() };
 	uint32_t responseCode;
 	qcc::String lampGroupID;
 	status = createLampGroup(lampIDs, responseCode, lampGroupID);
@@ -877,7 +871,7 @@ TEST_F(LSFControllerTestSuite, LSF_Controller_v1_18)
 	QStatus status = getConnectedLamp(lampID);
 	ASSERT_EQ(ER_OK, status) << "A connected lamp could not be retrieved";
 
-	std::vector<const char*> lampIDs = { lampID.c_str() };
+	std::vector<AJ_PCSTR> lampIDs = { lampID.c_str() };
 	uint32_t responseCode;
 	qcc::String lampGroupID;
 	status = createLampGroup(lampIDs, responseCode, lampGroupID);
@@ -920,7 +914,7 @@ TEST_F(LSFControllerTestSuite, LSF_Controller_v1_19)
 	QStatus status = getConnectedLamp(lampID);
 	ASSERT_EQ(ER_OK, status) << "A connected lamp could not be retrieved";
 
-	std::vector<const char*> lampIDs = { lampID.c_str() };
+	std::vector<AJ_PCSTR> lampIDs = { lampID.c_str() };
 	uint32_t responseCode;
 	qcc::String lampGroupID;
 	status = createLampGroup(lampIDs, responseCode, lampGroupID);
@@ -966,7 +960,7 @@ TEST_F(LSFControllerTestSuite, LSF_Controller_v1_20)
 TEST_F(LSFControllerTestSuite, LSF_Controller_v1_21)
 {
 	ajn::MsgArg* presetState = newLampState(true, 2147483648, 739688812, 2061584302, 384286547);
-	const char* presetName = "ControllerTest Preset";
+	AJ_PCSTR presetName = "ControllerTest Preset";
 	uint32_t responseCode;
 	qcc::String presetID;
 	QStatus status = m_PresetBusObject->CreatePreset(presetState, presetName, "en", responseCode, presetID);
@@ -1010,7 +1004,7 @@ TEST_F(LSFControllerTestSuite, LSF_Controller_v1_21)
 TEST_F(LSFControllerTestSuite, LSF_Controller_v1_22)
 {
 	ajn::MsgArg* presetState = newLampState(true, 2147483648, 739688812, 2061584302, 384286547);
-	const char* presetName = "ControllerTest Preset";
+	AJ_PCSTR presetName = "ControllerTest Preset";
 	uint32_t responseCode;
 	qcc::String presetID;
 	QStatus status = m_PresetBusObject->CreatePreset(presetState, presetName, "en", responseCode, presetID);
@@ -1056,8 +1050,8 @@ QStatus LSFControllerTestSuite::createTransitionScene(qcc::String& t_SceneID)
 		return status;
 	}
 
-	std::vector<const char*> lampIDs = { lampID.c_str() };
-	std::vector<const char*> lampGroupIDs;
+	std::vector<AJ_PCSTR> lampIDs = { lampID.c_str() };
+	std::vector<AJ_PCSTR> lampGroupIDs;
 	ajn::MsgArg* lampState = newLampState(true, 2147483648, 739688812, 2061584302, 384286547);
 	std::vector<ajn::MsgArg> lampStateVector;
 	for (size_t i = 0; i < 5; ++i)
@@ -1091,8 +1085,8 @@ QStatus LSFControllerTestSuite::createPulseScene(qcc::String& t_SceneID)
 		return status;
 	}
 
-	std::vector<const char*> lampIDs = { lampID.c_str() };
-	std::vector<const char*> lampGroupIDs;
+	std::vector<AJ_PCSTR> lampIDs = { lampID.c_str() };
+	std::vector<AJ_PCSTR> lampGroupIDs;
 	ajn::MsgArg* toState = newLampState(true, 2147483648, 1574821342, 2061584302, 384286547);
 	std::vector<ajn::MsgArg> toStateVector;
 	for (size_t i = 0; i < 5; ++i)
@@ -1154,13 +1148,13 @@ TEST_F(LSFControllerTestSuite, LSF_Controller_v1_24)
 	status = pulselampsLampGroupsWithState[0].Get("(asasa{sv}a{sv}uuu)", &lampIDsSize, &lampIDs, &lampGroupIDsSize, &lampGroupIDs, &toStateSize, &toState, &fromStateSize, &fromState, &period, &duration, &numPulses);
 	ASSERT_EQ(ER_OK, status) << "Retrieving FromState returned status code: " << QCC_StatusText(status);
 
-	std::vector<const char*> lampIDsVector;
+	std::vector<AJ_PCSTR> lampIDsVector;
 	for (size_t i = 0; i < lampIDsSize; ++i)
 	{
 		lampIDsVector.push_back(lampIDs[i].v_string.str);
 	}
 
-	std::vector<const char*> lampGroupIDsVector;
+	std::vector<AJ_PCSTR> lampGroupIDsVector;
 	for (size_t i = 0; i < lampGroupIDsSize; ++i)
 	{
 		lampGroupIDsVector.push_back(lampGroupIDs[i].v_string.str);
@@ -1262,7 +1256,7 @@ QStatus LSFControllerTestSuite::createMasterScene(qcc::String& t_MasterSceneID)
 		return status;
 	}
 
-	std::vector<const char*> sceneIDs = { pulseSceneID.c_str() };
+	std::vector<AJ_PCSTR> sceneIDs = { pulseSceneID.c_str() };
 	uint32_t responseCode;
 	status = m_MasterSceneBusObject->CreateMasterScene(sceneIDs, "ControllerTestMS", "en", responseCode, t_MasterSceneID);
 
@@ -1284,7 +1278,7 @@ TEST_F(LSFControllerTestSuite, LSF_Controller_v1_28)
 	status = createTransitionScene(transitionSceneID);
 	ASSERT_EQ(ER_OK, status) << "An error occurred creating transition scene";
 
-	std::vector<const char*> newScenes = { transitionSceneID.c_str() };
+	std::vector<AJ_PCSTR> newScenes = { transitionSceneID.c_str() };
 	uint32_t responseCode;
 	qcc::String retrievedMasterSceneID;
 	status = m_MasterSceneBusObject->UpdateMasterScene(masterSceneID.c_str(), newScenes, responseCode, retrievedMasterSceneID);
@@ -1411,7 +1405,7 @@ TEST_F(LSFControllerTestSuite, LSF_Controller_v1_34)
 TEST_F(LSFControllerTestSuite, LSF_Controller_v1_35)
 {
 	ajn::MsgArg* presetState = newLampState(true, 2147483648, 739688812, 2061584302, 384286547);
-	const char* presetName = "ControllerTest Preset";
+	AJ_PCSTR presetName = "ControllerTest Preset";
 	uint32_t responseCode;
 	qcc::String presetID;
 	QStatus status = m_PresetBusObject->CreatePreset(presetState, presetName, "en", responseCode, presetID);
@@ -1471,7 +1465,7 @@ TEST_F(LSFControllerTestSuite, LSF_Controller_v1_37)
 	qcc::String transitionEffectID;
 	QStatus status = createTransitionEffect(transitionEffectID);
 	ASSERT_EQ(ER_OK, status) << "An error occurred creating transition effect";
-	const char* transitionEffectName = "ControllerTransitionEffect";
+	AJ_PCSTR transitionEffectName = "ControllerTransitionEffect";
 
 	uint32_t responseCode;
 	qcc::String retrievedTransitionEffectID;
@@ -1497,7 +1491,7 @@ TEST_F(LSFControllerTestSuite, LSF_Controller_v1_38)
 	std::string lampID;
 	status = getConnectedLamp(lampID);
 	ASSERT_EQ(ER_OK, status) << "An error occurred retrieving a connected lamp";
-	std::vector<const char*> lampIDs = { lampID.c_str() };
+	std::vector<AJ_PCSTR> lampIDs = { lampID.c_str() };
 
 	uint32_t responseCode;
 	qcc::String retrievedTransitionEffectID;
@@ -1518,12 +1512,12 @@ TEST_F(LSFControllerTestSuite, LSF_Controller_v1_39)
 	status = getConnectedLamp(lampID);
 	ASSERT_EQ(ER_OK, status) << "An error occurred retrieving a connected lamp";
 	
-	std::vector<const char*> lampIDs = { lampID.c_str() };
+	std::vector<AJ_PCSTR> lampIDs = { lampID.c_str() };
 	uint32_t responseCode;
 	qcc::String groupID;
 	status = createLampGroup(lampIDs, responseCode, groupID);
 	ASSERT_EQ(ER_OK, status) << "An error occurred creating a group";
-	std::vector<const char*> groupIDs = { groupID.c_str() };
+	std::vector<AJ_PCSTR> groupIDs = { groupID.c_str() };
 
 	qcc::String retrievedTransitionEffectID;
 	std::vector<qcc::String> retrievedGroupIDs;
@@ -1569,10 +1563,10 @@ TEST_F(LSFControllerTestSuite, LSF_Controller_v1_41)
 	uint32_t responseCode;
 	qcc::String toPresetID;
 	qcc::String fromPresetID;
-	const char* toPresetName = "ControllerTest toPreset";
+	AJ_PCSTR toPresetName = "ControllerTest toPreset";
 	QStatus status = m_PresetBusObject->CreatePreset(presetToState, toPresetName, "en", responseCode, toPresetID);
 	ASSERT_EQ(ER_OK, status) << "Calling CreatePreset() method returned status code: " << QCC_StatusText(status);
-	const char* fromPresetName = "ControllerTest fromPreset";
+	AJ_PCSTR fromPresetName = "ControllerTest fromPreset";
 	status = m_PresetBusObject->CreatePreset(presetFromState, fromPresetName, "en", responseCode, fromPresetID);
 	ASSERT_EQ(ER_OK, status) << "Calling CreatePreset() method returned status code: " << QCC_StatusText(status);
 
@@ -1650,7 +1644,7 @@ TEST_F(LSFControllerTestSuite, LSF_Controller_v1_43)
 	qcc::String pulseEffectID;
 	QStatus status = createPulseEffect(pulseEffectID);
 	ASSERT_EQ(ER_OK, status) << "An error occurred creating a pulse effect";
-	const char* pulseEffectName = "ControllerPulseEffect";
+	AJ_PCSTR pulseEffectName = "ControllerPulseEffect";
 
 	uint32_t responseCode;
 	qcc::String retrievedPulseEffectID;
@@ -1677,7 +1671,7 @@ TEST_F(LSFControllerTestSuite, LSF_Controller_v1_44)
 	status = getConnectedLamp(lampID);
 	ASSERT_EQ(ER_OK, status) << "An error occurred retrieving a connected lamp";
 
-	std::vector<const char*> lampIDs = { lampID.c_str() };
+	std::vector<AJ_PCSTR> lampIDs = { lampID.c_str() };
 	uint32_t responseCode;
 	qcc::String retrievedPulseEffectID;
 	std::vector<qcc::String> retrievedLampIDs;
@@ -1697,13 +1691,13 @@ TEST_F(LSFControllerTestSuite, LSF_Controller_v1_45)
 	status = getConnectedLamp(lampID);
 	ASSERT_EQ(ER_OK, status) << "An error occurred retrieving a connected lamp";
 
-	std::vector<const char*> lampIDs = { lampID.c_str() };
+	std::vector<AJ_PCSTR> lampIDs = { lampID.c_str() };
 	uint32_t responseCode;
 	qcc::String groupID;
 	status = createLampGroup(lampIDs, responseCode, groupID);
 	ASSERT_EQ(ER_OK, status) << "An error occurred creating a lamp group";
 
-	std::vector<const char*> groupIDs = { groupID.c_str() };
+	std::vector<AJ_PCSTR> groupIDs = { groupID.c_str() };
 	qcc::String retrievedPulseEffectID;
 	std::vector<qcc::String> retrievedGroupIDs;
 	status = m_PulseEffectBusObject->ApplyPulseEffectOnLampGroups(pulseEffectID.c_str(), groupIDs, responseCode, retrievedPulseEffectID, retrievedGroupIDs);
@@ -1722,8 +1716,8 @@ TEST_F(LSFControllerTestSuite, LSF_Controller_v1_46)
 	status = getConnectedLamp(lampID);
 	ASSERT_EQ(ER_OK, status) << "An error occurred retrieving a connected lamp";
 
-	std::vector<const char*> lampIDs = { lampID.c_str() };
-	std::vector<const char*> lampGroupIDs = { "" };
+	std::vector<AJ_PCSTR> lampIDs = { lampID.c_str() };
+	std::vector<AJ_PCSTR> lampGroupIDs = { "" };
 	uint32_t responseCode;
 	qcc::String sceneElementID;
 	status = m_SceneElementBusObject->CreateSceneElement(lampIDs, lampGroupIDs, pulseEffectID.c_str(), "ControllerTestSceneElement", "en", responseCode, sceneElementID);
@@ -1760,13 +1754,13 @@ TEST_F(LSFControllerTestSuite, LSF_Controller_v1_47)
 	status = createTransitionEffect(effectID);
 	ASSERT_EQ(ER_OK, status) << "An error occurred creating a transition effect";
 
-	std::vector<const char*> lampIDs;
+	std::vector<AJ_PCSTR> lampIDs;
 	for (auto& retrievedLampID : retrievedLampIDs)
 	{
 		lampIDs.push_back(retrievedLampID.c_str());
 	}
 
-	std::vector<const char*> lampGroupIDs;
+	std::vector<AJ_PCSTR> lampGroupIDs;
 	for (auto& retrievedLampGroupID : retrievedLampGroupIDs)
 	{
 		lampGroupIDs.push_back(retrievedLampGroupID.c_str());
@@ -1805,8 +1799,8 @@ QStatus LSFControllerTestSuite::createSceneElement(qcc::String& t_SceneElementID
 		return status;
 	}
 
-	std::vector<const char*> lampIDs = { lampID.c_str() };
-	std::vector<const char*> lampGroupIDs = { "" };
+	std::vector<AJ_PCSTR> lampIDs = { lampID.c_str() };
+	std::vector<AJ_PCSTR> lampGroupIDs = { "" };
 
 	uint32_t responseCode;
 	return m_SceneElementBusObject->CreateSceneElement(lampIDs, lampGroupIDs, effectID.c_str(), "ControllerTestSceneElement", "en", responseCode, t_SceneElementID);
@@ -1817,7 +1811,7 @@ TEST_F(LSFControllerTestSuite, LSF_Controller_v1_48)
 	qcc::String sceneElementID;
 	QStatus status = createSceneElement(sceneElementID);
 	ASSERT_EQ(ER_OK, status) << "An error occurred creating scene element";
-	const char* sceneElementName = "ControllerSceneElement";
+	AJ_PCSTR sceneElementName = "ControllerSceneElement";
 
 	uint32_t responseCode;
 	qcc::String retrievedSceneElementID;
@@ -1855,7 +1849,7 @@ TEST_F(LSFControllerTestSuite, LSF_Controller_v1_50)
 	QStatus status = createSceneElement(sceneElementID);
 	ASSERT_EQ(ER_OK, status) << "An error occurred creating a scene element";
 
-	std::vector<const char*> sceneElementIDs = { sceneElementID.c_str() };
+	std::vector<AJ_PCSTR> sceneElementIDs = { sceneElementID.c_str() };
 	uint32_t responseCode;
 	qcc::String sceneWithElementsID;
 	status = m_SceneWithElementsBusObject->CreateSceneWithSceneElements(sceneElementIDs, "ControllerTestSWSE", "en", responseCode, sceneWithElementsID);
@@ -1882,7 +1876,7 @@ TEST_F(LSFControllerTestSuite, LSF_Controller_v1_51)
 	status = createSceneElement(sceneElementID);
 	ASSERT_EQ(ER_OK, status) << "An error occurred creating a scene element";
 
-	std::vector<const char*> sceneElementIDs = { sceneElementID.c_str() };
+	std::vector<AJ_PCSTR> sceneElementIDs = { sceneElementID.c_str() };
 	uint32_t responseCode;
 	qcc::String retrievedSWSEID;
 	status = m_SceneWithElementsBusObject->UpdateSceneWithSceneElements(sceneID.c_str(), sceneElementIDs, responseCode, retrievedSWSEID);
@@ -1912,7 +1906,7 @@ QStatus LSFControllerTestSuite::createSceneWithSceneElements(qcc::String& t_Scen
 		return status;
 	}
 
-	std::vector<const char*> sceneElementIDs = { sceneElementID.c_str() };
+	std::vector<AJ_PCSTR> sceneElementIDs = { sceneElementID.c_str() };
 	uint32_t responseCode;
 	return m_SceneWithElementsBusObject->CreateSceneWithSceneElements(sceneElementIDs, "ControllerTestSWSE", "en", responseCode, t_SceneWithSceneElementsID);
 }

@@ -38,5 +38,5 @@ protected:
 	void printGeneralParameter(ServiceFramework);
 	void storeResults();
 private:
-	std::string getLastSubstring(char*);
+	std::string getLastSubstring(AJ_PSTR);
 };

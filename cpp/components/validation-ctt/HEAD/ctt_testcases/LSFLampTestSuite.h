@@ -35,19 +35,19 @@ public:
 	void TearDown();
 
 protected:
-	static const char* BUS_APPLICATION_NAME;
-	static const char* BUS_OBJECT_PATH;
+	static AJ_PCSTR BUS_APPLICATION_NAME;
+	static AJ_PCSTR BUS_OBJECT_PATH;
 
-	static const char* LAMPSERVICE_INTERFACE_NAME;
-	static const char* LAMPSTATE_INTERFACE_NAME;
-	static const char* LAMPDETAILS_INTERFACE_NAME;
-	static const char* LAMPPARAMETERS_INTERFACE_NAME;
+	static AJ_PCSTR LAMPSERVICE_INTERFACE_NAME;
+	static AJ_PCSTR LAMPSTATE_INTERFACE_NAME;
+	static AJ_PCSTR LAMPDETAILS_INTERFACE_NAME;
+	static AJ_PCSTR LAMPPARAMETERS_INTERFACE_NAME;
 
-	static const char* LAMP_STATE_FIELD_ON_OFF;
-	static const char* LAMP_STATE_FIELD_BRIGHTNESS;
-	static const char* LAMP_STATE_FIELD_HUE;
-	static const char* LAMP_STATE_FIELD_SATURATION;
-	static const char* LAMP_STATE_FIELD_COLOR_TEMP;
+	static AJ_PCSTR LAMP_STATE_FIELD_ON_OFF;
+	static AJ_PCSTR LAMP_STATE_FIELD_BRIGHTNESS;
+	static AJ_PCSTR LAMP_STATE_FIELD_HUE;
+	static AJ_PCSTR LAMP_STATE_FIELD_SATURATION;
+	static AJ_PCSTR LAMP_STATE_FIELD_COLOR_TEMP;
 
 	std::string m_DutDeviceId = std::string{ "" };
 	uint8_t* m_DutAppId{ nullptr };

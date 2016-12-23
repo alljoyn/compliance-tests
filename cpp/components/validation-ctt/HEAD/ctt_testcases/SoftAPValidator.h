@@ -22,9 +22,9 @@ class SoftAPValidator
 public:
 	static bool validateSoftAP(const std::string&);
 private:
-	static const char* SOFT_AP_ASSERT_MESSAGE;
-	static const char* SOFT_AP_PREFIX;
-	static const char* SOFT_AP_SUFFIX;
+	static AJ_PCSTR SOFT_AP_ASSERT_MESSAGE;
+	static AJ_PCSTR SOFT_AP_PREFIX;
+	static AJ_PCSTR SOFT_AP_SUFFIX;
 
 	static inline bool starts_with(const std::string&, const std::string&);
 	static inline bool ends_with(const std::string&, const std::string&);

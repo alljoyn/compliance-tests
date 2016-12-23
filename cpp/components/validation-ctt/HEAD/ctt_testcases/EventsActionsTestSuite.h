@@ -28,10 +28,10 @@ public:
 	void TearDown();
 
 protected:
-	static const char* BUS_APPLICATION_NAME;
-	static const char* INTROSPECTION_XML_DESC_EXPECTED;
-	static const char* INTROSPECTION_XML_DESC_REGEX;
-	static const char* INTROSPECTION_XML_DESC_PLACEHOLDER;
+	static AJ_PCSTR BUS_APPLICATION_NAME;
+	static AJ_PCSTR INTROSPECTION_XML_DESC_EXPECTED;
+	static AJ_PCSTR INTROSPECTION_XML_DESC_REGEX;
+	static AJ_PCSTR INTROSPECTION_XML_DESC_PLACEHOLDER;
 
 	std::string m_DutDeviceId = std::string{ "" };
 	uint8_t* m_DutAppId{ nullptr };
@@ -42,10 +42,10 @@ protected:
 	// EventsActions-v1-01
 	std::list<std::string> getAllSeenIntrospectableObjectPaths();
 	bool testObjectValidity(std::string);
-	void getDescriptionLanguages(ajn::ProxyBusObject, std::string, std::vector<const char*>&);
+	void getDescriptionLanguages(ajn::ProxyBusObject, std::string, std::vector<AJ_PCSTR>&);
 	void getIntrospectionXml(ajn::ProxyBusObject, std::string, std::string, std::string&);
 	bool testChildrenObjectValidity(std::string, std::string);
-	bool testObjectValidityPerLanguages(ajn::ProxyBusObject, std::string, std::vector<const char*>);
+	bool testObjectValidityPerLanguages(ajn::ProxyBusObject, std::string, std::vector<AJ_PCSTR>);
 	std::string removeXmlDescription(std::string);
 
 	void releaseResources();

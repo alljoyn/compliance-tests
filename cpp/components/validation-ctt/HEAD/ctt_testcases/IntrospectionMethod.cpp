@@ -35,7 +35,7 @@ int IntrospectionMethod::compareTo(IntrospectionMethod t_IntrospectionMethod)
 
 int IntrospectionMethod::hashCode()
 {
-	//COMPLETAR
+	//COMPLETE
 	return 1;
 }
 

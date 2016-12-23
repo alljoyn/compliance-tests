@@ -175,18 +175,6 @@
     <Filter Include="Header Files\core.commons.auth\ecdhe_speke">
       <UniqueIdentifier>{b5917bff-c95f-418e-8bf0-26cac6eec826}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\testcases.conf.hae">
-      <UniqueIdentifier>{e6469504-9263-4c3a-9139-5b6809481d5e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\core.hae">
-      <UniqueIdentifier>{42ef6076-9120-4955-8fe4-0ed409537792}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\testcases.conf.hae">
-      <UniqueIdentifier>{ee3a6230-f912-4946-9269-944a97299e14}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\core.hae">
-      <UniqueIdentifier>{bcb26b4a-04f5-4b8f-8897-6125769129f1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\testcases.conf.security20">
       <UniqueIdentifier>{cd77f1df-c68f-47b2-ba2b-1f10ae04bb9f}</UniqueIdentifier>
     </Filter>
@@ -483,23 +471,32 @@
     <ClInclude Include="ECDHESpekeStore.h">
       <Filter>Header Files\core.commons.auth\ecdhe_speke</Filter>
     </ClInclude>
-    <ClInclude Include="HaeTestSuite.h">
-      <Filter>Header Files\testcases.conf.hae</Filter>
-    </ClInclude>
-    <ClInclude Include="InterfaceInfo.h">
-      <Filter>Header Files\core.hae</Filter>
-    </ClInclude>
     <ClInclude Include="Security20TestSuite.h">
       <Filter>Header Files\testcases.conf.security20</Filter>
-    </ClInclude>
-    <ClInclude Include="Claim_ApplicationStateListener.h">
-      <Filter>Header Files\core.security20</Filter>
     </ClInclude>
     <ClInclude Include="AvailableSoftAPException.h">
       <Filter>Header Files\core.onboarding</Filter>
     </ClInclude>
     <ClInclude Include="NotAvailableSoftAPException.h">
       <Filter>Header Files\core.onboarding</Filter>
+    </ClInclude>
+    <ClInclude Include="PermissionMgmtHelper.h">
+      <Filter>Header Files\core.security20</Filter>
+    </ClInclude>
+    <ClInclude Include="ApplicationStateListenerImpl.h">
+      <Filter>Header Files\core.security20</Filter>
+    </ClInclude>
+    <ClInclude Include="ExtendedSecurityApplicationProxy.h">
+      <Filter>Header Files\core.security20</Filter>
+    </ClInclude>
+    <ClInclude Include="SecuritySessionPortListener.h">
+      <Filter>Header Files\core.security20</Filter>
+    </ClInclude>
+    <ClInclude Include="BusIntrospector.h">
+      <Filter>Header Files\core.introspection</Filter>
+    </ClInclude>
+    <ClInclude Include="ServiceFramework.h">
+      <Filter>Header Files\testcases.conf.commons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -749,16 +746,16 @@
     <ClCompile Include="ECDHESpekeStore.cpp">
       <Filter>Source Files\core.commons.auth\ecdhe_speke</Filter>
     </ClCompile>
-    <ClCompile Include="HaeTestSuite.cpp">
-      <Filter>Source Files\testcases.conf.hae</Filter>
-    </ClCompile>
-    <ClCompile Include="InterfaceInfo.cpp">
-      <Filter>Source Files\core.hae</Filter>
-    </ClCompile>
     <ClCompile Include="Security20TestSuite.cpp">
       <Filter>Source Files\testcases.conf.security20</Filter>
     </ClCompile>
-    <ClCompile Include="Claim_ApplicationStateListener.cpp">
+    <ClCompile Include="PermissionMgmtHelper.cpp">
+      <Filter>Source Files\core.security20</Filter>
+    </ClCompile>
+    <ClCompile Include="ApplicationStateListenerImpl.cpp">
+      <Filter>Source Files\core.security20</Filter>
+    </ClCompile>
+    <ClCompile Include="ExtendedSecurityApplicationProxy.cpp">
       <Filter>Source Files\core.security20</Filter>
     </ClCompile>
   </ItemGroup>

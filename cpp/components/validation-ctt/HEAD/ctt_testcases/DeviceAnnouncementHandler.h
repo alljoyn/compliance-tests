@@ -23,19 +23,19 @@
 class DeviceAnnouncementHandler : public ajn::AboutListener
 {
 public:
-	DeviceAnnouncementHandler(const std::string&, const uint8_t*);
-	void Announced(const char*, uint16_t, ajn::SessionPort, const ajn::MsgArg&, const ajn::MsgArg&);
-	//~DeviceAnnouncementHandler();
-	AboutAnnouncementDetails* waitForNextDeviceAnnouncement(long);
-	//void waitForSessionToClose(const uint16_t);
-	void clearQueuedDeviceAnnouncements();
+    DeviceAnnouncementHandler(const std::string&, const uint8_t*);
+    void Announced(AJ_PCSTR, uint16_t, ajn::SessionPort, const ajn::MsgArg&, const ajn::MsgArg&);
+    //~DeviceAnnouncementHandler();
+    AboutAnnouncementDetails* waitForNextDeviceAnnouncement(long);
+    //void waitForSessionToClose(const uint16_t);
+    void clearQueuedDeviceAnnouncements();
 
 private:
-	std::string m_DutDeviceId;
-	const uint8_t* m_DutAppId{ nullptr };
-	//std::deque<qcc::String> m_LostDevices;
-	std::deque<AboutAnnouncementDetails> m_ReceivedAnnouncements;
+    std::string m_DutDeviceId;
+    const uint8_t* m_DutAppId{ nullptr };
+    //std::deque<qcc::String> m_LostDevices;
+    std::deque<AboutAnnouncementDetails> m_ReceivedAnnouncements;
 
-	bool deviceIdMatches(const std::string&, const std::string&);
-	bool appIdMatches(const uint8_t*, const uint8_t*);
+    bool deviceIdMatches(const std::string&, const std::string&);
+    bool appIdMatches(const uint8_t*, const uint8_t*);
 };

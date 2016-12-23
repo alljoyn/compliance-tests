@@ -19,39 +19,39 @@
 using namespace ajn;
 using namespace std;
 
-AboutAnnouncement::AboutAnnouncement(const char* t_ServiceName, 
-	const uint16_t t_Version, const uint16_t t_Port, const MsgArg& t_ObjectDescription, 
-	const MsgArg& t_AboutData) : 
-	m_Version(t_Version), m_ServiceName(t_ServiceName), m_Port(t_Port)
+AboutAnnouncement::AboutAnnouncement(AJ_PCSTR t_ServiceName,
+    uint16_t t_Version, uint16_t t_Port, const MsgArg& t_ObjectDescription, 
+    const MsgArg& t_AboutData) : 
+    m_Version(t_Version), m_ServiceName(t_ServiceName), m_Port(t_Port)
 {
 
-	m_ObjectDescription = new AboutObjectDescription();
-	m_ObjectDescription->CreateFromMsgArg(t_ObjectDescription);
+    m_ObjectDescription = new AboutObjectDescription();
+    m_ObjectDescription->CreateFromMsgArg(t_ObjectDescription);
 
-	m_AboutData = new AboutData(t_AboutData);
+    m_AboutData = new AboutData(t_AboutData);
 }
 
 string AboutAnnouncement::getServiceName() const
 {
-	return m_ServiceName;
+    return m_ServiceName;
 }
 
 uint16_t AboutAnnouncement::getPort() const
 {
-	return m_Port;
+    return m_Port;
 }
 
 AboutObjectDescription* AboutAnnouncement::getObjectDescriptions() const
 {
-	return m_ObjectDescription;
+    return m_ObjectDescription;
 }
 
 uint16_t AboutAnnouncement::getVersion() const
 {
-	return m_Version;
+    return m_Version;
 }
 
 AboutData* AboutAnnouncement::getAboutData() const
 {
-	return m_AboutData;
+    return m_AboutData;
 }

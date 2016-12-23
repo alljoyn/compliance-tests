@@ -24,4 +24,6 @@
 #include "easylogging++.h"
 #include "gtest\gtest.h"
 
+#include <alljoyn\AllJoynStd.h>
+
 extern std::string CERTIFICATION_RELEASE;

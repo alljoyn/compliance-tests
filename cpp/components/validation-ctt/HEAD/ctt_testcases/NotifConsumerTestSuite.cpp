@@ -29,7 +29,7 @@ using namespace std;
 using namespace ajn;
 using namespace services;
 
-const char* NotifConsumerTestSuite::BUS_APPLICATION_NAME = "NotifConsumerTestSuite";
+AJ_PCSTR NotifConsumerTestSuite::BUS_APPLICATION_NAME = "NotifConsumerTestSuite";
 
 NotifConsumerTestSuite::NotifConsumerTestSuite() : IOManager(ServiceFramework::NOTIFICATION)
 {
@@ -121,7 +121,7 @@ TEST_F(NotifConsumerTestSuite, Notification_Consumer_v1_01)
 
 // Assumes 0 <= max <= RAND_MAX
 // Returns in the half-open interval [0, max]
-int NotifConsumerTestSuite::getRandomNumber(const size_t t_Range)
+int NotifConsumerTestSuite::getRandomNumber(size_t t_Range)
 {
 	unsigned long
 		// max <= RAND_MAX < ULONG_MAX, so this is okay.
@@ -142,7 +142,7 @@ int NotifConsumerTestSuite::getRandomNumber(const size_t t_Range)
 }
 
 void NotifConsumerTestSuite::checkUserInput(const vector<string>& t_MessageVector,
-	const string& t_MessageToSend, const int t_TestCase)
+	const string& t_MessageToSend, int t_TestCase)
 {
 	LOG(INFO) << "Waiting for user response...";
 

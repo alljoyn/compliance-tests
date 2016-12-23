@@ -19,8 +19,8 @@
 #define CHECK_BREAK(x) if ((status = x) != ER_OK) { break; }
 #define CHECK_RETURN(x) if ((status = x) != ER_OK) { return status; }
 
-static const char* CONTROLLERSERVICE_OBJECT_PATH = "/org/allseen/LeaderElectionAndStateSync";
-static const char* CONTROLLERSERVICE_INTERFACE_NAME = "org.allseen.LeaderElectionAndStateSync";
+static AJ_PCSTR CONTROLLERSERVICE_OBJECT_PATH = "/org/allseen/LeaderElectionAndStateSync";
+static AJ_PCSTR CONTROLLERSERVICE_INTERFACE_NAME = "org.allseen.LeaderElectionAndStateSync";
 
 LeaderElectionAndStateSyncBusObject::LeaderElectionAndStateSyncBusObject(ajn::BusAttachment& t_BusAttachment, const std::string& t_BusName, const ajn::SessionId t_SessionId) :
 m_BusAttachment(&t_BusAttachment), m_BusName(t_BusName), m_SessionId(t_SessionId),
@@ -51,7 +51,7 @@ m_BlobChangedSignalReceived(false)
 	} //if (!getIface)
 }
 
-void LeaderElectionAndStateSyncBusObject::BlobChangedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void LeaderElectionAndStateSyncBusObject::BlobChangedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "LightingReset signal received";
 	m_BlobChangedSignalReceived = true;
@@ -117,7 +117,8 @@ QStatus LeaderElectionAndStateSyncBusObject::GetChecksumAndModificationTimestamp
 	return status;
 }
 
-QStatus LeaderElectionAndStateSyncBusObject::GetBlob(const uint32_t t_BlobType, uint32_t& t_RetrievedBlobType, qcc::String& t_Blob, uint32_t& t_Checksum, uint64_t& t_Timestamp)
+QStatus LeaderElectionAndStateSyncBusObject::GetBlob(const uint32_t t_BlobType, uint32_t& t_RetrievedBlobType,
+    qcc::String& t_Blob, uint32_t& t_Checksum, uint64_t& t_Timestamp)
 {
 	QStatus status = ER_OK;
 
@@ -138,7 +139,7 @@ QStatus LeaderElectionAndStateSyncBusObject::GetBlob(const uint32_t t_BlobType, 
 		CHECK_RETURN(proxyBusObj->MethodCall(CONTROLLERSERVICE_INTERFACE_NAME, "GetBlob", msgArg, 1, responseMessage));
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_RetrievedBlobType))
 
-		char* tempBlob;
+        AJ_PSTR tempBlob;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempBlob))
 		t_Blob = qcc::String(tempBlob);
 

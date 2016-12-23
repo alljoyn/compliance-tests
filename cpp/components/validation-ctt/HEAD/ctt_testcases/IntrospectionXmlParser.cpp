@@ -58,7 +58,7 @@ void IntrospectionXmlParser::parse(string t_InputXml, IntrospectionXmlHandler* t
 	}
 	catch (const XMLException& exception)
 	{
-		char* message = XMLString::transcode(exception.getMessage());
+        AJ_PSTR message = XMLString::transcode(exception.getMessage());
 		LOG(ERROR) << "Error during initialization! : " << message;
 		XMLString::release(&message);
 		return;
@@ -109,13 +109,13 @@ void IntrospectionXmlParser::parse(string t_InputXml, IntrospectionXmlHandler* t
 		}
 		catch (const XMLException& exception)
 		{
-			char* message = XMLString::transcode(exception.getMessage());
+            AJ_PSTR message = XMLString::transcode(exception.getMessage());
 			LOG(INFO) << "Exception message is: " << message;
 			XMLString::release(&message);
 		}
 		catch (const SAXParseException& exception)
 		{
-			char* message = XMLString::transcode(exception.getMessage());
+            AJ_PSTR message = XMLString::transcode(exception.getMessage());
 			LOG(INFO) << "Exception message is: " << message;
 			XMLString::release(&message);
 		}

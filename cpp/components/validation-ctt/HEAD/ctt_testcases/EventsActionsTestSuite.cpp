@@ -25,10 +25,10 @@
 using namespace ajn;
 using namespace std;
 
-const char* EventsActionsTestSuite::BUS_APPLICATION_NAME = "EventsActionsTestSuite";
-const char* EventsActionsTestSuite::INTROSPECTION_XML_DESC_EXPECTED = "<description></description>";
-const char* EventsActionsTestSuite::INTROSPECTION_XML_DESC_REGEX = "<description.*?>.*?</description>";
-const char* EventsActionsTestSuite::INTROSPECTION_XML_DESC_PLACEHOLDER = "<description></description>";
+AJ_PCSTR EventsActionsTestSuite::BUS_APPLICATION_NAME = "EventsActionsTestSuite";
+AJ_PCSTR EventsActionsTestSuite::INTROSPECTION_XML_DESC_EXPECTED = "<description></description>";
+AJ_PCSTR EventsActionsTestSuite::INTROSPECTION_XML_DESC_REGEX = "<description.*?>.*?</description>";
+AJ_PCSTR EventsActionsTestSuite::INTROSPECTION_XML_DESC_PLACEHOLDER = "<description></description>";
 
 EventsActionsTestSuite::EventsActionsTestSuite() : IOManager(ServiceFramework::CORE)
 {
@@ -45,13 +45,7 @@ void EventsActionsTestSuite::SetUp()
 
 	m_ServiceHelper = new ServiceHelper();
 
-	QStatus status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId,
-		m_IcsMap.at("ICSCO_SrpKeyX"), m_IxitMap.at("IXITCO_SrpKeyXPincode"),
-		m_IcsMap.at("ICSCO_SrpLogon"), m_IxitMap.at("IXITCO_SrpLogonUser"), m_IxitMap.at("IXITCO_SrpLogonPass"),
-		m_IcsMap.at("ICSCO_EcdheNull"),
-		m_IcsMap.at("ICSCO_EcdhePsk"), m_IxitMap.at("IXITCO_EcdhePskPassword"),
-		m_IcsMap.at("ICSCO_EcdheEcdsa"), m_IxitMap.at("IXITCO_EcdheEcdsaPrivateKey"), m_IxitMap.at("IXITCO_EcdheEcdsaCertChain"),
-		m_IcsMap.at("ICSCO_EcdheSpeke"), m_IxitMap.at("IXITCO_EcdheSpekePassword"));
+	QStatus status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId);
 	ASSERT_EQ(status, ER_OK) << "serviceHelper Initialize() failed: " << QCC_StatusText(status);
 
 	m_DeviceAboutAnnouncement =
@@ -142,13 +136,13 @@ list<string> EventsActionsTestSuite::getAllSeenIntrospectableObjectPaths()
 	AboutObjectDescription* aboutObjectDescriptions = m_DeviceAboutAnnouncement->getObjectDescriptions();
 
 	size_t numberOfPaths = aboutObjectDescriptions->GetPaths(NULL, 0);
-	const char** paths = new const char*[numberOfPaths];
+	AJ_PCSTR* paths = new AJ_PCSTR[numberOfPaths];
 	aboutObjectDescriptions->GetPaths(paths, numberOfPaths);
 
 	for (size_t i = 0; i < numberOfPaths; ++i)
 	{
 		size_t numberOfInterfaces = aboutObjectDescriptions->GetInterfaces(paths[i], NULL, 0);
-		const char** interfaces = new const char*[numberOfInterfaces];
+		AJ_PCSTR* interfaces = new AJ_PCSTR[numberOfInterfaces];
 		aboutObjectDescriptions->GetInterfaces(paths[i], interfaces, numberOfInterfaces);
 
 		for (size_t j = 0; j < numberOfInterfaces; ++j)
@@ -199,7 +193,7 @@ list<string> EventsActionsTestSuite::getAllSeenIntrospectableObjectPaths()
 bool EventsActionsTestSuite::testObjectValidity(string t_ObjectPath)
 {
 	ProxyBusObject proxyBusObject = m_ServiceHelper->getProxyBusObject(*m_DeviceAboutAnnouncement, t_ObjectPath);
-	vector<const char*> descriptionLanguages;
+	vector<AJ_PCSTR> descriptionLanguages;
 	getDescriptionLanguages(proxyBusObject, t_ObjectPath, descriptionLanguages);
 
 	if (descriptionLanguages.size() == 0)
@@ -221,7 +215,7 @@ bool EventsActionsTestSuite::testObjectValidity(string t_ObjectPath)
 }
 
 void EventsActionsTestSuite::getDescriptionLanguages(ProxyBusObject t_ProxyBusObject,
-	string t_ObjectPath, vector<const char*>& t_Languages)
+	string t_ObjectPath, vector<AJ_PCSTR>& t_Languages)
 {
 	Message replyMessage(*m_ServiceHelper->getBusAttachmentMgr()->getBusAttachment());
 	QStatus status = t_ProxyBusObject.MethodCall(ajn::org::allseen::Introspectable::InterfaceName,
@@ -236,7 +230,7 @@ void EventsActionsTestSuite::getDescriptionLanguages(ProxyBusObject t_ProxyBusOb
 
 	for (size_t j = 0; j < introspectionLanguagesArraySize; ++j)
 	{
-		const char* fieldValue;
+		AJ_PCSTR fieldValue;
 		introspectionLanguages[j].Get("s", &fieldValue);
 		t_Languages.push_back(fieldValue);
 	}
@@ -293,7 +287,7 @@ bool EventsActionsTestSuite::testChildrenObjectValidity(std::string t_ParentObje
 }
 
 bool EventsActionsTestSuite::testObjectValidityPerLanguages(ProxyBusObject t_ProxyBusObject,
-	string t_ParentObjectPath, vector<const char*> t_DescriptionLanguages)
+	string t_ParentObjectPath, vector<AJ_PCSTR> t_DescriptionLanguages)
 {
 	string firstLanguageXml;
 	string firstLanguage;

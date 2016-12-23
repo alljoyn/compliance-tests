@@ -20,55 +20,55 @@ ECDHENullHandlerImpl::ECDHENullHandlerImpl() {}
 
 void ECDHENullHandlerImpl::completed(std::string t_Mechanism, std::string t_AuthPeer, bool t_Authenticated)
 {
-	if (!t_Authenticated)
-	{
-		m_PeerAuthenticated.insert(std::pair<std::string, bool>(t_AuthPeer, true));
-		m_PeerAuthenticationSuccessful.insert(std::pair<std::string, bool>(t_AuthPeer, false));
-		LOG(INFO) << " ** " << t_AuthPeer << " failed to authenticate";
-	}
-	else
-	{
-		m_PeerAuthenticated.insert(std::pair<std::string, bool>(t_AuthPeer, true));
-		m_PeerAuthenticationSuccessful.insert(std::pair<std::string, bool>(t_AuthPeer, true));
-		LOG(INFO) << " ** " << t_AuthPeer << " successfully authenticated";
-	}
+    if (!t_Authenticated)
+    {
+        m_PeerAuthenticated.insert(std::pair<std::string, bool>(t_AuthPeer, true));
+        m_PeerAuthenticationSuccessful.insert(std::pair<std::string, bool>(t_AuthPeer, false));
+        LOG(INFO) << " ** " << t_AuthPeer << " failed to authenticate";
+    }
+    else
+    {
+        m_PeerAuthenticated.insert(std::pair<std::string, bool>(t_AuthPeer, true));
+        m_PeerAuthenticationSuccessful.insert(std::pair<std::string, bool>(t_AuthPeer, true));
+        LOG(INFO) << " ** " << t_AuthPeer << " successfully authenticated";
+    }
 }
 
 void ECDHENullHandlerImpl::resetAuthentication(std::string t_AuthPeer)
 {
-	m_PeerAuthenticated.insert(std::pair<std::string, bool>(t_AuthPeer, false));
-	m_PeerAuthenticationSuccessful.insert(std::pair<std::string, bool>(t_AuthPeer, false));
+    m_PeerAuthenticated.insert(std::pair<std::string, bool>(t_AuthPeer, false));
+    m_PeerAuthenticationSuccessful.insert(std::pair<std::string, bool>(t_AuthPeer, false));
 }
 
 bool ECDHENullHandlerImpl::isPeerAuthenticated(std::string t_AuthPeer)
 {
-	return isTrueBoolean(m_PeerAuthenticated.at(t_AuthPeer));
+    return isTrueBoolean(m_PeerAuthenticated.at(t_AuthPeer));
 }
 
 bool ECDHENullHandlerImpl::isPeerAuthenticationSuccessful(std::string t_AuthPeer)
 {
-	if (m_PeerAuthenticationSuccessful.empty())
-	{
-		return false;
-	}
-	else
-	{
-		return isTrueBoolean(m_PeerAuthenticationSuccessful.at(t_AuthPeer));
-	}
+    if (m_PeerAuthenticationSuccessful.empty())
+    {
+        return false;
+    }
+    else
+    {
+        return isTrueBoolean(m_PeerAuthenticationSuccessful.at(t_AuthPeer));
+    }
 }
 
 bool ECDHENullHandlerImpl::isTrueBoolean(bool t_Value)
 {
-	bool result;
+    bool result;
 
-	if (t_Value == NULL)
-	{
-		result = false;
-	}
-	else
-	{
-		result = t_Value;
-	}
+    if (t_Value == NULL)
+    {
+        result = false;
+    }
+    else
+    {
+        result = t_Value;
+    }
 
-	return result;
+    return result;
 }

@@ -30,10 +30,10 @@ class AboutTestSuite : public ::testing::Test, public IOManager
 		void TearDown();
 
 	protected:
-		static const char* BUS_APPLICATION_NAME;
+		static AJ_PCSTR BUS_APPLICATION_NAME;
 		static long ANNOUNCEMENT_TIMEOUT_IN_SECONDS;
-		static const char* DATE_FORMAT;
-		static const char* URL_REGEX;
+		static AJ_PCSTR DATE_FORMAT;
+		static AJ_PCSTR URL_REGEX;
 
 		std::string m_DutDeviceId = std::string{ "" };
 		uint8_t* m_DutAppId{ nullptr };
@@ -45,14 +45,14 @@ class AboutTestSuite : public ::testing::Test, public IOManager
 
 		// About-v1-01
 		void validatePathIfAboutInterfacePresentInAnnouncement();
-		const char* getAboutInterfacePathFromAnnouncement();
+		AJ_PCSTR getAboutInterfacePathFromAnnouncement();
 		void verifyAboutData(const ajn::AboutData&);
-		void verifyFieldIsPresent(const char*, const ajn::AboutData&, std::string&);
-		void compareAbout(const char*, const std::string&, const std::string&, std::string);
+		void verifyFieldIsPresent(AJ_PCSTR, const ajn::AboutData&, std::string&);
+		void compareAbout(AJ_PCSTR, const std::string&, const std::string&, std::string);
 
 		// About-v1-03
-		void populateMap(ajn::AboutObjectDescription*, std::map<std::string, const char**>&);
-		void populateMap(ajn::MsgArg&, std::map<std::string, const char**>&);
+		void populateMap(ajn::AboutObjectDescription*, std::map<std::string, AJ_PCSTR*>&);
+		void populateMap(ajn::MsgArg&, std::map<std::string, AJ_PCSTR*>&);
 
 		template <typename Map>
 		bool compareMapKeys(Map const &lhs, Map const &rhs)
@@ -95,7 +95,7 @@ class AboutTestSuite : public ::testing::Test, public IOManager
 		void checkForNull(ajn::AboutData, std::string);
 		void checkForNull(ajn::AboutData, std::string, std::string);
 		void validateSignature(ajn::AboutData, std::string);
-		void validateSignature(ajn::AboutData, std::string, const char*, std::string);
+		void validateSignature(ajn::AboutData, std::string, AJ_PCSTR, std::string);
 		void validateSignatureForNonRequiredFields(ajn::AboutData, std::string);
 		void validateDateOfManufacture(ajn::AboutData, std::string);
 		void validateSupportUrl(ajn::AboutData, std::string);
@@ -107,7 +107,7 @@ class AboutTestSuite : public ::testing::Test, public IOManager
 		void validateSupportedLanguagesAboutMap(ajn::AboutData, ajn::MsgArg*, size_t);
 		void compareNonLocalizedFieldsInAboutMap(ajn::AboutData, ajn::AboutData, std::string);
 		void compareRequiredFieldsInAboutMap(ajn::AboutData, ajn::AboutData, std::string);
-		void compareAbout(std::string, const char**, size_t, const char**, size_t, std::string);
+		void compareAbout(std::string, AJ_PCSTR*, size_t, AJ_PCSTR*, size_t, std::string);
 		void compareNonRequiredFieldsInAboutMap(ajn::AboutData, ajn::AboutData, std::string);
 		void compareAboutNonRequired(ajn::AboutData, ajn::AboutData, std::string, std::string);
 		std::string prepareAssertionFailureResponse(std::string, std::string);

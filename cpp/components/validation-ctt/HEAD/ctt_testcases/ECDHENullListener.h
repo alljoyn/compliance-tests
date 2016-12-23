@@ -22,10 +22,10 @@
 class ECDHENullListener : public ajn::AuthListener
 {
 public:
-	ECDHENullListener(ECDHENullHandlerImpl*);
-	bool RequestCredentials(const char*, const char*, uint16_t, const char*, uint16_t, Credentials&);
-	void AuthenticationComplete(const char*, const char*, bool);
+    ECDHENullListener(ECDHENullHandlerImpl*);
+    bool RequestCredentials(AJ_PCSTR, AJ_PCSTR, uint16_t, AJ_PCSTR, uint16_t, Credentials&);
+    void AuthenticationComplete(AJ_PCSTR, AJ_PCSTR, bool);
 
 private:
-	ECDHENullHandlerImpl* m_AuthenticationHandler{ nullptr };
+    ECDHENullHandlerImpl* m_AuthenticationHandler{ nullptr };
 };

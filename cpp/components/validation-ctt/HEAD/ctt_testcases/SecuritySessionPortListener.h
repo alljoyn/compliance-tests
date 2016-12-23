@@ -15,24 +15,16 @@
 ******************************************************************************/
 #pragma once
 
-#include <string>
-#include <alljoyn\AboutObjectDescription.h>
-#include <alljoyn\Session.h>
-#include <alljoyn/hae/HaeAboutData.h>
+#include <alljoyn\SessionPortListener.h>
 
-class InterfaceInfo
+class SecuritySessionPortListener : public ajn::SessionPortListener
 {
 public:
-	std::string busName;
-	std::string deviceName;
-	ajn::SessionPort sessionPort;
-	ajn::SessionId sessionId;
-	std::string objectPath;
-	ajn::services::HaeAboutData aboutData;
-	ajn::AboutObjectDescription aboutDescription;
-
-	InterfaceInfo()
-	{
-	}
-	InterfaceInfo(const char* name, ajn::SessionPort port, const char* path, ajn::services::HaeAboutData& data, ajn::AboutObjectDescription& description);
+    virtual bool AcceptSessionJoiner(ajn::SessionPort sessionPort, AJ_PCSTR joiner, const ajn::SessionOpts& opts)
+    {
+        QCC_UNUSED(sessionPort);
+        QCC_UNUSED(joiner);
+        QCC_UNUSED(opts);
+        return true;
+    }
 };

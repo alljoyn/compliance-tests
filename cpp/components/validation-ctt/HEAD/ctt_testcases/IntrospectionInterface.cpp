@@ -40,7 +40,7 @@ set<IntrospectionAnnotation> IntrospectionInterface::getAnnotations()
 
 int IntrospectionInterface::hashCode()
 {
-	//COMPLETAR
+	//COMPLETE
 	return 1;
 }
 

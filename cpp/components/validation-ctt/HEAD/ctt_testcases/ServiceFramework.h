@@ -13,17 +13,16 @@
 *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************************************************************/
-#include "stdafx.h"
-#include "Claim_ApplicationStateListener.h"
+#pragma once
 
-Claim_ApplicationStateListener::Claim_ApplicationStateListener()
+enum class ServiceFramework
 {
-		stateChanged = false;
-}
-
-void Claim_ApplicationStateListener::State(const char* busName, const qcc::KeyInfoNISTP256& publicKeyInfo, ajn::PermissionConfigurator::ApplicationState state)
-{
-	QCC_UNUSED(publicKeyInfo);
-	LOG(INFO) << "Received State signal from " << busName << " with Application State " << ajn::PermissionConfigurator::ToString(state);
-	stateChanged = true;
-}
+	CORE,
+	NOTIFICATION,
+	CONFIGURATION,
+	CONTROL_PANEL,
+	ONBOARDING,
+	LSF_LAMP,
+	LSF_CONTROLLER,
+    CDM
+};

@@ -64,8 +64,8 @@ AuthListeners::AuthListeners(bool t_SupportsSrpKeyX, SrpKeyXHandlerImpl* t_SrpKe
 	}
 }
 
-bool AuthListeners::RequestCredentials(const char* t_AuthMechanism,
-	const char* t_AuthPeer, uint16_t t_AuthCount, const char* t_UserID,
+bool AuthListeners::RequestCredentials(AJ_PCSTR t_AuthMechanism,
+	AJ_PCSTR t_AuthPeer, uint16_t t_AuthCount, AJ_PCSTR t_UserID,
 	uint16_t t_CredMask, Credentials& t_Creds)
 {
 	LOG(INFO) << " ** requested, mechanism = " << t_AuthMechanism
@@ -83,8 +83,8 @@ bool AuthListeners::RequestCredentials(const char* t_AuthMechanism,
 	}
 }
 
-void AuthListeners::AuthenticationComplete(const char* t_AuthMechanism,
-	const char* t_AuthPeer, bool t_Success)
+void AuthListeners::AuthenticationComplete(AJ_PCSTR t_AuthMechanism,
+	AJ_PCSTR t_AuthPeer, bool t_Success)
 {
 	ajn::AuthListener* listener = nullptr;
 	
@@ -118,7 +118,7 @@ std::vector<std::string> AuthListeners::getAuthMechanisms()
 std::string AuthListeners::getAuthMechanismsAsString()
 {
 	std::string separator(" ");
-	std::string mechanisms;
+	std::string mechanisms("");
 
 	for (auto mechanism : m_AuthListeners)
 	{

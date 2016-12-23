@@ -25,8 +25,8 @@ NotificationHandler::NotificationHandler(std::string t_DeviceId, uint8_t* t_AppI
 
 void NotificationHandler::Receive(ajn::services::Notification const& t_Notification)
 {
-	const char* appId = t_Notification.getAppId();
-	const char* deviceId = t_Notification.getDeviceId();
+	AJ_PCSTR appId = t_Notification.getAppId();
+	AJ_PCSTR deviceId = t_Notification.getDeviceId();
 
 	if ((ArrayParser::parseAppId(m_SenderAppId).compare(normalizeAppId(appId)) == 0)
 		&& (m_SenderDeviceId.compare(deviceId) == 0))
@@ -57,7 +57,7 @@ ajn::services::Notification* NotificationHandler::getReceivedNotification()
 	return notification;
 }
 
-ajn::services::Notification* NotificationHandler::getReceivedNotification(const long t_Timeout)
+ajn::services::Notification* NotificationHandler::getReceivedNotification(long t_Timeout)
 {
 	const clock_t beginTime = clock();
 
@@ -81,7 +81,7 @@ void NotificationHandler::clearReceivedNotifications()
 	m_ReceivedNotifications.clear();
 }
 
-std::string NotificationHandler::normalizeAppId(const char* t_AppId)
+std::string NotificationHandler::normalizeAppId(AJ_PCSTR t_AppId)
 {
 	std::string temp(t_AppId);
 	std::transform(temp.begin(), temp.end(), temp.begin(), ::tolower);

@@ -19,8 +19,8 @@
 #define CHECK_BREAK(x) if ((status = x) != ER_OK) { break; }
 #define CHECK_RETURN(x) if ((status = x) != ER_OK) { return status; }
 
-static const char* CONTROLLERSERVICE_OBJECT_PATH = "/org/allseen/LSF/ControllerService";
-static const char* PULSEEFFECT_INTERFACE_NAME = "org.allseen.LSF.ControllerService.PulseEffect";
+static AJ_PCSTR CONTROLLERSERVICE_OBJECT_PATH = "/org/allseen/LSF/ControllerService";
+static AJ_PCSTR PULSEEFFECT_INTERFACE_NAME = "org.allseen.LSF.ControllerService.PulseEffect";
 
 ControllerServicePulseEffectBusObject::ControllerServicePulseEffectBusObject(ajn::BusAttachment& t_BusAttachment, const std::string& t_BusName, const ajn::SessionId t_SessionId) :
 m_BusAttachment(&t_BusAttachment), m_BusName(t_BusName), m_SessionId(t_SessionId),
@@ -74,7 +74,7 @@ m_PulseEffectsNameChangedSignalReceived(false)
 	} //if (!getIface)
 }
 
-void ControllerServicePulseEffectBusObject::PulseEffectsCreatedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServicePulseEffectBusObject::PulseEffectsCreatedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "PulseEffectsCreated signal received";
 	m_PulseEffectsCreatedSignalReceived = true;
@@ -85,7 +85,7 @@ bool ControllerServicePulseEffectBusObject::DidPulseEffectsCreated()
 	return m_PulseEffectsCreatedSignalReceived;
 }
 
-void ControllerServicePulseEffectBusObject::PulseEffectsUpdatedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServicePulseEffectBusObject::PulseEffectsUpdatedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "PulseEffectsUpdated signal received";
 	m_PulseEffectsUpdatedSignalReceived = true;
@@ -96,7 +96,7 @@ bool ControllerServicePulseEffectBusObject::DidPulseEffectsUpdated()
 	return m_PulseEffectsUpdatedSignalReceived;
 }
 
-void ControllerServicePulseEffectBusObject::PulseEffectsDeletedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServicePulseEffectBusObject::PulseEffectsDeletedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "PulseEffectsDeleted signal received";
 	m_PulseEffectsDeletedSignalReceived = true;
@@ -107,7 +107,7 @@ bool ControllerServicePulseEffectBusObject::DidPulseEffectsDeleted()
 	return m_PulseEffectsDeletedSignalReceived;
 }
 
-void ControllerServicePulseEffectBusObject::PulseEffectsNameChangedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServicePulseEffectBusObject::PulseEffectsNameChangedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "PulseEffectsNameChanged signal received";
 	m_PulseEffectsNameChangedSignalReceived = true;
@@ -141,7 +141,7 @@ QStatus ControllerServicePulseEffectBusObject::GetVersion(uint32_t& version)
 	return status;
 }
 
-QStatus ControllerServicePulseEffectBusObject::ApplyPulseEffectOnLampGroups(const char* t_PulseEffectID, const std::vector<const char*>& t_LampGroupIDs, uint32_t& t_ResponseCode, qcc::String& t_RetrievedPulseEffectID, std::vector<qcc::String>& t_RetrievedLampGroupIDs)
+QStatus ControllerServicePulseEffectBusObject::ApplyPulseEffectOnLampGroups(AJ_PCSTR t_PulseEffectID, const std::vector<AJ_PCSTR>& t_LampGroupIDs, uint32_t& t_ResponseCode, qcc::String& t_RetrievedPulseEffectID, std::vector<qcc::String>& t_RetrievedLampGroupIDs)
 {
 	QStatus status = ER_OK;
 
@@ -163,7 +163,7 @@ QStatus ControllerServicePulseEffectBusObject::ApplyPulseEffectOnLampGroups(cons
 		CHECK_RETURN(proxyBusObj->MethodCall(PULSEEFFECT_INTERFACE_NAME, "ApplyPulseEffectOnLampGroups", msgArg, 2, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedPulseEffectID;
+        AJ_PSTR tempRetrievedPulseEffectID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedPulseEffectID))
 		t_RetrievedPulseEffectID = qcc::String(tempRetrievedPulseEffectID);
 
@@ -181,7 +181,9 @@ QStatus ControllerServicePulseEffectBusObject::ApplyPulseEffectOnLampGroups(cons
 	return status;
 }
 
-QStatus ControllerServicePulseEffectBusObject::ApplyPulseEffectOnLamps(const char* t_PulseEffectID, const std::vector<const char*>& t_LampIDs, uint32_t& t_ResponseCode, qcc::String& t_RetrievedPulseEffectID, std::vector<qcc::String>& t_RetrievedLampIDs)
+QStatus ControllerServicePulseEffectBusObject::ApplyPulseEffectOnLamps(AJ_PCSTR t_PulseEffectID,
+    const std::vector<AJ_PCSTR>& t_LampIDs, uint32_t& t_ResponseCode, qcc::String& t_RetrievedPulseEffectID,
+    std::vector<qcc::String>& t_RetrievedLampIDs)
 {
 	QStatus status = ER_OK;
 
@@ -201,17 +203,17 @@ QStatus ControllerServicePulseEffectBusObject::ApplyPulseEffectOnLamps(const cha
 		msgArg[1].Set("as", t_LampIDs.size(), t_LampIDs.data());
 		ajn::Message responseMessage(*m_BusAttachment);
 		CHECK_RETURN(proxyBusObj->MethodCall(PULSEEFFECT_INTERFACE_NAME, "ApplyPulseEffectOnLamps", msgArg, 2, responseMessage))
-			CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
+	    CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-			char* tempRetrievedPulseEffectID;
+        AJ_PSTR tempRetrievedPulseEffectID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedPulseEffectID))
 			t_RetrievedPulseEffectID = qcc::String(tempRetrievedPulseEffectID);
 
 		size_t tempLampIDsSize;
-		char** tempLampIDs;
+        AJ_PSTR* tempLampIDs;
 		CHECK_RETURN(responseMessage->GetArg(2)->Get("as", &tempLampIDsSize, &tempLampIDs))
 
-			t_RetrievedLampIDs.clear();
+		t_RetrievedLampIDs.clear();
 		for (size_t i = 0; i < tempLampIDsSize; ++i)
 		{
 			t_RetrievedLampIDs.push_back(tempLampIDs[i]);
@@ -221,7 +223,10 @@ QStatus ControllerServicePulseEffectBusObject::ApplyPulseEffectOnLamps(const cha
 	return status;
 }
 
-QStatus ControllerServicePulseEffectBusObject::CreatePulseEffect(ajn::MsgArg* t_toLampState, const uint32_t t_PulsePeriod, const uint32_t t_PulseDuration, const uint32_t t_NumPulses, ajn::MsgArg* t_FromLampState, const char* t_ToPresetID, const char* t_FromPresetID, const char* t_PulseEffectName, const char* t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedPulseEffectID)
+QStatus ControllerServicePulseEffectBusObject::CreatePulseEffect(ajn::MsgArg* t_toLampState,
+    uint32_t t_PulsePeriod, uint32_t t_PulseDuration, uint32_t t_NumPulses, ajn::MsgArg* t_FromLampState,
+    AJ_PCSTR t_ToPresetID, AJ_PCSTR t_FromPresetID, AJ_PCSTR t_PulseEffectName, AJ_PCSTR t_Language,
+    uint32_t& t_ResponseCode, qcc::String& t_RetrievedPulseEffectID)
 {
 	QStatus status = ER_OK;
 
@@ -251,7 +256,7 @@ QStatus ControllerServicePulseEffectBusObject::CreatePulseEffect(ajn::MsgArg* t_
 		CHECK_RETURN(proxyBusObj->MethodCall(PULSEEFFECT_INTERFACE_NAME, "CreatePulseEffect", msgArg, 9, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedPulseEffectID;
+        AJ_PSTR tempRetrievedPulseEffectID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedPulseEffectID))
 		t_RetrievedPulseEffectID = qcc::String(tempRetrievedPulseEffectID);
 	}
@@ -259,7 +264,7 @@ QStatus ControllerServicePulseEffectBusObject::CreatePulseEffect(ajn::MsgArg* t_
 	return status;
 }
 
-QStatus ControllerServicePulseEffectBusObject::DeletePulseEffect(const char* t_PulseEffectID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedPulseEffectID)
+QStatus ControllerServicePulseEffectBusObject::DeletePulseEffect(AJ_PCSTR t_PulseEffectID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedPulseEffectID)
 {
 	QStatus status = ER_OK;
 
@@ -279,9 +284,9 @@ QStatus ControllerServicePulseEffectBusObject::DeletePulseEffect(const char* t_P
 
 		ajn::Message responseMessage(*m_BusAttachment);
 		CHECK_RETURN(proxyBusObj->MethodCall(PULSEEFFECT_INTERFACE_NAME, "DeletePulseEffect", msgArg, 1, responseMessage))
-			CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
+		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-			char* tempRetrievedPulseEffectID;
+        AJ_PSTR tempRetrievedPulseEffectID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedPulseEffectID))
 			t_RetrievedPulseEffectID = qcc::String(tempRetrievedPulseEffectID);
 	}
@@ -312,7 +317,7 @@ QStatus ControllerServicePulseEffectBusObject::GetAllPulseEffectIDs(uint32_t& t_
 		ajn::MsgArg* tempPulseEffectIDs;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("as", &tempPulseEffectIDsSize, &tempPulseEffectIDs))
 
-			t_PulseEffectIDs.clear();
+		t_PulseEffectIDs.clear();
 		for (size_t i = 0; i < tempPulseEffectIDsSize; ++i)
 		{
 			t_PulseEffectIDs.push_back(tempPulseEffectIDs[i].v_string.str);
@@ -322,7 +327,10 @@ QStatus ControllerServicePulseEffectBusObject::GetAllPulseEffectIDs(uint32_t& t_
 	return status;
 }
 
-QStatus ControllerServicePulseEffectBusObject::GetPulseEffect(const char* t_PulseEffectID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedPulseEffectID, std::vector<ajn::MsgArg>& t_ToLampState, uint32_t& t_PulsePeriod, uint32_t& t_PulseDuration, uint32_t& t_NumPulses, std::vector<ajn::MsgArg>& t_FromLampState, qcc::String& t_ToPresetID, qcc::String& t_FromPresetID)
+QStatus ControllerServicePulseEffectBusObject::GetPulseEffect(AJ_PCSTR t_PulseEffectID, uint32_t& t_ResponseCode,
+    qcc::String& t_RetrievedPulseEffectID, std::vector<ajn::MsgArg>& t_ToLampState, uint32_t& t_PulsePeriod,
+    uint32_t& t_PulseDuration, uint32_t& t_NumPulses, std::vector<ajn::MsgArg>& t_FromLampState,
+    qcc::String& t_ToPresetID, qcc::String& t_FromPresetID)
 {
 	QStatus status = ER_OK;
 
@@ -342,11 +350,11 @@ QStatus ControllerServicePulseEffectBusObject::GetPulseEffect(const char* t_Puls
 
 		ajn::Message responseMessage(*m_BusAttachment);
 		CHECK_RETURN(proxyBusObj->MethodCall(PULSEEFFECT_INTERFACE_NAME, "GetPulseEffect", msgArg, 1, responseMessage))
-			CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
+		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-			char* tempRetrievedPulseEffectID;
+        AJ_PSTR tempRetrievedPulseEffectID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedPulseEffectID))
-			t_RetrievedPulseEffectID = qcc::String(tempRetrievedPulseEffectID);
+		t_RetrievedPulseEffectID = qcc::String(tempRetrievedPulseEffectID);
 
 		size_t tempToLampStateSize;
 		ajn::MsgArg* tempToLampState;
@@ -372,11 +380,11 @@ QStatus ControllerServicePulseEffectBusObject::GetPulseEffect(const char* t_Puls
 			t_FromLampState.push_back(tempFromLampState[i]);
 		}
 
-		char* tempToPresetID;
+        AJ_PSTR tempToPresetID;
 		CHECK_RETURN(responseMessage->GetArg(7)->Get("s", &tempToPresetID))
 		t_ToPresetID = qcc::String(tempToPresetID);
 
-		char* tempFromPresetID;
+        AJ_PSTR tempFromPresetID;
 		CHECK_RETURN(responseMessage->GetArg(8)->Get("s", &tempFromPresetID))
 		t_FromPresetID = qcc::String(tempFromPresetID);
 	}
@@ -384,7 +392,9 @@ QStatus ControllerServicePulseEffectBusObject::GetPulseEffect(const char* t_Puls
 	return status;
 }
 
-QStatus ControllerServicePulseEffectBusObject::GetPulseEffectName(const char* t_PulseEffectID, const char* t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedPulseEffectID, qcc::String& t_RetrievedLanguage, qcc::String& t_PulseEffectName)
+QStatus ControllerServicePulseEffectBusObject::GetPulseEffectName(AJ_PCSTR t_PulseEffectID, AJ_PCSTR t_Language,
+    uint32_t& t_ResponseCode, qcc::String& t_RetrievedPulseEffectID, qcc::String& t_RetrievedLanguage,
+    qcc::String& t_PulseEffectName)
 {
 	QStatus status = ER_OK;
 
@@ -407,15 +417,15 @@ QStatus ControllerServicePulseEffectBusObject::GetPulseEffectName(const char* t_
 		CHECK_RETURN(proxyBusObj->MethodCall(PULSEEFFECT_INTERFACE_NAME, "GetPulseEffectName", msgArg, 2, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedPulseEffectID;
+        AJ_PSTR tempRetrievedPulseEffectID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedPulseEffectID))
 		t_RetrievedPulseEffectID = qcc::String(tempRetrievedPulseEffectID);
 
-		char* tempRetrievedLanguage;
+        AJ_PSTR tempRetrievedLanguage;
 		CHECK_RETURN(responseMessage->GetArg(2)->Get("s", &tempRetrievedLanguage))
 		t_RetrievedLanguage = qcc::String(tempRetrievedLanguage);
 
-		char* tempPulseEffectName;
+        AJ_PSTR tempPulseEffectName;
 		CHECK_RETURN(responseMessage->GetArg(3)->Get("s", &tempPulseEffectName))
 		t_PulseEffectName = qcc::String(tempPulseEffectName);
 	}
@@ -423,7 +433,9 @@ QStatus ControllerServicePulseEffectBusObject::GetPulseEffectName(const char* t_
 	return status;
 }
 
-QStatus ControllerServicePulseEffectBusObject::SetPulseEffectName(const char* t_PulseEffectID, const char* t_PulseEffectName, const char* t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedPulseEffectID, qcc::String& t_RetrievedLanguage)
+QStatus ControllerServicePulseEffectBusObject::SetPulseEffectName(AJ_PCSTR t_PulseEffectID,
+    AJ_PCSTR t_PulseEffectName, AJ_PCSTR t_Language, uint32_t& t_ResponseCode,
+    qcc::String& t_RetrievedPulseEffectID, qcc::String& t_RetrievedLanguage)
 {
 	QStatus status = ER_OK;
 
@@ -445,21 +457,24 @@ QStatus ControllerServicePulseEffectBusObject::SetPulseEffectName(const char* t_
 
 		ajn::Message responseMessage(*m_BusAttachment);
 		CHECK_RETURN(proxyBusObj->MethodCall(PULSEEFFECT_INTERFACE_NAME, "SetPulseEffectName", msgArg, 3, responseMessage))
-			CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
+		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-			char* tempRetrievedPulseEffectID;
+        AJ_PSTR tempRetrievedPulseEffectID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedPulseEffectID))
-			t_RetrievedPulseEffectID = qcc::String(tempRetrievedPulseEffectID);
+		t_RetrievedPulseEffectID = qcc::String(tempRetrievedPulseEffectID);
 
-		char* tempRetrievedLanguage;
+        AJ_PSTR tempRetrievedLanguage;
 		CHECK_RETURN(responseMessage->GetArg(2)->Get("s", &tempRetrievedLanguage))
-			t_RetrievedLanguage = qcc::String(tempRetrievedLanguage);
+		t_RetrievedLanguage = qcc::String(tempRetrievedLanguage);
 	}
 	delete proxyBusObj;
 	return status;
 }
 
-QStatus ControllerServicePulseEffectBusObject::UpdatePulseEffect(const char* t_PulseEffectID, ajn::MsgArg* t_ToLampState, const uint32_t t_PulsePeriod, const uint32_t t_PulseDuration, const uint32_t t_NumPulses, ajn::MsgArg* t_FromLampState, const char* t_ToPresetID, const char* t_FromPresetID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedPulseEffectID)
+QStatus ControllerServicePulseEffectBusObject::UpdatePulseEffect(AJ_PCSTR t_PulseEffectID,
+    ajn::MsgArg* t_ToLampState, uint32_t t_PulsePeriod, uint32_t t_PulseDuration, uint32_t t_NumPulses,
+    ajn::MsgArg* t_FromLampState, AJ_PCSTR t_ToPresetID, AJ_PCSTR t_FromPresetID, uint32_t& t_ResponseCode,
+    qcc::String& t_RetrievedPulseEffectID)
 {
 	QStatus status = ER_OK;
 
@@ -488,7 +503,7 @@ QStatus ControllerServicePulseEffectBusObject::UpdatePulseEffect(const char* t_P
 		CHECK_RETURN(proxyBusObj->MethodCall(PULSEEFFECT_INTERFACE_NAME, "UpdatePulseEffect", msgArg, 8, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedPulseEffectID;
+        AJ_PSTR tempRetrievedPulseEffectID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedPulseEffectID))
 		t_RetrievedPulseEffectID = qcc::String(tempRetrievedPulseEffectID);
 	}

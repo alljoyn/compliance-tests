@@ -84,9 +84,9 @@ uint8_t* ArrayParser::parseBytesFromHexString(const string& t_HexString, size_t&
 	return bytes;
 }
 
-uint16_t ArrayParser::stringToUint16(const char* t_Str)
+uint16_t ArrayParser::stringToUint16(AJ_PCSTR t_Str)
 {
-	char *end;
+	AJ_PSTR end;
 	errno = 0;
 	long val = strtol(t_Str, &end, 10);
 	if (errno || end == t_Str || *end != '\0' || val < 0 || val >= 0x10000)

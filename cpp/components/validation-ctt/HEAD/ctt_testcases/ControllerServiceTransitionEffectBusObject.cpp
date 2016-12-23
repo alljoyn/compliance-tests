@@ -19,8 +19,8 @@
 #define CHECK_BREAK(x) if ((status = x) != ER_OK) { break; }
 #define CHECK_RETURN(x) if ((status = x) != ER_OK) { return status; }
 
-static const char* CONTROLLERSERVICE_OBJECT_PATH = "/org/allseen/LSF/ControllerService";
-static const char* TRANSITIONEFFECT_INTERFACE_NAME = "org.allseen.LSF.ControllerService.TransitionEffect";
+static AJ_PCSTR CONTROLLERSERVICE_OBJECT_PATH = "/org/allseen/LSF/ControllerService";
+static AJ_PCSTR TRANSITIONEFFECT_INTERFACE_NAME = "org.allseen.LSF.ControllerService.TransitionEffect";
 
 ControllerServiceTransitionEffectBusObject::ControllerServiceTransitionEffectBusObject(ajn::BusAttachment& t_BusAttachment, const std::string& t_BusName, const ajn::SessionId t_SessionId) :
 m_BusAttachment(&t_BusAttachment), m_BusName(t_BusName), m_SessionId(t_SessionId),
@@ -74,7 +74,7 @@ m_TransitionEffectsNameChangedSignalReceived(false)
 	} //if (!getIface)
 }
 
-void ControllerServiceTransitionEffectBusObject::TransitionEffectsCreatedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServiceTransitionEffectBusObject::TransitionEffectsCreatedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "TransitionEffectsCreated signal received";
 	m_TransitionEffectsCreatedSignalReceived = true;
@@ -85,7 +85,7 @@ bool ControllerServiceTransitionEffectBusObject::DidTransitionEffectsCreated()
 	return m_TransitionEffectsCreatedSignalReceived;
 }
 
-void ControllerServiceTransitionEffectBusObject::TransitionEffectsUpdatedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServiceTransitionEffectBusObject::TransitionEffectsUpdatedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "TransitionEffectsUpdated signal received";
 	m_TransitionEffectsUpdatedSignalReceived = true;
@@ -96,7 +96,7 @@ bool ControllerServiceTransitionEffectBusObject::DidTransitionEffectsUpdated()
 	return m_TransitionEffectsUpdatedSignalReceived;
 }
 
-void ControllerServiceTransitionEffectBusObject::TransitionEffectsDeletedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServiceTransitionEffectBusObject::TransitionEffectsDeletedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "TransitionEffectsDeleted signal received";
 	m_TransitionEffectsDeletedSignalReceived = true;
@@ -107,7 +107,7 @@ bool ControllerServiceTransitionEffectBusObject::DidTransitionEffectsDeleted()
 	return m_TransitionEffectsDeletedSignalReceived;
 }
 
-void ControllerServiceTransitionEffectBusObject::TransitionEffectsNameChangedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServiceTransitionEffectBusObject::TransitionEffectsNameChangedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "TransitionEffectsNameChanged signal received";
 	m_TransitionEffectsNameChangedSignalReceived = true;
@@ -141,7 +141,9 @@ QStatus ControllerServiceTransitionEffectBusObject::GetVersion(uint32_t& version
 	return status;
 }
 
-QStatus ControllerServiceTransitionEffectBusObject::ApplyTransitionEffectOnLampGroups(const char* t_TransitionEffectID, const std::vector<const char*>& t_LampGroupIDs, uint32_t& t_ResponseCode, qcc::String& t_RetrievedTransitionEffectID, std::vector<qcc::String>& t_RetrievedLampGroupIDs)
+QStatus ControllerServiceTransitionEffectBusObject::ApplyTransitionEffectOnLampGroups(AJ_PCSTR t_TransitionEffectID,
+    const std::vector<AJ_PCSTR>& t_LampGroupIDs, uint32_t& t_ResponseCode, qcc::String& t_RetrievedTransitionEffectID,
+    std::vector<qcc::String>& t_RetrievedLampGroupIDs)
 {
 	QStatus status = ER_OK;
 
@@ -163,12 +165,12 @@ QStatus ControllerServiceTransitionEffectBusObject::ApplyTransitionEffectOnLampG
 		CHECK_RETURN(proxyBusObj->MethodCall(TRANSITIONEFFECT_INTERFACE_NAME, "ApplyTransitionEffectOnLampGroups", msgArg, 2, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedTransitionEffectID;
+        AJ_PSTR tempRetrievedTransitionEffectID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedTransitionEffectID))
 		t_RetrievedTransitionEffectID = qcc::String(tempRetrievedTransitionEffectID);
 
 		size_t tempLampGroupIDsSize;
-		char** tempLampGroupIDs;
+        AJ_PSTR* tempLampGroupIDs;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("as", &tempLampGroupIDsSize, &tempLampGroupIDs))
 
 		t_RetrievedLampGroupIDs.clear();
@@ -181,7 +183,9 @@ QStatus ControllerServiceTransitionEffectBusObject::ApplyTransitionEffectOnLampG
 	return status;
 }
 
-QStatus ControllerServiceTransitionEffectBusObject::ApplyTransitionEffectOnLamps(const char* t_TransitionEffectID, const std::vector<const char*>& t_LampIDs, uint32_t& t_ResponseCode, qcc::String& t_RetrievedTransitionEffectID, std::vector<qcc::String>& t_RetrievedLampIDs)
+QStatus ControllerServiceTransitionEffectBusObject::ApplyTransitionEffectOnLamps(AJ_PCSTR t_TransitionEffectID,
+    const std::vector<AJ_PCSTR>& t_LampIDs, uint32_t& t_ResponseCode, qcc::String& t_RetrievedTransitionEffectID,
+    std::vector<qcc::String>& t_RetrievedLampIDs)
 {
 	QStatus status = ER_OK;
 
@@ -203,12 +207,12 @@ QStatus ControllerServiceTransitionEffectBusObject::ApplyTransitionEffectOnLamps
 		CHECK_RETURN(proxyBusObj->MethodCall(TRANSITIONEFFECT_INTERFACE_NAME, "ApplyTransitionEffectOnLamps", msgArg, 2, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedTransitionEffectID;
+        AJ_PSTR tempRetrievedTransitionEffectID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedTransitionEffectID))
 			t_RetrievedTransitionEffectID = qcc::String(tempRetrievedTransitionEffectID);
 
 		size_t tempLampIDsSize;
-		char** tempLampIDs;
+        AJ_PSTR* tempLampIDs;
 		CHECK_RETURN(responseMessage->GetArg(2)->Get("as", &tempLampIDsSize, &tempLampIDs))
 
 		t_RetrievedLampIDs.clear();
@@ -221,7 +225,9 @@ QStatus ControllerServiceTransitionEffectBusObject::ApplyTransitionEffectOnLamps
 	return status;
 }
 
-QStatus ControllerServiceTransitionEffectBusObject::CreateTransitionEffect(ajn::MsgArg* t_LampState, const char* t_PresetID, const uint32_t t_TransitionPeriod, const char* t_TransitionEffectName, const char* t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedTransitionEffectID)
+QStatus ControllerServiceTransitionEffectBusObject::CreateTransitionEffect(ajn::MsgArg* t_LampState, AJ_PCSTR t_PresetID,
+    uint32_t t_TransitionPeriod, AJ_PCSTR t_TransitionEffectName, AJ_PCSTR t_Language, uint32_t& t_ResponseCode,
+    qcc::String& t_RetrievedTransitionEffectID)
 {
 	QStatus status = ER_OK;
 
@@ -247,7 +253,7 @@ QStatus ControllerServiceTransitionEffectBusObject::CreateTransitionEffect(ajn::
 		CHECK_RETURN(proxyBusObj->MethodCall(TRANSITIONEFFECT_INTERFACE_NAME, "CreateTransitionEffect", msgArg, 5, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedTransitionEffectID;
+        AJ_PSTR tempRetrievedTransitionEffectID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedTransitionEffectID))
 		t_RetrievedTransitionEffectID = qcc::String(tempRetrievedTransitionEffectID);
 	}
@@ -255,7 +261,8 @@ QStatus ControllerServiceTransitionEffectBusObject::CreateTransitionEffect(ajn::
 	return status;
 }
 
-QStatus ControllerServiceTransitionEffectBusObject::DeleteTransitionEffect(const char* t_TransitionEffectID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedTransitionEffectID)
+QStatus ControllerServiceTransitionEffectBusObject::DeleteTransitionEffect(AJ_PCSTR t_TransitionEffectID,
+    uint32_t& t_ResponseCode, qcc::String& t_RetrievedTransitionEffectID)
 {
 	QStatus status = ER_OK;
 
@@ -277,7 +284,7 @@ QStatus ControllerServiceTransitionEffectBusObject::DeleteTransitionEffect(const
 		CHECK_RETURN(proxyBusObj->MethodCall(TRANSITIONEFFECT_INTERFACE_NAME, "DeleteTransitionEffect", msgArg, 1, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedTransitionEffectID;
+        AJ_PSTR tempRetrievedTransitionEffectID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedTransitionEffectID))
 		t_RetrievedTransitionEffectID = qcc::String(tempRetrievedTransitionEffectID);
 	}
@@ -318,7 +325,9 @@ QStatus ControllerServiceTransitionEffectBusObject::GetAllTransitionEffectIDs(ui
 	return status;
 }
 
-QStatus ControllerServiceTransitionEffectBusObject::GetTransitionEffect(const char* t_TransitionEffectID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedTransitionEffectID, std::vector<ajn::MsgArg>& t_LampState, qcc::String& t_PresetID, uint32_t& t_TransitionPeriod)
+QStatus ControllerServiceTransitionEffectBusObject::GetTransitionEffect(AJ_PCSTR t_TransitionEffectID,
+    uint32_t& t_ResponseCode, qcc::String& t_RetrievedTransitionEffectID, std::vector<ajn::MsgArg>& t_LampState,
+    qcc::String& t_PresetID, uint32_t& t_TransitionPeriod)
 {
 	QStatus status = ER_OK;
 
@@ -340,7 +349,7 @@ QStatus ControllerServiceTransitionEffectBusObject::GetTransitionEffect(const ch
 		CHECK_RETURN(proxyBusObj->MethodCall(TRANSITIONEFFECT_INTERFACE_NAME, "GetTransitionEffect", msgArg, 1, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedTransitionEffectID;
+        AJ_PSTR tempRetrievedTransitionEffectID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedTransitionEffectID))
 		t_RetrievedTransitionEffectID = qcc::String(tempRetrievedTransitionEffectID);
 
@@ -354,7 +363,7 @@ QStatus ControllerServiceTransitionEffectBusObject::GetTransitionEffect(const ch
 			t_LampState.push_back(tempLampState[i]);
 		}
 
-		char* tempPresetID;
+        AJ_PSTR tempPresetID;
 		CHECK_RETURN(responseMessage->GetArg(3)->Get("s", &tempPresetID))
 		t_PresetID = qcc::String(tempPresetID);
 
@@ -364,7 +373,9 @@ QStatus ControllerServiceTransitionEffectBusObject::GetTransitionEffect(const ch
 	return status;
 }
 
-QStatus ControllerServiceTransitionEffectBusObject::GetTransitionEffectName(const char* t_TransitionEffectID, const char* t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedTransitionEffectID, qcc::String& t_RetrievedLanguage, qcc::String& t_TransitionEffectName)
+QStatus ControllerServiceTransitionEffectBusObject::GetTransitionEffectName(AJ_PCSTR t_TransitionEffectID,
+    AJ_PCSTR t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedTransitionEffectID,
+    qcc::String& t_RetrievedLanguage, qcc::String& t_TransitionEffectName)
 {
 	QStatus status = ER_OK;
 
@@ -387,15 +398,15 @@ QStatus ControllerServiceTransitionEffectBusObject::GetTransitionEffectName(cons
 		CHECK_RETURN(proxyBusObj->MethodCall(TRANSITIONEFFECT_INTERFACE_NAME, "GetTransitionEffectName", msgArg, 2, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedTransitionEffectID;
+        AJ_PSTR tempRetrievedTransitionEffectID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedTransitionEffectID))
 		t_RetrievedTransitionEffectID = qcc::String(tempRetrievedTransitionEffectID);
 
-		char* tempRetrievedLanguage;
+        AJ_PSTR tempRetrievedLanguage;
 		CHECK_RETURN(responseMessage->GetArg(2)->Get("s", &tempRetrievedLanguage))
 		t_RetrievedLanguage = qcc::String(tempRetrievedLanguage);
 
-		char* tempTransitionEffectName;
+        AJ_PSTR tempTransitionEffectName;
 		CHECK_RETURN(responseMessage->GetArg(3)->Get("s", &tempTransitionEffectName))
 		t_TransitionEffectName = qcc::String(tempTransitionEffectName);
 	}
@@ -403,7 +414,9 @@ QStatus ControllerServiceTransitionEffectBusObject::GetTransitionEffectName(cons
 	return status;
 }
 
-QStatus ControllerServiceTransitionEffectBusObject::SetTransitionEffectName(const char* t_TransitionEffectID, const char* t_TransitionEffectName, const char* t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedTransitionEffectID, qcc::String& t_RetrievedLanguage)
+QStatus ControllerServiceTransitionEffectBusObject::SetTransitionEffectName(AJ_PCSTR t_TransitionEffectID,
+    AJ_PCSTR t_TransitionEffectName, AJ_PCSTR t_Language, uint32_t& t_ResponseCode,
+    qcc::String& t_RetrievedTransitionEffectID, qcc::String& t_RetrievedLanguage)
 {
 	QStatus status = ER_OK;
 
@@ -427,11 +440,11 @@ QStatus ControllerServiceTransitionEffectBusObject::SetTransitionEffectName(cons
 		CHECK_RETURN(proxyBusObj->MethodCall(TRANSITIONEFFECT_INTERFACE_NAME, "SetTransitionEffectName", msgArg, 3, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedTransitionEffectID;
+        AJ_PSTR tempRetrievedTransitionEffectID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedTransitionEffectID))
 		t_RetrievedTransitionEffectID = qcc::String(tempRetrievedTransitionEffectID);
 
-		char* tempRetrievedLanguage;
+        AJ_PSTR tempRetrievedLanguage;
 		CHECK_RETURN(responseMessage->GetArg(2)->Get("s", &tempRetrievedLanguage))
 		t_RetrievedLanguage = qcc::String(tempRetrievedLanguage);
 	}
@@ -439,7 +452,9 @@ QStatus ControllerServiceTransitionEffectBusObject::SetTransitionEffectName(cons
 	return status;
 }
 
-QStatus ControllerServiceTransitionEffectBusObject::UpdateTransitionEffect(const char* t_TransitionEffectID, ajn::MsgArg* t_LampState, const char* t_PresetID, const uint32_t t_TransitionPeriod, uint32_t& t_ResponseCode, qcc::String& t_RetrievedTransitionEffectID)
+QStatus ControllerServiceTransitionEffectBusObject::UpdateTransitionEffect(AJ_PCSTR t_TransitionEffectID,
+    ajn::MsgArg* t_LampState, AJ_PCSTR t_PresetID, uint32_t t_TransitionPeriod, uint32_t& t_ResponseCode,
+    qcc::String& t_RetrievedTransitionEffectID)
 {
 	QStatus status = ER_OK;
 
@@ -464,7 +479,7 @@ QStatus ControllerServiceTransitionEffectBusObject::UpdateTransitionEffect(const
 		CHECK_RETURN(proxyBusObj->MethodCall(TRANSITIONEFFECT_INTERFACE_NAME, "UpdateTransitionEffect", msgArg, 4, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedTransitionEffectID;
+        AJ_PSTR tempRetrievedTransitionEffectID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedTransitionEffectID))
 		t_RetrievedTransitionEffectID = qcc::String(tempRetrievedTransitionEffectID);
 	}

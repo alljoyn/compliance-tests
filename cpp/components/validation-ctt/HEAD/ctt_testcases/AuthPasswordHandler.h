@@ -19,6 +19,6 @@ class AuthPasswordHandler
 {
 	public:
 		virtual ~AuthPasswordHandler() {}
-		virtual const char* getPassword(std::string) = 0;
+		virtual AJ_PCSTR getPassword(std::string) = 0;
 		virtual void completed(std::string, std::string, bool) = 0;
 };

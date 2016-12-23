@@ -20,8 +20,8 @@
 class ServiceAvailabilityHandler : public ajn::SessionListener
 {
 public:
-	bool waitForSessionLost(const long);
+    bool waitForSessionLost(long);
 private:
-	unsigned short m_countdown_latch{ 1 };
-	void SessionLost(ajn::SessionId, SessionLostReason);
+    unsigned short m_countdown_latch{ 1 };
+    void SessionLost(ajn::SessionId, SessionLostReason);
 };

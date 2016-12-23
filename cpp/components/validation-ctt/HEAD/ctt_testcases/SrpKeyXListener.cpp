@@ -19,14 +19,14 @@
 SrpKeyXListener::SrpKeyXListener(SrpKeyXHandlerImpl* t_AuthPasswordHandlerImpl, const std::string& t_DefaultSrpKeyXPincode) :
 	m_PasswordHandler(t_AuthPasswordHandlerImpl), m_DefaultPincode(t_DefaultSrpKeyXPincode){}
 
-bool SrpKeyXListener::RequestCredentials(const char* t_AuthMechanism,
-	const char* t_AuthPeer, uint16_t t_AuthCount, const char* t_UserID,
+bool SrpKeyXListener::RequestCredentials(AJ_PCSTR t_AuthMechanism,
+	AJ_PCSTR t_AuthPeer, uint16_t t_AuthCount, AJ_PCSTR t_UserID,
 	uint16_t t_CredMask, Credentials& t_Creds)
 {
 	if (t_CredMask & AuthListener::CRED_PASSWORD)
 	{
-		const char* pinCode = m_DefaultPincode.c_str();
-		const char* storedPass = m_PasswordHandler->getPassword(t_AuthPeer);
+		AJ_PCSTR pinCode = m_DefaultPincode.c_str();
+		AJ_PCSTR storedPass = m_PasswordHandler->getPassword(t_AuthPeer);
 
 		if (m_PasswordHandler != nullptr && storedPass != nullptr)
 		{
@@ -39,8 +39,8 @@ bool SrpKeyXListener::RequestCredentials(const char* t_AuthMechanism,
 	return true;
 }
 
-void SrpKeyXListener::AuthenticationComplete(const char* t_AuthMechanism,
-	const char* t_AuthPeer, bool t_Success)
+void SrpKeyXListener::AuthenticationComplete(AJ_PCSTR t_AuthMechanism,
+	AJ_PCSTR t_AuthPeer, bool t_Success)
 {
 	if (!t_Success)
 	{

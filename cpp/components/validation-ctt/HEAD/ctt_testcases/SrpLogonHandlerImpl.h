@@ -22,8 +22,8 @@ class SrpLogonHandlerImpl
 public:
 	SrpLogonHandlerImpl(SrpLogonStore*, const std::string&, const std::string&);
 	virtual ~SrpLogonHandlerImpl() {}
-	virtual const char* getUser(const std::string&);
-	virtual const char* getPass(const std::string&);
+	virtual AJ_PCSTR getUser(const std::string&);
+	virtual AJ_PCSTR getPass(const std::string&);
 	virtual void completed(std::string, std::string, bool);
 	void resetAuthentication(std::string);
 	bool isPeerAuthenticated(std::string);

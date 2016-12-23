@@ -30,7 +30,7 @@ int IntrospectionSignal::compareTo(IntrospectionSignal t_IntrospectionSignal)
 
 int IntrospectionSignal::hashCode()
 {
-	//COMPLETAR
+	//COMPLETE
 	return 1;
 }
 

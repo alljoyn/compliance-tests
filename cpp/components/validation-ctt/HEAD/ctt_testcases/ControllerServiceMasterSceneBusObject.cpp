@@ -19,8 +19,8 @@
 #define CHECK_BREAK(x) if ((status = x) != ER_OK) { break; }
 #define CHECK_RETURN(x) if ((status = x) != ER_OK) { return status; }
 
-static const char* CONTROLLERSERVICE_OBJECT_PATH = "/org/allseen/LSF/ControllerService";
-static const char* MASTERSCENE_INTERFACE_NAME = "org.allseen.LSF.ControllerService.MasterScene";
+static AJ_PCSTR CONTROLLERSERVICE_OBJECT_PATH = "/org/allseen/LSF/ControllerService";
+static AJ_PCSTR MASTERSCENE_INTERFACE_NAME = "org.allseen.LSF.ControllerService.MasterScene";
 
 ControllerServiceMasterSceneBusObject::ControllerServiceMasterSceneBusObject(ajn::BusAttachment& t_BusAttachment, const std::string& t_BusName, const ajn::SessionId t_SessionId) :
 m_BusAttachment(&t_BusAttachment), m_BusName(t_BusName), m_SessionId(t_SessionId),
@@ -77,7 +77,7 @@ m_MasterScenesDeletedSignalReceived(false), m_MasterScenesAppliedSignalReceived(
 	} //if (!getIface)
 }
 
-void ControllerServiceMasterSceneBusObject::MasterScenesNameChangedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServiceMasterSceneBusObject::MasterScenesNameChangedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "MasterScenesNameChanged signal received";
 	m_MasterScenesNameChangedSignalReceived = true;
@@ -88,7 +88,7 @@ bool ControllerServiceMasterSceneBusObject::DidMasterScenesNameChanged()
 	return m_MasterScenesNameChangedSignalReceived;
 }
 
-void ControllerServiceMasterSceneBusObject::MasterScenesCreatedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServiceMasterSceneBusObject::MasterScenesCreatedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "MasterScenesCreated signal received";
 	m_MasterScenesCreatedSignalReceived = true;
@@ -99,7 +99,7 @@ bool ControllerServiceMasterSceneBusObject::DidMasterScenesCreated()
 	return m_MasterScenesCreatedSignalReceived;
 }
 
-void ControllerServiceMasterSceneBusObject::MasterScenesUpdatedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServiceMasterSceneBusObject::MasterScenesUpdatedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "MasterScenesUpdated signal received";
 	m_MasterScenesUpdatedSignalReceived = true;
@@ -110,7 +110,7 @@ bool ControllerServiceMasterSceneBusObject::DidMasterScenesUpdated()
 	return m_MasterScenesUpdatedSignalReceived;
 }
 
-void ControllerServiceMasterSceneBusObject::MasterScenesDeletedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServiceMasterSceneBusObject::MasterScenesDeletedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "MasterScenesDeleted signal received";
 	m_MasterScenesDeletedSignalReceived = true;
@@ -121,7 +121,7 @@ bool ControllerServiceMasterSceneBusObject::DidMasterScenesDeleted()
 	return m_MasterScenesDeletedSignalReceived;
 }
 
-void ControllerServiceMasterSceneBusObject::MasterScenesAppliedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServiceMasterSceneBusObject::MasterScenesAppliedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "MasterScenesApplied signal received";
 	m_MasterScenesAppliedSignalReceived = true;
@@ -176,7 +176,7 @@ QStatus ControllerServiceMasterSceneBusObject::GetAllMasterSceneIDs(uint32_t& t_
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
 		uint32_t* tempIDsArraySize = new uint32_t();
-		char** tempIDsArray;
+        AJ_PSTR* tempIDsArray;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("as", tempIDsArraySize, &tempIDsArray))
 
 		t_MasterSceneIDs.clear();
@@ -189,7 +189,9 @@ QStatus ControllerServiceMasterSceneBusObject::GetAllMasterSceneIDs(uint32_t& t_
 	return status;
 }
 
-QStatus ControllerServiceMasterSceneBusObject::GetMasterSceneName(const char* t_MasterSceneID, const char* t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedMasterSceneID, qcc::String& t_RetrievedLanguage, qcc::String& t_MasterSceneName)
+QStatus ControllerServiceMasterSceneBusObject::GetMasterSceneName(AJ_PCSTR t_MasterSceneID,
+    AJ_PCSTR t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedMasterSceneID,
+    qcc::String& t_RetrievedLanguage, qcc::String& t_MasterSceneName)
 {
 	QStatus status = ER_OK;
 
@@ -211,15 +213,15 @@ QStatus ControllerServiceMasterSceneBusObject::GetMasterSceneName(const char* t_
 		CHECK_RETURN(proxyBusObj->MethodCall(MASTERSCENE_INTERFACE_NAME, "GetMasterSceneName", msgArg, 2, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedSceneID;
+        AJ_PSTR tempRetrievedSceneID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedSceneID))
 		t_RetrievedMasterSceneID = qcc::String(tempRetrievedSceneID);
 
-		char* tempRetrievedLanguage;
+        AJ_PSTR tempRetrievedLanguage;
 		CHECK_RETURN(responseMessage->GetArg(2)->Get("s", &tempRetrievedLanguage))
 		t_RetrievedLanguage = qcc::String(tempRetrievedLanguage);
 
-		char* tempSceneName;
+        AJ_PSTR tempSceneName;
 		CHECK_RETURN(responseMessage->GetArg(3)->Get("s", &tempSceneName))
 		t_MasterSceneName = qcc::String(tempSceneName);
 	}
@@ -227,7 +229,9 @@ QStatus ControllerServiceMasterSceneBusObject::GetMasterSceneName(const char* t_
 	return status;
 }
 
-QStatus ControllerServiceMasterSceneBusObject::SetMasterSceneName(const char* t_MasterSceneID, const char* t_MasterSceneName, const char* t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedMasterSceneID, qcc::String& t_RetrievedLanguage)
+QStatus ControllerServiceMasterSceneBusObject::SetMasterSceneName(AJ_PCSTR t_MasterSceneID,
+    AJ_PCSTR t_MasterSceneName, AJ_PCSTR t_Language, uint32_t& t_ResponseCode,
+    qcc::String& t_RetrievedMasterSceneID, qcc::String& t_RetrievedLanguage)
 {
 	QStatus status = ER_OK;
 
@@ -250,11 +254,11 @@ QStatus ControllerServiceMasterSceneBusObject::SetMasterSceneName(const char* t_
 		CHECK_RETURN(proxyBusObj->MethodCall(MASTERSCENE_INTERFACE_NAME, "SetMasterSceneName", msgArg, 3, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedSceneID;
+        AJ_PSTR tempRetrievedSceneID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedSceneID))
 		t_RetrievedMasterSceneID = qcc::String(tempRetrievedSceneID);
 
-		char* tempRetrievedLanguage;
+        AJ_PSTR tempRetrievedLanguage;
 		CHECK_RETURN(responseMessage->GetArg(2)->Get("s", &tempRetrievedLanguage))
 		t_RetrievedLanguage = qcc::String(tempRetrievedLanguage);
 	}
@@ -262,7 +266,8 @@ QStatus ControllerServiceMasterSceneBusObject::SetMasterSceneName(const char* t_
 	return status;
 }
 
-QStatus ControllerServiceMasterSceneBusObject::CreateMasterScene(const std::vector<const char*>& t_Scenes, const char* t_MasterSceneName, const char* t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedMasterSceneID)
+QStatus ControllerServiceMasterSceneBusObject::CreateMasterScene(const std::vector<AJ_PCSTR>& t_Scenes,
+    AJ_PCSTR t_MasterSceneName, AJ_PCSTR t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedMasterSceneID)
 {
 	QStatus status = ER_OK;
 
@@ -285,7 +290,7 @@ QStatus ControllerServiceMasterSceneBusObject::CreateMasterScene(const std::vect
 		CHECK_RETURN(proxyBusObj->MethodCall(MASTERSCENE_INTERFACE_NAME, "CreateMasterScene", msgArg, 3, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedSceneID;
+        AJ_PSTR tempRetrievedSceneID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedSceneID))
 		t_RetrievedMasterSceneID = qcc::String(tempRetrievedSceneID);
 	}
@@ -293,7 +298,8 @@ QStatus ControllerServiceMasterSceneBusObject::CreateMasterScene(const std::vect
 	return status;
 }
 
-QStatus ControllerServiceMasterSceneBusObject::UpdateMasterScene(const char* t_MasterSceneID, const std::vector<const char*>& t_Scenes, uint32_t& t_ResponseCode, qcc::String& t_RetrievedMasterSceneID)
+QStatus ControllerServiceMasterSceneBusObject::UpdateMasterScene(AJ_PCSTR t_MasterSceneID,
+    const std::vector<AJ_PCSTR>& t_Scenes, uint32_t& t_ResponseCode, qcc::String& t_RetrievedMasterSceneID)
 {
 	QStatus status = ER_OK;
 
@@ -315,7 +321,7 @@ QStatus ControllerServiceMasterSceneBusObject::UpdateMasterScene(const char* t_M
 		CHECK_RETURN(proxyBusObj->MethodCall(MASTERSCENE_INTERFACE_NAME, "UpdateMasterScene", msgArg, 2, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedSceneID;
+        AJ_PSTR tempRetrievedSceneID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedSceneID))
 		t_RetrievedMasterSceneID = qcc::String(tempRetrievedSceneID);
 	}
@@ -323,7 +329,7 @@ QStatus ControllerServiceMasterSceneBusObject::UpdateMasterScene(const char* t_M
 	return status;
 }
 
-QStatus ControllerServiceMasterSceneBusObject::DeleteMasterScene(const char* t_MasterSceneID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedMasterSceneID)
+QStatus ControllerServiceMasterSceneBusObject::DeleteMasterScene(AJ_PCSTR t_MasterSceneID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedMasterSceneID)
 {
 	QStatus status = ER_OK;
 
@@ -345,7 +351,7 @@ QStatus ControllerServiceMasterSceneBusObject::DeleteMasterScene(const char* t_M
 		CHECK_RETURN(proxyBusObj->MethodCall(MASTERSCENE_INTERFACE_NAME, "DeleteMasterScene", msgArg, 1, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedSceneID;
+        AJ_PSTR tempRetrievedSceneID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedSceneID))
 		t_RetrievedMasterSceneID = qcc::String(tempRetrievedSceneID);
 	}
@@ -353,7 +359,7 @@ QStatus ControllerServiceMasterSceneBusObject::DeleteMasterScene(const char* t_M
 	return status;
 }
 
-QStatus ControllerServiceMasterSceneBusObject::GetMasterScene(const char* t_MasterSceneID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedMasterSceneID, std::vector<qcc::String>& t_Scenes)
+QStatus ControllerServiceMasterSceneBusObject::GetMasterScene(AJ_PCSTR t_MasterSceneID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedMasterSceneID, std::vector<qcc::String>& t_Scenes)
 {
 	QStatus status = ER_OK;
 
@@ -375,7 +381,7 @@ QStatus ControllerServiceMasterSceneBusObject::GetMasterScene(const char* t_Mast
 		CHECK_RETURN(proxyBusObj->MethodCall(MASTERSCENE_INTERFACE_NAME, "GetScene", msgArg, 1, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedSceneID;
+        AJ_PSTR tempRetrievedSceneID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedSceneID))
 		t_RetrievedMasterSceneID = qcc::String(tempRetrievedSceneID);
 
@@ -393,7 +399,7 @@ QStatus ControllerServiceMasterSceneBusObject::GetMasterScene(const char* t_Mast
 	return status;
 }
 
-QStatus ControllerServiceMasterSceneBusObject::ApplyMasterScene(const char* t_MasterSceneID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedMasterSceneID)
+QStatus ControllerServiceMasterSceneBusObject::ApplyMasterScene(AJ_PCSTR t_MasterSceneID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedMasterSceneID)
 {
 	QStatus status = ER_OK;
 
@@ -415,7 +421,7 @@ QStatus ControllerServiceMasterSceneBusObject::ApplyMasterScene(const char* t_Ma
 		CHECK_RETURN(proxyBusObj->MethodCall(MASTERSCENE_INTERFACE_NAME, "ApplyMasterScene", msgArg, 1, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedSceneID;
+        AJ_PSTR tempRetrievedSceneID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedSceneID))
 		t_RetrievedMasterSceneID = qcc::String(tempRetrievedSceneID);
 	}

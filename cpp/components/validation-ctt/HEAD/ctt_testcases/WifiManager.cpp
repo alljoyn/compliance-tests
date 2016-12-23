@@ -143,7 +143,7 @@ WLAN_INTERFACE_INFO_LIST WifiManager::enumInterfaces()
 	return *pInterfaceInfoList;
 }
 
-bool WifiManager::scan(const long t_startTime, const long t_timeToWaitInMs)
+bool WifiManager::scan(long t_startTime, long t_timeToWaitInMs)
 {
 	registerNotification();
 
@@ -209,7 +209,7 @@ std::list<ScanResult> WifiManager::getVisibleNetworkList()
 			int level = -100 + pAvailableNetworkList->Network[i].wlanSignalQuality/2;
 			int frequency = 2400;
 
-			network = new ScanResult(std::string(reinterpret_cast<char*>(ssid), ssidLength),
+			network = new ScanResult(std::string(reinterpret_cast<AJ_PSTR>(ssid), ssidLength),
 				std::to_string(bssid), capabilities, level, frequency);
 			scanResults.push_back(*network);
 		}
@@ -430,7 +430,7 @@ std::string WifiManager::connectedSsid()
 	}
 }
 
-std::list<ScanResult> WifiManager::waitForScanResults(const long t_timeout)
+std::list<ScanResult> WifiManager::waitForScanResults(long t_timeout)
 {
 	std::list<ScanResult> scanResults;
 	
@@ -448,7 +448,7 @@ std::list<ScanResult> WifiManager::waitForScanResults(const long t_timeout)
 	return scanResults;
 }
 
-std::string WifiManager::waitForDisconnect(const long t_Timeout)
+std::string WifiManager::waitForDisconnect(long t_Timeout)
 {
 	registerNotification();
 	disconnect();
@@ -471,7 +471,7 @@ std::string WifiManager::waitForDisconnect(const long t_Timeout)
 	}
 }
 
-std::string WifiManager::waitForConnect(const std::string& t_Ssid, const long t_Timeout)
+std::string WifiManager::waitForConnect(const std::string& t_Ssid, long t_Timeout)
 {
 	if (t_Ssid.compare(connectedSsid()) == 0)
 	{

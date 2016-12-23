@@ -23,7 +23,7 @@ class ECDHESpekeHandlerImpl : public AuthPasswordHandler
 public:
 	ECDHESpekeHandlerImpl(ECDHESpekeStore*, std::string);
 	virtual ~ECDHESpekeHandlerImpl() {}
-	virtual const char* getPassword(std::string);
+	virtual AJ_PCSTR getPassword(std::string);
 	virtual void completed(std::string, std::string, bool);
 	void resetAuthentication(std::string);
 	bool isPeerAuthenticated(std::string);

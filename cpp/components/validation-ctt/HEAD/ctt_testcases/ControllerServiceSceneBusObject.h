@@ -24,11 +24,11 @@ class ControllerServiceSceneBusObject : public ajn::MessageReceiver
 public:
 	ControllerServiceSceneBusObject(ajn::BusAttachment&, const std::string&, const ajn::SessionId = 0);
 
-	void ScenesNameChangedSignalHandler(const ajn::InterfaceDescription::Member* member, const char*, ajn::Message&);
-	void ScenesCreatedSignalHandler(const ajn::InterfaceDescription::Member* member, const char*, ajn::Message&);
-	void ScenesUpdatedSignalHandler(const ajn::InterfaceDescription::Member* member, const char*, ajn::Message&);
-	void ScenesDeletedSignalHandler(const ajn::InterfaceDescription::Member* member, const char*, ajn::Message&);
-	void ScenesAppliedSignalHandler(const ajn::InterfaceDescription::Member* member, const char*, ajn::Message&);
+	void ScenesNameChangedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR, ajn::Message&);
+	void ScenesCreatedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR, ajn::Message&);
+	void ScenesUpdatedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR, ajn::Message&);
+	void ScenesDeletedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR, ajn::Message&);
+	void ScenesAppliedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR, ajn::Message&);
 	bool DidScenesNameChanged();
 	bool DidScenesCreated();
 	bool DidScenesUpdated();
@@ -38,13 +38,13 @@ public:
 	QStatus GetVersion(uint32_t&);
 
 	QStatus GetAllSceneIDs(uint32_t&, std::vector<qcc::String>&);
-	QStatus GetSceneName(const char*, const char*, uint32_t&, qcc::String&, qcc::String&, qcc::String&);
-	QStatus SetSceneName(const char*, const char*, const char*, uint32_t&, qcc::String&, qcc::String&);
-	QStatus CreateScene(const std::vector<ajn::MsgArg>&, const std::vector<ajn::MsgArg>&, const std::vector<ajn::MsgArg>&, const std::vector<ajn::MsgArg>&, const char*, const char*, uint32_t&, qcc::String&);
-	QStatus UpdateScene(const char*, const std::vector<ajn::MsgArg>&, const std::vector<ajn::MsgArg>&, const std::vector<ajn::MsgArg>&, const std::vector<ajn::MsgArg>&, uint32_t&, qcc::String&);
-	QStatus DeleteScene(const char*, uint32_t&, qcc::String&);
-	QStatus GetScene(const char*, uint32_t&, qcc::String&, std::vector<ajn::MsgArg>&, std::vector<ajn::MsgArg>&, std::vector<ajn::MsgArg>&, std::vector<ajn::MsgArg>&);
-	QStatus ApplyScene(const char*, uint32_t&, qcc::String&);
+	QStatus GetSceneName(AJ_PCSTR, AJ_PCSTR, uint32_t&, qcc::String&, qcc::String&, qcc::String&);
+	QStatus SetSceneName(AJ_PCSTR, AJ_PCSTR, AJ_PCSTR, uint32_t&, qcc::String&, qcc::String&);
+	QStatus CreateScene(const std::vector<ajn::MsgArg>&, const std::vector<ajn::MsgArg>&, const std::vector<ajn::MsgArg>&, const std::vector<ajn::MsgArg>&, AJ_PCSTR, AJ_PCSTR, uint32_t&, qcc::String&);
+	QStatus UpdateScene(AJ_PCSTR, const std::vector<ajn::MsgArg>&, const std::vector<ajn::MsgArg>&, const std::vector<ajn::MsgArg>&, const std::vector<ajn::MsgArg>&, uint32_t&, qcc::String&);
+	QStatus DeleteScene(AJ_PCSTR, uint32_t&, qcc::String&);
+	QStatus GetScene(AJ_PCSTR, uint32_t&, qcc::String&, std::vector<ajn::MsgArg>&, std::vector<ajn::MsgArg>&, std::vector<ajn::MsgArg>&, std::vector<ajn::MsgArg>&);
+	QStatus ApplyScene(AJ_PCSTR, uint32_t&, qcc::String&);
 	
 private:
 	ajn::BusAttachment* m_BusAttachment;

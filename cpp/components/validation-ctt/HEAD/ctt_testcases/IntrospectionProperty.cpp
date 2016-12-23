@@ -45,7 +45,7 @@ int IntrospectionProperty::compareTo(IntrospectionProperty t_IntrospectionProper
 
 int IntrospectionProperty::hashCode()
 {
-	//COMPLETAR
+	//COMPLETE
 	return 1;
 }
 

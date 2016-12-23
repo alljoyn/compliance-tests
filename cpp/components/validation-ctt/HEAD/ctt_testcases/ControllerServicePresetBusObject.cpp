@@ -19,8 +19,8 @@
 #define CHECK_BREAK(x) if ((status = x) != ER_OK) { break; }
 #define CHECK_RETURN(x) if ((status = x) != ER_OK) { return status; }
 
-static const char* CONTROLLERSERVICE_OBJECT_PATH = "/org/allseen/LSF/ControllerService";
-static const char* PRESET_INTERFACE_NAME = "org.allseen.LSF.ControllerService.Preset";
+static AJ_PCSTR CONTROLLERSERVICE_OBJECT_PATH = "/org/allseen/LSF/ControllerService";
+static AJ_PCSTR PRESET_INTERFACE_NAME = "org.allseen.LSF.ControllerService.Preset";
 
 ControllerServicePresetBusObject::ControllerServicePresetBusObject(ajn::BusAttachment& t_BusAttachment, const std::string& t_BusName, const ajn::SessionId t_SessionId) :
 m_BusAttachment(&t_BusAttachment), m_BusName(t_BusName), m_SessionId(t_SessionId),
@@ -78,7 +78,7 @@ m_PresetsUpdatedSignalReceived(false), m_PresetsDeletedSignalReceived(false)
 	} //if (!getIface)
 }
 
-void ControllerServicePresetBusObject::DefaultLampStateChangedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServicePresetBusObject::DefaultLampStateChangedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "DefaultLampStateChanged signal received";
 	m_DefaultLampStateChangedSignalReceived = true;
@@ -89,7 +89,7 @@ bool ControllerServicePresetBusObject::DidDefaultLampStateChanged()
 	return m_DefaultLampStateChangedSignalReceived;
 }
 
-void ControllerServicePresetBusObject::PresetNameChangedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServicePresetBusObject::PresetNameChangedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "PresetNameChanged signal received";
 	m_PresetNameChangedSignalReceived = true;
@@ -100,7 +100,7 @@ bool ControllerServicePresetBusObject::DidPresetNameChanged()
 	return m_PresetNameChangedSignalReceived;
 }
 
-void ControllerServicePresetBusObject::PresetsCreatedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServicePresetBusObject::PresetsCreatedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "PresetsCreated signal received";
 	m_PresetsCreatedSignalReceived = true;
@@ -111,7 +111,7 @@ bool ControllerServicePresetBusObject::DidPresetsCreated()
 	return m_PresetsCreatedSignalReceived;
 }
 
-void ControllerServicePresetBusObject::PresetsUpdatedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServicePresetBusObject::PresetsUpdatedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "PresetsUpdated signal received";
 	m_PresetsUpdatedSignalReceived = true;
@@ -122,7 +122,7 @@ bool ControllerServicePresetBusObject::DidPresetsUpdated()
 	return m_PresetsUpdatedSignalReceived;
 }
 
-void ControllerServicePresetBusObject::PresetsDeletedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServicePresetBusObject::PresetsDeletedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "PresetsDeleted signal received";
 	m_PresetsDeletedSignalReceived = true;
@@ -249,7 +249,8 @@ QStatus ControllerServicePresetBusObject::GetAllPresetIDs(uint32_t& t_ResponseCo
 	return status;
 }
 
-QStatus ControllerServicePresetBusObject::GetPresetName(const char* t_PresetID, const char* t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedPresetID, qcc::String& t_RetrievedLanguage, qcc::String& t_PresetName)
+QStatus ControllerServicePresetBusObject::GetPresetName(AJ_PCSTR t_PresetID, AJ_PCSTR t_Language,
+    uint32_t& t_ResponseCode, qcc::String& t_RetrievedPresetID, qcc::String& t_RetrievedLanguage, qcc::String& t_PresetName)
 {
 	QStatus status = ER_OK;
 
@@ -271,15 +272,15 @@ QStatus ControllerServicePresetBusObject::GetPresetName(const char* t_PresetID, 
 		CHECK_RETURN(proxyBusObj->MethodCall(PRESET_INTERFACE_NAME, "GetPresetName", msgArg, 2, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedPresetID;
+        AJ_PSTR tempRetrievedPresetID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedPresetID))
 		t_RetrievedPresetID = qcc::String(tempRetrievedPresetID);
 
-		char* tempRetrievedLanguage;
+        AJ_PSTR tempRetrievedLanguage;
 		CHECK_RETURN(responseMessage->GetArg(2)->Get("s", &tempRetrievedLanguage))
 		t_RetrievedLanguage = qcc::String(tempRetrievedPresetID);
 
-		char* tempPresetName;
+        AJ_PSTR tempPresetName;
 		CHECK_RETURN(responseMessage->GetArg(3)->Get("s", &tempPresetName))
 		t_PresetName = qcc::String(tempRetrievedPresetID);
 
@@ -288,7 +289,7 @@ QStatus ControllerServicePresetBusObject::GetPresetName(const char* t_PresetID, 
 	return status;
 }
 
-QStatus ControllerServicePresetBusObject::SetPresetName(const char* t_PresetID, const char* t_PresetName, const char* t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedPresetID, qcc::String& t_RetrievedLanguage)
+QStatus ControllerServicePresetBusObject::SetPresetName(AJ_PCSTR t_PresetID, AJ_PCSTR t_PresetName, AJ_PCSTR t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedPresetID, qcc::String& t_RetrievedLanguage)
 {
 	QStatus status = ER_OK;
 
@@ -311,11 +312,11 @@ QStatus ControllerServicePresetBusObject::SetPresetName(const char* t_PresetID, 
 		CHECK_RETURN(proxyBusObj->MethodCall(PRESET_INTERFACE_NAME, "SetPresetName", msgArg, 3, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedPresetID;
+        AJ_PSTR tempRetrievedPresetID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedPresetID))
 		t_RetrievedPresetID = qcc::String(tempRetrievedPresetID);
 
-		char* tempRetrievedLanguage;
+        AJ_PSTR tempRetrievedLanguage;
 		CHECK_RETURN(responseMessage->GetArg(2)->Get("s", &tempRetrievedLanguage))
 		t_RetrievedLanguage = qcc::String(tempRetrievedPresetID);
 	}
@@ -323,7 +324,8 @@ QStatus ControllerServicePresetBusObject::SetPresetName(const char* t_PresetID, 
 	return status;
 }
 
-QStatus ControllerServicePresetBusObject::CreatePreset(ajn::MsgArg* t_LampState, const char* t_PresetName, const char* t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedPresetID)
+QStatus ControllerServicePresetBusObject::CreatePreset(ajn::MsgArg* t_LampState, AJ_PCSTR t_PresetName,
+    AJ_PCSTR t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedPresetID)
 {
 	QStatus status = ER_OK;
 
@@ -346,7 +348,7 @@ QStatus ControllerServicePresetBusObject::CreatePreset(ajn::MsgArg* t_LampState,
 		CHECK_RETURN(proxyBusObj->MethodCall(PRESET_INTERFACE_NAME, "CreatePreset", msgArg, 3, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedPresetID;
+        AJ_PSTR tempRetrievedPresetID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedPresetID))
 		t_RetrievedPresetID = qcc::String(tempRetrievedPresetID);
 	}
@@ -354,7 +356,8 @@ QStatus ControllerServicePresetBusObject::CreatePreset(ajn::MsgArg* t_LampState,
 	return status;
 }
 
-QStatus ControllerServicePresetBusObject::UpdatePreset(const char* t_PresetID, ajn::MsgArg* t_LampState, uint32_t& t_ResponseCode, qcc::String& t_RetrievedPresetID)
+QStatus ControllerServicePresetBusObject::UpdatePreset(AJ_PCSTR t_PresetID, ajn::MsgArg* t_LampState,
+    uint32_t& t_ResponseCode, qcc::String& t_RetrievedPresetID)
 {
 	QStatus status = ER_OK;
 
@@ -376,7 +379,7 @@ QStatus ControllerServicePresetBusObject::UpdatePreset(const char* t_PresetID, a
 		CHECK_RETURN(proxyBusObj->MethodCall(PRESET_INTERFACE_NAME, "UpdatePreset", msgArg, 2, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedPresetID;
+        AJ_PSTR tempRetrievedPresetID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedPresetID))
 		t_RetrievedPresetID = qcc::String(tempRetrievedPresetID);
 	}
@@ -384,7 +387,7 @@ QStatus ControllerServicePresetBusObject::UpdatePreset(const char* t_PresetID, a
 	return status;
 }
 
-QStatus ControllerServicePresetBusObject::DeletePreset(const char* t_PresetID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedPresetID)
+QStatus ControllerServicePresetBusObject::DeletePreset(AJ_PCSTR t_PresetID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedPresetID)
 {
 	QStatus status = ER_OK;
 
@@ -405,7 +408,7 @@ QStatus ControllerServicePresetBusObject::DeletePreset(const char* t_PresetID, u
 		CHECK_RETURN(proxyBusObj->MethodCall(PRESET_INTERFACE_NAME, "DeletePreset", msgArg, 1, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedPresetID;
+        AJ_PSTR tempRetrievedPresetID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedPresetID))
 		t_RetrievedPresetID = qcc::String(tempRetrievedPresetID);
 	}
@@ -413,7 +416,8 @@ QStatus ControllerServicePresetBusObject::DeletePreset(const char* t_PresetID, u
 	return status;
 }
 
-QStatus ControllerServicePresetBusObject::GetPreset(const char* t_PresetID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedPresetID, std::vector<ajn::MsgArg>& t_LampState)
+QStatus ControllerServicePresetBusObject::GetPreset(AJ_PCSTR t_PresetID, uint32_t& t_ResponseCode,
+    qcc::String& t_RetrievedPresetID, std::vector<ajn::MsgArg>& t_LampState)
 {
 	QStatus status = ER_OK;
 
@@ -434,7 +438,7 @@ QStatus ControllerServicePresetBusObject::GetPreset(const char* t_PresetID, uint
 		CHECK_RETURN(proxyBusObj->MethodCall(PRESET_INTERFACE_NAME, "GetPreset", msgArg, 1, responseMessage))
 			CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedPresetID;
+        AJ_PSTR tempRetrievedPresetID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedPresetID))
 		t_RetrievedPresetID = qcc::String(tempRetrievedPresetID);
 

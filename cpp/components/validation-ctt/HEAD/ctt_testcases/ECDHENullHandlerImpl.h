@@ -21,17 +21,17 @@
 class ECDHENullHandlerImpl
 {
 public:
-	ECDHENullHandlerImpl();
-	virtual ~ECDHENullHandlerImpl() {};
-	virtual void completed(std::string, std::string, bool);
-	void resetAuthentication(std::string);
-	bool isPeerAuthenticated(std::string);
-	bool isPeerAuthenticationSuccessful(std::string);
+    ECDHENullHandlerImpl();
+    virtual ~ECDHENullHandlerImpl() {};
+    virtual void completed(std::string, std::string, bool);
+    void resetAuthentication(std::string);
+    bool isPeerAuthenticated(std::string);
+    bool isPeerAuthenticationSuccessful(std::string);
 
 protected:
-	bool isTrueBoolean(bool);
+    bool isTrueBoolean(bool);
 
 private:
-	std::map<std::string, bool> m_PeerAuthenticated;
-	std::map<std::string, bool> m_PeerAuthenticationSuccessful;
+    std::map<std::string, bool> m_PeerAuthenticated;
+    std::map<std::string, bool> m_PeerAuthenticationSuccessful;
 };

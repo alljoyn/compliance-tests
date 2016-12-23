@@ -26,9 +26,9 @@ public:
 
 	QStatus GetVersion(uint32_t&);
 
-	QStatus CreateSceneWithSceneElements(const std::vector<const char*>&, const char*, const char*, uint32_t&, qcc::String&);
-	QStatus GetSceneWithSceneElements(const char*, uint32_t&, qcc::String&, std::vector<qcc::String>&);
-	QStatus UpdateSceneWithSceneElements(const char*, const std::vector<const char*>&, uint32_t&, qcc::String&);
+	QStatus CreateSceneWithSceneElements(const std::vector<AJ_PCSTR>&, AJ_PCSTR, AJ_PCSTR, uint32_t&, qcc::String&);
+	QStatus GetSceneWithSceneElements(AJ_PCSTR, uint32_t&, qcc::String&, std::vector<qcc::String>&);
+	QStatus UpdateSceneWithSceneElements(AJ_PCSTR, const std::vector<AJ_PCSTR>&, uint32_t&, qcc::String&);
 
 private:
 	ajn::BusAttachment* m_BusAttachment;

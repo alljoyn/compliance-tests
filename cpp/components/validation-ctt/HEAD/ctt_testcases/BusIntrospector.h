@@ -15,13 +15,17 @@
 ******************************************************************************/
 #pragma once
 
-#include <alljoyn\ApplicationStateListener.h>
+#include "NodeDetail.h"
+#include "InterfaceDetail.h"
 
-class Claim_ApplicationStateListener : public ajn::ApplicationStateListener
+class BusIntrospector
 {
 public:
-	Claim_ApplicationStateListener();
-	virtual void State(const char* busName, const qcc::KeyInfoNISTP256& publicKeyInfo, ajn::PermissionConfigurator::ApplicationState state);
-
-	bool stateChanged;
+	virtual NodeDetail* introspect(std::string) = 0;
+	virtual std::list<NodeDetail> introspectEntireTree(std::string) = 0;
+	virtual std::list<InterfaceDetail> getStandardizedInterfacesExposedOnBus() = 0;
+	virtual std::list<InterfaceDetail> getInterfacesExposedOnBusBasedOnName(std::string) = 0;
+	virtual std::list<InterfaceDetail> getInterfacesExposedOnBusUnderSpecifiedPathBasedOnName(std::string, std::string) = 0;
+	virtual bool isInterfacePresent(std::string, std::string) = 0;
+	virtual bool isAncestorInterfacePresent(std::string, std::string) = 0;
 };

@@ -30,7 +30,7 @@ public:
 	void TearDown();
 
 protected:
-	static const char* BUS_APPLICATION_NAME;
+	static AJ_PCSTR BUS_APPLICATION_NAME;
 
 	std::string m_DutDeviceId = std::string{ "" };
 	uint8_t* m_DutAppId{ nullptr };
@@ -44,8 +44,8 @@ protected:
 	ajn::AboutData* getAboutDataStore();
 
 	// Notification-Consumer-v1-01
-	int getRandomNumber(const size_t);
-	void checkUserInput(const std::vector<std::string>&, const std::string&, const int);
+	int getRandomNumber(size_t);
+	void checkUserInput(const std::vector<std::string>&, const std::string&, int);
 
 	// Notification-Consumer-v1-05
 	std::string buildPromptText(const std::vector<MessageSet>&);

@@ -25,19 +25,17 @@
 
 #include <thread>
 
-#include <alljoyn\AllJoynStd.h>
-
 using namespace std;
 using namespace ajn;
 using namespace services;
 
-const char* OnboardingTestSuite::BUS_APPLICATION_NAME = "OnboardingTestSuite";
+AJ_PCSTR OnboardingTestSuite::BUS_APPLICATION_NAME = "OnboardingTestSuite";
 const short OnboardingTestSuite::OBS_CONFIGURE_WIFI_RETURN_NO_CHANNEL_SWITCHING = 1;
 const short OnboardingTestSuite::OBS_CONFIGURE_WIFI_RETURN_SUPPORTS_CHANNEL_SWITCHING = 2;
-const char* OnboardingTestSuite::INVALID_NETWORK_NAME = "InvalidPersonalAP";
-const char* OnboardingTestSuite::INVALID_PASSCODE = "123456";
-const char* OnboardingTestSuite::TEMP_PASSCODE = "111111";
-const char* OnboardingTestSuite::NEW_DEVICE_NAME = "newDeviceName";
+AJ_PCSTR OnboardingTestSuite::INVALID_NETWORK_NAME = "InvalidPersonalAP";
+AJ_PCSTR OnboardingTestSuite::INVALID_PASSCODE = "123456";
+AJ_PCSTR OnboardingTestSuite::TEMP_PASSCODE = "111111";
+AJ_PCSTR OnboardingTestSuite::NEW_DEVICE_NAME = "newDeviceName";
 
 OnboardingTestSuite::OnboardingTestSuite() : IOManager(ServiceFramework::ONBOARDING)
 {
@@ -58,7 +56,7 @@ void OnboardingTestSuite::SetUp()
 	m_OnboardingHelper = new OnboardingHelper(BUS_APPLICATION_NAME,
 		atol(m_GeneralParameterMap.at("GPON_TimeToWaitForScanResults").c_str())*1000);
 
-	short personalApSecurity = static_cast<short>(atoi(m_IxitMap.at("IXITON_PersonalAPAuthType").c_str()));
+	ajn::services::OBAuthType personalApSecurity = static_cast<ajn::services::OBAuthType>(atoi(m_IxitMap.at("IXITON_PersonalAPAuthType").c_str()));
 	string personalApAuthTypeString = m_OnboardingHelper->mapAuthTypeToAuthTypeString(personalApSecurity);
 	string personalApSsid = m_IxitMap.at("IXITON_PersonalAP");
 	string personalApPassphrase = m_IxitMap.at("IXITON_PersonalAPpassphrase");
@@ -66,7 +64,7 @@ void OnboardingTestSuite::SetUp()
 	m_PersonalApConfig = new WifiNetworkConfig(personalApSsid, personalApPassphrase, personalApAuthTypeString);
 	m_OnboardingHelper->setPersonalAPConfig(m_PersonalApConfig);
 
-	short softApSecurity = static_cast<short>(atoi(m_IxitMap.at("IXITON_SoftAPAuthType").c_str()));
+    ajn::services::OBAuthType softApSecurity = static_cast<ajn::services::OBAuthType>(atoi(m_IxitMap.at("IXITON_SoftAPAuthType").c_str()));
 	string softApAuthTypeString = m_OnboardingHelper->mapAuthTypeToAuthTypeString(softApSecurity);
 	string softApSsid = m_IxitMap.at("IXITON_SoftAP");
 	string softApPassphrase = m_IxitMap.at("IXITON_SoftAPpassphrase");
@@ -116,7 +114,7 @@ void OnboardingTestSuite::disconnectAboutProxy()
 {
 	if (m_AboutProxy != nullptr)
 	{
-		delete m_AboutProxy;
+		m_AboutProxy = nullptr;
 	}
 }
 
@@ -405,16 +403,16 @@ TEST_F(OnboardingTestSuite, Onboarding_v1_08)
 	}
 }
 
-void OnboardingTestSuite::validateScanResult(const OBScanInfo& t_ScanInfo)
+void OnboardingTestSuite::validateScanResult(OBScanInfo t_ScanInfo)
 {
 	validateAuthType(t_ScanInfo.authType);
 }
 
-void OnboardingTestSuite::validateAuthType(const OBAuthType& t_AuthType)
+void OnboardingTestSuite::validateAuthType(OBAuthType t_AuthType)
 {
-	ASSERT_LT(OBAuthType::WPA2_AUTO, t_AuthType)
+	ASSERT_LE(OBAuthType::WPA2_AUTO, t_AuthType)
 		<< "AuthType must not be lower than " << OBAuthType::WPA2_AUTO;
-	ASSERT_GT(OBAuthType::WPS, t_AuthType)
+	ASSERT_GE(OBAuthType::WPS, t_AuthType)
 		<< "AuthType must not be greater than " << OBAuthType::WPS;
 }
 
@@ -502,7 +500,7 @@ TEST_F(OnboardingTestSuite, Onboarding_v1_11)
 	ASSERT_TRUE(m_AboutAnnouncementDetails->supportsInterface("org.alljoyn.Config"))
 		<< "DUT does not support Config interface";
 
-	char* defaultLanguage = m_AboutAnnouncementDetails->getDefaultLanguage();
+	AJ_PSTR defaultLanguage = m_AboutAnnouncementDetails->getDefaultLanguage();
 	LOG(INFO) << "Default language is: " << defaultLanguage;
 
 	m_AboutProxy = m_OnboardingHelper->connectAboutProxy(*m_AboutAnnouncementDetails);
@@ -529,7 +527,7 @@ TEST_F(OnboardingTestSuite, Onboarding_v1_11)
 		m_AboutProxy->GetAboutData(defaultLanguage, aboutDataMsgArg);
 		aboutData = AboutData(aboutDataMsgArg, defaultLanguage);
 
-		char* defaultDeviceNameChar;
+		AJ_PSTR defaultDeviceNameChar;
 		aboutData.GetDeviceName(&defaultDeviceNameChar);
 		defaultDeviceName = std::string(defaultDeviceNameChar);
 
@@ -557,7 +555,7 @@ TEST_F(OnboardingTestSuite, Onboarding_v1_11)
 		m_AboutProxy->GetAboutData(defaultLanguage, aboutDataMsgArg);
 		aboutData = AboutData(aboutDataMsgArg, defaultLanguage);
 
-		char* modifiedDeviceName;
+		AJ_PSTR modifiedDeviceName;
 		aboutData.GetDeviceName(&modifiedDeviceName);
 		EXPECT_STREQ(NEW_DEVICE_NAME, modifiedDeviceName)
 			<< "Device name in AboutData was not modified as expected";
@@ -607,7 +605,7 @@ TEST_F(OnboardingTestSuite, Onboarding_v1_11)
 		m_AboutProxy->GetAboutData(defaultLanguage, aboutDataMsgArg);
 		aboutData = AboutData(aboutDataMsgArg, defaultLanguage);
 
-		char* deviceName;
+		AJ_PSTR deviceName;
 		aboutData.GetDeviceName(&deviceName);
 		LOG(INFO) << "After FactoryReset() method call, the DeviceName is: " << deviceName;
 

@@ -19,22 +19,22 @@
 
 class BusAttachmentMgr
 {
-	public:
-		BusAttachmentMgr();
-		void create(const std::string&, const bool);
-		QStatus connect();
-		QStatus advertise();
-		void release();
-		ajn::BusAttachment* getBusAttachment();
-		QStatus registerBusObject(ajn::BusObject, const bool);
-		const char* getBusUniqueName();
+    public:
+        BusAttachmentMgr();
+        void create(const std::string&, bool);
+        QStatus connect();
+        QStatus advertise();
+        void release();
+        ajn::BusAttachment* getBusAttachment();
+        QStatus registerBusObject(ajn::BusObject, bool);
+        AJ_PCSTR getBusUniqueName();
 
-	protected:
-		ajn::BusAttachment* createBusAttachment(const std::string&, const bool);
-	
-	private:
-		static bool m_Initialized;
-		ajn::BusAttachment* m_BusAttachment{ nullptr };
-		qcc::String m_DaemonName;
-		qcc::String m_AdvertisedName;
+    protected:
+        ajn::BusAttachment* createBusAttachment(const std::string&, bool);
+    
+    private:
+        static bool m_Initialized;
+        ajn::BusAttachment* m_BusAttachment{ nullptr };
+        qcc::String m_DaemonName;
+        qcc::String m_AdvertisedName;
 };

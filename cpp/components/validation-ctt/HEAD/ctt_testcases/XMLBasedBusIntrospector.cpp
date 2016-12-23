@@ -47,7 +47,7 @@ NodeDetail* XMLBasedBusIntrospector::introspect(string t_Path)
 	if (ER_OK == proxyBusObject.MethodCall(ajn::org::freedesktop::DBus::Introspectable::InterfaceName,
 		"Introspect", NULL, 0, replyMessage))
 	{
-		char* introspectionXml = NULL;
+        AJ_PSTR introspectionXml = NULL;
 		replyMessage->GetArg(0)->Get("s", &introspectionXml);
 
 		IntrospectionNode introspectionNode = getIntrospectionXmlParser().parseXML(introspectionXml);

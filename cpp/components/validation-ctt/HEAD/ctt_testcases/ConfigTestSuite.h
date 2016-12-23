@@ -29,13 +29,13 @@ public:
 	void TearDown();
 
 protected:
-	static const char* BUS_APPLICATION_NAME;
-	static const char* INVALID_LANGUAGE_CODE;
-	static const char* NEW_DEVICE_NAME;
+	static AJ_PCSTR BUS_APPLICATION_NAME;
+	static AJ_PCSTR INVALID_LANGUAGE_CODE;
+	static AJ_PCSTR NEW_DEVICE_NAME;
 	static const int CONFIG_CLIENT_RECONNECT_WAIT_TIME;
-	static const char* NEW_PASSCODE;
-	static const char* SINGLE_CHAR_PASSCODE;
-	static const char* SPECIAL_CHARS_PASSCODE;
+	static AJ_PCSTR NEW_PASSCODE;
+	static AJ_PCSTR SINGLE_CHAR_PASSCODE;
+	static AJ_PCSTR SPECIAL_CHARS_PASSCODE;
 
 	std::string m_DutDeviceId = std::string{ "" };
 	uint8_t* m_DutAppId{ nullptr };
@@ -48,12 +48,13 @@ protected:
 	ServiceAvailabilityHandler* m_ServiceAvailabilityHandler{ nullptr };
 
 	std::string m_DefaultSrpKeyXPincode = std::string{ "" };
+	bool m_UseEcdheNullInTest;
 	std::string m_DefaultEcdhePskPassword = std::string{ "" };
 	std::string m_DefaultEcdheSpekePassword = std::string{ "" };
 
 	AboutAnnouncementDetails* waitForDeviceAboutAnnouncement();
 	QStatus resetPasscodeIfNeeded();
-	QStatus setPasscode(const char*);
+	QStatus setPasscode(AJ_PCSTR);
 	void releaseResources();
 
 	// Config-v1-02
@@ -61,38 +62,38 @@ protected:
 	void setWrongAuthValues();
 
 	// Config-v1-04
-	QStatus getConfigurations(const char*, ajn::services::ConfigClient::Configurations&);
+	QStatus getConfigurations(AJ_PCSTR, ajn::services::ConfigClient::Configurations&);
 	void checkConfigurationsForRequiredFields(const ajn::services::ConfigClient::Configurations&);
 	void checkConsistencyWithAboutAnnouncement(const ajn::services::ConfigClient::Configurations&);
 
 	// Config-v1-05
 	void compareConfigurations(const ajn::services::ConfigClient::Configurations&,
 		const ajn::services::ConfigClient::Configurations&);
-	void compareConfigurationsForField(const char*, const ajn::services::ConfigClient::Configurations&,
+	void compareConfigurationsForField(AJ_PCSTR, const ajn::services::ConfigClient::Configurations&,
 		const ajn::services::ConfigClient::Configurations&);
 
 	// Config-v1-06
 	void checkAboutDataForRequiredFields(ajn::AboutData&);
 	void compareConfigAndAbout(const ajn::services::ConfigClient::Configurations&,
 		const ajn::AboutData&);
-	void compareConfigAndAboutForField(const char*, const ajn::services::ConfigClient::Configurations&,
+	void compareConfigAndAboutForField(AJ_PCSTR, const ajn::services::ConfigClient::Configurations&,
 		const ajn::AboutData&);
 
 	// Config-v1-08
-	QStatus testUpdateConfigurations(const char*, const char*);
-	QStatus updateConfigurationsAndVerifyResult(const char*, const char*);
-	QStatus updateConfigurations(const char*, const ajn::services::ConfigClient::Configurations&);
-	void waitForNextAnnouncementAndVerifyFieldValue(const char*, const char*);
-	AboutAnnouncementDetails* waitForNextAnnouncementAndCheckFieldValue(const char*, const char*);
+	QStatus testUpdateConfigurations(AJ_PCSTR, AJ_PCSTR);
+	QStatus updateConfigurationsAndVerifyResult(AJ_PCSTR, AJ_PCSTR);
+	QStatus updateConfigurations(AJ_PCSTR, const ajn::services::ConfigClient::Configurations&);
+	void waitForNextAnnouncementAndVerifyFieldValue(AJ_PCSTR, AJ_PCSTR);
+	AboutAnnouncementDetails* waitForNextAnnouncementAndCheckFieldValue(AJ_PCSTR, AJ_PCSTR);
 	void verifyValueForConfigAndAbout(const ajn::services::ConfigClient::Configurations&,
-		const ajn::AboutData&, const char*, const char*);
+		const ajn::AboutData&, AJ_PCSTR, AJ_PCSTR);
 
 	// Config-v1-12
 	std::string getDeviceNameWithSpecialCharacters();
 	void appendChars(std::string&, int, int);
 
 	// Config-v1-20
-	QStatus resetConfigurations(const char*, const std::vector<qcc::String>&);
+	QStatus resetConfigurations(AJ_PCSTR, const std::vector<qcc::String>&);
 
 	// Config-v1-26
 	QStatus callRestartOnConfig();
@@ -102,8 +103,8 @@ protected:
 	void reconnectClients(QStatus&);
 
 	// Config-v1-29
-	void testChangePasscode(const char*);
-	void changePasscodeAndReconnect(const char*);
+	void testChangePasscode(AJ_PCSTR);
+	void changePasscodeAndReconnect(AJ_PCSTR);
 	void restorePasswordInStores();
-	void changePasswordInStores(const char*);
+	void changePasswordInStores(AJ_PCSTR);
 };

@@ -19,9 +19,9 @@
 SrpKeyXHandlerImpl::SrpKeyXHandlerImpl(SrpKeyXStore* t_PasswordStore, std::string t_DefaultPincode) :
 	m_PasswordStore(t_PasswordStore), m_DefaultPincode(t_DefaultPincode) {}
 
-const char* SrpKeyXHandlerImpl::getPassword(std::string t_PeerName)
+AJ_PCSTR SrpKeyXHandlerImpl::getPassword(std::string t_PeerName)
 {
-	const char* securedSessionPassword = m_PasswordStore->getPincode(t_PeerName);
+	AJ_PCSTR securedSessionPassword = m_PasswordStore->getPincode(t_PeerName);
 
 	securedSessionPassword = (securedSessionPassword != nullptr) ? securedSessionPassword : m_DefaultPincode.c_str();
 	LOG(INFO) << "Providing password for " << t_PeerName << " as " << securedSessionPassword;

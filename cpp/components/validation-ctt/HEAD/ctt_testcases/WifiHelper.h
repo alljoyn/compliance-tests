@@ -26,10 +26,10 @@ public:
 	virtual void initialize() = 0;
 	virtual bool isWifiEnabled() = 0;
 	virtual std::string getCurrentSSID() = 0;
-	virtual std::list<ScanResult> waitForScanResults(const long) = 0;
-	virtual std::string waitForDisconnect(const long) = 0;
-	virtual std::string waitForConnect(const std::string&, const long) = 0;
-	virtual bool waitForNetworkAvailable(const std::string&, const long) = 0;
-	virtual std::string connectToNetwork(WifiNetworkConfig&, const bool, const long) = 0;
+	virtual std::list<ScanResult> waitForScanResults(long) = 0;
+	virtual std::string waitForDisconnect(long) = 0;
+	virtual std::string waitForConnect(const std::string&, long) = 0;
+	virtual bool waitForNetworkAvailable(const std::string&, long) = 0;
+	virtual std::string connectToNetwork(WifiNetworkConfig&, bool, long) = 0;
 	virtual void release() = 0;
 };

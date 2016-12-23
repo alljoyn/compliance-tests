@@ -42,21 +42,21 @@ public:
 	void TearDown();
 
 protected:
-	static const char* BUS_APPLICATION_NAME;
-	static const char* CONTROLLER_BUS_OBJECT_PATH;
+	static AJ_PCSTR BUS_APPLICATION_NAME;
+	static AJ_PCSTR CONTROLLER_BUS_OBJECT_PATH;
 
-	static const char* CONTROLLERSERVICE_INTERFACE_NAME;
-	static const char* LAMP_INTERFACE_NAME;
-	static const char* LAMPGROUP_INTERFACE_NAME;
-	static const char* PRESET_INTERFACE_NAME;
-	static const char* SCENE_INTERFACE_NAME;
-	static const char* MASTERSCENE_INTERFACE_NAME;
-	static const char* LEADER_ELECTION_INTERFACE_NAME;
-	static const char* TRANSITION_EFFECT_INTERFACE_NAME;
-	static const char* PULSE_EFFECT_INTERFACE_NAME;
-	static const char* SCENE_WITH_SCENE_ELEMENTS_INTERFACE_NAME;
-	static const char* SCENE_ELEMENT_INTERFACE_NAME;
-	static const char* DATA_SET_INTERFACE_NAME;
+	static AJ_PCSTR CONTROLLERSERVICE_INTERFACE_NAME;
+	static AJ_PCSTR LAMP_INTERFACE_NAME;
+	static AJ_PCSTR LAMPGROUP_INTERFACE_NAME;
+	static AJ_PCSTR PRESET_INTERFACE_NAME;
+	static AJ_PCSTR SCENE_INTERFACE_NAME;
+	static AJ_PCSTR MASTERSCENE_INTERFACE_NAME;
+	static AJ_PCSTR LEADER_ELECTION_INTERFACE_NAME;
+	static AJ_PCSTR TRANSITION_EFFECT_INTERFACE_NAME;
+	static AJ_PCSTR PULSE_EFFECT_INTERFACE_NAME;
+	static AJ_PCSTR SCENE_WITH_SCENE_ELEMENTS_INTERFACE_NAME;
+	static AJ_PCSTR SCENE_ELEMENT_INTERFACE_NAME;
+	static AJ_PCSTR DATA_SET_INTERFACE_NAME;
 
 	std::string m_DutDeviceId = std::string{ "" };
 	uint8_t* m_DutAppId{ nullptr };
@@ -91,14 +91,14 @@ protected:
 	QStatus getParamNameAndValue(const ajn::MsgArg&, std::string&, std::string&);
 
 	// LSF_Controller-v1-09
-	ajn::MsgArg* newLampState(const bool, const uint32_t, const uint32_t, const uint32_t, const uint32_t);
+	ajn::MsgArg* newLampState(bool, uint32_t, uint32_t, uint32_t, uint32_t);
 
 	// LSF_Controller-v1-15
-	QStatus createLampGroup(const std::vector<const char*>&, uint32_t&, qcc::String&);
+	QStatus createLampGroup(const std::vector<AJ_PCSTR>&, uint32_t&, qcc::String&);
 
 	// LSF_Controller-v1-16
 	bool compareLampStates(const std::vector<ajn::MsgArg>&, ajn::MsgArg*);
-	ajn::MsgArg getValueFromLampState(const std::vector<ajn::MsgArg>&, const char*);
+	ajn::MsgArg getValueFromLampState(const std::vector<ajn::MsgArg>&, AJ_PCSTR);
 
 	// LSF_Controller-v1-23
 	QStatus createTransitionScene(qcc::String&);

@@ -19,8 +19,8 @@
 #define CHECK_BREAK(x) if ((status = x) != ER_OK) { break; }
 #define CHECK_RETURN(x) if ((status = x) != ER_OK) { return status; }
 
-static const char* LAMPSERVICE_OBJECT_PATH = "/org/allseen/LSF/Lamp";
-static const char* LAMPDETAILS_INTERFACE_NAME = "org.allseen.LSF.LampDetails";
+static AJ_PCSTR LAMPSERVICE_OBJECT_PATH = "/org/allseen/LSF/Lamp";
+static AJ_PCSTR LAMPDETAILS_INTERFACE_NAME = "org.allseen.LSF.LampDetails";
 
 LampDetailsBusObject::LampDetailsBusObject(ajn::BusAttachment& t_BusAttachment, const std::string& t_BusName, const ajn::SessionId t_SessionId) :
 m_BusAttachment(&t_BusAttachment), m_BusName(t_BusName), m_SessionId(t_SessionId)

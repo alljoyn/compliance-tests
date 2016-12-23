@@ -19,8 +19,8 @@
 #define CHECK_BREAK(x) if ((status = x) != ER_OK) { break; }
 #define CHECK_RETURN(x) if ((status = x) != ER_OK) { return status; }
 
-static const char* CONTROLLERSERVICE_OBJECT_PATH = "/org/allseen/LSF/ControllerService";
-static const char* LAMPGROUP_INTERFACE_NAME = "org.allseen.LSF.ControllerService.LampGroup";
+static AJ_PCSTR CONTROLLERSERVICE_OBJECT_PATH = "/org/allseen/LSF/ControllerService";
+static AJ_PCSTR LAMPGROUP_INTERFACE_NAME = "org.allseen.LSF.ControllerService.LampGroup";
 
 ControllerServiceLampGroupBusObject::ControllerServiceLampGroupBusObject(ajn::BusAttachment& t_BusAttachment, const std::string& t_BusName, const ajn::SessionId t_SessionId) :
 m_BusAttachment(&t_BusAttachment), m_BusName(t_BusName), m_SessionId(t_SessionId),
@@ -79,7 +79,7 @@ m_LampGroupsDeletedSignalReceived(false)
 	} //if (!getIface)
 }
 
-void ControllerServiceLampGroupBusObject::LampGroupsNameChangedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServiceLampGroupBusObject::LampGroupsNameChangedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "LampGroupsNameChanged signal received";
 	m_LampGroupsNameChangedSignalReceived = true;
@@ -90,7 +90,7 @@ bool ControllerServiceLampGroupBusObject::DidLampGroupsNameChanged()
 	return m_LampGroupsNameChangedSignalReceived;
 }
 
-void ControllerServiceLampGroupBusObject::LampGroupsCreatedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServiceLampGroupBusObject::LampGroupsCreatedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "LampGroupsCreated signal received";
 	m_LampGroupsCreatedSignalReceived = true;
@@ -101,7 +101,7 @@ bool ControllerServiceLampGroupBusObject::DidLampGroupsCreated()
 	return m_LampGroupsCreatedSignalReceived;
 }
 
-void ControllerServiceLampGroupBusObject::LampGroupsUpdatedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServiceLampGroupBusObject::LampGroupsUpdatedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "LampGroupsUpdated signal received";
 	m_LampGroupsUpdatedSignalReceived = true;
@@ -112,7 +112,7 @@ bool ControllerServiceLampGroupBusObject::DidLampGroupsUpdated()
 	return m_LampGroupsUpdatedSignalReceived;
 }
 
-void ControllerServiceLampGroupBusObject::LampGroupsDeletedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServiceLampGroupBusObject::LampGroupsDeletedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "LampGroupsDeleted signal received";
 	m_LampGroupsDeletedSignalReceived = true;
@@ -180,7 +180,7 @@ QStatus ControllerServiceLampGroupBusObject::GetAllLampGroupIDs(uint32_t& t_Resp
 	return status;
 }
 
-QStatus ControllerServiceLampGroupBusObject::GetLampGroupName(const char* t_LampGroupID, const char* t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampGroupID, qcc::String& t_RetrievedLanguage, qcc::String& t_LampGroupName)
+QStatus ControllerServiceLampGroupBusObject::GetLampGroupName(AJ_PCSTR t_LampGroupID, AJ_PCSTR t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampGroupID, qcc::String& t_RetrievedLanguage, qcc::String& t_LampGroupName)
 {
 	QStatus status = ER_OK;
 
@@ -202,15 +202,15 @@ QStatus ControllerServiceLampGroupBusObject::GetLampGroupName(const char* t_Lamp
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMPGROUP_INTERFACE_NAME, "GetLampGroupName", msgArg, 2, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedLampGroupID;
+        AJ_PSTR tempRetrievedLampGroupID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampGroupID))
 		t_RetrievedLampGroupID = qcc::String(tempRetrievedLampGroupID);
 
-		char* tempRetrievedLanguage;
+        AJ_PSTR tempRetrievedLanguage;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLanguage))
 		t_RetrievedLanguage = qcc::String(tempRetrievedLanguage);
 
-		char* tempLampGroupName;
+        AJ_PSTR tempLampGroupName;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempLampGroupName))
 		t_LampGroupName = qcc::String(tempLampGroupName);
 	}
@@ -218,7 +218,8 @@ QStatus ControllerServiceLampGroupBusObject::GetLampGroupName(const char* t_Lamp
 	return status;
 }
 
-QStatus ControllerServiceLampGroupBusObject::SetLampGroupName(const char* t_LampGroupID, const char* t_LampGroupName, const char* t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampGroupID, qcc::String& t_RetrievedLanguage)
+QStatus ControllerServiceLampGroupBusObject::SetLampGroupName(AJ_PCSTR t_LampGroupID, AJ_PCSTR t_LampGroupName,
+    AJ_PCSTR t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampGroupID, qcc::String& t_RetrievedLanguage)
 {
 	QStatus status = ER_OK;
 
@@ -241,11 +242,11 @@ QStatus ControllerServiceLampGroupBusObject::SetLampGroupName(const char* t_Lamp
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMPGROUP_INTERFACE_NAME, "SetLampGroupName", msgArg, 3, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedLampGroupID;
+        AJ_PSTR tempRetrievedLampGroupID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampGroupID))
 		t_RetrievedLampGroupID = qcc::String(tempRetrievedLampGroupID);
 
-		char* tempRetrievedLanguage;
+        AJ_PSTR tempRetrievedLanguage;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLanguage))
 		t_RetrievedLanguage = qcc::String(tempRetrievedLanguage);
 	}
@@ -253,7 +254,9 @@ QStatus ControllerServiceLampGroupBusObject::SetLampGroupName(const char* t_Lamp
 	return status;
 }
 
-QStatus ControllerServiceLampGroupBusObject::CreateLampGroup(const std::vector<const char*>& t_LampIDs, const std::vector<const char*>& t_LampGroupIDs, const char* t_LampGroupName, const char* t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampGroupID)
+QStatus ControllerServiceLampGroupBusObject::CreateLampGroup(const std::vector<AJ_PCSTR>& t_LampIDs,
+    const std::vector<AJ_PCSTR>& t_LampGroupIDs, AJ_PCSTR t_LampGroupName, AJ_PCSTR t_Language,
+    uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampGroupID)
 {
 	QStatus status = ER_OK;
 
@@ -277,7 +280,7 @@ QStatus ControllerServiceLampGroupBusObject::CreateLampGroup(const std::vector<c
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMPGROUP_INTERFACE_NAME, "CreateLampGroup", msgArg, 4, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedLampGroupID;
+        AJ_PSTR tempRetrievedLampGroupID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampGroupID))
 		t_RetrievedLampGroupID = qcc::String(tempRetrievedLampGroupID);
 	}
@@ -285,7 +288,8 @@ QStatus ControllerServiceLampGroupBusObject::CreateLampGroup(const std::vector<c
 	return status;
 }
 
-QStatus ControllerServiceLampGroupBusObject::UpdateLampGroup(const char* t_LampGroupID, const std::vector<const char*>& t_LampIDs, const std::vector<const char*>& t_LampGroupIDs, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampGroupID)
+QStatus ControllerServiceLampGroupBusObject::UpdateLampGroup(AJ_PCSTR t_LampGroupID, const std::vector<AJ_PCSTR>& t_LampIDs,
+    const std::vector<AJ_PCSTR>& t_LampGroupIDs, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampGroupID)
 {
 	QStatus status = ER_OK;
 
@@ -308,7 +312,7 @@ QStatus ControllerServiceLampGroupBusObject::UpdateLampGroup(const char* t_LampG
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMPGROUP_INTERFACE_NAME, "UpdateLampGroup", msgArg, 3, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedLampGroupID;
+        AJ_PSTR tempRetrievedLampGroupID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampGroupID))
 		t_RetrievedLampGroupID = qcc::String(tempRetrievedLampGroupID);
 	}
@@ -316,7 +320,7 @@ QStatus ControllerServiceLampGroupBusObject::UpdateLampGroup(const char* t_LampG
 	return status;
 }
 
-QStatus ControllerServiceLampGroupBusObject::DeleteLampGroup(const char* t_LampGroupID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampGroupID)
+QStatus ControllerServiceLampGroupBusObject::DeleteLampGroup(AJ_PCSTR t_LampGroupID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampGroupID)
 {
 	QStatus status = ER_OK;
 
@@ -337,7 +341,7 @@ QStatus ControllerServiceLampGroupBusObject::DeleteLampGroup(const char* t_LampG
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMPGROUP_INTERFACE_NAME, "DeleteLampGroup", msgArg, 1, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedLampGroupID;
+        AJ_PSTR tempRetrievedLampGroupID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampGroupID))
 		t_RetrievedLampGroupID = qcc::String(tempRetrievedLampGroupID);
 	}
@@ -345,7 +349,8 @@ QStatus ControllerServiceLampGroupBusObject::DeleteLampGroup(const char* t_LampG
 	return status;
 }
 
-QStatus ControllerServiceLampGroupBusObject::GetLampGroup(const char* t_LampGroupID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampGroupID, std::vector<qcc::String>& t_LampIDs, std::vector<qcc::String>& t_LampGroupIDs)
+QStatus ControllerServiceLampGroupBusObject::GetLampGroup(AJ_PCSTR t_LampGroupID, uint32_t& t_ResponseCode,
+    qcc::String& t_RetrievedLampGroupID, std::vector<qcc::String>& t_LampIDs, std::vector<qcc::String>& t_LampGroupIDs)
 {
 	QStatus status = ER_OK;
 
@@ -366,7 +371,7 @@ QStatus ControllerServiceLampGroupBusObject::GetLampGroup(const char* t_LampGrou
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMPGROUP_INTERFACE_NAME, "GetLampGroup", msgArg, 1, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedLampGroupID;
+        AJ_PSTR tempRetrievedLampGroupID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampGroupID))
 		t_RetrievedLampGroupID = qcc::String(tempRetrievedLampGroupID);
 
@@ -394,7 +399,8 @@ QStatus ControllerServiceLampGroupBusObject::GetLampGroup(const char* t_LampGrou
 	return status;
 }
 
-QStatus ControllerServiceLampGroupBusObject::TransitionLampGroupState(const char* t_LampGroupID, ajn::MsgArg* t_LampState, const uint32_t t_TransitionPeriod, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampGroupID)
+QStatus ControllerServiceLampGroupBusObject::TransitionLampGroupState(AJ_PCSTR t_LampGroupID, ajn::MsgArg* t_LampState,
+    uint32_t t_TransitionPeriod, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampGroupID)
 {
 	QStatus status = ER_OK;
 
@@ -417,7 +423,7 @@ QStatus ControllerServiceLampGroupBusObject::TransitionLampGroupState(const char
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMPGROUP_INTERFACE_NAME, "TransitionLampGroupState", msgArg, 3, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedLampGroupID;
+        AJ_PSTR tempRetrievedLampGroupID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampGroupID))
 		t_RetrievedLampGroupID = qcc::String(tempRetrievedLampGroupID);
 	}
@@ -425,7 +431,9 @@ QStatus ControllerServiceLampGroupBusObject::TransitionLampGroupState(const char
 	return status;
 }
 
-QStatus ControllerServiceLampGroupBusObject::PulseLampGroupWithState(const char* t_LampGroupID, ajn::MsgArg* t_FromLampState, ajn::MsgArg* t_ToLampState, const uint32_t t_Period, const uint32_t t_Duration, const uint32_t t_NumPulses, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampGroupID)
+QStatus ControllerServiceLampGroupBusObject::PulseLampGroupWithState(AJ_PCSTR t_LampGroupID,
+    ajn::MsgArg* t_FromLampState, ajn::MsgArg* t_ToLampState, uint32_t t_Period, uint32_t t_Duration,
+    uint32_t t_NumPulses, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampGroupID)
 {
 	QStatus status = ER_OK;
 
@@ -451,7 +459,7 @@ QStatus ControllerServiceLampGroupBusObject::PulseLampGroupWithState(const char*
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMPGROUP_INTERFACE_NAME, "PulseLampGroupWithState", msgArg, 6, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedLampGroupID;
+        AJ_PSTR tempRetrievedLampGroupID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampGroupID))
 		t_RetrievedLampGroupID = qcc::String(tempRetrievedLampGroupID);
 	}
@@ -459,7 +467,9 @@ QStatus ControllerServiceLampGroupBusObject::PulseLampGroupWithState(const char*
 	return status;
 }
 
-QStatus ControllerServiceLampGroupBusObject::PulseLampGroupWithPreset(const char* t_LampGroupID, const char* t_FromPresetID, const char* t_ToPresetID, const uint32_t t_Period, const uint32_t t_Duration, const uint32_t t_NumPulses, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampGroupID)
+QStatus ControllerServiceLampGroupBusObject::PulseLampGroupWithPreset(AJ_PCSTR t_LampGroupID,
+    AJ_PCSTR t_FromPresetID, AJ_PCSTR t_ToPresetID, uint32_t t_Period, uint32_t t_Duration,
+    uint32_t t_NumPulses, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampGroupID)
 {
 	QStatus status = ER_OK;
 
@@ -485,7 +495,7 @@ QStatus ControllerServiceLampGroupBusObject::PulseLampGroupWithPreset(const char
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMPGROUP_INTERFACE_NAME, "PulseLampGroupWithPreset", msgArg, 6, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedLampGroupID;
+        AJ_PSTR tempRetrievedLampGroupID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampGroupID))
 		t_RetrievedLampGroupID = qcc::String(tempRetrievedLampGroupID);
 	}
@@ -493,7 +503,8 @@ QStatus ControllerServiceLampGroupBusObject::PulseLampGroupWithPreset(const char
 	return status;
 }
 
-QStatus ControllerServiceLampGroupBusObject::TransitionLampGroupStateToPreset(const char* t_LampGroupID, const char* t_PresetID, const uint32_t t_TransitionPeriod, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampGroupID)
+QStatus ControllerServiceLampGroupBusObject::TransitionLampGroupStateToPreset(AJ_PCSTR t_LampGroupID,
+    AJ_PCSTR t_PresetID, uint32_t t_TransitionPeriod, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampGroupID)
 {
 	QStatus status = ER_OK;
 
@@ -517,7 +528,7 @@ QStatus ControllerServiceLampGroupBusObject::TransitionLampGroupStateToPreset(co
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMPGROUP_INTERFACE_NAME, "TransitionLampGroupStateToPreset", msgArg, 3, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedLampGroupID;
+        AJ_PSTR tempRetrievedLampGroupID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampGroupID))
 		t_RetrievedLampGroupID = qcc::String(tempRetrievedLampGroupID);
 	}
@@ -525,7 +536,9 @@ QStatus ControllerServiceLampGroupBusObject::TransitionLampGroupStateToPreset(co
 	return status;
 }
 
-QStatus ControllerServiceLampGroupBusObject::TransitionLampGroupStateField(const char* t_LampGroupID, const char* t_LampGroupStateFieldName, ajn::MsgArg t_LampGroupStateFieldValue, const uint32_t t_TransitionPeriod, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampGroupID, qcc::String& t_RetrievedLampGroupStateFieldName)
+QStatus ControllerServiceLampGroupBusObject::TransitionLampGroupStateField(AJ_PCSTR t_LampGroupID,
+    AJ_PCSTR t_LampGroupStateFieldName, ajn::MsgArg t_LampGroupStateFieldValue, uint32_t t_TransitionPeriod,
+    uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampGroupID, qcc::String& t_RetrievedLampGroupStateFieldName)
 {
 	QStatus status = ER_OK;
 
@@ -550,11 +563,11 @@ QStatus ControllerServiceLampGroupBusObject::TransitionLampGroupStateField(const
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMPGROUP_INTERFACE_NAME, "TransitionLampGroupStateField", msgArg, 4, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedLampGroupID;
+        AJ_PSTR tempRetrievedLampGroupID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampGroupID))
 		t_RetrievedLampGroupID = qcc::String(tempRetrievedLampGroupID);
 
-		char* tempRetrievedLampGroupStateFieldName;
+        AJ_PSTR tempRetrievedLampGroupStateFieldName;
 		CHECK_RETURN(responseMessage->GetArg(2)->Get("s", &tempRetrievedLampGroupStateFieldName))
 		t_RetrievedLampGroupStateFieldName = qcc::String(tempRetrievedLampGroupStateFieldName);
 	}
@@ -562,7 +575,7 @@ QStatus ControllerServiceLampGroupBusObject::TransitionLampGroupStateField(const
 	return status;
 }
 
-QStatus ControllerServiceLampGroupBusObject::ResetLampGroupState(const char* t_LampGroupID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampGroupID)
+QStatus ControllerServiceLampGroupBusObject::ResetLampGroupState(AJ_PCSTR t_LampGroupID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampGroupID)
 {
 	QStatus status = ER_OK;
 
@@ -584,7 +597,7 @@ QStatus ControllerServiceLampGroupBusObject::ResetLampGroupState(const char* t_L
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMPGROUP_INTERFACE_NAME, "ResetLampGroupState", msgArg, 1, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedLampGroupID;
+        AJ_PSTR tempRetrievedLampGroupID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampGroupID))
 		t_RetrievedLampGroupID = qcc::String(tempRetrievedLampGroupID);
 	}
@@ -592,7 +605,9 @@ QStatus ControllerServiceLampGroupBusObject::ResetLampGroupState(const char* t_L
 	return status;
 }
 
-QStatus ControllerServiceLampGroupBusObject::ResetLampGroupStateField(const char* t_LampGroupID, const char* t_LampGroupStateFieldName, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampGroupID, qcc::String& t_RetrievedLampGroupStateFieldName)
+QStatus ControllerServiceLampGroupBusObject::ResetLampGroupStateField(AJ_PCSTR t_LampGroupID,
+    AJ_PCSTR t_LampGroupStateFieldName, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampGroupID,
+    qcc::String& t_RetrievedLampGroupStateFieldName)
 {
 	QStatus status = ER_OK;
 
@@ -615,11 +630,11 @@ QStatus ControllerServiceLampGroupBusObject::ResetLampGroupStateField(const char
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMPGROUP_INTERFACE_NAME, "ResetLampGroupStateField", msgArg, 2, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedLampGroupID;
+        AJ_PSTR tempRetrievedLampGroupID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampGroupID))
 		t_RetrievedLampGroupID = qcc::String(tempRetrievedLampGroupID);
 
-		char* tempRetrievedLampGroupStateFieldName;
+        AJ_PSTR tempRetrievedLampGroupStateFieldName;
 		CHECK_RETURN(responseMessage->GetArg(2)->Get("s", &tempRetrievedLampGroupStateFieldName))
 		t_RetrievedLampGroupStateFieldName = qcc::String(tempRetrievedLampGroupStateFieldName);
 	}

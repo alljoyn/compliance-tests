@@ -33,19 +33,19 @@ std::string WifiHelperImpl::getCurrentSSID()
 	return m_WifiManager->connectedSsid();
 }
 
-std::list<ScanResult> WifiHelperImpl::waitForScanResults(const long t_timeout)
+std::list<ScanResult> WifiHelperImpl::waitForScanResults(long t_timeout)
 {
 	checkForWifiEnabled();
 	return m_WifiManager->waitForScanResults(t_timeout);
 }
 
-std::string WifiHelperImpl::waitForDisconnect(const long t_timeout)
+std::string WifiHelperImpl::waitForDisconnect(long t_timeout)
 {
 	checkForWifiEnabled();
 	return m_WifiManager->waitForDisconnect(t_timeout);
 }
 
-std::string WifiHelperImpl::waitForConnect(const std::string& t_Ssid, const long t_timeout)
+std::string WifiHelperImpl::waitForConnect(const std::string& t_Ssid, long t_timeout)
 {
 	checkForWifiEnabled();
 	LOG(INFO) << "Waiting for WiFi to connect to " << t_Ssid;
@@ -53,7 +53,7 @@ std::string WifiHelperImpl::waitForConnect(const std::string& t_Ssid, const long
 	return m_WifiManager->waitForConnect(t_Ssid, t_timeout);
 }
 
-bool WifiHelperImpl::waitForNetworkAvailable(const std::string& t_Ssid, const long t_timeout)
+bool WifiHelperImpl::waitForNetworkAvailable(const std::string& t_Ssid, long t_timeout)
 {
 	LOG(INFO) << "Waiting for network " << t_Ssid << " to be available";
 
@@ -79,8 +79,8 @@ bool WifiHelperImpl::waitForNetworkAvailable(const std::string& t_Ssid, const lo
 	return isAvailable;
 }
 
-std::string WifiHelperImpl::connectToNetwork(WifiNetworkConfig& t_WifiNetworkConfig, const bool t_Recreate,
-	const long t_Timeout)
+std::string WifiHelperImpl::connectToNetwork(WifiNetworkConfig& t_WifiNetworkConfig, bool t_Recreate,
+	long t_Timeout)
 {
 	const clock_t beginTime = clock();
 

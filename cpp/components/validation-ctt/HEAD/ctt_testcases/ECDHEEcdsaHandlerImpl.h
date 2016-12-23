@@ -21,20 +21,20 @@
 class ECDHEEcdsaHandlerImpl
 {
 public:
-	ECDHEEcdsaHandlerImpl(ECDHEEcdsaStore*, const std::string&, const std::string&);
-	virtual ~ECDHEEcdsaHandlerImpl() {}
-	virtual const char* getPrivateKey(const std::string&);
-	virtual const char* getCertChain(const std::string&);
-	virtual void completed(std::string, std::string, bool);
-	void resetAuthentication(std::string);
-	bool isPeerAuthenticated(std::string);
-	bool isPeerAuthenticationSuccessful(std::string);
+    ECDHEEcdsaHandlerImpl(ECDHEEcdsaStore*, const std::string&, const std::string&);
+    virtual ~ECDHEEcdsaHandlerImpl() {}
+    virtual AJ_PCSTR getPrivateKey(const std::string&);
+    virtual AJ_PCSTR getCertChain(const std::string&);
+    virtual void completed(std::string, std::string, bool);
+    void resetAuthentication(std::string);
+    bool isPeerAuthenticated(std::string);
+    bool isPeerAuthenticationSuccessful(std::string);
 protected:
-	bool isTrueBoolean(bool);
+    bool isTrueBoolean(bool);
 private:
-	ECDHEEcdsaStore* m_PasswordStore;
-	std::map<std::string, bool> m_PeerAuthenticated;
-	std::map<std::string, bool> m_PeerAuthenticationSuccessful;
-	std::string m_DefaultPrivateKey = std::string("");
-	std::string m_DefaultCertChain = std::string("");
+    ECDHEEcdsaStore* m_PasswordStore;
+    std::map<std::string, bool> m_PeerAuthenticated;
+    std::map<std::string, bool> m_PeerAuthenticationSuccessful;
+    std::string m_DefaultPrivateKey = std::string("");
+    std::string m_DefaultCertChain = std::string("");
 };

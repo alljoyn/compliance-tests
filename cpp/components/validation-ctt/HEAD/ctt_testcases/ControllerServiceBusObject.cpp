@@ -18,8 +18,8 @@
 
 #define CHECK_BREAK(x) if ((status = x) != ER_OK) { break; }
 
-static const char* CONTROLLERSERVICE_OBJECT_PATH = "/org/allseen/LSF/ControllerService";
-static const char* CONTROLLERSERVICE_INTERFACE_NAME = "org.allseen.LSF.ControllerService";
+static AJ_PCSTR CONTROLLERSERVICE_OBJECT_PATH = "/org/allseen/LSF/ControllerService";
+static AJ_PCSTR CONTROLLERSERVICE_INTERFACE_NAME = "org.allseen.LSF.ControllerService";
 
 ControllerServiceBusObject::ControllerServiceBusObject(ajn::BusAttachment& t_BusAttachment, const std::string& t_BusName, const ajn::SessionId t_SessionId) :
 	m_BusAttachment(&t_BusAttachment), m_BusName(t_BusName), m_SessionId(t_SessionId),
@@ -49,7 +49,7 @@ ControllerServiceBusObject::ControllerServiceBusObject(ajn::BusAttachment& t_Bus
 	} //if (!getIface)
 }
 
-void ControllerServiceBusObject::LightingResetSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServiceBusObject::LightingResetSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "LightingReset signal received";
 	m_LightingResetSignalReceived = true;

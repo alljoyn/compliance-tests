@@ -28,9 +28,9 @@ public:
 	bool connect(const std::string&, const std::string&);
 	bool isWifiEnabled();
 	std::string connectedSsid();
-	std::list<ScanResult> waitForScanResults(const long);
-	std::string waitForDisconnect(const long);
-	std::string waitForConnect(const std::string&, const long);
+	std::list<ScanResult> waitForScanResults(long);
+	std::string waitForDisconnect(long);
+	std::string waitForConnect(const std::string&, long);
 	std::list<std::string> getConfiguredNetworks();
 	bool addNetwork(const std::string&);
 	bool removeNetwork(const std::string&);
@@ -47,7 +47,7 @@ private:
 
 	HANDLE openHandle();
 	WLAN_INTERFACE_INFO_LIST enumInterfaces();
-	bool scan(const long, const long);
+	bool scan(long, long);
 	std::list<ScanResult> getVisibleNetworkList();
 	void disconnect();
 	void registerNotification();

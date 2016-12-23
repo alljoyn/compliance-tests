@@ -16,20 +16,20 @@
 #include "stdafx.h"
 #include "SrpKeyXStore.h"
 
-const char* SrpKeyXStore::getPincode(std::string t_PeerName)
+AJ_PCSTR SrpKeyXStore::getPincode(std::string t_PeerName)
 {
 	return m_PincodeStore.empty() ? nullptr : m_PincodeStore.at(t_PeerName);
 }
 
-void SrpKeyXStore::setPincode(std::string t_PeerName, const char* t_Pincode)
+void SrpKeyXStore::setPincode(std::string t_PeerName, AJ_PCSTR t_Pincode)
 {
-	std::map<std::string, const char*>::iterator iterator = m_PincodeStore.find(t_PeerName);
+	std::map<std::string, AJ_PCSTR>::iterator iterator = m_PincodeStore.find(t_PeerName);
 	if (iterator != m_PincodeStore.end())
 	{
 		iterator->second = t_Pincode;
 	}
 	else
 	{
-		m_PincodeStore.insert(std::pair<std::string, const char*>(t_PeerName, t_Pincode));
+		m_PincodeStore.insert(std::pair<std::string, AJ_PCSTR>(t_PeerName, t_Pincode));
 	}
 }

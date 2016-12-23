@@ -35,8 +35,8 @@ public:
 		bool, ECDHEPskHandlerImpl*, const std::string&, 
 		bool, ECDHEEcdsaHandlerImpl*, const std::string&, const std::string&,
 		bool, ECDHESpekeHandlerImpl*, const std::string&);
-	bool RequestCredentials(const char*, const char*, uint16_t, const char*, uint16_t, Credentials&);
-	void AuthenticationComplete(const char*, const char*, bool);
+	bool RequestCredentials(AJ_PCSTR, AJ_PCSTR, uint16_t, AJ_PCSTR, uint16_t, Credentials&);
+	void AuthenticationComplete(AJ_PCSTR, AJ_PCSTR, bool);
 	std::vector<std::string> getAuthMechanisms();
 	std::string getAuthMechanismsAsString();
 

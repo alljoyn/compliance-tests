@@ -25,11 +25,11 @@ public:
 	void release();
 	bool isWifiEnabled();
 	std::string getCurrentSSID();
-	std::list<ScanResult> waitForScanResults(const long);
-	std::string waitForDisconnect(const long);
-	std::string waitForConnect(const std::string&, const long);
-	bool waitForNetworkAvailable(const std::string&, const long);
-	std::string connectToNetwork(WifiNetworkConfig&, const bool, const long);
+	std::list<ScanResult> waitForScanResults(long);
+	std::string waitForDisconnect(long);
+	std::string waitForConnect(const std::string&, long);
+	bool waitForNetworkAvailable(const std::string&, long);
+	std::string connectToNetwork(WifiNetworkConfig&, bool, long);
 
 
 protected:

@@ -33,9 +33,9 @@
 using namespace ajn;
 using namespace std;
 
-const char* AboutTestSuite::BUS_APPLICATION_NAME = "AboutTestSuite";
-const char* AboutTestSuite::DATE_FORMAT = "%Y-%m-%d";
-const char* AboutTestSuite::URL_REGEX = R"(^(([^:\/?#]+):)?(//([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?)";
+AJ_PCSTR AboutTestSuite::BUS_APPLICATION_NAME = "AboutTestSuite";
+AJ_PCSTR AboutTestSuite::DATE_FORMAT = "%Y-%m-%d";
+AJ_PCSTR AboutTestSuite::URL_REGEX = R"(^(([^:\/?#]+):)?(//([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?)";
 
 AboutTestSuite::AboutTestSuite() : IOManager(ServiceFramework::CORE)
 {
@@ -53,19 +53,11 @@ void AboutTestSuite::SetUp()
 
 	m_ServiceHelper = new ServiceHelper();
 
-	QStatus status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId,
-		m_IcsMap.at("ICSCO_SrpKeyX"), m_IxitMap.at("IXITCO_SrpKeyXPincode"), 
-		m_IcsMap.at("ICSCO_SrpLogon"), m_IxitMap.at("IXITCO_SrpLogonUser"), m_IxitMap.at("IXITCO_SrpLogonPass"), 
-		m_IcsMap.at("ICSCO_EcdheNull"),
-		m_IcsMap.at("ICSCO_EcdhePsk"), m_IxitMap.at("IXITCO_EcdhePskPassword"), 
-		m_IcsMap.at("ICSCO_EcdheEcdsa"), m_IxitMap.at("IXITCO_EcdheEcdsaPrivateKey"), m_IxitMap.at("IXITCO_EcdheEcdsaCertChain"),
-		m_IcsMap.at("ICSCO_EcdheSpeke"), m_IxitMap.at("IXITCO_EcdheSpekePassword"));
+	QStatus status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId);
 	ASSERT_EQ(status, ER_OK) << "serviceHelper Initialize() failed: " << QCC_StatusText(status);
 
 	m_DeviceAboutAnnouncement = 
-		m_ServiceHelper->waitForNextDeviceAnnouncement(atol(
-		m_GeneralParameterMap.at("GPCO_AnnouncementTimeout").c_str()
-		) * 1000);
+		m_ServiceHelper->waitForNextDeviceAnnouncement(atol(m_GeneralParameterMap.at("GPCO_AnnouncementTimeout").c_str()) * 1000);
 
 	ASSERT_NE(m_DeviceAboutAnnouncement, nullptr) << "Timed out waiting for About announcement";
 
@@ -90,12 +82,13 @@ void AboutTestSuite::TearDown()
 
 void AboutTestSuite::releaseResources()
 {
-	if (m_ServiceHelper != nullptr)
+	if (nullptr != m_ServiceHelper)
 	{
 		QStatus status = m_ServiceHelper->release();
 
 		EXPECT_EQ(status, ER_OK) << "serviceHelper Release() failed: " << QCC_StatusText(status);
 		delete m_ServiceHelper;
+		m_ServiceHelper = nullptr;
 	}
 }
 
@@ -123,7 +116,7 @@ TEST_F(AboutTestSuite, About_v1_01)
 
 void AboutTestSuite::validatePathIfAboutInterfacePresentInAnnouncement()
 {
-	const char* aboutPath = getAboutInterfacePathFromAnnouncement();
+	AJ_PCSTR aboutPath = getAboutInterfacePathFromAnnouncement();
 
 	if (aboutPath != nullptr)
 	{
@@ -137,18 +130,18 @@ void AboutTestSuite::validatePathIfAboutInterfacePresentInAnnouncement()
 	}
 }
 
-const char* AboutTestSuite::getAboutInterfacePathFromAnnouncement()
+AJ_PCSTR AboutTestSuite::getAboutInterfacePathFromAnnouncement()
 {
-	const char* aboutPath = nullptr;
+	AJ_PCSTR aboutPath = nullptr;
 
 	size_t numberOfPaths = m_DeviceAboutAnnouncement->getObjectDescriptions()->GetPaths(NULL, 0);
-	const char** paths = new const char*[numberOfPaths];
+	AJ_PCSTR* paths = new AJ_PCSTR[numberOfPaths];
 	m_DeviceAboutAnnouncement->getObjectDescriptions()->GetPaths(paths, numberOfPaths);
 
 	for (size_t i = 0; i < numberOfPaths; ++i)
 	{
 		size_t numberOfInterfaces = m_DeviceAboutAnnouncement->getObjectDescriptions()->GetInterfaces(paths[i], NULL, 0);
-		const char** interfaces = new const char*[numberOfInterfaces];
+		AJ_PCSTR* interfaces = new AJ_PCSTR[numberOfInterfaces];
 		m_DeviceAboutAnnouncement->getObjectDescriptions()->GetInterfaces(paths[i], interfaces, numberOfInterfaces);
 
 		for (size_t j = 0; j < numberOfInterfaces; ++j)
@@ -204,7 +197,7 @@ void AboutTestSuite::verifyAboutData(const AboutData& t_AboutData)
 		stringValue, "");
 }
 
-void AboutTestSuite::verifyFieldIsPresent(const char* t_FieldName,
+void AboutTestSuite::verifyFieldIsPresent(AJ_PCSTR t_FieldName,
 	const AboutData& t_AboutData, std::string& t_StringValue)
 {
 	MsgArg* field_value_msg_arg;
@@ -216,7 +209,7 @@ void AboutTestSuite::verifyFieldIsPresent(const char* t_FieldName,
 
 	if (field_value_msg_arg->Signature() == "s")
 	{
-		const char* field_value;
+		AJ_PCSTR field_value;
 		field_value_msg_arg->Get("s", &field_value);
 		t_StringValue.append(field_value);
 	}
@@ -228,7 +221,7 @@ void AboutTestSuite::verifyFieldIsPresent(const char* t_FieldName,
 
 		for (size_t j = 0; j < field_value_array_size; ++j)
 		{
-			const char* field_value;
+			AJ_PCSTR field_value;
 			field_value_array[j].Get("s", &field_value);
 			t_StringValue.append(field_value);
 		}
@@ -245,7 +238,7 @@ void AboutTestSuite::verifyFieldIsPresent(const char* t_FieldName,
 	SUCCEED() << t_FieldName << " is present and is '" << t_StringValue << "'";
 }
 
-void AboutTestSuite::compareAbout(const char* t_FieldName, const string& t_ExpectedAboutFieldValue,
+void AboutTestSuite::compareAbout(AJ_PCSTR t_FieldName, const string& t_ExpectedAboutFieldValue,
 	const string& t_AboutFieldValue, string t_Language)
 {
 	if (t_Language.empty())
@@ -291,11 +284,11 @@ TEST_F(AboutTestSuite, About_v1_03)
 	SUCCEED() << "AboutProxy connected";
 
 	LOG(INFO) << "Retrieving paths and interfaces from objectDescription parameter";
-	map<string, const char**> aboutObjectDescriptionMap;
+	map<string, AJ_PCSTR*> aboutObjectDescriptionMap;
 	populateMap(m_DeviceAboutAnnouncement->getObjectDescriptions(), aboutObjectDescriptionMap);
 
 	LOG(INFO) << "Calling GetObjectDescription() method";
-	map<string, const char**> announcementObjectDescriptionMap;
+	map<string, AJ_PCSTR*> announcementObjectDescriptionMap;
 	MsgArg announcement_object_desciption_msg_arg;
 	QStatus status = m_AboutProxy->GetObjectDescription(announcement_object_desciption_msg_arg);
 	ASSERT_EQ(status, ER_OK) << "Error calling GetObjectDescription() on AboutProxy";
@@ -334,24 +327,24 @@ TEST_F(AboutTestSuite, About_v1_03)
 	}
 }
 
-void AboutTestSuite::populateMap(AboutObjectDescription* t_AboutObjectDescription, map<string, const char**>& t_ObjectDescriptionMap)
+void AboutTestSuite::populateMap(AboutObjectDescription* t_AboutObjectDescription, map<string, AJ_PCSTR*>& t_ObjectDescriptionMap)
 {
 	size_t numberOfPaths = t_AboutObjectDescription->GetPaths(NULL, 0);
-	const char** paths = new const char*[numberOfPaths];
+	AJ_PCSTR* paths = new AJ_PCSTR[numberOfPaths];
 
 	t_AboutObjectDescription->GetPaths(paths, numberOfPaths);
 
 	for (size_t i = 0; i < numberOfPaths; ++i)
 	{
 		size_t numberOfInterfaces = t_AboutObjectDescription->GetInterfaces(paths[i], NULL, 0);
-		const char** interfaces = new const char*[numberOfInterfaces];
+		AJ_PCSTR* interfaces = new AJ_PCSTR[numberOfInterfaces];
 
 		t_AboutObjectDescription->GetInterfaces(paths[i], interfaces, numberOfInterfaces);
-		t_ObjectDescriptionMap.insert(pair<string, const char**>(string(paths[i]), interfaces));
+		t_ObjectDescriptionMap.insert(pair<string, AJ_PCSTR*>(string(paths[i]), interfaces));
 	}
 }
 
-void AboutTestSuite::populateMap(MsgArg& t_MsgArg, map<string, const char**>& t_ObjectDescriptionMap)
+void AboutTestSuite::populateMap(MsgArg& t_MsgArg, map<string, AJ_PCSTR*>& t_ObjectDescriptionMap)
 {
 	AboutObjectDescription* aboutObjectDescription = new AboutObjectDescription();
 	aboutObjectDescription->CreateFromMsgArg(t_MsgArg);
@@ -374,7 +367,7 @@ TEST_F(AboutTestSuite, About_v1_04)
 	AboutObjectDescription* aboutObjectDescriptions = m_DeviceAboutAnnouncement->getObjectDescriptions();
 
 	size_t numberOfPaths = aboutObjectDescriptions->GetPaths(NULL, 0);
-	const char** paths = new const char*[numberOfPaths];
+	AJ_PCSTR* paths = new AJ_PCSTR[numberOfPaths];
 
 	aboutObjectDescriptions->GetPaths(paths, numberOfPaths);
 
@@ -415,7 +408,7 @@ void AboutTestSuite::populateAnnouncementPathInterfaceSet(set<string>& t_Announc
 	AboutObjectDescription* t_AboutObjectDescription, const string& t_Path)
 {
 	size_t numberOfInterfaces = t_AboutObjectDescription->GetInterfaces(t_Path.c_str(), NULL, 0);
-	const char** interfaces = new const char*[numberOfInterfaces];
+	AJ_PCSTR* interfaces = new AJ_PCSTR[numberOfInterfaces];
 
 	t_AboutObjectDescription->GetInterfaces(t_Path.c_str(), interfaces, numberOfInterfaces);
 
@@ -556,7 +549,7 @@ void AboutTestSuite::checkForNull(AboutData t_AboutData, string t_FieldName, str
 {
 	QStatus status = ER_OK;
 	MsgArg* value;
-	ASSERT_EQ(ER_OK, status = t_AboutData.GetField(t_FieldName.c_str(), value))
+	ASSERT_EQ(ER_OK, status = t_AboutData.GetField(t_FieldName.c_str(), value, t_Language.c_str()))
 		<< "Retrieving " << t_FieldName << " field from AboutData returned status code: " << QCC_StatusText(status);
 
 	if (value == nullptr)
@@ -588,7 +581,7 @@ void AboutTestSuite::checkForNull(AboutData t_AboutData, string t_FieldName, str
 				}
 				else
 				{
-					const char* fieldValue;
+					AJ_PCSTR fieldValue;
 					ASSERT_EQ(ER_OK, status = value->Get("s", &fieldValue))
 						<< "Retrieving " << t_FieldName << " field from AboutData returned status code: " << QCC_StatusText(status);
 
@@ -615,7 +608,7 @@ void AboutTestSuite::validateSignature(AboutData t_AboutData, string t_Language)
 	validateSignatureForNonRequiredFields(t_AboutData, t_Language);
 }
 
-void AboutTestSuite::validateSignature(AboutData t_AboutData, string t_FieldName, const char* t_Signature, string t_Language)
+void AboutTestSuite::validateSignature(AboutData t_AboutData, string t_FieldName, AJ_PCSTR t_Signature, string t_Language)
 {
 	QStatus status = ER_OK;
 	MsgArg* value;
@@ -749,7 +742,7 @@ bool AboutTestSuite::isDefaultLanguagePresent(MsgArg* t_SupportedLanguagesArray,
 
 	for (size_t i = 0; i < t_SupportedLanguagesArraySize; ++i)
 	{
-		const char* currentLanguage;
+		AJ_PCSTR currentLanguage;
 		t_SupportedLanguagesArray[i].Get("s", &currentLanguage);
 
 		if (m_DefaultLanguage.compare(currentLanguage) == 0)
@@ -767,7 +760,7 @@ void AboutTestSuite::validateSupportedLanguagesAboutMap(AboutData t_AboutDataDef
 {
 	for (size_t i = 0; i < t_SupportedLanguagesArraySize; ++i)
 	{
-		const char* currentLanguage;
+		AJ_PCSTR currentLanguage;
 		t_SupportedLanguagesArray[i].Get("s", &currentLanguage);
 
 		if (m_DefaultLanguage.compare(currentLanguage) != 0)
@@ -808,15 +801,15 @@ void AboutTestSuite::compareRequiredFieldsInAboutMap(AboutData t_AboutDataDefaul
 	compareAbout(AboutKeys::APP_ID, ArrayParser::parseAppId(defaultAppId).c_str(),
 		ArrayParser::parseAppId(currentAppId).c_str(), t_SupportedLanguage);
 
-	char* defaultDefaultLanguage;
+	AJ_PSTR defaultDefaultLanguage;
 	t_AboutDataDefaultLanguage.GetDefaultLanguage(&defaultDefaultLanguage);
 
-	char* currentDefaultLanguage;
+    AJ_PSTR currentDefaultLanguage;
 	t_AboutDataDefaultLanguage.GetDefaultLanguage(&currentDefaultLanguage);
 
 	compareAbout(AboutKeys::DEFAULT_LANGUAGE, defaultDefaultLanguage, currentDefaultLanguage, t_SupportedLanguage);
 
-	char* defaultDeviceId;
+    AJ_PSTR defaultDeviceId;
 	t_AboutDataDefaultLanguage.GetDeviceId(&defaultDeviceId);
 
 	char* currentDeviceId;
@@ -824,46 +817,46 @@ void AboutTestSuite::compareRequiredFieldsInAboutMap(AboutData t_AboutDataDefaul
 
 	compareAbout(AboutKeys::DEVICE_ID, defaultDeviceId, currentDeviceId, t_SupportedLanguage);
 
-	char* defaultModelNumber;
+    AJ_PSTR defaultModelNumber;
 	t_AboutDataDefaultLanguage.GetModelNumber(&defaultModelNumber);
 
-	char* currentModelNumber;
+    AJ_PSTR currentModelNumber;
 	t_AboutDataSupportedLanguage.GetModelNumber(&currentModelNumber);
 
 	compareAbout(AboutKeys::MODEL_NUMBER, defaultModelNumber, currentModelNumber, t_SupportedLanguage);
 
 
 	size_t defaultSupportedLanguagesSize = t_AboutDataDefaultLanguage.GetSupportedLanguages(NULL, 0);
-	const char** defaultSupportedLanguages = new const char*[defaultSupportedLanguagesSize];
+	AJ_PCSTR* defaultSupportedLanguages = new AJ_PCSTR[defaultSupportedLanguagesSize];
 	t_AboutDataDefaultLanguage.GetSupportedLanguages(defaultSupportedLanguages, defaultSupportedLanguagesSize);
 
 	size_t currentSupportedLanguagesSize = t_AboutDataSupportedLanguage.GetSupportedLanguages(NULL, 0);
-	const char** currentSupportedLanguages = new const char*[currentSupportedLanguagesSize];
+	AJ_PCSTR* currentSupportedLanguages = new AJ_PCSTR[currentSupportedLanguagesSize];
 	t_AboutDataSupportedLanguage.GetSupportedLanguages(currentSupportedLanguages, currentSupportedLanguagesSize);
 
 	compareAbout(AboutKeys::SUPPORTED_LANGUAGES, defaultSupportedLanguages,
 		defaultSupportedLanguagesSize, currentSupportedLanguages,
 		currentSupportedLanguagesSize, t_SupportedLanguage);
 
-	char* defaultSoftwareVersion;
+    AJ_PSTR defaultSoftwareVersion;
 	t_AboutDataDefaultLanguage.GetSoftwareVersion(&defaultSoftwareVersion);
 
-	char* currentSoftwareVersion;
+    AJ_PSTR currentSoftwareVersion;
 	t_AboutDataSupportedLanguage.GetSoftwareVersion(&currentSoftwareVersion);
 
 	compareAbout(AboutKeys::SOFTWARE_VERSION, defaultSoftwareVersion, currentSoftwareVersion, t_SupportedLanguage);
 
-	char* defaultAjSoftwareVersion;
+    AJ_PSTR defaultAjSoftwareVersion;
 	t_AboutDataDefaultLanguage.GetAJSoftwareVersion(&defaultAjSoftwareVersion);
 
-	char* currentAjSoftwareVersion;
+    AJ_PSTR currentAjSoftwareVersion;
 	t_AboutDataSupportedLanguage.GetAJSoftwareVersion(&currentAjSoftwareVersion);
 
 	compareAbout(AboutKeys::AJ_SOFTWARE_VERSION, defaultAjSoftwareVersion, currentAjSoftwareVersion, t_SupportedLanguage);
 }
 
-void AboutTestSuite::compareAbout(string t_FieldName, const char** t_DefaultSupportedLanguages,
-	size_t t_DefaultSupportedLanguagesSize, const char** t_CurrentSupportedLanguages,
+void AboutTestSuite::compareAbout(string t_FieldName, AJ_PCSTR* t_DefaultSupportedLanguages,
+	size_t t_DefaultSupportedLanguagesSize, AJ_PCSTR* t_CurrentSupportedLanguages,
 	size_t t_CurrentSupportedLanguagesSize, string t_Language)
 {
 	if (t_Language.empty())
@@ -930,9 +923,9 @@ void AboutTestSuite::compareAboutNonRequired(AboutData t_AboutDataDefaultLanguag
 
 		if ((currentFieldValueMsgArg != nullptr) && (currentFieldValueMsgArg->typeId != ALLJOYN_INVALID))
 		{
-			const char* defaultFieldValue;
+			AJ_PCSTR defaultFieldValue;
 			defaultFieldValueMsgArg->Get("s", &defaultFieldValue);
-			const char* currentFieldValue;
+			AJ_PCSTR currentFieldValue;
 			currentFieldValueMsgArg->Get("s", &currentFieldValue);
 
 			compareAbout(t_FieldName.c_str(), defaultFieldValue, currentFieldValue, t_SupportedLanguage);
@@ -994,26 +987,26 @@ void AboutTestSuite::compareFieldsInAboutData(AboutData t_AboutDataDefaultLangua
 			t_Language, AboutKeys::DEVICE_NAME);
 	}
 	
-	char* default_app_name;
+    AJ_PSTR default_app_name;
 	t_AboutDataDefaultLanguage.GetAppName(&default_app_name);
 
-	char* current_app_name;
+    AJ_PSTR current_app_name;
 	t_AboutDataSuportedLanguage.GetAppName(&current_app_name);
 
 	compareAbout(AboutKeys::APP_NAME, default_app_name, current_app_name, t_Language);
 
-	char* default_manufacturer;
+    AJ_PSTR default_manufacturer;
 	t_AboutDataDefaultLanguage.GetManufacturer(&default_manufacturer);
 
-	char* current_manufacturer;
+    AJ_PSTR current_manufacturer;
 	t_AboutDataSuportedLanguage.GetManufacturer(&current_manufacturer);
 
 	compareAbout(AboutKeys::MANUFACTURER, default_manufacturer, current_manufacturer, t_Language);
 
-	char* default_description;
+    AJ_PSTR default_description;
 	t_AboutDataDefaultLanguage.GetDescription(&default_description);
 
-	char* current_description;
+    AJ_PSTR current_description;
 	t_AboutDataSuportedLanguage.GetDescription(&current_description);
 
 	compareAbout(AboutKeys::DESCRIPTION, default_description, current_description, t_Language);
@@ -1052,7 +1045,7 @@ TEST_F(AboutTestSuite, About_v1_11)
 	ASSERT_TRUE(m_IcsMap.at("ICSCO_IconInterface"))
 		<< "Test case not applicable. ICSCO_IconInterface is set to false";
 
-	ASSERT_TRUE(m_DeviceAboutAnnouncement->supportsInterface((char*)org::alljoyn::Icon::InterfaceName))
+	ASSERT_TRUE(m_DeviceAboutAnnouncement->supportsInterface((AJ_PSTR)org::alljoyn::Icon::InterfaceName))
 		<< "Device does not support AboutIcon";
 
 	m_AboutIconProxy = m_ServiceHelper->connectAboutIconProxy(*m_DeviceAboutAnnouncement);

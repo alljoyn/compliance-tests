@@ -28,7 +28,7 @@ public:
 	QStatus GetLampServiceVersion(uint32_t&);
 	QStatus GetLampFaults(std::vector<uint32_t>&);
 
-	QStatus ClearLampFault(const uint32_t, uint32_t&, uint32_t&);
+	QStatus ClearLampFault(uint32_t, uint32_t&, uint32_t&);
 
 private:
 	ajn::BusAttachment* m_BusAttachment;

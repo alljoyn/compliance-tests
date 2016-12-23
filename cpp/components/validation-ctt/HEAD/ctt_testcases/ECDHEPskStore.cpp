@@ -16,20 +16,20 @@
 #include "stdafx.h"
 #include "ECDHEPskStore.h"
 
-const char* ECDHEPskStore::getPassword(std::string t_PeerName)
+AJ_PCSTR ECDHEPskStore::getPassword(std::string t_PeerName)
 {
 	return m_PasswordStore.empty() ? nullptr : m_PasswordStore.at(t_PeerName);
 }
 
-void ECDHEPskStore::setPassword(std::string t_PeerName, const char* t_Password)
+void ECDHEPskStore::setPassword(std::string t_PeerName, AJ_PCSTR t_Password)
 {
-	std::map<std::string, const char*>::iterator iterator = m_PasswordStore.find(t_PeerName);
+	std::map<std::string, AJ_PCSTR>::iterator iterator = m_PasswordStore.find(t_PeerName);
 	if (iterator != m_PasswordStore.end())
 	{
 		iterator->second = t_Password;
 	}
 	else
 	{
-		m_PasswordStore.insert(std::pair<std::string, const char*>(t_PeerName, t_Password));
+		m_PasswordStore.insert(std::pair<std::string, AJ_PCSTR>(t_PeerName, t_Password));
 	}
 }

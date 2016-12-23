@@ -24,13 +24,13 @@ using namespace ajn;
 using namespace std;
 using namespace services;
 
-const char* ConfigTestSuite::BUS_APPLICATION_NAME = "ConfigTestSuite";
-const char* ConfigTestSuite::INVALID_LANGUAGE_CODE = "INVALID";
-const char* ConfigTestSuite::NEW_DEVICE_NAME = "NewDeviceName";
+AJ_PCSTR ConfigTestSuite::BUS_APPLICATION_NAME = "ConfigTestSuite";
+AJ_PCSTR ConfigTestSuite::INVALID_LANGUAGE_CODE = "INVALID";
+AJ_PCSTR ConfigTestSuite::NEW_DEVICE_NAME = "NewDeviceName";
 const int ConfigTestSuite::CONFIG_CLIENT_RECONNECT_WAIT_TIME = 10000;
-const char* ConfigTestSuite::NEW_PASSCODE = "111111";
-const char* ConfigTestSuite::SINGLE_CHAR_PASSCODE = "1";
-const char* ConfigTestSuite::SPECIAL_CHARS_PASSCODE = "!@#$%^";
+AJ_PCSTR ConfigTestSuite::NEW_PASSCODE = "1111111111111111";
+AJ_PCSTR ConfigTestSuite::SINGLE_CHAR_PASSCODE = "1";
+AJ_PCSTR ConfigTestSuite::SPECIAL_CHARS_PASSCODE = "!@#$%^!@#$%^!@#$";
 
 ConfigTestSuite::ConfigTestSuite() : IOManager(ServiceFramework::CONFIGURATION)
 {
@@ -51,13 +51,7 @@ void ConfigTestSuite::SetUp()
 
 	m_ServiceHelper = new ServiceHelper();
 
-	QStatus status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId,
-		m_IcsMap.at("ICSCO_SrpKeyX"), m_IxitMap.at("IXITCO_SrpKeyXPincode"),
-		m_IcsMap.at("ICSCO_SrpLogon"), m_IxitMap.at("IXITCO_SrpLogonUser"), m_IxitMap.at("IXITCO_SrpLogonPass"),
-		m_IcsMap.at("ICSCO_EcdheNull"),
-		m_IcsMap.at("ICSCO_EcdhePsk"), m_IxitMap.at("IXITCO_EcdhePskPassword"),
-		m_IcsMap.at("ICSCO_EcdheEcdsa"), m_IxitMap.at("IXITCO_EcdheEcdsaPrivateKey"), m_IxitMap.at("IXITCO_EcdheEcdsaCertChain"),
-		m_IcsMap.at("ICSCO_EcdheSpeke"), m_IxitMap.at("IXITCO_EcdheSpekePassword"));
+	QStatus status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId);
 	ASSERT_EQ(ER_OK, status) << "serviceHelper Initialize() failed: " << QCC_StatusText(status);
 
 	m_DeviceAboutAnnouncement = waitForDeviceAboutAnnouncement();
@@ -74,7 +68,16 @@ void ConfigTestSuite::SetUp()
 	ASSERT_NE(m_ConfigClient, nullptr) << "ConfigClient connection failed";
 	SUCCEED() << "ConfigClient connected";
 
-	status = m_ServiceHelper->enableAuthentication("/Keystore");
+	m_UseEcdheNullInTest = strcmp("Config_v1_02", ::testing::UnitTest::GetInstance()->current_test_info()->name()) == 0 ?
+		false : m_IcsMap.at("ICSCO_EcdheNull");
+
+	status = m_ServiceHelper->enableAuthentication("/Keystore",
+		m_IcsMap.at("ICSCO_SrpKeyX"), m_IxitMap.at("IXITCO_SrpKeyXPincode"),
+		m_IcsMap.at("ICSCO_SrpLogon"), m_IxitMap.at("IXITCO_SrpLogonUser"), m_IxitMap.at("IXITCO_SrpLogonPass"),
+		m_UseEcdheNullInTest,
+		m_IcsMap.at("ICSCO_EcdhePsk"), m_IxitMap.at("IXITCO_EcdhePskPassword"),
+		m_IcsMap.at("ICSCO_EcdheEcdsa"), m_IxitMap.at("IXITCO_EcdheEcdsaPrivateKey"), m_IxitMap.at("IXITCO_EcdheEcdsaCertChain"),
+		m_IcsMap.at("ICSCO_EcdheSpeke"), m_IxitMap.at("IXITCO_EcdheSpekePassword"));
 	ASSERT_EQ(ER_OK, status);
 
 	if (m_IcsMap.at("ICSCO_SrpKeyX") || m_IcsMap.at("ICSCO_EcdhePsk") || m_IcsMap.at("ICSCO_EcdheSpeke"))
@@ -110,7 +113,7 @@ QStatus ConfigTestSuite::resetPasscodeIfNeeded()
 	return status;
 }
 
-QStatus ConfigTestSuite::setPasscode(const char* t_passcode)
+QStatus ConfigTestSuite::setPasscode(AJ_PCSTR t_passcode)
 {
 	m_ServiceHelper->clearKeyStore();
 
@@ -275,7 +278,7 @@ TEST_F(ConfigTestSuite, Config_v1_04)
 	checkConsistencyWithAboutAnnouncement(configurations);
 }
 
-QStatus ConfigTestSuite::getConfigurations(const char* t_Language, ConfigClient::Configurations& t_Configurations)
+QStatus ConfigTestSuite::getConfigurations(AJ_PCSTR t_Language, ConfigClient::Configurations& t_Configurations)
 {
 	t_Configurations.clear();
 	return m_ConfigClient->GetConfigurations(m_DeviceAboutAnnouncement->getServiceName().c_str(),
@@ -332,7 +335,7 @@ void ConfigTestSuite::compareConfigurations(const ajn::services::ConfigClient::C
 	compareConfigurationsForField(AboutKeys::DEFAULT_LANGUAGE, t_ConfigurationOne, t_ConfigurationTwo);
 }
 
-void ConfigTestSuite::compareConfigurationsForField(const char* t_Field,
+void ConfigTestSuite::compareConfigurationsForField(AJ_PCSTR t_Field,
 	const ajn::services::ConfigClient::Configurations& t_ConfigurationOne,
 	const ajn::services::ConfigClient::Configurations& t_ConfigurationTwo)
 {
@@ -345,7 +348,7 @@ void ConfigTestSuite::compareConfigurationsForField(const char* t_Field,
 TEST_F(ConfigTestSuite, Config_v1_06)
 {
 	size_t supportedLanguagesSize = m_DeviceAboutAnnouncement->getAboutData()->GetSupportedLanguages(NULL, 0);
-	const char** supportedLanguages = new const char*[supportedLanguagesSize];
+	AJ_PCSTR* supportedLanguages = new AJ_PCSTR[supportedLanguagesSize];
 	m_DeviceAboutAnnouncement->getAboutData()->GetSupportedLanguages(supportedLanguages, supportedLanguagesSize);
 	
 	if (supportedLanguagesSize > 1)
@@ -381,11 +384,11 @@ TEST_F(ConfigTestSuite, Config_v1_06)
 void ConfigTestSuite::checkAboutDataForRequiredFields(AboutData& t_AboutData)
 {
 	LOG(INFO) << "Checking that DeviceName field is present";
-	char* deviceName;
+	AJ_PSTR deviceName;
 	EXPECT_EQ(t_AboutData.GetDeviceName(&deviceName), ER_OK);
 
 	LOG(INFO) << "Checking that DefaultLanguage field is present";
-	char* defaultLanguage;
+    AJ_PSTR defaultLanguage;
 	EXPECT_EQ(t_AboutData.GetDefaultLanguage(&defaultLanguage), ER_OK);
 }
 
@@ -399,7 +402,7 @@ void ConfigTestSuite::compareConfigAndAbout(const ConfigClient::Configurations& 
 	compareConfigAndAboutForField(AboutKeys::DEFAULT_LANGUAGE, t_Configurations, t_AboutData);
 }
 
-void ConfigTestSuite::compareConfigAndAboutForField(const char* t_Field,
+void ConfigTestSuite::compareConfigAndAboutForField(AJ_PCSTR t_Field,
 	const ConfigClient::Configurations& t_Configurations,
 	const AboutData& t_AboutData)
 {
@@ -427,9 +430,9 @@ TEST_F(ConfigTestSuite, Config_v1_08)
 	ASSERT_EQ(ER_OK, status) << "Testing UpdateConfigurations() returned status code: " << QCC_StatusText(status);
 }
 
-QStatus ConfigTestSuite::testUpdateConfigurations(const char* t_Field, const char* t_NewValue)
+QStatus ConfigTestSuite::testUpdateConfigurations(AJ_PCSTR t_Field, AJ_PCSTR t_NewValue)
 {
-	const char* originalValue;
+	AJ_PCSTR originalValue;
 
 	if (string(t_Field).compare(AboutKeys::DEVICE_NAME) == 0)
 	{
@@ -452,7 +455,7 @@ QStatus ConfigTestSuite::testUpdateConfigurations(const char* t_Field, const cha
 	}
 }
 
-QStatus ConfigTestSuite::updateConfigurationsAndVerifyResult(const char* t_Field, const char* t_Value)
+QStatus ConfigTestSuite::updateConfigurationsAndVerifyResult(AJ_PCSTR t_Field, AJ_PCSTR t_Value)
 {
 	ConfigClient::Configurations configurations;
 	configurations.insert(std::pair<qcc::String, ajn::MsgArg>(t_Field, MsgArg("s", t_Value)));
@@ -470,13 +473,13 @@ QStatus ConfigTestSuite::updateConfigurationsAndVerifyResult(const char* t_Field
 	return ER_OK;
 }
 
-QStatus ConfigTestSuite::updateConfigurations(const char* t_Language, const ConfigClient::Configurations& t_Configurations)
+QStatus ConfigTestSuite::updateConfigurations(AJ_PCSTR t_Language, const ConfigClient::Configurations& t_Configurations)
 {
 	return m_ConfigClient->UpdateConfigurations(m_DeviceAboutAnnouncement->getServiceName().c_str(),
 		t_Language, t_Configurations, m_SessionId);
 }
 
-void ConfigTestSuite::waitForNextAnnouncementAndVerifyFieldValue(const char* t_Field, const char* t_Value)
+void ConfigTestSuite::waitForNextAnnouncementAndVerifyFieldValue(AJ_PCSTR t_Field, AJ_PCSTR t_Value)
 {
 	m_DeviceAboutAnnouncement = waitForNextAnnouncementAndCheckFieldValue(t_Field, t_Value);
 
@@ -490,7 +493,7 @@ void ConfigTestSuite::waitForNextAnnouncementAndVerifyFieldValue(const char* t_F
 	verifyValueForConfigAndAbout(configurations, aboutData, t_Field, t_Value);
 }
 
-AboutAnnouncementDetails* ConfigTestSuite::waitForNextAnnouncementAndCheckFieldValue(const char* t_Field, const char* t_Value)
+AboutAnnouncementDetails* ConfigTestSuite::waitForNextAnnouncementAndCheckFieldValue(AJ_PCSTR t_Field, AJ_PCSTR t_Value)
 {
 	LOG(INFO) << "Waiting for updating About announcement";
 	AboutAnnouncementDetails* deviceAboutAnnouncement = waitForDeviceAboutAnnouncement();
@@ -510,7 +513,7 @@ AboutAnnouncementDetails* ConfigTestSuite::waitForNextAnnouncementAndCheckFieldV
 }
 
 void ConfigTestSuite::verifyValueForConfigAndAbout(const ConfigClient::Configurations& t_Configurations,
-	const AboutData& t_AboutData, const char* t_Field, const char* t_ExpectedValue)
+	const AboutData& t_AboutData, AJ_PCSTR t_Field, AJ_PCSTR t_ExpectedValue)
 {
 	LOG(INFO) << "Checking if " << t_Field << " from GetConfigurations() matches expected value";
 	EXPECT_STREQ(t_ExpectedValue, t_Configurations.at(t_Field).v_string.str)
@@ -566,12 +569,12 @@ TEST_F(ConfigTestSuite, Config_v1_13)
 TEST_F(ConfigTestSuite, Config_v1_14)
 {
 	size_t supportedLanguagesSize = m_DeviceAboutAnnouncement->getAboutData()->GetSupportedLanguages(NULL, 0);
-	const char** supportedLanguages = new const char*[supportedLanguagesSize];
+	AJ_PCSTR* supportedLanguages = new AJ_PCSTR[supportedLanguagesSize];
 	m_DeviceAboutAnnouncement->getAboutData()->GetSupportedLanguages(supportedLanguages, supportedLanguagesSize);
 
 	if (supportedLanguagesSize > 1)
 	{
-		const char* newLanguage = (strcmp(supportedLanguages[0], m_DefaultLanguage.c_str()) == 0)
+		AJ_PCSTR newLanguage = (strcmp(supportedLanguages[0], m_DefaultLanguage.c_str()) == 0)
 			? supportedLanguages[1] : supportedLanguages[0];
 		testUpdateConfigurations(AboutKeys::DEFAULT_LANGUAGE, newLanguage);
 	}
@@ -641,7 +644,7 @@ TEST_F(ConfigTestSuite, Config_v1_20)
 	ASSERT_EQ(ER_OK, status) << "Calling GetAboutData() method returned status code: " << QCC_StatusText(status);
 	AboutData aboutData(aboutDataMsgArg, m_DefaultLanguage.c_str());
 
-	char* originalDeviceName;
+    AJ_PSTR originalDeviceName;
 	status = aboutData.GetDeviceName(&originalDeviceName, m_DefaultLanguage.c_str());
 	ASSERT_EQ(ER_OK, status) << "Retrieving DeviceName returned status code: " << QCC_StatusText(status);
 
@@ -683,7 +686,7 @@ TEST_F(ConfigTestSuite, Config_v1_20)
 	verifyValueForConfigAndAbout(configurations, aboutData, AboutKeys::DEVICE_NAME, originalDeviceNameStr.c_str());
 }
 
-QStatus ConfigTestSuite::resetConfigurations(const char* t_Language, const vector<qcc::String>& t_FieldsToReset)
+QStatus ConfigTestSuite::resetConfigurations(AJ_PCSTR t_Language, const vector<qcc::String>& t_FieldsToReset)
 {
 	return m_ConfigClient->ResetConfigurations(m_DeviceAboutAnnouncement->getServiceName().c_str(),
 		t_Language, t_FieldsToReset, m_SessionId);
@@ -712,12 +715,12 @@ TEST_F(ConfigTestSuite, Config_v1_21)
 TEST_F(ConfigTestSuite, Config_v1_22)
 {
 	size_t supportedLanguagesSize = m_DeviceAboutAnnouncement->getAboutData()->GetSupportedLanguages(NULL, 0);
-	const char** supportedLanguages = new const char*[supportedLanguagesSize];
+	AJ_PCSTR* supportedLanguages = new AJ_PCSTR[supportedLanguagesSize];
 	m_DeviceAboutAnnouncement->getAboutData()->GetSupportedLanguages(supportedLanguages, supportedLanguagesSize);
 
 	if (supportedLanguagesSize > 1)
 	{
-		const char* newLanguage = (strcmp(supportedLanguages[0], m_DefaultLanguage.c_str()) == 0)
+		AJ_PCSTR newLanguage = (strcmp(supportedLanguages[0], m_DefaultLanguage.c_str()) == 0)
 			? supportedLanguages[1] : supportedLanguages[0];
 
 		vector<qcc::String> fieldsToReset = { AboutKeys::DEFAULT_LANGUAGE };
@@ -734,7 +737,7 @@ TEST_F(ConfigTestSuite, Config_v1_22)
 
 		compareConfigAndAboutForField(AboutKeys::DEFAULT_LANGUAGE, configurations, aboutData);
 
-		char* originalDefaultLanguage;
+        AJ_PSTR originalDefaultLanguage;
 		aboutData.GetDefaultLanguage(&originalDefaultLanguage);
 
 		LOG(INFO) << "Original DefaultLanguage: " << originalDefaultLanguage;
@@ -758,7 +761,7 @@ TEST_F(ConfigTestSuite, Config_v1_22)
 
 		verifyValueForConfigAndAbout(configurations, aboutData, AboutKeys::DEFAULT_LANGUAGE, newLanguage);
 
-		char* temporalDefaultLanguage;
+        AJ_PSTR temporalDefaultLanguage;
 		aboutData.GetDefaultLanguage(&temporalDefaultLanguage);
 
 		status = resetConfigurations(m_DefaultLanguage.c_str(), fieldsToReset);
@@ -840,7 +843,7 @@ void ConfigTestSuite::loseSessionOrWait()
 
 TEST_F(ConfigTestSuite, Config_v1_27)
 {
-	char* originalDeviceName = m_DeviceAboutAnnouncement->getDeviceName();
+    AJ_PSTR originalDeviceName = m_DeviceAboutAnnouncement->getDeviceName();
 	updateConfigurationsAndVerifyResult(AboutKeys::DEVICE_NAME, NEW_DEVICE_NAME);
 
 	callRestartOnConfig();
@@ -868,13 +871,7 @@ void ConfigTestSuite::reconnectClients(QStatus& status)
 	releaseResources();
 	
 	m_ServiceHelper = new ServiceHelper();
-	status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId,
-		m_IcsMap.at("ICSCO_SrpKeyX"), m_IxitMap.at("IXITCO_SrpKeyXPincode"),
-		m_IcsMap.at("ICSCO_SrpLogon"), m_IxitMap.at("IXITCO_SrpLogonUser"), m_IxitMap.at("IXITCO_SrpLogonPass"),
-		m_IcsMap.at("ICSCO_EcdheNull"),
-		m_IcsMap.at("ICSCO_EcdhePsk"), m_IxitMap.at("IXITCO_EcdhePskPassword"),
-		m_IcsMap.at("ICSCO_EcdheEcdsa"), m_IxitMap.at("IXITCO_EcdheEcdsaPrivateKey"), m_IxitMap.at("IXITCO_EcdheEcdsaCertChain"),
-		m_IcsMap.at("ICSCO_EcdheSpeke"), m_IxitMap.at("IXITCO_EcdheSpekePassword"));
+	status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId);
 	ASSERT_EQ(ER_OK, status) << "serviceHelper Initialize() failed: " << QCC_StatusText(status);
 
 	m_DeviceAboutAnnouncement = waitForDeviceAboutAnnouncement();
@@ -892,7 +889,13 @@ void ConfigTestSuite::reconnectClients(QStatus& status)
 	ASSERT_NE(m_ConfigClient, nullptr) << "ConfigClient connection failed";
 	SUCCEED() << "ConfigClient connected";
 
-	status = m_ServiceHelper->enableAuthentication("/Keystore");
+	status = m_ServiceHelper->enableAuthentication("/Keystore",
+		m_IcsMap.at("ICSCO_SrpKeyX"), m_IxitMap.at("IXITCO_SrpKeyXPincode"),
+		m_IcsMap.at("ICSCO_SrpLogon"), m_IxitMap.at("IXITCO_SrpLogonUser"), m_IxitMap.at("IXITCO_SrpLogonPass"),
+		m_UseEcdheNullInTest,
+		m_IcsMap.at("ICSCO_EcdhePsk"), m_IxitMap.at("IXITCO_EcdhePskPassword"),
+		m_IcsMap.at("ICSCO_EcdheEcdsa"), m_IxitMap.at("IXITCO_EcdheEcdsaPrivateKey"), m_IxitMap.at("IXITCO_EcdheEcdsaCertChain"),
+		m_IcsMap.at("ICSCO_EcdheSpeke"), m_IxitMap.at("IXITCO_EcdheSpekePassword"));
 	ASSERT_EQ(ER_OK, status);
 }
 
@@ -901,17 +904,17 @@ TEST_F(ConfigTestSuite, Config_v1_29)
 	testChangePasscode(NEW_PASSCODE);
 }
 
-void ConfigTestSuite::testChangePasscode(const char* t_Passcode)
+void ConfigTestSuite::testChangePasscode(AJ_PCSTR t_Passcode)
 {
 	changePasscodeAndReconnect(t_Passcode);
 	restorePasswordInStores();
 }
 
-void ConfigTestSuite::changePasscodeAndReconnect(const char* t_Passcode)
+void ConfigTestSuite::changePasscodeAndReconnect(AJ_PCSTR t_Passcode)
 {
 	LOG(INFO) << "Calling SetPasscode() on Config with passcode " << t_Passcode;
 	QStatus status = m_ConfigClient->SetPasscode(m_DeviceAboutAnnouncement->getServiceName().c_str(),
-		"MyDaemonRealm", 6, (const uint8_t*)t_Passcode, m_SessionId);
+		"MyDaemonRealm", qcc::String(t_Passcode).length(), (const uint8_t*)t_Passcode, m_SessionId);
 	ASSERT_EQ(ER_OK, status) << "Calling SetPasscode() on Config interface returned status code: "
 		<< QCC_StatusText(status);
 
@@ -927,7 +930,7 @@ void ConfigTestSuite::changePasscodeAndReconnect(const char* t_Passcode)
 
 void ConfigTestSuite::restorePasswordInStores()
 {
-	const char* passcode = "";
+	AJ_PCSTR passcode = "";
 	if (m_IcsMap.at("ICSCO_EcdheSpeke"))
 	{
 		passcode = m_DefaultEcdheSpekePassword.c_str();
@@ -944,7 +947,7 @@ void ConfigTestSuite::restorePasswordInStores()
 	changePasscodeAndReconnect(passcode);
 }
 
-void ConfigTestSuite::changePasswordInStores(const char* t_Passcode)
+void ConfigTestSuite::changePasswordInStores(AJ_PCSTR t_Passcode)
 {
 	m_ServiceHelper->clearKeyStore();
 
@@ -1037,8 +1040,8 @@ TEST_F(ConfigTestSuite, Config_v1_33)
 		status = getConfigurations(NULL, configurations);
 		ASSERT_EQ(ER_OK, status) << "Calling GetConfigurations() returned error: " << QCC_StatusText(status);
 
-		const char* deviceNameAfterReset = configurations.at(AboutKeys::DEVICE_NAME).v_string.str;
-		const char* defaultLanguageAfterReset = configurations.at(AboutKeys::DEFAULT_LANGUAGE).v_string.str;
+		AJ_PCSTR deviceNameAfterReset = configurations.at(AboutKeys::DEVICE_NAME).v_string.str;
+		AJ_PCSTR defaultLanguageAfterReset = configurations.at(AboutKeys::DEFAULT_LANGUAGE).v_string.str;
 
 		EXPECT_STREQ(deviceNameBeforeReset.c_str(), deviceNameAfterReset)
 			<< "FactoryReset() set the DeviceName to a different value than ResetConfigurations()";

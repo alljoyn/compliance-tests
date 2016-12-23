@@ -30,7 +30,7 @@ public:
 	std::list<std::string> getXmlFilesToBeLoaded();
 
 private:
-	static const char* INTROSPECTION_XML_PATH;
+	static AJ_PCSTR INTROSPECTION_XML_PATH;
 
 	std::list<IntrospectionNode> m_IntrospectionNodesLoadedFromXmlFiles;
 	IntrospectionXmlParser m_IntrospectionXmlParser;

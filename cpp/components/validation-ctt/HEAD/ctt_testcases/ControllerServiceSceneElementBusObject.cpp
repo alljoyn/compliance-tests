@@ -19,8 +19,8 @@
 #define CHECK_BREAK(x) if ((status = x) != ER_OK) { break; }
 #define CHECK_RETURN(x) if ((status = x) != ER_OK) { return status; }
 
-static const char* CONTROLLERSERVICE_OBJECT_PATH = "/org/allseen/LSF/ControllerService";
-static const char* SCENEELEMENT_INTERFACE_NAME = "org.allseen.LSF.ControllerService.SceneElement";
+static AJ_PCSTR CONTROLLERSERVICE_OBJECT_PATH = "/org/allseen/LSF/ControllerService";
+static AJ_PCSTR SCENEELEMENT_INTERFACE_NAME = "org.allseen.LSF.ControllerService.SceneElement";
 
 ControllerServiceSceneElementBusObject::ControllerServiceSceneElementBusObject(ajn::BusAttachment& t_BusAttachment, const std::string& t_BusName, const ajn::SessionId t_SessionId) :
 m_BusAttachment(&t_BusAttachment), m_BusName(t_BusName), m_SessionId(t_SessionId),
@@ -38,22 +38,22 @@ m_SceneElementsUpdatedSignalReceived(false), m_SceneElementsDeletedSignalReceive
 		if (createIface && status == ER_OK) {
 			do {
 				CHECK_BREAK(createIface->AddMethod("ApplySceneElement", "s", "us", "sceneElementID,responseCode,sceneElementID"))
-					CHECK_BREAK(createIface->AddMethod("CreateSceneElement", "asassss", "us", "lampIDs,lampGroupIDs,effectID,sceneElementName,language,responseCode,sceneElementID"))
-					CHECK_BREAK(createIface->AddMethod("DeleteSceneElement", "s", "us", "sceneElementID,responseCode,sceneElementID"))
-					CHECK_BREAK(createIface->AddMethod("GetAllSceneElementIDs", NULL, "uas", "responseCode,sceneElementIDs"))
-					CHECK_BREAK(createIface->AddMethod("GetSceneElement", "s", "usasass", "sceneElementID,responseCode,sceneElementID,lampIDs,lampGroupIDs,effectID"))
-					CHECK_BREAK(createIface->AddMethod("GetSceneElementName", "ss", "usss", "sceneElementID,language,responseCode,sceneElementID,language,sceneElementName"))
-					CHECK_BREAK(createIface->AddMethod("SetSceneElementName", "sss", "uss", "sceneElementID,sceneElementName,language,responseCode,sceneElementID,language"))
-					CHECK_BREAK(createIface->AddMethod("UpdateSceneElement", "sasass", "us", "sceneElementID,lampIDs,lampGroupIDs,effectID,responseCode,sceneElementID"))
+				CHECK_BREAK(createIface->AddMethod("CreateSceneElement", "asassss", "us", "lampIDs,lampGroupIDs,effectID,sceneElementName,language,responseCode,sceneElementID"))
+				CHECK_BREAK(createIface->AddMethod("DeleteSceneElement", "s", "us", "sceneElementID,responseCode,sceneElementID"))
+				CHECK_BREAK(createIface->AddMethod("GetAllSceneElementIDs", NULL, "uas", "responseCode,sceneElementIDs"))
+				CHECK_BREAK(createIface->AddMethod("GetSceneElement", "s", "usasass", "sceneElementID,responseCode,sceneElementID,lampIDs,lampGroupIDs,effectID"))
+				CHECK_BREAK(createIface->AddMethod("GetSceneElementName", "ss", "usss", "sceneElementID,language,responseCode,sceneElementID,language,sceneElementName"))
+				CHECK_BREAK(createIface->AddMethod("SetSceneElementName", "sss", "uss", "sceneElementID,sceneElementName,language,responseCode,sceneElementID,language"))
+				CHECK_BREAK(createIface->AddMethod("UpdateSceneElement", "sasass", "us", "sceneElementID,lampIDs,lampGroupIDs,effectID,responseCode,sceneElementID"))
 
-					CHECK_BREAK(createIface->AddProperty("Version", "u", ajn::PROP_ACCESS_READ))
+				CHECK_BREAK(createIface->AddProperty("Version", "u", ajn::PROP_ACCESS_READ))
 
-					CHECK_BREAK(createIface->AddSignal("SceneElementsApplied", "as", "sceneElementIDs", 0))
-					CHECK_BREAK(createIface->AddSignal("SceneElementsCreated", "as", "sceneElementIDs", 0))
-					CHECK_BREAK(createIface->AddSignal("SceneElementsUpdated", "as", "sceneElementIDs", 0))
-					CHECK_BREAK(createIface->AddSignal("SceneElementsDeleted", "as", "sceneElementIDs", 0))
-					CHECK_BREAK(createIface->AddSignal("SceneElementsNameChanged", "as", "sceneElementIDs", 0))
-					createIface->Activate();
+				CHECK_BREAK(createIface->AddSignal("SceneElementsApplied", "as", "sceneElementIDs", 0))
+				CHECK_BREAK(createIface->AddSignal("SceneElementsCreated", "as", "sceneElementIDs", 0))
+				CHECK_BREAK(createIface->AddSignal("SceneElementsUpdated", "as", "sceneElementIDs", 0))
+				CHECK_BREAK(createIface->AddSignal("SceneElementsDeleted", "as", "sceneElementIDs", 0))
+				CHECK_BREAK(createIface->AddSignal("SceneElementsNameChanged", "as", "sceneElementIDs", 0))
+				createIface->Activate();
 
 				const ajn::InterfaceDescription* uniqueId = m_BusAttachment->GetInterface(SCENEELEMENT_INTERFACE_NAME);
 				const ajn::InterfaceDescription::Member* sig = uniqueId->GetMember("SceneElementsApplied");
@@ -77,7 +77,7 @@ m_SceneElementsUpdatedSignalReceived(false), m_SceneElementsDeletedSignalReceive
 	} //if (!getIface)
 }
 
-void ControllerServiceSceneElementBusObject::SceneElementsAppliedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServiceSceneElementBusObject::SceneElementsAppliedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "SceneElementsApplied signal received";
 	m_SceneElementsAppliedSignalReceived = true;
@@ -88,7 +88,7 @@ bool ControllerServiceSceneElementBusObject::DidSceneElementsApplied()
 	return m_SceneElementsAppliedSignalReceived;
 }
 
-void ControllerServiceSceneElementBusObject::SceneElementsCreatedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServiceSceneElementBusObject::SceneElementsCreatedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "SceneElementsCreated signal received";
 	m_SceneElementsCreatedSignalReceived = true;
@@ -99,7 +99,7 @@ bool ControllerServiceSceneElementBusObject::DidSceneElementsCreated()
 	return m_SceneElementsCreatedSignalReceived;
 }
 
-void ControllerServiceSceneElementBusObject::SceneElementsUpdatedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServiceSceneElementBusObject::SceneElementsUpdatedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "SceneElementsUpdated signal received";
 	m_SceneElementsUpdatedSignalReceived = true;
@@ -110,7 +110,7 @@ bool ControllerServiceSceneElementBusObject::DidSceneElementsUpdated()
 	return m_SceneElementsUpdatedSignalReceived;
 }
 
-void ControllerServiceSceneElementBusObject::SceneElementsDeletedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServiceSceneElementBusObject::SceneElementsDeletedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "SceneElementsDeleted signal received";
 	m_SceneElementsDeletedSignalReceived = true;
@@ -121,7 +121,7 @@ bool ControllerServiceSceneElementBusObject::DidSceneElementsDeleted()
 	return m_SceneElementsDeletedSignalReceived;
 }
 
-void ControllerServiceSceneElementBusObject::SceneElementsNameChangedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServiceSceneElementBusObject::SceneElementsNameChangedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "SceneElementsNameChanged signal received";
 	m_SceneElementsNameChangedSignalReceived = true;
@@ -155,7 +155,7 @@ QStatus ControllerServiceSceneElementBusObject::GetVersion(uint32_t& version)
 	return status;
 }
 
-QStatus ControllerServiceSceneElementBusObject::ApplySceneElement(const char* t_SceneElementID, uint32_t& t_ResponseCode,
+QStatus ControllerServiceSceneElementBusObject::ApplySceneElement(AJ_PCSTR t_SceneElementID, uint32_t& t_ResponseCode,
 	qcc::String& t_RetrievedSceneElementID)
 {
 	QStatus status = ER_OK;
@@ -177,7 +177,7 @@ QStatus ControllerServiceSceneElementBusObject::ApplySceneElement(const char* t_
 		CHECK_RETURN(proxyBusObj->MethodCall(SCENEELEMENT_INTERFACE_NAME, "ApplySceneElement", msgArg, 1, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedSceneElementID;
+        AJ_PSTR tempRetrievedSceneElementID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedSceneElementID))
 		t_RetrievedSceneElementID = qcc::String(tempRetrievedSceneElementID);
 	}
@@ -185,7 +185,9 @@ QStatus ControllerServiceSceneElementBusObject::ApplySceneElement(const char* t_
 	return status;
 }
 
-QStatus ControllerServiceSceneElementBusObject::CreateSceneElement(const std::vector<const char*>& t_LampIDs, const std::vector<const char*>& t_LampGroupIDs, const char* t_EffectID, const char* t_SceneElementName, const char* t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedSceneElementID)
+QStatus ControllerServiceSceneElementBusObject::CreateSceneElement(const std::vector<AJ_PCSTR>& t_LampIDs,
+    const std::vector<AJ_PCSTR>& t_LampGroupIDs, AJ_PCSTR t_EffectID, AJ_PCSTR t_SceneElementName,
+    AJ_PCSTR t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedSceneElementID)
 {
 	QStatus status = ER_OK;
 
@@ -210,7 +212,7 @@ QStatus ControllerServiceSceneElementBusObject::CreateSceneElement(const std::ve
 		CHECK_RETURN(proxyBusObj->MethodCall(SCENEELEMENT_INTERFACE_NAME, "CreateSceneElement", msgArg, 5, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedSceneElementID;
+        AJ_PSTR tempRetrievedSceneElementID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedSceneElementID))
 		t_RetrievedSceneElementID = qcc::String(tempRetrievedSceneElementID);
 	}
@@ -218,7 +220,8 @@ QStatus ControllerServiceSceneElementBusObject::CreateSceneElement(const std::ve
 	return status;
 }
 
-QStatus ControllerServiceSceneElementBusObject::DeleteSceneElement(const char* t_SceneElementID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedSceneElementID)
+QStatus ControllerServiceSceneElementBusObject::DeleteSceneElement(AJ_PCSTR t_SceneElementID,
+    uint32_t& t_ResponseCode, qcc::String& t_RetrievedSceneElementID)
 {
 	QStatus status = ER_OK;
 
@@ -240,7 +243,7 @@ QStatus ControllerServiceSceneElementBusObject::DeleteSceneElement(const char* t
 		CHECK_RETURN(proxyBusObj->MethodCall(SCENEELEMENT_INTERFACE_NAME, "DeleteSceneElement", msgArg, 1, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedSceneElementID;
+        AJ_PSTR tempRetrievedSceneElementID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedSceneElementID))
 		t_RetrievedSceneElementID = qcc::String(tempRetrievedSceneElementID);
 	}
@@ -265,10 +268,10 @@ QStatus ControllerServiceSceneElementBusObject::GetAllSceneElementIDs(uint32_t& 
 	if (status == ER_OK) {
 		ajn::Message responseMessage(*m_BusAttachment);
 		CHECK_RETURN(proxyBusObj->MethodCall(SCENEELEMENT_INTERFACE_NAME, "GetAllSceneElementIDs", NULL, 0, responseMessage))
-			CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
+		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
 		size_t tempSceneElementIDsSize;
-		char** tempSceneElementIDs;
+        AJ_PSTR* tempSceneElementIDs;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("as", &tempSceneElementIDsSize, &tempSceneElementIDs))
 
 		t_SceneElementIDs.clear();
@@ -281,7 +284,9 @@ QStatus ControllerServiceSceneElementBusObject::GetAllSceneElementIDs(uint32_t& 
 	return status;
 }
 
-QStatus ControllerServiceSceneElementBusObject::GetSceneElement(const char* t_SceneElementID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedSceneElementID, std::vector<qcc::String>& t_LampIDs, std::vector<qcc::String>& t_LampGroupIDs, qcc::String& t_EffectID)
+QStatus ControllerServiceSceneElementBusObject::GetSceneElement(AJ_PCSTR t_SceneElementID,
+    uint32_t& t_ResponseCode, qcc::String& t_RetrievedSceneElementID, std::vector<qcc::String>& t_LampIDs,
+    std::vector<qcc::String>& t_LampGroupIDs, qcc::String& t_EffectID)
 {
 	QStatus status = ER_OK;
 
@@ -301,14 +306,14 @@ QStatus ControllerServiceSceneElementBusObject::GetSceneElement(const char* t_Sc
 
 		ajn::Message responseMessage(*m_BusAttachment);
 		CHECK_RETURN(proxyBusObj->MethodCall(SCENEELEMENT_INTERFACE_NAME, "GetSceneElement", msgArg, 1, responseMessage))
-			CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
+		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedSceneElementID;
+        AJ_PSTR tempRetrievedSceneElementID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedSceneElementID))
 		t_RetrievedSceneElementID = qcc::String(tempRetrievedSceneElementID);
 
 		size_t tempLampIDsSize;
-		char** tempLampIDs;
+        AJ_PSTR* tempLampIDs;
 		CHECK_RETURN(responseMessage->GetArg(2)->Get("as", &tempLampIDsSize, &tempLampIDs))
 
 		t_LampIDs.clear();
@@ -318,7 +323,7 @@ QStatus ControllerServiceSceneElementBusObject::GetSceneElement(const char* t_Sc
 		}
 
 		size_t tempLampGroupIDsSize;
-		char** tempLampGroupIDs;
+        AJ_PSTR* tempLampGroupIDs;
 		CHECK_RETURN(responseMessage->GetArg(3)->Get("as", &tempLampGroupIDsSize, &tempLampGroupIDs))
 
 		t_LampGroupIDs.clear();
@@ -327,7 +332,7 @@ QStatus ControllerServiceSceneElementBusObject::GetSceneElement(const char* t_Sc
 			t_LampGroupIDs.push_back(tempLampGroupIDs[i]);
 		}
 
-		char* tempEffectID;
+        AJ_PSTR tempEffectID;
 		CHECK_RETURN(responseMessage->GetArg(4)->Get("s", &tempEffectID))
 		t_EffectID = qcc::String(tempEffectID);
 	}
@@ -335,7 +340,8 @@ QStatus ControllerServiceSceneElementBusObject::GetSceneElement(const char* t_Sc
 	return status;
 }
 
-QStatus ControllerServiceSceneElementBusObject::GetSceneElementName(const char* t_SceneElementID, const char* t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedSceneElementID, qcc::String& t_RetrievedLanguage, qcc::String& t_SceneElementName)
+QStatus ControllerServiceSceneElementBusObject::GetSceneElementName(AJ_PCSTR t_SceneElementID, AJ_PCSTR t_Language,
+    uint32_t& t_ResponseCode, qcc::String& t_RetrievedSceneElementID, qcc::String& t_RetrievedLanguage, qcc::String& t_SceneElementName)
 {
 	QStatus status = ER_OK;
 
@@ -358,15 +364,15 @@ QStatus ControllerServiceSceneElementBusObject::GetSceneElementName(const char* 
 		CHECK_RETURN(proxyBusObj->MethodCall(SCENEELEMENT_INTERFACE_NAME, "GetSceneElementName", msgArg, 2, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedSceneElementID;
+        AJ_PSTR tempRetrievedSceneElementID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedSceneElementID))
 		t_RetrievedSceneElementID = qcc::String(tempRetrievedSceneElementID);
 
-		char* tempRetrievedLanguage;
+        AJ_PSTR tempRetrievedLanguage;
 		CHECK_RETURN(responseMessage->GetArg(2)->Get("s", &tempRetrievedLanguage))
 		t_RetrievedLanguage = qcc::String(tempRetrievedLanguage);
 
-		char* tempSceneElementName;
+        AJ_PSTR tempSceneElementName;
 		CHECK_RETURN(responseMessage->GetArg(3)->Get("s", &tempSceneElementName))
 		t_SceneElementName = qcc::String(tempSceneElementName);
 	}
@@ -374,7 +380,8 @@ QStatus ControllerServiceSceneElementBusObject::GetSceneElementName(const char* 
 	return status;
 }
 
-QStatus ControllerServiceSceneElementBusObject::SetSceneElementName(const char* t_SceneElementID, const char* t_SceneElementName, const char* t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedSceneElementID, qcc::String& t_RetrievedLanguage)
+QStatus ControllerServiceSceneElementBusObject::SetSceneElementName(AJ_PCSTR t_SceneElementID, AJ_PCSTR t_SceneElementName,
+    AJ_PCSTR t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedSceneElementID, qcc::String& t_RetrievedLanguage)
 {
 	QStatus status = ER_OK;
 
@@ -398,11 +405,11 @@ QStatus ControllerServiceSceneElementBusObject::SetSceneElementName(const char* 
 		CHECK_RETURN(proxyBusObj->MethodCall(SCENEELEMENT_INTERFACE_NAME, "SetSceneElementName", msgArg, 3, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedSceneElementID;
+        AJ_PSTR tempRetrievedSceneElementID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedSceneElementID))
 		t_RetrievedSceneElementID = qcc::String(tempRetrievedSceneElementID);
 
-		char* tempRetrievedLanguage;
+        AJ_PSTR tempRetrievedLanguage;
 		CHECK_RETURN(responseMessage->GetArg(2)->Get("s", &tempRetrievedLanguage))
 			t_RetrievedLanguage = qcc::String(tempRetrievedLanguage);
 	}
@@ -410,7 +417,9 @@ QStatus ControllerServiceSceneElementBusObject::SetSceneElementName(const char* 
 	return status;
 }
 
-QStatus ControllerServiceSceneElementBusObject::UpdateSceneElement(const char* t_SceneElementID, const std::vector<const char*>& t_LampIDs, const std::vector<const char*>& t_LampGroupIDs, const char* t_EffectID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedSceneElementID)
+QStatus ControllerServiceSceneElementBusObject::UpdateSceneElement(AJ_PCSTR t_SceneElementID,
+    const std::vector<AJ_PCSTR>& t_LampIDs, const std::vector<AJ_PCSTR>& t_LampGroupIDs,
+    AJ_PCSTR t_EffectID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedSceneElementID)
 {
 	QStatus status = ER_OK;
 
@@ -435,7 +444,7 @@ QStatus ControllerServiceSceneElementBusObject::UpdateSceneElement(const char* t
 		CHECK_RETURN(proxyBusObj->MethodCall(SCENEELEMENT_INTERFACE_NAME, "UpdateSceneElement", msgArg, 4, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedSceneElementID;
+        AJ_PSTR tempRetrievedSceneElementID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedSceneElementID))
 		t_RetrievedSceneElementID = qcc::String(tempRetrievedSceneElementID);
 	}

@@ -19,9 +19,9 @@
 ECDHESpekeHandlerImpl::ECDHESpekeHandlerImpl(ECDHESpekeStore* t_PasswordStore, std::string t_DefaultPassword) :
 	m_PasswordStore(t_PasswordStore), m_DefaultPassword(t_DefaultPassword) {}
 
-const char* ECDHESpekeHandlerImpl::getPassword(std::string t_PeerName)
+AJ_PCSTR ECDHESpekeHandlerImpl::getPassword(std::string t_PeerName)
 {
-	const char* securedSessionPassword = m_PasswordStore->getPassword(t_PeerName);
+	AJ_PCSTR securedSessionPassword = m_PasswordStore->getPassword();
 
 	securedSessionPassword = (securedSessionPassword != nullptr) ? securedSessionPassword : m_DefaultPassword.c_str();
 	LOG(INFO) << "Providing password for " << t_PeerName << " as " << securedSessionPassword;

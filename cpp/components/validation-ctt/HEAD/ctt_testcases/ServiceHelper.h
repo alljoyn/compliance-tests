@@ -16,7 +16,6 @@
 #pragma once
 
 #include "AuthListeners.h"
-//#include "AuthPasswordHandlerImpl.h"
 #include "BusAttachmentMgr.h"
 #include "DeviceAnnouncementHandler.h"
 #include "ECDHENullHandlerImpl.h"
@@ -26,9 +25,8 @@
 #include "ECDHEEcdsaStore.h"
 #include "ECDHESpekeHandlerImpl.h"
 #include "ECDHESpekeStore.h"
-//#include "PasswordStore.h"
+#include "ExtendedSecurityApplicationProxy.h"
 #include "ServiceAvailabilityHandler.h"
-//#include "SrpAnonymousKeyListener.h"
 #include "SrpKeyXHandlerImpl.h"
 #include "SrpKeyXStore.h"
 #include "SrpLogonHandlerImpl.h"
@@ -45,102 +43,97 @@ class ServiceHelper
 {
 
 public:
-	// About
-	QStatus initializeClient(const std::string&, const std::string&, const uint8_t*, 
-		const bool, const std::string&, 
-		const bool, const std::string&, const std::string&,
-		const bool, 
-		const bool, const std::string&, 
-		const bool, const std::string&, const std::string&, 
-		const bool, const std::string&);
-	QStatus initializeSender(const std::string&, const std::string&, const uint8_t*);
-	AboutAnnouncementDetails* waitForNextDeviceAnnouncement(const long);
-	ajn::AboutProxy* connectAboutProxy(const AboutAnnouncementDetails&);
-	ajn::AboutIconProxy* connectAboutIconProxy(const AboutAnnouncementDetails&);
-	void joinSession(const std::string&, const uint16_t);
-	QStatus release();
-	XMLBasedBusIntrospector getBusIntrospector(const AboutAnnouncementDetails&);
-	ajn::SessionId getSessionId();
+    // About
+    QStatus initializeClient(const std::string&, const std::string&, const uint8_t*);
+    QStatus initializeSender(const std::string&, const std::string&, const uint8_t*);
+    AboutAnnouncementDetails* waitForNextDeviceAnnouncement(long);
+    ajn::AboutProxy* connectAboutProxy(const AboutAnnouncementDetails&);
+    ajn::AboutIconProxy* connectAboutIconProxy(const AboutAnnouncementDetails&);
+    void joinSession(const std::string&, uint16_t);
+    QStatus release();
+    XMLBasedBusIntrospector getBusIntrospector(const AboutAnnouncementDetails&);
+    ajn::SessionId getSessionId();
 
-	// Events and Actions
-	ajn::ProxyBusObject getProxyBusObject(const AboutAnnouncementDetails&, const std::string&);
-	BusAttachmentMgr* getBusAttachmentMgr();
+    // Events and Actions
+    ajn::ProxyBusObject getProxyBusObject(const AboutAnnouncementDetails&, const std::string&);
+    BusAttachmentMgr* getBusAttachmentMgr();
 
-	// Notification
-	ajn::services::NotificationSender* initNotificationSender(ajn::AboutData*);
-	void initNotificationReceiver(ajn::services::NotificationReceiver*);
-	void shutdownNotificationService();
+    // Notification
+    ajn::services::NotificationSender* initNotificationSender(ajn::AboutData*);
+    void initNotificationReceiver(ajn::services::NotificationReceiver*);
+    void shutdownNotificationService();
 
-	// Configuration
-	ajn::services::ConfigClient* connectConfigClient(ajn::SessionId&);
-	void clearKeyStore();
-	QStatus enableAuthentication(const std::string&);
-	bool isPeerAuthenticationSuccessful(const AboutAnnouncementDetails&);
-	void clearQueuedDeviceAnnouncements();
+    // Configuration
+    ajn::services::ConfigClient* connectConfigClient(ajn::SessionId&);
+    void clearKeyStore();
+    QStatus enableAuthentication(AJ_PCSTR,
+        bool, const std::string&,
+        bool, const std::string&, const std::string&,
+        bool,
+        bool, const std::string&,
+        bool, const std::string&, const std::string&,
+        bool, const std::string&);
+    bool isPeerAuthenticationSuccessful(const AboutAnnouncementDetails&);
+    void clearQueuedDeviceAnnouncements();
 
-	void setSrpKeyXPincode(const AboutAnnouncementDetails&, const char*);
-	void setSrpLogonPass(const AboutAnnouncementDetails&, const char*);
-	void setEcdhePskPassword(const AboutAnnouncementDetails&, const char*);
-	void setEcdheEcdsaCredentials(const AboutAnnouncementDetails&, const char*, const char*);
-	void setEcdheSpekePassword(const AboutAnnouncementDetails&, const char*);
+    void setSrpKeyXPincode(const AboutAnnouncementDetails&, AJ_PCSTR);
+    void setSrpLogonPass(const AboutAnnouncementDetails&, AJ_PCSTR);
+    void setEcdhePskPassword(const AboutAnnouncementDetails&, AJ_PCSTR);
+    void setEcdheEcdsaCredentials(const AboutAnnouncementDetails&, AJ_PCSTR, AJ_PCSTR);
+    void setEcdheSpekePassword(const AboutAnnouncementDetails&, AJ_PCSTR);
 
-	// ControlPanel
-	void clearPeerAuthenticationFlags(const AboutAnnouncementDetails&);
+    // ControlPanel
+    void clearPeerAuthenticationFlags(const AboutAnnouncementDetails&);
 
-	// Onboarding
-	ajn::services::OnboardingClient* connectOnboardingClient(const AboutAnnouncementDetails&);
+    // Onboarding
+    ajn::services::OnboardingClient* connectOnboardingClient(const AboutAnnouncementDetails&);
 
-	// LSF_Lamp
-	//void waitForSessionToClose(const uint16_t);
-	
+    // Security 2.0
+    ExtendedSecurityApplicationProxy* connectSecurityApplicationProxy(const AboutAnnouncementDetails&);
+    
 private:
-	static uint32_t LINK_TIMEOUT_IN_SECONDS;
+    static uint32_t LINK_TIMEOUT_IN_SECONDS;
 
-	BusAttachmentMgr* m_BusAttachmentMgr{ nullptr };
-	
-	DeviceAnnouncementHandler* m_DeviceAnnouncementHandler{ nullptr };
-	ServiceAvailabilityHandler m_SessionListener;
-	ajn::SessionId m_SessionId;
-	ajn::services::NotificationService* m_NotificationService{ nullptr };
-	AuthListeners* m_AuthListener{ nullptr };
+    BusAttachmentMgr* m_BusAttachmentMgr{ nullptr };
+    
+    DeviceAnnouncementHandler* m_DeviceAnnouncementHandler{ nullptr };
+    ServiceAvailabilityHandler m_SessionListener;
+    ajn::SessionId m_SessionId;
+    ajn::services::NotificationService* m_NotificationService{ nullptr };
+    AuthListeners* m_AuthListener{ nullptr };
 
-	// ALLJOYN_SRP_KEYX
-	SrpKeyXStore* m_SrpKeyXStore{ nullptr };
-	SrpKeyXHandlerImpl* m_SrpKeyXHandlerImpl{ nullptr };
-	bool m_SupportsSrpKeyX;
-	std::string m_DefaultSrpKeyXPincode = std::string("");
-	// ALLJOYN_SRP_LOGON
-	SrpLogonStore* m_SrpLogonStore{ nullptr };
-	SrpLogonHandlerImpl* m_SrpLogonHandlerImpl{ nullptr };
-	bool m_SupportsSrpLogon;
-	std::string m_DefaultLogonUser = std::string("");
-	std::string m_DefaultLogonPass = std::string("");
-	// ALLJOYN_ECDHE_NULL
-	ECDHENullHandlerImpl* m_ECDHENullHandlerImpl{ nullptr };
-	bool m_SupportsEcdheNull;
-	// ALLJOYN_ECDHE_PSK
-	ECDHEPskStore* m_ECDHEPskStore{ nullptr };
-	ECDHEPskHandlerImpl* m_ECDHEPskHandlerImpl{ nullptr };
-	bool m_SupportsEcdhePsk;
-	std::string m_DefaultECDHEPskPassword = std::string("");
-	// ALLJOYN_ECDHE_ECDSA
-	ECDHEEcdsaStore* m_ECDHEEcdsaStore{ nullptr };
-	ECDHEEcdsaHandlerImpl* m_ECDHEEcdsaHandlerImpl{ nullptr };
-	bool m_SupportsEcdheEcdsa;
-	std::string m_DefaultECDHEEcdsaPrivateKey = std::string("");
-	std::string m_DefaultECDHEEcdsaCertChain = std::string("");
-	// ALLJOYN_ECDHE_SPEKE
-	ECDHESpekeStore* m_ECDHESpekeStore{ nullptr };
-	ECDHESpekeHandlerImpl* m_ECDHESpekeHandlerImpl{ nullptr };
-	bool m_SupportsEcdheSpeke;
-	std::string m_DefaultECDHESpekePassword = std::string("");
-	
-	QStatus initialize(const std::string&, const std::string&, const uint8_t*, const bool,
-		const bool, const std::string&,
-		const bool, const std::string&, const std::string&,
-		const bool,
-		const bool, const std::string&,
-		const bool, const std::string&, const std::string&,
-		const bool, const std::string&);
-	void disconnectBusAttachment();
+    // ALLJOYN_SRP_KEYX
+    SrpKeyXStore* m_SrpKeyXStore{ nullptr };
+    SrpKeyXHandlerImpl* m_SrpKeyXHandlerImpl{ nullptr };
+    bool m_SupportsSrpKeyX = false;
+    std::string m_DefaultSrpKeyXPincode = std::string("");
+    // ALLJOYN_SRP_LOGON
+    SrpLogonStore* m_SrpLogonStore{ nullptr };
+    SrpLogonHandlerImpl* m_SrpLogonHandlerImpl{ nullptr };
+    bool m_SupportsSrpLogon = false;
+    std::string m_DefaultLogonUser = std::string("");
+    std::string m_DefaultLogonPass = std::string("");
+    // ALLJOYN_ECDHE_NULL
+    ECDHENullHandlerImpl* m_ECDHENullHandlerImpl{ nullptr };
+    bool m_SupportsEcdheNull = false;
+    // ALLJOYN_ECDHE_PSK
+    ECDHEPskStore* m_ECDHEPskStore{ nullptr };
+    ECDHEPskHandlerImpl* m_ECDHEPskHandlerImpl{ nullptr };
+    bool m_SupportsEcdhePsk = false;
+    std::string m_DefaultECDHEPskPassword = std::string("");
+    // ALLJOYN_ECDHE_ECDSA
+    ECDHEEcdsaStore* m_ECDHEEcdsaStore{ nullptr };
+    ECDHEEcdsaHandlerImpl* m_ECDHEEcdsaHandlerImpl{ nullptr };
+    bool m_SupportsEcdheEcdsa = false;
+    std::string m_DefaultECDHEEcdsaPrivateKey = std::string("");
+    std::string m_DefaultECDHEEcdsaCertChain = std::string("");
+    // ALLJOYN_ECDHE_SPEKE
+    ECDHESpekeStore* m_ECDHESpekeStore{ nullptr };
+    ECDHESpekeHandlerImpl* m_ECDHESpekeHandlerImpl{ nullptr };
+    bool m_SupportsEcdheSpeke = false;
+    std::string m_DefaultECDHESpekePassword = std::string("");
+    
+    QStatus initialize(const std::string&, const std::string&, const uint8_t*, bool);
+    void releaseAuthenticationClasses();
+    void disconnectBusAttachment();
 };

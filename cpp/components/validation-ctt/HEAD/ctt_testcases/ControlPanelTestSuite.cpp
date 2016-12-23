@@ -24,25 +24,23 @@ using namespace std;
 using namespace ajn;
 using namespace services;
 
-const char* ControlPanelTestSuite::BUS_APPLICATION_NAME = "ControlPanelTestSuite";
-const char* ControlPanelTestSuite::CONTROLPANEL_INTERFACE_NAME = "org.alljoyn.ControlPanel.ControlPanel";
-const char* ControlPanelTestSuite::CONTAINER_INTERFACE_NAME = "org.alljoyn.ControlPanel.Container";
-const char* ControlPanelTestSuite::SECURED_CONTAINER_INTERFACE_NAME = "org.alljoyn.ControlPanel.SecuredContainer";
-const char* ControlPanelTestSuite::NOTIFICATION_ACTION_INTERFACE_NAME = "org.alljoyn.ControlPanel.NotificationAction";
-//const char* ControlPanelTestSuite::LIST_PROPERTY_INTERFACE_NAME = "org.alljoyn.ControlPanel.ListProperty";
-//const char* ControlPanelTestSuite::SECURED_LIST_PROPERTY_INTERFACE_NAME = "org.alljoyn.ControlPanel.SecuredListProperty";
-const char* ControlPanelTestSuite::PROPERTY_INTERFACE_NAME = "org.alljoyn.ControlPanel.Property";
-const char* ControlPanelTestSuite::SECURED_PROPERTY_INTERFACE_NAME = "org.alljoyn.ControlPanel.SecuredProperty";
-const char* ControlPanelTestSuite::LABEL_PROPERTY_INTERFACE_NAME = "org.alljoyn.ControlPanel.LabelProperty";
-const char* ControlPanelTestSuite::ACTION_INTERFACE_NAME = "org.alljoyn.ControlPanel.Action";
-const char* ControlPanelTestSuite::SECURED_ACTION_INTERFACE_NAME = "org.alljoyn.ControlPanel.SecuredAction";
-const char* ControlPanelTestSuite::DIALOG_INTERFACE_NAME = "org.alljoyn.ControlPanel.Dialog";
-const char* ControlPanelTestSuite::SECURED_DIALOG_INTERFACE_NAME = "org.alljoyn.ControlPanel.SecuredDialog";
-const char* ControlPanelTestSuite::HTTP_CONTROL_INTERFACE_NAME = "org.alljoyn.ControlPanel.HttpControl";
+AJ_PCSTR ControlPanelTestSuite::BUS_APPLICATION_NAME = "ControlPanelTestSuite";
+AJ_PCSTR ControlPanelTestSuite::CONTROLPANEL_INTERFACE_NAME = "org.alljoyn.ControlPanel.ControlPanel";
+AJ_PCSTR ControlPanelTestSuite::CONTAINER_INTERFACE_NAME = "org.alljoyn.ControlPanel.Container";
+AJ_PCSTR ControlPanelTestSuite::SECURED_CONTAINER_INTERFACE_NAME = "org.alljoyn.ControlPanel.SecuredContainer";
+AJ_PCSTR ControlPanelTestSuite::NOTIFICATION_ACTION_INTERFACE_NAME = "org.alljoyn.ControlPanel.NotificationAction";
+AJ_PCSTR ControlPanelTestSuite::PROPERTY_INTERFACE_NAME = "org.alljoyn.ControlPanel.Property";
+AJ_PCSTR ControlPanelTestSuite::SECURED_PROPERTY_INTERFACE_NAME = "org.alljoyn.ControlPanel.SecuredProperty";
+AJ_PCSTR ControlPanelTestSuite::LABEL_PROPERTY_INTERFACE_NAME = "org.alljoyn.ControlPanel.LabelProperty";
+AJ_PCSTR ControlPanelTestSuite::ACTION_INTERFACE_NAME = "org.alljoyn.ControlPanel.Action";
+AJ_PCSTR ControlPanelTestSuite::SECURED_ACTION_INTERFACE_NAME = "org.alljoyn.ControlPanel.SecuredAction";
+AJ_PCSTR ControlPanelTestSuite::DIALOG_INTERFACE_NAME = "org.alljoyn.ControlPanel.Dialog";
+AJ_PCSTR ControlPanelTestSuite::SECURED_DIALOG_INTERFACE_NAME = "org.alljoyn.ControlPanel.SecuredDialog";
+AJ_PCSTR ControlPanelTestSuite::HTTP_CONTROL_INTERFACE_NAME = "org.alljoyn.ControlPanel.HttpControl";
 
-const char* ControlPanelTestSuite::CONTROLPANEL_PATH_PATTERN = "/ControlPanel/[^/]+/[^/]+";
-const char* ControlPanelTestSuite::HTTPCONTROL_PATH_PATTERN = "/ControlPanel/[^/]+/HTTPControl";
-const char* ControlPanelTestSuite::URL_REGEX = R"(^(([^:\/?#]+):)?(//([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?)";
+AJ_PCSTR ControlPanelTestSuite::CONTROLPANEL_PATH_PATTERN = "/ControlPanel/[^/]+/[^/]+";
+AJ_PCSTR ControlPanelTestSuite::HTTPCONTROL_PATH_PATTERN = "/ControlPanel/[^/]+/HTTPControl";
+AJ_PCSTR ControlPanelTestSuite::URL_REGEX = R"(^(([^:\/?#]+):)?(//([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?)";
 
 ControlPanelTestSuite::ControlPanelTestSuite() : IOManager(ServiceFramework::CONTROL_PANEL)
 {
@@ -58,13 +56,7 @@ void ControlPanelTestSuite::SetUp()
 	m_DutAppId = ArrayParser::parseAppIdFromString(m_IxitMap.at("IXITCO_AppId"));
 
 	m_ServiceHelper = new ServiceHelper();
-	QStatus status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId,
-		m_IcsMap.at("ICSCO_SrpKeyX"), m_IxitMap.at("IXITCO_SrpKeyXPincode"),
-		m_IcsMap.at("ICSCO_SrpLogon"), m_IxitMap.at("IXITCO_SrpLogonUser"), m_IxitMap.at("IXITCO_SrpLogonPass"),
-		m_IcsMap.at("ICSCO_EcdheNull"),
-		m_IcsMap.at("ICSCO_EcdhePsk"), m_IxitMap.at("IXITCO_EcdhePskPassword"),
-		m_IcsMap.at("ICSCO_EcdheEcdsa"), m_IxitMap.at("IXITCO_EcdheEcdsaPrivateKey"), m_IxitMap.at("IXITCO_EcdheEcdsaCertChain"),
-		m_IcsMap.at("ICSCO_EcdheSpeke"), m_IxitMap.at("IXITCO_EcdheSpekePassword"));
+	QStatus status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId);
 	ASSERT_EQ(status, ER_OK) << "serviceHelper Initialize() failed: " << QCC_StatusText(status);
 
 	m_DeviceAboutAnnouncement =
@@ -79,7 +71,13 @@ void ControlPanelTestSuite::SetUp()
 	ASSERT_NE(m_AboutProxy, nullptr) << "AboutProxy connection failed";
 	SUCCEED() << "AboutProxy connected";
 
-	m_ServiceHelper->enableAuthentication("/Keystore");
+	m_ServiceHelper->enableAuthentication("/Keystore",
+		m_IcsMap.at("ICSCO_SrpKeyX"), m_IxitMap.at("IXITCO_SrpKeyXPincode"),
+		m_IcsMap.at("ICSCO_SrpLogon"), m_IxitMap.at("IXITCO_SrpLogonUser"), m_IxitMap.at("IXITCO_SrpLogonPass"),
+		m_IcsMap.at("ICSCO_EcdheNull"),
+		m_IcsMap.at("ICSCO_EcdhePsk"), m_IxitMap.at("IXITCO_EcdhePskPassword"),
+		m_IcsMap.at("ICSCO_EcdheEcdsa"), m_IxitMap.at("IXITCO_EcdheEcdsaPrivateKey"), m_IxitMap.at("IXITCO_EcdheEcdsaCertChain"),
+		m_IcsMap.at("ICSCO_EcdheSpeke"), m_IxitMap.at("IXITCO_EcdheSpekePassword"));
 	m_BusIntrospector = new XMLBasedBusIntrospector(m_ServiceHelper->getBusIntrospector(*m_DeviceAboutAnnouncement));
 
 	LOG(INFO) << "test setUp done";
@@ -231,7 +229,7 @@ TEST_F(ControlPanelTestSuite, ControlPanel_v1_02)
 }
 
 void ControlPanelTestSuite::validateContainerInterfaceDetailList(const list<InterfaceDetail>& t_InterfaceDetailList,
-	const bool t_IsSecured)
+	bool t_IsSecured)
 {
 	for (auto interfaceDetail : t_InterfaceDetailList)
 	{
@@ -247,16 +245,14 @@ void ControlPanelTestSuite::assertValidAncestorIsPresentForContainer(const std::
 	ASSERT_TRUE(m_BusIntrospector->isAncestorInterfacePresent(t_Path, CONTROLPANEL_INTERFACE_NAME)
 		|| m_BusIntrospector->isAncestorInterfacePresent(t_Path, NOTIFICATION_ACTION_INTERFACE_NAME)
 		|| m_BusIntrospector->isAncestorInterfacePresent(t_Path, CONTAINER_INTERFACE_NAME)
-		|| m_BusIntrospector->isAncestorInterfacePresent(t_Path, SECURED_CONTAINER_INTERFACE_NAME)
-		/*|| m_BusIntrospector->isAncestorInterfacePresent(t_Path, LIST_PROPERTY_INTERFACE_NAME)
-		|| m_BusIntrospector->isAncestorInterfacePresent(t_Path, SECURED_LIST_PROPERTY_INTERFACE_NAME)*/)
+		|| m_BusIntrospector->isAncestorInterfacePresent(t_Path, SECURED_CONTAINER_INTERFACE_NAME))
 		<< "No parent bus object that implements ControlPanel nor NotificationAction nor Container nor SecuredContainer nor ListProperty nor SecuredListProperty interface found";
 }
 
-void ControlPanelTestSuite::validateContainerBusObject(const std::string& t_Path, const bool t_IsSecured)
+void ControlPanelTestSuite::validateContainerBusObject(const std::string& t_Path, bool t_IsSecured)
 {
 	ProxyBusObject* proxyBusObject = m_BusIntrospector->getProxyBusObject(t_Path);
-	const char* targetInterface = t_IsSecured ? SECURED_CONTAINER_INTERFACE_NAME : CONTAINER_INTERFACE_NAME;
+	AJ_PCSTR targetInterface = t_IsSecured ? SECURED_CONTAINER_INTERFACE_NAME : CONTAINER_INTERFACE_NAME;
 
 	uint16_t version;
 	QStatus status = getVersionPropertyFromInterface(proxyBusObject, targetInterface, version);
@@ -302,7 +298,7 @@ QStatus ControlPanelTestSuite::getStatesPropertyFromInterface(ProxyBusObject* t_
 	}
 }
 
-void ControlPanelTestSuite::validateContainerParameters(const size_t t_OptParamsSize,
+void ControlPanelTestSuite::validateContainerParameters(size_t t_OptParamsSize,
 	const MsgArg* t_OptParams)
 {
 	validateOptionalParameter0(t_OptParamsSize, t_OptParams);
@@ -310,11 +306,11 @@ void ControlPanelTestSuite::validateContainerParameters(const size_t t_OptParams
 	validateContainerParameterLayoutHints(t_OptParamsSize, t_OptParams);
 }
 
-void ControlPanelTestSuite::validateOptionalParameter0(const size_t t_OptParamsSize, const MsgArg* t_OptParams)
+void ControlPanelTestSuite::validateOptionalParameter0(size_t t_OptParamsSize, const MsgArg* t_OptParams)
 {
 	for (size_t i = 0; i < t_OptParamsSize; ++i)
 	{
-		char* str;
+        AJ_PSTR str;
 		uint16_t key;
 		QStatus status = t_OptParams[i].Get("{qs}", &key, &str);
 
@@ -327,7 +323,7 @@ void ControlPanelTestSuite::validateOptionalParameter0(const size_t t_OptParamsS
 	}
 }
 
-void ControlPanelTestSuite::validateOptionalParameter1(const size_t t_OptParamsSize, const MsgArg* t_OptParams)
+void ControlPanelTestSuite::validateOptionalParameter1(size_t t_OptParamsSize, const MsgArg* t_OptParams)
 {
 	for (size_t i = 0; i < t_OptParamsSize; ++i)
 	{
@@ -344,7 +340,7 @@ void ControlPanelTestSuite::validateOptionalParameter1(const size_t t_OptParamsS
 	}
 }
 
-void ControlPanelTestSuite::validateContainerParameterLayoutHints(const size_t t_OptParamsSize, const MsgArg* t_OptParams)
+void ControlPanelTestSuite::validateContainerParameterLayoutHints(size_t t_OptParamsSize, const MsgArg* t_OptParams)
 {
 	for (size_t i = 0; i < t_OptParamsSize; ++i)
 	{
@@ -397,7 +393,7 @@ TEST_F(ControlPanelTestSuite, ControlPanel_v1_03)
 }
 
 void ControlPanelTestSuite::validatePropertyInterfaceDetailList(const list<InterfaceDetail>& t_InterfaceDetailList,
-	const bool t_IsSecured)
+	bool t_IsSecured)
 {
 	for (auto interfaceDetail : t_InterfaceDetailList)
 	{
@@ -415,10 +411,10 @@ void ControlPanelTestSuite::assertAncestorContainerIsPresent(const string& t_Pat
 		<< "No parent bus object that implements Container nor SecuredContainer interface found";
 }
 
-void ControlPanelTestSuite::validatePropertyBusObject(const string& t_Path, const bool t_IsSecured)
+void ControlPanelTestSuite::validatePropertyBusObject(const string& t_Path, bool t_IsSecured)
 {
 	ProxyBusObject* proxyBusObject = m_BusIntrospector->getProxyBusObject(t_Path);
-	const char* targetInterface = t_IsSecured ? SECURED_PROPERTY_INTERFACE_NAME : PROPERTY_INTERFACE_NAME;
+	AJ_PCSTR targetInterface = t_IsSecured ? SECURED_PROPERTY_INTERFACE_NAME : PROPERTY_INTERFACE_NAME;
 
 	uint16_t version;
 	QStatus status = getVersionPropertyFromInterface(proxyBusObject, targetInterface, version);
@@ -453,7 +449,7 @@ void ControlPanelTestSuite::validatePropertyBusObject(const string& t_Path, cons
 	validatePropertyControlParameters(optParamsSize, optParams, values);
 }
 
-void ControlPanelTestSuite::validatePropertyControlParameters(const size_t t_OptParamsSize, const MsgArg* t_OptParams,
+void ControlPanelTestSuite::validatePropertyControlParameters(size_t t_OptParamsSize, const MsgArg* t_OptParams,
 	const MsgArg t_PropertyValue)
 {
 	validateOptionalParameter0(t_OptParamsSize, t_OptParams);
@@ -464,7 +460,7 @@ void ControlPanelTestSuite::validatePropertyControlParameters(const size_t t_Opt
 	validatePropertyControlOptionalParameter5(t_OptParamsSize, t_OptParams, t_PropertyValue);
 }
 
-void ControlPanelTestSuite::validatePropertyControlParameterLayoutHints(const size_t t_OptParamsSize, const MsgArg* t_OptParams,
+void ControlPanelTestSuite::validatePropertyControlParameterLayoutHints(size_t t_OptParamsSize, const MsgArg* t_OptParams,
 	const MsgArg t_PropertyValue)
 {
 	for (size_t i = 0; i < t_OptParamsSize; ++i)
@@ -495,8 +491,8 @@ void ControlPanelTestSuite::validatePropertyControlParameterLayoutHints(const si
 	}
 }
 
-void ControlPanelTestSuite::validateBasedOnLayoutHintId(const size_t t_OptParamsSize, const MsgArg* t_OptParams,
-	const uint16_t t_LayoutHintId, const MsgArg t_PropertyValue)
+void ControlPanelTestSuite::validateBasedOnLayoutHintId(size_t t_OptParamsSize, const MsgArg* t_OptParams,
+	uint16_t t_LayoutHintId, const MsgArg t_PropertyValue)
 {
 	if (t_LayoutHintId == 1)
 	{
@@ -533,8 +529,8 @@ void ControlPanelTestSuite::validateBasedOnLayoutHintId(const size_t t_OptParams
 	}
 }
 
-void ControlPanelTestSuite::assertOptionalParameter4IsPresent(const size_t t_OptParamsSize, const MsgArg* t_OptParams,
-	const uint16_t t_LayoutHintId)
+void ControlPanelTestSuite::assertOptionalParameter4IsPresent(size_t t_OptParamsSize, const MsgArg* t_OptParams,
+	uint16_t t_LayoutHintId)
 {
 	for (size_t i = 0; i < t_OptParamsSize; ++i)
 	{
@@ -550,7 +546,7 @@ void ControlPanelTestSuite::assertOptionalParameter4IsPresent(const size_t t_Opt
 			struct
 			{
 				MsgArg* value;
-				char* label;
+                AJ_PSTR label;
 			} constrainToValue;
 
 			status = optParam->Get("a(vs)", &size, &constrainToValue.value, &constrainToValue.label);
@@ -563,8 +559,8 @@ void ControlPanelTestSuite::assertOptionalParameter4IsPresent(const size_t t_Opt
 	}
 }
 
-void ControlPanelTestSuite::validateDateTimeHint(const uint16_t t_LayoutHintId,
-	const ajn::MsgArg t_PropertyValue, const uint16_t t_ComposyteType)
+void ControlPanelTestSuite::validateDateTimeHint(uint16_t t_LayoutHintId,
+	const ajn::MsgArg t_PropertyValue, uint16_t t_ComposyteType)
 {
 	ASSERT_TRUE(t_PropertyValue.v_variant.val->v_variant.val->HasSignature("q(qqq)"))
 		<< "Signature does not match for property Value when hint id is " << t_LayoutHintId;
@@ -595,12 +591,12 @@ void ControlPanelTestSuite::validateDateTimeHint(const uint16_t t_LayoutHintId,
 	ASSERT_EQ(t_ComposyteType, key) << "The first value in the composite type does not match when hint id is " << t_LayoutHintId;
 }
 
-void ControlPanelTestSuite::validatePropertyControlOptionalParameter3(const size_t t_OptParamsSize,
+void ControlPanelTestSuite::validatePropertyControlOptionalParameter3(size_t t_OptParamsSize,
 	const MsgArg* t_OptParams)
 {
 	for (size_t i = 0; i < t_OptParamsSize; ++i)
 	{
-		char* value;
+        AJ_PSTR value;
 		uint16_t key;
 
 		QStatus status = t_OptParams[i].Get("{qs}", &key, &value);
@@ -613,7 +609,7 @@ void ControlPanelTestSuite::validatePropertyControlOptionalParameter3(const size
 	}
 }
 
-void ControlPanelTestSuite::validatePropertyControlOptionalParameter4(const size_t t_OptParamsSize,
+void ControlPanelTestSuite::validatePropertyControlOptionalParameter4(size_t t_OptParamsSize,
 	const MsgArg* t_OptParams, const MsgArg t_PropertyValue)
 {
 	for (size_t i = 0; i < t_OptParamsSize; ++i)
@@ -622,7 +618,7 @@ void ControlPanelTestSuite::validatePropertyControlOptionalParameter4(const size
 		{
 			struct {
 				MsgArg* value;
-				char* label;
+                AJ_PSTR label;
 			} constraintToValue;
 			size_t size;
 			uint16_t key;
@@ -642,7 +638,7 @@ void ControlPanelTestSuite::validatePropertyControlOptionalParameter4(const size
 	}
 }
 
-void ControlPanelTestSuite::validatePropertyControlOptionalParameter5(const size_t t_OptParamsSize,
+void ControlPanelTestSuite::validatePropertyControlOptionalParameter5(size_t t_OptParamsSize,
 	const MsgArg* t_OptParams, const MsgArg t_PropertyValue)
 {
 	for (size_t i = 0; i < t_OptParamsSize; ++i)
@@ -723,7 +719,7 @@ void ControlPanelTestSuite::validateLabelPropertyBusObject(const string& t_Path)
 	MsgArg labelMsgArg;
 	proxyBusObject->GetProperty(LABEL_PROPERTY_INTERFACE_NAME, "Label", labelMsgArg);
 
-	const char* label;
+	AJ_PCSTR label;
 	ASSERT_EQ(ER_OK, labelMsgArg.Get("s", &label))
 		<< "Label property must be a string";
 
@@ -737,13 +733,13 @@ void ControlPanelTestSuite::validateLabelPropertyBusObject(const string& t_Path)
 	validateLabelPropertyParameters(optParamsSize, optParams);
 }
 
-void ControlPanelTestSuite::validateLabelPropertyParameters(const size_t t_OptParamsSize, const MsgArg* t_OptParams)
+void ControlPanelTestSuite::validateLabelPropertyParameters(size_t t_OptParamsSize, const MsgArg* t_OptParams)
 {
 	validateOptionalParameter1(t_OptParamsSize, t_OptParams);
 	validateParameterLayoutHints(t_OptParamsSize, t_OptParams);
 }
 
-void ControlPanelTestSuite::validateParameterLayoutHints(const size_t t_OptParamsSize, const MsgArg* t_OptParams)
+void ControlPanelTestSuite::validateParameterLayoutHints(size_t t_OptParamsSize, const MsgArg* t_OptParams)
 {
 	for (size_t i = 0; i < t_OptParamsSize; ++i)
 	{
@@ -795,7 +791,7 @@ TEST_F(ControlPanelTestSuite, ControlPanel_v1_05)
 }
 
 void ControlPanelTestSuite::validateActionInterfaceDetailList(const std::list<InterfaceDetail>& t_InterfaceDetailList,
-	const bool t_IsSecured)
+	bool t_IsSecured)
 {
 	for (auto interfaceDetail : t_InterfaceDetailList)
 	{
@@ -806,10 +802,10 @@ void ControlPanelTestSuite::validateActionInterfaceDetailList(const std::list<In
 	}
 }
 
-void ControlPanelTestSuite::validateActionBusObject(const string& t_Path, const bool t_IsSecured)
+void ControlPanelTestSuite::validateActionBusObject(const string& t_Path, bool t_IsSecured)
 {
 	ProxyBusObject* proxyBusObject = m_BusIntrospector->getProxyBusObject(t_Path);
-	const char* targetInterface = t_IsSecured ? SECURED_ACTION_INTERFACE_NAME : ACTION_INTERFACE_NAME;
+	AJ_PCSTR targetInterface = t_IsSecured ? SECURED_ACTION_INTERFACE_NAME : ACTION_INTERFACE_NAME;
 
 	uint16_t version;
 	QStatus status = getVersionPropertyFromInterface(proxyBusObject, targetInterface, version);
@@ -837,7 +833,7 @@ void ControlPanelTestSuite::validateActionBusObject(const string& t_Path, const 
 	validateActionParameters(optParamsSize, optParams);
 }
 
-void ControlPanelTestSuite::validateActionParameters(const size_t t_OptParamsSize, const MsgArg* t_OptParams)
+void ControlPanelTestSuite::validateActionParameters(size_t t_OptParamsSize, const MsgArg* t_OptParams)
 {
 	validateOptionalParameter0(t_OptParamsSize, t_OptParams);
 	validateOptionalParameter1(t_OptParamsSize, t_OptParams);
@@ -870,7 +866,7 @@ TEST_F(ControlPanelTestSuite, ControlPanel_v1_06)
 }
 
 void ControlPanelTestSuite::validateDialogInterfaceDetailList(const list<InterfaceDetail>& t_InterfaceDetailList,
-	const bool t_IsSecured)
+	bool t_IsSecured)
 {
 	for (auto interfaceDetail : t_InterfaceDetailList)
 	{
@@ -889,10 +885,10 @@ void ControlPanelTestSuite::assertValidAncestorIsPresentForDialog(const string& 
 		<< "No parent bus object that implements Action nor SecuredAction nor NotificationAction interface found";
 }
 
-void ControlPanelTestSuite::validateDialogBusObject(const string& t_Path, const bool t_IsSecured)
+void ControlPanelTestSuite::validateDialogBusObject(const string& t_Path, bool t_IsSecured)
 {
 	ProxyBusObject* proxyBusObject = m_BusIntrospector->getProxyBusObject(t_Path);
-	const char* targetInterface = t_IsSecured ? SECURED_DIALOG_INTERFACE_NAME : DIALOG_INTERFACE_NAME;
+	AJ_PCSTR targetInterface = t_IsSecured ? SECURED_DIALOG_INTERFACE_NAME : DIALOG_INTERFACE_NAME;
 
 	uint16_t version;
 	QStatus status = getVersionPropertyFromInterface(proxyBusObject, targetInterface, version);
@@ -935,8 +931,8 @@ void ControlPanelTestSuite::validateDialogBusObject(const string& t_Path, const 
 	validateDialogActions(proxyBusObject, targetInterface, numActions);
 }
 
-void ControlPanelTestSuite::validateDialogParameters(const size_t t_OptParamsSize,
-	const MsgArg* t_OptParams, const uint16_t t_NumActions)
+void ControlPanelTestSuite::validateDialogParameters(size_t t_OptParamsSize,
+	const MsgArg* t_OptParams, uint16_t t_NumActions)
 {
 	validateOptionalParameter0(t_OptParamsSize, t_OptParams);
 	validateOptionalParameter1(t_OptParamsSize, t_OptParams);
@@ -944,12 +940,12 @@ void ControlPanelTestSuite::validateDialogParameters(const size_t t_OptParamsSiz
 	validateDialogParameterActionLabelIds(t_OptParamsSize, t_OptParams, t_NumActions);
 }
 
-void ControlPanelTestSuite::validateDialogParameterActionLabelIds(const size_t t_OptParamsSize,
-	const ajn::MsgArg* t_OptParams, const uint16_t t_NumActions)
+void ControlPanelTestSuite::validateDialogParameterActionLabelIds(size_t t_OptParamsSize,
+	const ajn::MsgArg* t_OptParams, uint16_t t_NumActions)
 {
 	for (size_t i = 0; i < t_OptParamsSize; ++i)
 	{
-		char* labelAction;
+        AJ_PSTR labelAction;
 		uint16_t key;
 
 		QStatus status = t_OptParams[i].Get("{qs}", &key, &labelAction);
@@ -965,7 +961,7 @@ void ControlPanelTestSuite::validateDialogParameterActionLabelIds(const size_t t
 }
 
 void ControlPanelTestSuite::validateDialogActions(ProxyBusObject* proxyBusObject,
-	const string& t_Interface, const uint16_t t_NumActions)
+	const string& t_Interface, uint16_t t_NumActions)
 {
 	if (t_NumActions == 1)
 	{
@@ -979,118 +975,13 @@ void ControlPanelTestSuite::validateDialogActions(ProxyBusObject* proxyBusObject
 }
 
 void ControlPanelTestSuite::validateInvokingDialogActionReturnsErrorStatus(ProxyBusObject* proxyBusObject,
-	const string& t_Interface, const char* t_Method)
+	const string& t_Interface, AJ_PCSTR t_Method)
 {
 	Message message(*m_ServiceHelper->getBusAttachmentMgr()->getBusAttachment());
 	QStatus status = proxyBusObject->MethodCall(t_Interface.c_str(), t_Method, NULL, 0, message);
 	ASSERT_NE(ER_OK, status) << "Invoking " << t_Method << "() must return error status";
 	ASSERT_EQ(ER_BUS_REPLY_IS_ERROR_MESSAGE, status) << "Invoking " << t_Method << "() must return ER_BUS_REPLY_IS_ERROR_MESSAGE status";
 }
-
-/*TEST_F(ControlPanelTestSuite, ControlPanel_v1_07)
-{
-	list<InterfaceDetail> listPropertyInterfaceDetailExposedOnBus;
-	list<InterfaceDetail> securedListPropertyInterfaceDetailExposedOnBus;
-
-	try
-	{
-		listPropertyInterfaceDetailExposedOnBus =
-			m_BusIntrospector->getInterfacesExposedOnBusBasedOnName(LIST_PROPERTY_INTERFACE_NAME);
-		securedListPropertyInterfaceDetailExposedOnBus =
-			m_BusIntrospector->getInterfacesExposedOnBusBasedOnName(SECURED_LIST_PROPERTY_INTERFACE_NAME);
-	}
-	catch (xercesc::SAXParseException&)
-	{
-		FAIL() << "Introspecting ListProperty and SecuredListProperty interfaces exposed on bus failed";
-	}
-
-	ASSERT_FALSE(listPropertyInterfaceDetailExposedOnBus.empty()
-		&& securedListPropertyInterfaceDetailExposedOnBus.empty())
-		<< "No bus objects implement ListProperty nor SecuredListProperty interfaces";
-
-	validateListPropertyInterfaceDetailList(listPropertyInterfaceDetailExposedOnBus, false);
-	validateListPropertyInterfaceDetailList(securedListPropertyInterfaceDetailExposedOnBus, true);
-}
-
-void ControlPanelTestSuite::validateListPropertyInterfaceDetailList(const list<InterfaceDetail>& t_InterfaceDetailList,
-	const bool t_IsSecured)
-{
-	for (auto interfaceDetail : t_InterfaceDetailList)
-	{
-		string path = interfaceDetail.getPath();
-		LOG(INFO) << "Validating ControlPanel.ListProperty object at: " << path;
-		assertAncestorContainerIsPresent(path);
-		validateListPropertyBusObject(path, t_IsSecured);
-	}
-}
-
-void ControlPanelTestSuite::validateListPropertyBusObject(const string& t_Path, const bool t_IsSecured)
-{
-	ProxyBusObject* proxyBusObject = m_BusIntrospector->getProxyBusObject(t_Path);
-	const char* targetInterface = t_IsSecured ? SECURED_LIST_PROPERTY_INTERFACE_NAME : LIST_PROPERTY_INTERFACE_NAME;
-
-	uint16_t version;
-	QStatus status = getVersionPropertyFromInterface(proxyBusObject, targetInterface, version);
-	ASSERT_EQ(ER_OK, status) << "Retrieving Version property from ListProperty interface returned error: "
-		<< QCC_StatusText(status);
-
-	EXPECT_EQ(ArrayParser::stringToUint16(m_IxitMap.at("IXITCP_ListPropertyVersion").c_str()),
-		version)
-		<< "Interface version does not match";
-
-	uint32_t states;
-	status = getStatesPropertyFromInterface(proxyBusObject, targetInterface, states);
-	ASSERT_EQ(ER_OK, status) << "Retrieving States property from Dialog interface returned error: "
-		<< QCC_StatusText(status);
-
-	EXPECT_TRUE(states == 0 || states == 1)
-		<< "Interface state " << states << " does not equal expected value of 0x00 or 0x01";
-
-	MsgArg optParamsMsgArg;
-	proxyBusObject->GetProperty(targetInterface, "OptParams", optParamsMsgArg);
-
-	size_t optParamsSize;
-	MsgArg* optParams;
-	optParamsMsgArg.Get("a{qv}", &optParamsSize, &optParams);
-
-	validateListPropertyParameters(optParamsSize, optParams);
-	
-	MsgArg valueMsgArg;
-	proxyBusObject->GetProperty(targetInterface, "Value", valueMsgArg);
-
-	size_t valueSize;
-	MsgArg* value;
-	valueMsgArg.Get("a{qs}", &valueSize, &value);
-
-	validateListPropertyValues(valueSize, value);
-}
-
-void ControlPanelTestSuite::validateListPropertyParameters(const size_t t_OptParamsSize, const MsgArg* t_OptParams)
-{
-	validateOptionalParameter0(t_OptParamsSize, t_OptParams);
-	validateOptionalParameter1(t_OptParamsSize, t_OptParams);
-	validateParameterLayoutHints(t_OptParamsSize, t_OptParams);
-}
-
-void ControlPanelTestSuite::validateListPropertyValues(const size_t t_ValueSize, const MsgArg* t_Value)
-{
-	ASSERT_GT(t_ValueSize, 0) << "Values array cannot be empty";
-
-	set<uint16_t> recordIDs;
-
-	for (size_t i = 0; i < t_ValueSize; ++i)
-	{
-		uint16_t recordID;
-		char* label;
-
-		ASSERT_EQ(ER_OK, t_Value[i].Get("{qs}", &recordID, &label));
-		ASSERT_NE(label, nullptr) << "Label cannot be null";
-		ASSERT_FALSE(strlen(label) == 0) << "Label cannot be empty";
-		recordIDs.insert(recordID);
-	}
-
-	ASSERT_EQ(t_ValueSize, recordIDs.size()) << "Record IDs need to be unique";
-}*/
 
 TEST_F(ControlPanelTestSuite, ControlPanel_v1_08)
 {
@@ -1211,7 +1102,7 @@ void ControlPanelTestSuite::validateRootUrl(ProxyBusObject* t_proxyBusObject)
 	Message replyMessage(*m_ServiceHelper->getBusAttachmentMgr()->getBusAttachment());
 	t_proxyBusObject->MethodCall(HTTP_CONTROL_INTERFACE_NAME, "GetRootUrl", NULL, 0, replyMessage);
 
-	char* url = nullptr;
+    AJ_PSTR url = nullptr;
 	replyMessage->GetArg(0)->Get("s", &url);
 
 	ASSERT_NE(url, nullptr) << "Root URL returned is null";
@@ -1225,7 +1116,6 @@ TEST_F(ControlPanelTestSuite, ControlPanel_v1_10)
 	list<InterfaceDetail> securedPropertyInterfaceDetailListExposedOnBus;
 	list<InterfaceDetail> securedActionInterfaceDetailListExposedOnBus;
 	list<InterfaceDetail> securedDialogInterfaceDetailListExposedOnBus;
-	//list<InterfaceDetail> securedListInterfaceDetailListExposedOnBus;
 
 	try
 	{
@@ -1237,8 +1127,6 @@ TEST_F(ControlPanelTestSuite, ControlPanel_v1_10)
 			m_BusIntrospector->getInterfacesExposedOnBusBasedOnName(SECURED_ACTION_INTERFACE_NAME);
 		securedDialogInterfaceDetailListExposedOnBus =
 			m_BusIntrospector->getInterfacesExposedOnBusBasedOnName(SECURED_DIALOG_INTERFACE_NAME);
-		/*securedListInterfaceDetailListExposedOnBus =
-			m_BusIntrospector->getInterfacesExposedOnBusBasedOnName(SECURED_LIST_PROPERTY_INTERFACE_NAME);*/
 	}
 	catch (xercesc::SAXParseException&)
 	{
@@ -1248,15 +1136,13 @@ TEST_F(ControlPanelTestSuite, ControlPanel_v1_10)
 	ASSERT_FALSE(securedContainerInterfaceDetailListExposedOnBus.empty()
 		&& securedPropertyInterfaceDetailListExposedOnBus.empty()
 		&& securedActionInterfaceDetailListExposedOnBus.empty()
-		&& securedDialogInterfaceDetailListExposedOnBus.empty()
-		/*&& securedListInterfaceDetailListExposedOnBus.empty()*/)
+		&& securedDialogInterfaceDetailListExposedOnBus.empty())
 		<< "No bus objects implement one of the secured ControlPanel interfaces";
 
 	validateSecuredContainerInvalidPasscodeInterfaceDetailList(securedContainerInterfaceDetailListExposedOnBus);
 	validateSecuredPropertyInvalidPasscodeInterfaceDetailList(securedPropertyInterfaceDetailListExposedOnBus);
 	validateSecuredActionInvalidPasscodeInterfaceDetailList(securedActionInterfaceDetailListExposedOnBus);
 	validateSecuredDialogInvalidPasscodeInterfaceDetailList(securedDialogInterfaceDetailListExposedOnBus);
-	//validateSecuredListPropertyInvalidPasscodeInterfaceDetailList(securedListInterfaceDetailListExposedOnBus);
 }
 
 void ControlPanelTestSuite::validateSecuredContainerInvalidPasscodeInterfaceDetailList(const list<InterfaceDetail>& t_InterfaceDetailList)
@@ -1268,13 +1154,11 @@ void ControlPanelTestSuite::validateSecuredContainerInvalidPasscodeInterfaceDeta
 	}
 }
 
-void ControlPanelTestSuite::validateSecuredInterfaceInvalidPasscodeBusObject(const string& t_Path, const char* t_Interface)
+void ControlPanelTestSuite::validateSecuredInterfaceInvalidPasscodeBusObject(const string& t_Path, AJ_PCSTR t_Interface)
 {
 	ProxyBusObject* proxyBusObject = m_BusIntrospector->getProxyBusObject(t_Path);
 	setInvalidAuthentication();
 
-	/*const char* currentPasscode = m_ServiceHelper->getSrpKeyXPincode(*m_DeviceAboutAnnouncement);
-	LOG(INFO) << "Connecting with invalid password: " << currentPasscode;*/
 	LOG(INFO) << "Connecting with invalid credentials";
 
 	uint16_t version;
@@ -1343,12 +1227,3 @@ void ControlPanelTestSuite::validateSecuredDialogInvalidPasscodeInterfaceDetailL
 		validateSecuredInterfaceInvalidPasscodeBusObject(path, SECURED_DIALOG_INTERFACE_NAME);
 	}
 }
-
-/*void ControlPanelTestSuite::validateSecuredListPropertyInvalidPasscodeInterfaceDetailList(const list<InterfaceDetail>& t_InterfaceDetailList)
-{
-	for (auto interfaceDetail : t_InterfaceDetailList)
-	{
-		string path = interfaceDetail.getPath();
-		validateSecuredInterfaceInvalidPasscodeBusObject(path, SECURED_LIST_PROPERTY_INTERFACE_NAME);
-	}
-}*/

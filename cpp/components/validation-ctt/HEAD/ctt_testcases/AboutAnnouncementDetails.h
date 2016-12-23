@@ -20,24 +20,24 @@
 class AboutAnnouncementDetails : public AboutAnnouncement
 {
 public:
-	AboutAnnouncementDetails(const char*, const uint16_t, const uint16_t, const ajn::MsgArg&, const ajn::MsgArg&);
-	char* getDeviceId() const;
-	uint8_t* getAppId() const;
-	char* getDeviceName() const;
-	char* getAppName() const;
-	char* getManufacturer() const;
-	char* getModel() const;
-	const char* getSupportedLanguages() const;
-	char* getDescription() const;
-	char* getManufactureDate() const;
-	char* getSoftwareVersion() const;
-	char* getAjSoftwareVersion() const;
-	char* getHardwareVersion() const;
-	char* getSupportUrl() const;
-	bool supportsInterface(char*);
-	char* getDefaultLanguage() const;
+    AboutAnnouncementDetails(AJ_PCSTR, uint16_t, uint16_t, const ajn::MsgArg&, const ajn::MsgArg&);
+    AJ_PSTR getDeviceId() const;
+    uint8_t* getAppId() const;
+    AJ_PSTR getDeviceName() const;
+    AJ_PSTR getAppName() const;
+    AJ_PSTR getManufacturer() const;
+    AJ_PSTR getModel() const;
+    AJ_PCSTR getSupportedLanguages() const;
+    AJ_PSTR getDescription() const;
+    AJ_PSTR getManufactureDate() const;
+    AJ_PSTR getSoftwareVersion() const;
+    AJ_PSTR getAjSoftwareVersion() const;
+    AJ_PSTR getHardwareVersion() const;
+    AJ_PSTR getSupportUrl() const;
+    bool supportsInterface(AJ_PSTR);
+    AJ_PSTR getDefaultLanguage() const;
 private:
-	static std::map<qcc::String, qcc::String> KEY_SIGNATURE_MAP;
+    static std::map<qcc::String, qcc::String> KEY_SIGNATURE_MAP;
 
-	bool checkForCorrectType(qcc::String key, qcc::String signature);
+    bool checkForCorrectType(qcc::String key, qcc::String signature);
 };

@@ -21,11 +21,11 @@
 class ECDHEEcdsaStore
 {
 public:
-	const char* getPrivateKey(std::string);
-	const char* getCertChain(std::string);
-	void setPrivateKey(std::string, const char*);
-	void setCertChain(std::string, const char*);
+    AJ_PCSTR getPrivateKey(std::string);
+    AJ_PCSTR getCertChain(std::string);
+    void setPrivateKey(std::string, AJ_PCSTR);
+    void setCertChain(std::string, AJ_PCSTR);
 private:
-	std::map<std::string, const char*> m_PrivateKeyStore;
-	std::map<std::string, const char*> m_CertChainStore;
+    std::map<std::string, AJ_PCSTR> m_PrivateKeyStore;
+    std::map<std::string, AJ_PCSTR> m_CertChainStore;
 };

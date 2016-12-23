@@ -28,25 +28,25 @@
 class OnboardingHelper
 {
 public:
-	OnboardingHelper(const std::string&, const int);
-	std::string mapAuthTypeToAuthTypeString(const short);
+	OnboardingHelper(const std::string&, int);
+	std::string mapAuthTypeToAuthTypeString(ajn::services::OBAuthType);
 	void setPersonalAPConfig(WifiNetworkConfig*);
 	WifiNetworkConfig* getPersonalAPConfig();
 	void setSoftAPConfig(WifiNetworkConfig*);
 	WifiNetworkConfig* getSoftAPConfig();
 	QStatus initialize(const std::string&, const std::string&, uint8_t*,
-		const bool, const std::string&,
-		const bool, const std::string&, const std::string&,
-		const bool,
-		const bool, const std::string&,
-		const bool, const std::string&, const std::string&,
-		const bool, const std::string&);
-	QStatus initServiceHelper(const bool, const std::string&,
-		const bool, const std::string&, const std::string&,
-		const bool,
-		const bool, const std::string&,
-		const bool, const std::string&, const std::string&,
-		const bool, const std::string&);
+		bool, const std::string&,
+		bool, const std::string&, const std::string&,
+		bool,
+		bool, const std::string&,
+		bool, const std::string&, const std::string&,
+		bool, const std::string&);
+	QStatus initServiceHelper(bool, const std::string&,
+		bool, const std::string&, const std::string&,
+		bool,
+		bool, const std::string&,
+		bool, const std::string&, const std::string&,
+		bool, const std::string&);
 	void connectToPersonalAPIfNeeded();
 	QStatus connectToPersonalAP();
 	bool isDeviceInOnboardedState();
@@ -64,7 +64,7 @@ public:
 	void releaseResources();
 	void releaseWifiHelper();
 	ajn::services::OnboardingClient::ScanInfos callScanInfo();
-	void setPasscode(const AboutAnnouncementDetails&, const char*);
+	void setPasscode(const AboutAnnouncementDetails&, AJ_PCSTR);
 	ajn::services::ConfigClient* connectConfigClient(ajn::SessionId&);
 	void clearQueuedDeviceAnnouncements();
 	ajn::AboutProxy* connectAboutProxy(const AboutAnnouncementDetails&);
@@ -120,7 +120,7 @@ private:
 	inline bool ends_with(const std::string&, const std::string&);
 	bool softAPMatchesDeviceId(const std::string&, const std::string&);
 	bool connectToSoftAPNetwork();
-	AboutAnnouncementDetails* waitForNextAboutAnnouncementFromDevice(const long);
+	AboutAnnouncementDetails* waitForNextAboutAnnouncementFromDevice(long);
 	std::string convertToHex(const std::string&);
-	void verifyOnboardingState(const short);
+	void verifyOnboardingState(short);
 };

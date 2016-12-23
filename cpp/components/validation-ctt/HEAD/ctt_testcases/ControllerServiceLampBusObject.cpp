@@ -19,8 +19,8 @@
 #define CHECK_BREAK(x) if ((status = x) != ER_OK) { break; }
 #define CHECK_RETURN(x) if ((status = x) != ER_OK) { return status; }
 
-static const char* CONTROLLERSERVICE_OBJECT_PATH = "/org/allseen/LSF/ControllerService";
-static const char* LAMP_INTERFACE_NAME = "org.allseen.LSF.ControllerService.Lamp";
+static AJ_PCSTR CONTROLLERSERVICE_OBJECT_PATH = "/org/allseen/LSF/ControllerService";
+static AJ_PCSTR LAMP_INTERFACE_NAME = "org.allseen.LSF.ControllerService.Lamp";
 
 ControllerServiceLampBusObject::ControllerServiceLampBusObject(ajn::BusAttachment& t_BusAttachment, const std::string& t_BusName, const ajn::SessionId m_SessionId) :
 m_BusAttachment(&t_BusAttachment), m_BusName(t_BusName), m_SessionId(m_SessionId),
@@ -82,7 +82,7 @@ m_LampsFoundSignalReceived(false), m_LampsLostSignalReceived(false)
 	} //if (!getIface)
 }
 
-void ControllerServiceLampBusObject::LampNameChangedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServiceLampBusObject::LampNameChangedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "LampNameChanged signal received";
 	m_LampNameChangedSignalReceived = true;
@@ -93,7 +93,7 @@ bool ControllerServiceLampBusObject::DidLampNameChanged()
 	return m_LampNameChangedSignalReceived;
 }
 
-void ControllerServiceLampBusObject::LampStateChangedSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServiceLampBusObject::LampStateChangedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "LampStateChanged signal received";
 	m_LampStateChangedSignalReceived = true;
@@ -104,7 +104,7 @@ bool ControllerServiceLampBusObject::DidLampStateChanged()
 	return m_LampStateChangedSignalReceived;
 }
 
-void ControllerServiceLampBusObject::LampsFoundSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServiceLampBusObject::LampsFoundSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "LampsFound signal received";
 	m_LampsFoundSignalReceived = true;
@@ -115,7 +115,7 @@ bool ControllerServiceLampBusObject::DidLampsFound()
 	return m_LampsFoundSignalReceived;
 }
 
-void ControllerServiceLampBusObject::LampsLostSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg)
+void ControllerServiceLampBusObject::LampsLostSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg)
 {
 	LOG(INFO) << "LampsLost signal received";
 	m_LampsLostSignalReceived = true;
@@ -180,7 +180,7 @@ QStatus ControllerServiceLampBusObject::GetAllLampIDs(uint32_t& t_ResponseCode,
 
 		for (size_t i = 0; i < t_NumberOfLamps; ++i)
 		{
-			char* lampID;
+            AJ_PSTR lampID;
 			CHECK_RETURN(tempIDsArray[i].Get("s", &lampID))
 
 			t_LampIDs.push_back(lampID);
@@ -190,7 +190,7 @@ QStatus ControllerServiceLampBusObject::GetAllLampIDs(uint32_t& t_ResponseCode,
 	return status;
 }
 
-QStatus ControllerServiceLampBusObject::GetLampSupportedLanguages(const char* t_LampID,
+QStatus ControllerServiceLampBusObject::GetLampSupportedLanguages(AJ_PCSTR t_LampID,
 	uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID, std::vector<qcc::String>& t_Languages)
 {
 	QStatus status = ER_OK;
@@ -210,7 +210,7 @@ QStatus ControllerServiceLampBusObject::GetLampSupportedLanguages(const char* t_
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMP_INTERFACE_NAME, "GetLampSupportedLanguages", new ajn::MsgArg("s", t_LampID), 1, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempLampId;
+        AJ_PSTR tempLampId;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempLampId))
 		t_RetrievedLampID = qcc::String(tempLampId);
 
@@ -220,7 +220,7 @@ QStatus ControllerServiceLampBusObject::GetLampSupportedLanguages(const char* t_
 
 		for (size_t i = 0; i < *tempLanguagesSize; ++i)
 		{
-			char* language;
+            AJ_PSTR language;
 			CHECK_RETURN(tempLanguagesArray[i].Get("s", &language))
 
 			t_Languages.push_back(language);
@@ -230,8 +230,8 @@ QStatus ControllerServiceLampBusObject::GetLampSupportedLanguages(const char* t_
 	return status;
 }
 
-QStatus ControllerServiceLampBusObject::GetLampManufacturer(const char* t_LampID,
-	const char* t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID, qcc::String& t_RetrievedLanguage, qcc::String& t_Manufacturer)
+QStatus ControllerServiceLampBusObject::GetLampManufacturer(AJ_PCSTR t_LampID,
+	AJ_PCSTR t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID, qcc::String& t_RetrievedLanguage, qcc::String& t_Manufacturer)
 {
 	QStatus status = ER_OK;
 
@@ -253,15 +253,15 @@ QStatus ControllerServiceLampBusObject::GetLampManufacturer(const char* t_LampID
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMP_INTERFACE_NAME, "GetLampManufacturer", msgArg, 2, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 		
-		char* tempRetrievedLampID;
+        AJ_PSTR tempRetrievedLampID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampID))
 		t_RetrievedLampID = qcc::String(tempRetrievedLampID);
 
-		char* tempRetrievedLanguage;
+        AJ_PSTR tempRetrievedLanguage;
 		CHECK_RETURN(responseMessage->GetArg(2)->Get("s", &tempRetrievedLanguage))
 		t_RetrievedLanguage = qcc::String(tempRetrievedLanguage);
 
-		char* tempManufacturer;
+        AJ_PSTR tempManufacturer;
 		CHECK_RETURN(responseMessage->GetArg(3)->Get("s", &tempManufacturer))
 		t_Manufacturer = qcc::String(tempManufacturer);
 	}
@@ -269,8 +269,8 @@ QStatus ControllerServiceLampBusObject::GetLampManufacturer(const char* t_LampID
 	return status;
 }
 
-QStatus ControllerServiceLampBusObject::GetLampName(const char* t_LampID,
-	const char* t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID, qcc::String& t_RetrievedLanguage, qcc::String& t_LampName)
+QStatus ControllerServiceLampBusObject::GetLampName(AJ_PCSTR t_LampID,
+	AJ_PCSTR t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID, qcc::String& t_RetrievedLanguage, qcc::String& t_LampName)
 {
 	QStatus status = ER_OK;
 
@@ -292,15 +292,15 @@ QStatus ControllerServiceLampBusObject::GetLampName(const char* t_LampID,
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMP_INTERFACE_NAME, "GetLampName", msgArg, 2, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedLampID;
+        AJ_PSTR tempRetrievedLampID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampID))
 		t_RetrievedLampID = qcc::String(tempRetrievedLampID);
 
-		char* tempRetrievedLanguage;
+        AJ_PSTR tempRetrievedLanguage;
 		CHECK_RETURN(responseMessage->GetArg(2)->Get("s", &tempRetrievedLanguage))
 		t_RetrievedLanguage = qcc::String(tempRetrievedLanguage);
 
-		char* tempLampName;
+        AJ_PSTR tempLampName;
 		CHECK_RETURN(responseMessage->GetArg(3)->Get("s", &tempLampName))
 		t_LampName = qcc::String(tempLampName);
 	}
@@ -308,8 +308,8 @@ QStatus ControllerServiceLampBusObject::GetLampName(const char* t_LampID,
 	return status;
 }
 
-QStatus ControllerServiceLampBusObject::SetLampName(const char* t_LampID, const char* t_LampName,
-	const char* t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID, qcc::String& t_RetrievedLanguage)
+QStatus ControllerServiceLampBusObject::SetLampName(AJ_PCSTR t_LampID, AJ_PCSTR t_LampName,
+	AJ_PCSTR t_Language, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID, qcc::String& t_RetrievedLanguage)
 {
 	QStatus status = ER_OK;
 
@@ -332,11 +332,11 @@ QStatus ControllerServiceLampBusObject::SetLampName(const char* t_LampID, const 
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMP_INTERFACE_NAME, "SetLampName", msgArg, 3, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedLampID;
+        AJ_PSTR tempRetrievedLampID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampID))
 		t_RetrievedLampID = qcc::String(tempRetrievedLampID);
 
-		char* tempRetrievedLanguage;
+        AJ_PSTR tempRetrievedLanguage;
 		CHECK_RETURN(responseMessage->GetArg(2)->Get("s", &tempRetrievedLanguage))
 		t_RetrievedLanguage = qcc::String(tempRetrievedLanguage);
 	}
@@ -344,7 +344,8 @@ QStatus ControllerServiceLampBusObject::SetLampName(const char* t_LampID, const 
 	return status;
 }
 
-QStatus ControllerServiceLampBusObject::GetLampDetails(const char* t_LampID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID, std::vector<ajn::MsgArg>& t_LampDetails)
+QStatus ControllerServiceLampBusObject::GetLampDetails(AJ_PCSTR t_LampID, uint32_t& t_ResponseCode,
+    qcc::String& t_RetrievedLampID, std::vector<ajn::MsgArg>& t_LampDetails)
 {
 	QStatus status = ER_OK;
 
@@ -365,7 +366,7 @@ QStatus ControllerServiceLampBusObject::GetLampDetails(const char* t_LampID, uin
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMP_INTERFACE_NAME, "GetLampDetails", msgArg, 1, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedLampID;
+        AJ_PSTR tempRetrievedLampID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampID))
 		t_RetrievedLampID = qcc::String(tempRetrievedLampID);
 
@@ -381,7 +382,8 @@ QStatus ControllerServiceLampBusObject::GetLampDetails(const char* t_LampID, uin
 	return status;
 }
 
-QStatus ControllerServiceLampBusObject::GetLampParameters(const char* t_LampID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID, std::vector<ajn::MsgArg>& t_LampParameters)
+QStatus ControllerServiceLampBusObject::GetLampParameters(AJ_PCSTR t_LampID, uint32_t& t_ResponseCode,
+    qcc::String& t_RetrievedLampID, std::vector<ajn::MsgArg>& t_LampParameters)
 {
 	QStatus status = ER_OK;
 
@@ -402,7 +404,7 @@ QStatus ControllerServiceLampBusObject::GetLampParameters(const char* t_LampID, 
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMP_INTERFACE_NAME, "GetLampParameters", msgArg, 1, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedLampID;
+        AJ_PSTR tempRetrievedLampID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampID))
 		t_RetrievedLampID = qcc::String(tempRetrievedLampID);
 
@@ -418,7 +420,8 @@ QStatus ControllerServiceLampBusObject::GetLampParameters(const char* t_LampID, 
 	return status;
 }
 
-QStatus ControllerServiceLampBusObject::GetLampParametersField(const char* t_LampID, const char* t_FieldName, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID, qcc::String& t_RetrievedFieldName, qcc::String& t_FieldValue)
+QStatus ControllerServiceLampBusObject::GetLampParametersField(AJ_PCSTR t_LampID, AJ_PCSTR t_FieldName,
+    uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID, qcc::String& t_RetrievedFieldName, qcc::String& t_FieldValue)
 {
 	QStatus status = ER_OK;
 
@@ -438,13 +441,13 @@ QStatus ControllerServiceLampBusObject::GetLampParametersField(const char* t_Lam
 		msgArg[1].Set("s", t_FieldName);
 		ajn::Message responseMessage(*m_BusAttachment);
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMP_INTERFACE_NAME, "GetLampParametersField", msgArg, 2, responseMessage))
-			CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
+        CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-			char* tempRetrievedLampID;
+        AJ_PSTR tempRetrievedLampID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampID))
 			t_RetrievedLampID = qcc::String(tempRetrievedLampID);
 
-		char* tempRetrievedFieldName;
+        AJ_PSTR tempRetrievedFieldName;
 		CHECK_RETURN(responseMessage->GetArg(2)->Get("s", &tempRetrievedFieldName))
 			t_RetrievedFieldName = qcc::String(tempRetrievedFieldName);
 
@@ -465,7 +468,7 @@ QStatus ControllerServiceLampBusObject::getParamValue(const ajn::MsgArg& t_Param
 		bool bValue;
 		if ((status = t_Param.Get("b", &bValue)) == ER_BUS_SIGNATURE_MISMATCH)
 		{
-			char* cValue;
+            AJ_PSTR cValue;
 			status = t_Param.Get("s", &cValue);
 			t_Value = std::string(cValue);
 		}
@@ -482,7 +485,8 @@ QStatus ControllerServiceLampBusObject::getParamValue(const ajn::MsgArg& t_Param
 	return status;
 }
 
-QStatus ControllerServiceLampBusObject::GetLampState(const char* t_LampID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID, std::vector<ajn::MsgArg>& t_LampStates)
+QStatus ControllerServiceLampBusObject::GetLampState(AJ_PCSTR t_LampID, uint32_t& t_ResponseCode,
+    qcc::String& t_RetrievedLampID, std::vector<ajn::MsgArg>& t_LampStates)
 {
 	QStatus status = ER_OK;
 
@@ -501,9 +505,9 @@ QStatus ControllerServiceLampBusObject::GetLampState(const char* t_LampID, uint3
 		msgArg[0].Set("s", t_LampID);
 		ajn::Message responseMessage(*m_BusAttachment);
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMP_INTERFACE_NAME, "GetLampState", msgArg, 1, responseMessage))
-			CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
+	    CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedLampID;
+        AJ_PSTR tempRetrievedLampID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampID))
 		t_RetrievedLampID = qcc::String(tempRetrievedLampID);
 
@@ -521,7 +525,8 @@ QStatus ControllerServiceLampBusObject::GetLampState(const char* t_LampID, uint3
 	return status;
 }
 
-QStatus ControllerServiceLampBusObject::GetLampStateField(const char* t_LampID, const char* t_FieldName, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID, qcc::String& t_RetrievedFieldName, qcc::String& t_FieldValue)
+QStatus ControllerServiceLampBusObject::GetLampStateField(AJ_PCSTR t_LampID, AJ_PCSTR t_FieldName,
+    uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID, qcc::String& t_RetrievedFieldName, qcc::String& t_FieldValue)
 {
 	QStatus status = ER_OK;
 
@@ -541,13 +546,13 @@ QStatus ControllerServiceLampBusObject::GetLampStateField(const char* t_LampID, 
 		msgArg[1].Set("s", t_FieldName);
 		ajn::Message responseMessage(*m_BusAttachment);
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMP_INTERFACE_NAME, "GetLampStateField", msgArg, 2, responseMessage))
-			CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
+		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-			char* tempRetrievedLampID;
+        AJ_PSTR tempRetrievedLampID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampID))
-			t_RetrievedLampID = qcc::String(tempRetrievedLampID);
+		t_RetrievedLampID = qcc::String(tempRetrievedLampID);
 
-		char* tempRetrievedFieldName;
+		AJ_PSTR tempRetrievedFieldName;
 		CHECK_RETURN(responseMessage->GetArg(2)->Get("s", &tempRetrievedFieldName))
 			t_RetrievedFieldName = qcc::String(tempRetrievedFieldName);
 
@@ -559,7 +564,8 @@ QStatus ControllerServiceLampBusObject::GetLampStateField(const char* t_LampID, 
 	return status;
 }
 
-QStatus ControllerServiceLampBusObject::TransitionLampState(const char* t_LampID, ajn::MsgArg* t_LampState, const uint32_t t_TransitionPeriod, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID)
+QStatus ControllerServiceLampBusObject::TransitionLampState(AJ_PCSTR t_LampID, ajn::MsgArg* t_LampState,
+    uint32_t t_TransitionPeriod, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID)
 {
 	QStatus status = ER_OK;
 
@@ -582,7 +588,7 @@ QStatus ControllerServiceLampBusObject::TransitionLampState(const char* t_LampID
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMP_INTERFACE_NAME, "TransitionLampState", msgArg, 3, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedLampID;
+        AJ_PSTR tempRetrievedLampID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampID))
 		t_RetrievedLampID = qcc::String(tempRetrievedLampID);
 	}
@@ -590,7 +596,9 @@ QStatus ControllerServiceLampBusObject::TransitionLampState(const char* t_LampID
 	return status;
 }
 
-QStatus ControllerServiceLampBusObject::TransitionLampStateField(const char* t_LampID, const char* t_LampStateFieldName, ajn::MsgArg t_LampStateFieldValue, const uint32_t t_TransitionPeriod, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID, qcc::String& t_RetrievedLampStateFieldName)
+QStatus ControllerServiceLampBusObject::TransitionLampStateField(AJ_PCSTR t_LampID, AJ_PCSTR t_LampStateFieldName,
+    ajn::MsgArg t_LampStateFieldValue, uint32_t t_TransitionPeriod, uint32_t& t_ResponseCode,
+    qcc::String& t_RetrievedLampID, qcc::String& t_RetrievedLampStateFieldName)
 {
 	QStatus status = ER_OK;
 
@@ -614,11 +622,11 @@ QStatus ControllerServiceLampBusObject::TransitionLampStateField(const char* t_L
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMP_INTERFACE_NAME, "TransitionLampStateField", msgArg, 4, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedLampID;
+        AJ_PSTR tempRetrievedLampID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampID))
 		t_RetrievedLampID = qcc::String(tempRetrievedLampID);
 
-		char* tempRetrievedLampStateFieldName;
+        AJ_PSTR tempRetrievedLampStateFieldName;
 		CHECK_RETURN(responseMessage->GetArg(2)->Get("s", &tempRetrievedLampStateFieldName))
 		t_RetrievedLampStateFieldName = qcc::String(tempRetrievedLampStateFieldName);
 	}
@@ -626,7 +634,9 @@ QStatus ControllerServiceLampBusObject::TransitionLampStateField(const char* t_L
 	return status;
 }
 
-QStatus ControllerServiceLampBusObject::PulseLampWithState(const char* t_LampID, ajn::MsgArg* t_FromLampState, ajn::MsgArg* t_ToLampState, const uint32_t t_Period, const uint32_t t_Duration, const uint32_t t_NumPulses, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID)
+QStatus ControllerServiceLampBusObject::PulseLampWithState(AJ_PCSTR t_LampID, ajn::MsgArg* t_FromLampState,
+    ajn::MsgArg* t_ToLampState, uint32_t t_Period, uint32_t t_Duration, uint32_t t_NumPulses,
+    uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID)
 {
 	QStatus status = ER_OK;
 
@@ -652,7 +662,7 @@ QStatus ControllerServiceLampBusObject::PulseLampWithState(const char* t_LampID,
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMP_INTERFACE_NAME, "PulseLampWithState", msgArg, 6, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedLampID;
+        AJ_PSTR tempRetrievedLampID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampID))
 		t_RetrievedLampID = qcc::String(tempRetrievedLampID);
 	}
@@ -660,7 +670,9 @@ QStatus ControllerServiceLampBusObject::PulseLampWithState(const char* t_LampID,
 	return status;
 }
 
-QStatus ControllerServiceLampBusObject::PulseLampWithPreset(const char* t_LampID, const char* t_FromPresetID, const char* t_ToPresetID, const uint32_t t_Period, const uint32_t t_Duration, const uint32_t t_NumPulses, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID)
+QStatus ControllerServiceLampBusObject::PulseLampWithPreset(AJ_PCSTR t_LampID, AJ_PCSTR t_FromPresetID,
+    AJ_PCSTR t_ToPresetID, uint32_t t_Period, uint32_t t_Duration, uint32_t t_NumPulses,
+    uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID)
 {
 	QStatus status = ER_OK;
 
@@ -686,7 +698,7 @@ QStatus ControllerServiceLampBusObject::PulseLampWithPreset(const char* t_LampID
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMP_INTERFACE_NAME, "PulseLampWithPreset", msgArg, 6, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedLampID;
+        AJ_PSTR tempRetrievedLampID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampID))
 		t_RetrievedLampID = qcc::String(tempRetrievedLampID);
 	}
@@ -694,7 +706,8 @@ QStatus ControllerServiceLampBusObject::PulseLampWithPreset(const char* t_LampID
 	return status;
 }
 
-QStatus ControllerServiceLampBusObject::TransitionLampStateToPreset(const char* t_LampID, const char* t_PresetID, const uint32_t t_TransitionPeriod, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID)
+QStatus ControllerServiceLampBusObject::TransitionLampStateToPreset(AJ_PCSTR t_LampID, AJ_PCSTR t_PresetID,
+    uint32_t t_TransitionPeriod, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID)
 {
 	QStatus status = ER_OK;
 
@@ -717,7 +730,7 @@ QStatus ControllerServiceLampBusObject::TransitionLampStateToPreset(const char* 
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMP_INTERFACE_NAME, "TransitionLampStateToPreset", msgArg, 3, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedLampID;
+        AJ_PSTR tempRetrievedLampID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampID))
 		t_RetrievedLampID = qcc::String(tempRetrievedLampID);
 	}
@@ -725,7 +738,7 @@ QStatus ControllerServiceLampBusObject::TransitionLampStateToPreset(const char* 
 	return status;
 }
 
-QStatus ControllerServiceLampBusObject::ResetLampState(const char* t_LampID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID)
+QStatus ControllerServiceLampBusObject::ResetLampState(AJ_PCSTR t_LampID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID)
 {
 	QStatus status = ER_OK;
 
@@ -746,7 +759,7 @@ QStatus ControllerServiceLampBusObject::ResetLampState(const char* t_LampID, uin
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMP_INTERFACE_NAME, "ResetLampState", msgArg, 1, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedLampID;
+        AJ_PSTR tempRetrievedLampID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampID))
 		t_RetrievedLampID = qcc::String(tempRetrievedLampID);
 	}
@@ -754,7 +767,8 @@ QStatus ControllerServiceLampBusObject::ResetLampState(const char* t_LampID, uin
 	return status;
 }
 
-QStatus ControllerServiceLampBusObject::ResetLampStateField(const char* t_LampID, const char* t_LampStateFieldName, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID, qcc::String& t_RetrievedLampStateFieldName)
+QStatus ControllerServiceLampBusObject::ResetLampStateField(AJ_PCSTR t_LampID, AJ_PCSTR t_LampStateFieldName,
+    uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID, qcc::String& t_RetrievedLampStateFieldName)
 {
 	QStatus status = ER_OK;
 
@@ -776,11 +790,11 @@ QStatus ControllerServiceLampBusObject::ResetLampStateField(const char* t_LampID
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMP_INTERFACE_NAME, "ResetLampStateField", msgArg, 2, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedLampID;
+        AJ_PSTR tempRetrievedLampID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampID))
 		t_RetrievedLampID = qcc::String(tempRetrievedLampID);
 
-		char* tempRetrievedLampStateFieldName;
+        AJ_PSTR tempRetrievedLampStateFieldName;
 		CHECK_RETURN(responseMessage->GetArg(2)->Get("s", &tempRetrievedLampStateFieldName));
 		t_RetrievedLampStateFieldName = qcc::String(tempRetrievedLampStateFieldName);
 	}
@@ -788,7 +802,8 @@ QStatus ControllerServiceLampBusObject::ResetLampStateField(const char* t_LampID
 	return status;
 }
 
-QStatus ControllerServiceLampBusObject::GetLampFaults(const char* t_LampID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID, std::vector<uint32_t>& t_LampFaults)
+QStatus ControllerServiceLampBusObject::GetLampFaults(AJ_PCSTR t_LampID, uint32_t& t_ResponseCode,
+    qcc::String& t_RetrievedLampID, std::vector<uint32_t>& t_LampFaults)
 {
 	QStatus status = ER_OK;
 
@@ -807,9 +822,9 @@ QStatus ControllerServiceLampBusObject::GetLampFaults(const char* t_LampID, uint
 		msgArg[0].Set("s", t_LampID);
 		ajn::Message responseMessage(*m_BusAttachment);
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMP_INTERFACE_NAME, "GetLampFaults", msgArg, 1, responseMessage))
-			CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
+	    CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-			char* tempRetrievedLampID;
+        AJ_PSTR tempRetrievedLampID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampID))
 			t_RetrievedLampID = qcc::String(tempRetrievedLampID);
 
@@ -826,7 +841,8 @@ QStatus ControllerServiceLampBusObject::GetLampFaults(const char* t_LampID, uint
 	return status;
 }
 
-QStatus ControllerServiceLampBusObject::ClearLampFault(const char* t_LampID, const uint32_t t_LampFault, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID, uint32_t& t_RetrievedLampFault)
+QStatus ControllerServiceLampBusObject::ClearLampFault(AJ_PCSTR t_LampID, uint32_t t_LampFault, 
+    uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID, uint32_t& t_RetrievedLampFault)
 {
 	QStatus status = ER_OK;
 
@@ -848,7 +864,7 @@ QStatus ControllerServiceLampBusObject::ClearLampFault(const char* t_LampID, con
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMP_INTERFACE_NAME, "ClearLampFault", msgArg, 2, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempRetrievedLampID;
+        AJ_PSTR tempRetrievedLampID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampID))
 		t_RetrievedLampID = qcc::String(tempRetrievedLampID);
 
@@ -858,7 +874,8 @@ QStatus ControllerServiceLampBusObject::ClearLampFault(const char* t_LampID, con
 	return status;
 }
 
-QStatus ControllerServiceLampBusObject::GetLampServiceVersion(const char* t_LampID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedLampID, uint32_t& t_LampServiceVersion)
+QStatus ControllerServiceLampBusObject::GetLampServiceVersion(AJ_PCSTR t_LampID, uint32_t& t_ResponseCode,
+    qcc::String& t_RetrievedLampID, uint32_t& t_LampServiceVersion)
 {
 	QStatus status = ER_OK;
 
@@ -877,9 +894,9 @@ QStatus ControllerServiceLampBusObject::GetLampServiceVersion(const char* t_Lamp
 		msgArg[0].Set("s", t_LampID);
 		ajn::Message responseMessage(*m_BusAttachment);
 		CHECK_RETURN(proxyBusObj->MethodCall(LAMP_INTERFACE_NAME, "GetLampServiceVersion", msgArg, 1, responseMessage))
-			CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
+		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-			char* tempRetrievedLampID;
+        AJ_PSTR tempRetrievedLampID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempRetrievedLampID))
 			t_RetrievedLampID = qcc::String(tempRetrievedLampID);
 

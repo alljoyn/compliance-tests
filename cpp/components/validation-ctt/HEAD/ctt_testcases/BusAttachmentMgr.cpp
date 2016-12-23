@@ -25,131 +25,115 @@ bool BusAttachmentMgr::m_Initialized = false;
 
 BusAttachmentMgr::BusAttachmentMgr()
 {
-	if (!m_Initialized)
-	{
-		m_Initialized = true;
-	}
+    if (!m_Initialized)
+    {
+        m_Initialized = true;
+    }
 }
 
-void BusAttachmentMgr::create(const string& t_BusApplicationName, const bool t_Policy)
+void BusAttachmentMgr::create(const string& t_BusApplicationName, bool t_Policy)
 {
-	LOG(INFO) << "Creating BusAttachment";
-	m_BusAttachment = createBusAttachment(t_BusApplicationName, t_Policy);
+    LOG(INFO) << "Creating BusAttachment";
+    m_BusAttachment = createBusAttachment(t_BusApplicationName, t_Policy);
 }
 
 QStatus BusAttachmentMgr::connect()
 {
-	LOG(INFO) << "Starting BusAttachment";
-	QStatus status = m_BusAttachment->Start();
+    LOG(INFO) << "Starting BusAttachment";
+    QStatus status = m_BusAttachment->Start();
+    if (ER_OK != status) {
+        LOG(INFO) << "Unable to start busAttachment " << QCC_StatusText(status);
+        return status;
+    }
 
-	if (status != QStatus::ER_OK)
-	{
-		LOG(INFO) << "Unable to start busAttachment " << QCC_StatusText(status);
-		return status;
-	}
+    LOG(INFO) << "Connecting BusAttachment";
+    status = m_BusAttachment->Connect();
+    if (ER_OK != status) {
+        LOG(INFO) << "Unable to connect busAttachment " << QCC_StatusText(status);
+    }
 
-	LOG(INFO) << "Connecting BusAttachment";
-	status = m_BusAttachment->Connect();
-
-	if (status != QStatus::ER_OK)
-	{
-		LOG(INFO) << "Unable to connect busAttachment " << QCC_StatusText(status);
-	}
-
-	return status;
+    return status;
 }
 
 QStatus BusAttachmentMgr::advertise()
 {
-	m_DaemonName = "org.alljoyn.BusNode_" + m_BusAttachment->GetGlobalGUIDString();
-	QStatus status = m_BusAttachment->RequestName(m_DaemonName.c_str(), 
-		DBUS_NAME_FLAG_DO_NOT_QUEUE);
+    m_DaemonName = "org.alljoyn.BusNode_" + m_BusAttachment->GetGlobalGUIDString();
+    QStatus status = m_BusAttachment->RequestName(m_DaemonName.c_str(), 
+        DBUS_NAME_FLAG_DO_NOT_QUEUE);
 
-	if (status != QStatus::ER_OK)
-	{
-		LOG(ERROR) << "Failed to requestName '" << m_DaemonName.c_str() << "': " 
-			<< QCC_StatusText(status);
-		m_DaemonName.clear();
-		return status;
-	}
+    if (ER_OK != status) {
+        LOG(ERROR) << "Failed to requestName '" << m_DaemonName.c_str() << "': " 
+            << QCC_StatusText(status);
+        m_DaemonName.clear();
+        return status;
+    }
 
-	m_AdvertisedName = "quiet@" + m_DaemonName;
-	status = m_BusAttachment->AdvertiseName(m_AdvertisedName.c_str(), 
-		TRANSPORT_IP);
+    m_AdvertisedName = "quiet@" + m_DaemonName;
+    status = m_BusAttachment->AdvertiseName(m_AdvertisedName.c_str(), TRANSPORT_IP);
+    if (ER_OK != status) {
+        LOG(ERROR) << "Failed to advertise name " << m_DaemonName.c_str();
+        m_AdvertisedName.clear();
+    }
 
-	if (status != ER_OK)
-	{
-		LOG(ERROR) << "Failed to advertise name " << m_DaemonName.c_str();
-		m_AdvertisedName.clear();
-	}
-
-	return status;
+    return status;
 }
 
 void BusAttachmentMgr::release()
 {
-	if (!m_AdvertisedName.empty())
-	{
-		QStatus status = m_BusAttachment->CancelAdvertiseName(m_AdvertisedName.c_str(),
-			TRANSPORT_IP);
+    if (!m_AdvertisedName.empty())
+    {
+        QStatus status = m_BusAttachment->CancelAdvertiseName(m_AdvertisedName.c_str(), TRANSPORT_IP);
+        if (ER_OK != status) {
+            LOG(INFO) << "cancelAdvertiseName returned: %s" << QCC_StatusText(status);
+        }
 
-		if (status != ER_OK)
-		{
-			LOG(INFO) << "cancelAdvertiseName returned: %s" << QCC_StatusText(status);
-		}
+        m_AdvertisedName.clear();
+    }
 
-		m_AdvertisedName.clear();
-	}
+    if (!m_DaemonName.empty())
+    {
+        QStatus status = m_BusAttachment->ReleaseName(m_DaemonName.c_str());
+        if (ER_OK != status)
+        {
+            LOG(INFO) << "releaseName returned: %s" << QCC_StatusText(status);
+        }
 
-	if (!m_DaemonName.empty())
-	{
-		QStatus status = m_BusAttachment->ReleaseName(m_DaemonName.c_str());
+        m_DaemonName.clear();
+    }
 
-		if (status != ER_OK)
-		{
-			LOG(INFO) << "releaseName returned: %s" << QCC_StatusText(status);
-		}
-
-		m_DaemonName.clear();
-	}
-
-	if (m_BusAttachment != nullptr)
-	{
-		LOG(INFO) << "Disconnecting BusAttachment";
-		m_BusAttachment->ClearKeyStore();
-		m_BusAttachment->Disconnect();
-		m_BusAttachment->Stop();
-		m_BusAttachment->Join();
-		delete m_BusAttachment;
-	}
-	
+    if (m_BusAttachment != nullptr)
+    {
+        LOG(INFO) << "Disconnecting BusAttachment";
+        m_BusAttachment->ClearKeyStore();
+        m_BusAttachment->Disconnect();
+        m_BusAttachment->Stop();
+        m_BusAttachment->Join();
+        delete m_BusAttachment;
+    }
 }
 
 BusAttachment* BusAttachmentMgr::createBusAttachment(const string& t_ApplicationName, 
-	const bool t_Policy)
+    bool t_Policy)
 {
-	return new BusAttachment(t_ApplicationName.c_str(), t_Policy);
+    return new BusAttachment(t_ApplicationName.c_str(), t_Policy);
 }
 
 BusAttachment* BusAttachmentMgr::getBusAttachment()
 {
-	return m_BusAttachment;
+    return m_BusAttachment;
 }
 
-QStatus BusAttachmentMgr::registerBusObject(BusObject t_BusObject, const bool t_Secured)
+QStatus BusAttachmentMgr::registerBusObject(BusObject t_BusObject, bool t_Secured)
 {
-	QStatus status = m_BusAttachment->RegisterBusObject(t_BusObject, t_Secured);
+    QStatus status = m_BusAttachment->RegisterBusObject(t_BusObject, t_Secured);
+    if (ER_OK != status) {
+        LOG(ERROR) << "Failed to register object: " << QCC_StatusText(status);
+    }
 
-	if (status != QStatus::ER_OK)
-	{
-		LOG(ERROR) << "Failed to register object: " << QCC_StatusText(status);
-	}
-
-	return status;
+    return status;
 }
 
-const char* BusAttachmentMgr::getBusUniqueName()
+AJ_PCSTR BusAttachmentMgr::getBusUniqueName()
 {
-	return m_BusAttachment->GetUniqueName().c_str();
+    return m_BusAttachment->GetUniqueName().c_str();
 }
-

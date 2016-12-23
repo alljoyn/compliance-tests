@@ -30,7 +30,7 @@ void IntrospectionBaseTag::setName(string t_Name)
 
 int IntrospectionBaseTag::hashCode()
 {
-	//COMPLETAR
+	//COMPLETE
 	return 1;
 }
 

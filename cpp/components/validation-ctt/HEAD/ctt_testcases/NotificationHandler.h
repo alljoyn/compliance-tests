@@ -24,9 +24,9 @@ public:
 	void Receive(ajn::services::Notification const&);
 	void Dismiss(const int32_t, const qcc::String);
 	ajn::services::Notification* getReceivedNotification();
-	ajn::services::Notification* getReceivedNotification(const long);
+	ajn::services::Notification* getReceivedNotification(long);
 	void clearReceivedNotifications();
-	std::string normalizeAppId(const char*);
+	std::string normalizeAppId(AJ_PCSTR);
 private:
 	std::string m_SenderDeviceId;
 	uint8_t* m_SenderAppId;

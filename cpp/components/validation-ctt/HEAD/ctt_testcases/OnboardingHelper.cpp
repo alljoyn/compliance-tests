@@ -35,7 +35,7 @@ OnboardingHelper::OnboardingHelper(const std::string& t_BusApplicationName,
 	m_BusApplicationName(t_BusApplicationName),
 	m_TimeToWaitForScanResults(t_TimeToWaitForScanResults) {}
 
-std::string OnboardingHelper::mapAuthTypeToAuthTypeString(const short t_AuthType)
+std::string OnboardingHelper::mapAuthTypeToAuthTypeString(ajn::services::OBAuthType t_AuthType)
 {
 	std::string authTypeString;
 
@@ -118,12 +118,12 @@ WifiNetworkConfig* OnboardingHelper::getSoftAPConfig()
 
 QStatus OnboardingHelper::initialize(const std::string& t_KeystorePath,
 	const std::string& t_DeviceId, uint8_t* t_AppId,
-	const bool t_SupportsSrpKeyX, const std::string& t_DefaultSrpXPincode,
-	const bool t_SupportsSrpLogon, const std::string& t_DefaultLogonUser, const std::string& t_DefaultLogonPass,
-	const bool t_SupportsEcdheNull,
-	const bool t_SupportsEcdhePsk, const std::string& t_DefaultECDHEPskPassword,
-	const bool t_SupportsEcdheEcdsa, const std::string& t_DefaultECDHEEcdsaPrivateKey, const std::string& t_DefaultECDHEEcdsaCertChain,
-	const bool t_SupportsEcdheSpeke, const std::string& t_DefaultECDHESpekePassword)
+	bool t_SupportsSrpKeyX, const std::string& t_DefaultSrpXPincode,
+	bool t_SupportsSrpLogon, const std::string& t_DefaultLogonUser, const std::string& t_DefaultLogonPass,
+	bool t_SupportsEcdheNull,
+	bool t_SupportsEcdhePsk, const std::string& t_DefaultECDHEPskPassword,
+	bool t_SupportsEcdheEcdsa, const std::string& t_DefaultECDHEEcdsaPrivateKey, const std::string& t_DefaultECDHEEcdsaCertChain,
+	bool t_SupportsEcdheSpeke, const std::string& t_DefaultECDHESpekePassword)
 {
 	m_DeviceId = t_DeviceId;
 	m_AppId = t_AppId;
@@ -146,22 +146,16 @@ QStatus OnboardingHelper::initialize(const std::string& t_KeystorePath,
 	return status;
 }
 
-QStatus OnboardingHelper::initServiceHelper(const bool t_SupportsSrpKeyX, const std::string& t_DefaultSrpXPincode,
-	const bool t_SupportsSrpLogon, const std::string& t_DefaultLogonUser, const std::string& t_DefaultLogonPass,
-	const bool t_SupportsEcdheNull,
-	const bool t_SupportsEcdhePsk, const std::string& t_DefaultECDHEPskPassword,
-	const bool t_SupportsEcdheEcdsa, const std::string& t_DefaultECDHEEcdsaPrivateKey, const std::string& t_DefaultECDHEEcdsaCertChain,
-	const bool t_SupportsEcdheSpeke, const std::string& t_DefaultECDHESpekePassword)
+QStatus OnboardingHelper::initServiceHelper(bool t_SupportsSrpKeyX, const std::string& t_DefaultSrpXPincode,
+	bool t_SupportsSrpLogon, const std::string& t_DefaultLogonUser, const std::string& t_DefaultLogonPass,
+	bool t_SupportsEcdheNull,
+	bool t_SupportsEcdhePsk, const std::string& t_DefaultECDHEPskPassword,
+	bool t_SupportsEcdheEcdsa, const std::string& t_DefaultECDHEEcdsaPrivateKey, const std::string& t_DefaultECDHEEcdsaCertChain,
+	bool t_SupportsEcdheSpeke, const std::string& t_DefaultECDHESpekePassword)
 {
 	releaseServiceHelper();
 	m_ServiceHelper = new ServiceHelper();
-	QStatus status = m_ServiceHelper->initializeClient(m_BusApplicationName, m_DeviceId, m_AppId,
-		t_SupportsSrpKeyX, t_DefaultSrpXPincode,
-		t_SupportsSrpLogon, t_DefaultLogonUser, t_DefaultLogonPass,
-		t_SupportsEcdheNull,
-		t_SupportsEcdhePsk, t_DefaultECDHEPskPassword,
-		t_SupportsEcdheEcdsa, t_DefaultECDHEEcdsaPrivateKey, t_DefaultECDHEEcdsaCertChain,
-		t_SupportsEcdheSpeke, t_DefaultECDHESpekePassword);
+	QStatus status = m_ServiceHelper->initializeClient(m_BusApplicationName, m_DeviceId, m_AppId);
 	if (status != ER_OK)
 	{
 		return status;
@@ -169,7 +163,13 @@ QStatus OnboardingHelper::initServiceHelper(const bool t_SupportsSrpKeyX, const 
 
 	//m_config_client = m_ServiceHelper->connectConfigClient(m_session_id);
 
-	return m_ServiceHelper->enableAuthentication(m_KeystorePath);
+	return m_ServiceHelper->enableAuthentication(m_KeystorePath.c_str(), 
+		t_SupportsSrpKeyX, t_DefaultSrpXPincode,
+		t_SupportsSrpLogon, t_DefaultLogonUser, t_DefaultLogonPass,
+		t_SupportsEcdheNull,
+		t_SupportsEcdhePsk, t_DefaultECDHEPskPassword,
+		t_SupportsEcdheEcdsa, t_DefaultECDHEEcdsaPrivateKey, t_DefaultECDHEEcdsaCertChain,
+		t_SupportsEcdheSpeke, t_DefaultECDHESpekePassword);
 }
 
 void OnboardingHelper::releaseServiceHelper()
@@ -502,7 +502,7 @@ AboutAnnouncementDetails* OnboardingHelper::waitForAboutAnnouncementAndThenConne
 	return m_DeviceAboutAnnouncement;
 }
 
-AboutAnnouncementDetails* OnboardingHelper::waitForNextAboutAnnouncementFromDevice(const long t_TimeRemaining)
+AboutAnnouncementDetails* OnboardingHelper::waitForNextAboutAnnouncementFromDevice(long t_TimeRemaining)
 {
 	AboutAnnouncementDetails* deviceAboutAnnouncement = m_ServiceHelper->waitForNextDeviceAnnouncement(t_TimeRemaining);
 
@@ -618,7 +618,7 @@ ajn::services::OBAuthType OnboardingHelper::getOnboardingServiceAuthType(const s
 
 std::string OnboardingHelper::convertToHex(const std::string& t_NetworkPassword)
 {
-	static const char* const lut = "0123456789ABCDEF";
+	static AJ_PCSTR const lut = "0123456789ABCDEF";
 	size_t len = t_NetworkPassword.length();
 
 	std::string output;
@@ -633,7 +633,7 @@ std::string OnboardingHelper::convertToHex(const std::string& t_NetworkPassword)
 	return output;
 }
 
-void OnboardingHelper::verifyOnboardingState(const short t_ExpectedState)
+void OnboardingHelper::verifyOnboardingState(short t_ExpectedState)
 {
 	LOG(INFO) << "Retrieving the State property from the Onboarding interface";
 	short clientState;
@@ -714,7 +714,7 @@ ajn::services::OnboardingClient::ScanInfos OnboardingHelper::callScanInfo()
 	return scanInfos;
 }
 
-void OnboardingHelper::setPasscode(const AboutAnnouncementDetails& t_AboutAnnouncement, const char* t_Passcode)
+void OnboardingHelper::setPasscode(const AboutAnnouncementDetails& t_AboutAnnouncement, AJ_PCSTR t_Passcode)
 {
 	if (m_SupportsEcdheSpeke)
 	{

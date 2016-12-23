@@ -22,7 +22,7 @@ class ControllerServiceBusObject : public ajn::MessageReceiver
 public:
 	ControllerServiceBusObject(ajn::BusAttachment&, const std::string&, const ajn::SessionId = 0);
 
-	void LightingResetSignalHandler(const ajn::InterfaceDescription::Member* member, const char* sourcePath, ajn::Message& msg);
+	void LightingResetSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR sourcePath, ajn::Message& msg);
 	bool DidLightingReset();
 
 	QStatus GetVersion(uint32_t&);

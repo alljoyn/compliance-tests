@@ -42,21 +42,21 @@ void XMLParser::processXMLFile(std::map<std::string, bool> &t_Ics, std::map<std:
 	// NOTE :	There is a 'const cast<>', but 'rapidxml::parse_non_destructive'
 	//			guarantees 'data' is not overwritten.
 	xml_document<> xmlDoc;
-	xmlDoc.parse<PARSE_FLAGS>(const_cast<char*>(m_File.data()));
+	xmlDoc.parse<PARSE_FLAGS>(const_cast<AJ_PSTR>(m_File.data()));
 
 	for (xml_node<char>* n = xmlDoc.first_node()->first_node(); n; n = n->next_sibling())
 	{
-		char* nodeName = new char[n->name_size() + 1];
+        AJ_PSTR nodeName = new char[n->name_size() + 1];
 		strncpy_s(nodeName, n->name_size() + 1, n->name(), _TRUNCATE);
 
 		if ((strcmp(nodeName, "Ics") == 0)
 			|| (strcmp(nodeName, "Ixit") == 0)
 			|| (strcmp(nodeName, "Parameter") == 0))
 		{
-			char* name = new char[n->first_node("Name")->value_size() + 1];
+            AJ_PSTR name = new char[n->first_node("Name")->value_size() + 1];
 			strncpy_s(name, n->first_node("Name")->value_size() + 1, n->first_node("Name")->value(), _TRUNCATE);
 
-			char* value;
+            AJ_PSTR value;
 			if (n->first_node("Value")->value_size() != 0)
 			{
 				value = new char[n->first_node("Value")->value_size() + 1];
@@ -100,22 +100,22 @@ void XMLParser::loadTestCaseInfo(std::string& t_TestCaseId, const std::string& t
 	// NOTE :	There is a 'const cast<>', but 'rapidxml::parse_non_destructive'
 	//			guarantees 'data' is not overwritten.
 	xml_document<> xmlDoc;
-	xmlDoc.parse<PARSE_FLAGS>(const_cast<char*>(m_File.data()));
+	xmlDoc.parse<PARSE_FLAGS>(const_cast<AJ_PSTR>(m_File.data()));
 
 	for (xml_node<>* n = xmlDoc.first_node()->first_node(); n; n = n->next_sibling())
 	{
-		char* nodeName = new char[n->name_size() + 1];
+        AJ_PSTR nodeName = new char[n->name_size() + 1];
 		strncpy_s(nodeName, n->name_size() + 1, n->name(), _TRUNCATE);
 
 		if ((strcmp(nodeName, "TestCase") == 0))
 		{
-			char* name = new char[n->first_node("Name")->value_size() + 1];
+            AJ_PSTR name = new char[n->first_node("Name")->value_size() + 1];
 			strncpy_s(name, n->first_node("Name")->value_size() + 1, n->first_node("Name")->value(), _TRUNCATE);
 
 			if (strcmp(name, t_TestCaseName.c_str()) == 0)
 			{
-				char* id = new char[n->first_node("Id")->value_size() + 1];
-				char* description = new char[n->first_node("Description")->value_size() + 1];
+                AJ_PSTR id = new char[n->first_node("Id")->value_size() + 1];
+                AJ_PSTR description = new char[n->first_node("Description")->value_size() + 1];
 
 				strncpy_s(id, n->first_node("Id")->value_size() + 1, n->first_node("Id")->value(), _TRUNCATE);
 				strncpy_s(description, n->first_node("Description")->value_size() + 1, n->first_node("Description")->value(), _TRUNCATE);
@@ -141,7 +141,7 @@ void XMLParser::saveResultsToFile(const std::string& t_TestCaseId, const std::st
 	
 	if (m_File.size() != 0)
 	{
-		xmlDoc.parse<PARSE_FLAGS>(const_cast<char*>(m_File.data()));
+		xmlDoc.parse<PARSE_FLAGS>(const_cast<AJ_PSTR>(m_File.data()));
 	}
 	else
 	{
@@ -152,10 +152,10 @@ void XMLParser::saveResultsToFile(const std::string& t_TestCaseId, const std::st
 	xml_node<> *resultsNode = xmlDoc.allocate_node(node_element, "TestCase");
 	xmlDoc.first_node()->append_node(resultsNode);
 
-	char* logDatetime = new char[16];
+    AJ_PSTR logDatetime = new char[16];
 	std::strftime(logDatetime, 16, "%Y%m%d-%H%M%S", &t_TestCaseDatetime);
 
-	char* xmlDatetime = new char[20];
+    AJ_PSTR xmlDatetime = new char[20];
 	std::strftime(xmlDatetime, 20, "%Y-%m-%d %H:%M:%S", &t_TestCaseDatetime);
 
 	::testing::UnitTest& unitTest = *::testing::UnitTest::GetInstance();

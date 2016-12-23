@@ -24,10 +24,10 @@ class ControllerServiceLampBusObject : public ajn::MessageReceiver
 public:
 	ControllerServiceLampBusObject(ajn::BusAttachment&, const std::string&, const ajn::SessionId = 0);
 
-	void LampNameChangedSignalHandler(const ajn::InterfaceDescription::Member* member, const char*, ajn::Message&);
-	void LampStateChangedSignalHandler(const ajn::InterfaceDescription::Member*, const char*, ajn::Message&);
-	void LampsFoundSignalHandler(const ajn::InterfaceDescription::Member*, const char*, ajn::Message&);
-	void LampsLostSignalHandler(const ajn::InterfaceDescription::Member*, const char*, ajn::Message&);
+	void LampNameChangedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR, ajn::Message&);
+	void LampStateChangedSignalHandler(const ajn::InterfaceDescription::Member*, AJ_PCSTR, ajn::Message&);
+	void LampsFoundSignalHandler(const ajn::InterfaceDescription::Member*, AJ_PCSTR, ajn::Message&);
+	void LampsLostSignalHandler(const ajn::InterfaceDescription::Member*, AJ_PCSTR, ajn::Message&);
 	bool DidLampNameChanged();
 	bool DidLampStateChanged();
 	bool DidLampsFound();
@@ -37,25 +37,25 @@ public:
 	QStatus GetVersion(uint32_t&);
 
 	QStatus GetAllLampIDs(uint32_t&, size_t&, std::vector<qcc::String>&);
-	QStatus GetLampSupportedLanguages(const char*, uint32_t&, qcc::String&, std::vector<qcc::String>&);
-	QStatus GetLampManufacturer(const char*, const char*, uint32_t&, qcc::String&, qcc::String&, qcc::String&);
-	QStatus GetLampName(const char*, const char*, uint32_t&, qcc::String&, qcc::String&, qcc::String&);
-	QStatus SetLampName(const char*, const char*, const char*, uint32_t&, qcc::String&, qcc::String&);
-	QStatus GetLampDetails(const char*, uint32_t&, qcc::String&, std::vector<ajn::MsgArg>&);
-	QStatus GetLampParameters(const char*, uint32_t&, qcc::String&, std::vector<ajn::MsgArg>&);
-	QStatus GetLampParametersField(const char*, const char*, uint32_t&, qcc::String&, qcc::String&, qcc::String&);
-	QStatus GetLampState(const char*, uint32_t&, qcc::String&, std::vector<ajn::MsgArg>&);
-	QStatus GetLampStateField(const char*, const char*, uint32_t&, qcc::String&, qcc::String&, qcc::String&);
-	QStatus TransitionLampState(const char*, ajn::MsgArg*, const uint32_t, uint32_t&, qcc::String&);
-	QStatus TransitionLampStateField(const char*, const char*, ajn::MsgArg, const uint32_t, uint32_t&, qcc::String&, qcc::String&);
-	QStatus PulseLampWithState(const char*, ajn::MsgArg*, ajn::MsgArg*, const uint32_t, const uint32_t, const uint32_t, uint32_t&, qcc::String&);
-	QStatus PulseLampWithPreset(const char*, const char*, const char*, const uint32_t, const uint32_t, const uint32_t, uint32_t&, qcc::String&);
-	QStatus TransitionLampStateToPreset(const char*, const char*, const uint32_t, uint32_t&, qcc::String&);
-	QStatus ResetLampState(const char*, uint32_t&, qcc::String&);
-	QStatus ResetLampStateField(const char*, const char*, uint32_t&, qcc::String&, qcc::String&);
-	QStatus GetLampFaults(const char*, uint32_t&, qcc::String&, std::vector<uint32_t>&);
-	QStatus ClearLampFault(const char*, const uint32_t, uint32_t&, qcc::String&, uint32_t&);
-	QStatus GetLampServiceVersion(const char*, uint32_t&, qcc::String&, uint32_t&);
+	QStatus GetLampSupportedLanguages(AJ_PCSTR, uint32_t&, qcc::String&, std::vector<qcc::String>&);
+	QStatus GetLampManufacturer(AJ_PCSTR, AJ_PCSTR, uint32_t&, qcc::String&, qcc::String&, qcc::String&);
+	QStatus GetLampName(AJ_PCSTR, AJ_PCSTR, uint32_t&, qcc::String&, qcc::String&, qcc::String&);
+	QStatus SetLampName(AJ_PCSTR, AJ_PCSTR, AJ_PCSTR, uint32_t&, qcc::String&, qcc::String&);
+	QStatus GetLampDetails(AJ_PCSTR, uint32_t&, qcc::String&, std::vector<ajn::MsgArg>&);
+	QStatus GetLampParameters(AJ_PCSTR, uint32_t&, qcc::String&, std::vector<ajn::MsgArg>&);
+	QStatus GetLampParametersField(AJ_PCSTR, AJ_PCSTR, uint32_t&, qcc::String&, qcc::String&, qcc::String&);
+	QStatus GetLampState(AJ_PCSTR, uint32_t&, qcc::String&, std::vector<ajn::MsgArg>&);
+	QStatus GetLampStateField(AJ_PCSTR, AJ_PCSTR, uint32_t&, qcc::String&, qcc::String&, qcc::String&);
+	QStatus TransitionLampState(AJ_PCSTR, ajn::MsgArg*, uint32_t, uint32_t&, qcc::String&);
+	QStatus TransitionLampStateField(AJ_PCSTR, AJ_PCSTR, ajn::MsgArg, uint32_t, uint32_t&, qcc::String&, qcc::String&);
+	QStatus PulseLampWithState(AJ_PCSTR, ajn::MsgArg*, ajn::MsgArg*, uint32_t, uint32_t, uint32_t, uint32_t&, qcc::String&);
+	QStatus PulseLampWithPreset(AJ_PCSTR, AJ_PCSTR, AJ_PCSTR, uint32_t, uint32_t, uint32_t, uint32_t&, qcc::String&);
+	QStatus TransitionLampStateToPreset(AJ_PCSTR, AJ_PCSTR, uint32_t, uint32_t&, qcc::String&);
+	QStatus ResetLampState(AJ_PCSTR, uint32_t&, qcc::String&);
+	QStatus ResetLampStateField(AJ_PCSTR, AJ_PCSTR, uint32_t&, qcc::String&, qcc::String&);
+	QStatus GetLampFaults(AJ_PCSTR, uint32_t&, qcc::String&, std::vector<uint32_t>&);
+	QStatus ClearLampFault(AJ_PCSTR, uint32_t, uint32_t&, qcc::String&, uint32_t&);
+	QStatus GetLampServiceVersion(AJ_PCSTR, uint32_t&, qcc::String&, uint32_t&);
 	
 private:
 	ajn::BusAttachment* m_BusAttachment;

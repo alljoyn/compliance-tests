@@ -20,7 +20,7 @@
 
 #include "MessageSet.h"
 
-const char* NotificationValidator::URL_REGEX = R"(^(([^:\/?#]+):)?(//([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?)";
+AJ_PCSTR NotificationValidator::URL_REGEX = R"(^(([^:\/?#]+):)?(//([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?)";
 
 NotificationValidator::NotificationValidator(std::string t_DutDeviceId, uint8_t* t_DutAppId,
 	bool t_ExpectedRichIconUrl, bool t_ExpectedRichAudioUrl, bool t_ExpectedResponseObjectPath,
@@ -91,7 +91,7 @@ void NotificationValidator::readNotification()
 		LOG(INFO) << "Checking notification message type";
 		EXPECT_NE(notification->getMessageType(), ajn::services::NotificationMessageType::UNSET);
 
-		const char* richIconUrl = notification->getRichIconUrl();
+		AJ_PCSTR richIconUrl = notification->getRichIconUrl();
 		if (m_ExpectedRichIconUrl && richIconUrl != nullptr)
 		{
 			validateUrl(richIconUrl);
@@ -117,7 +117,7 @@ void NotificationValidator::readNotification()
 			EXPECT_TRUE(false) << "RichAudioUrl support is not the defined by ICSN_RichAudioUrl";
 		}
 
-		const char* responseObjectPath = notification->getControlPanelServiceObjectPath();
+		AJ_PCSTR responseObjectPath = notification->getControlPanelServiceObjectPath();
 		if (m_ExpectedResponseObjectPath && responseObjectPath != nullptr)
 		{
 			LOG(INFO) << "Control Panel Service response object path: " << responseObjectPath;

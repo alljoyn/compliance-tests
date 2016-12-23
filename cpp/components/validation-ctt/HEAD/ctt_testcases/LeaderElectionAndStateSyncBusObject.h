@@ -24,13 +24,13 @@ class LeaderElectionAndStateSyncBusObject : ajn::MessageReceiver
 public:
 	LeaderElectionAndStateSyncBusObject(ajn::BusAttachment&, const std::string&, const ajn::SessionId = 0);
 
-	void BlobChangedSignalHandler(const ajn::InterfaceDescription::Member* member, const char*, ajn::Message&);
+	void BlobChangedSignalHandler(const ajn::InterfaceDescription::Member* member, AJ_PCSTR, ajn::Message&);
 	bool DidBlobChanged();
 
 	QStatus GetVersion(uint32_t&);
 
 	QStatus GetChecksumAndModificationTimestamp(std::vector<ajn::MsgArg>&);
-	QStatus GetBlob(const uint32_t, uint32_t&, qcc::String&, uint32_t&, uint64_t&);
+	QStatus GetBlob(uint32_t, uint32_t&, qcc::String&, uint32_t&, uint64_t&);
 	QStatus Overthrow(bool&);
 
 private:

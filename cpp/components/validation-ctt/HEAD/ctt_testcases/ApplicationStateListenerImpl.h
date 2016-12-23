@@ -13,16 +13,23 @@
 *    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************************************************************/
-#include "stdafx.h"
-#include "InterfaceInfo.h"
+#pragma once
 
-InterfaceInfo::InterfaceInfo(const char* name, ajn::SessionPort port, const char* path, ajn::services::HaeAboutData& data, ajn::AboutObjectDescription& description) :
-	busName(name), sessionPort(port), sessionId(0), objectPath(path), aboutData(data), aboutDescription(description)
+#include <alljoyn\ApplicationStateListener.h>
+
+#include <map>
+
+class ApplicationStateListenerImpl : public ajn::ApplicationStateListener
 {
-	ajn::MsgArg* arg;
-	data.GetField("DeviceName", arg, "en");
-	const char* bus_name;
-	arg->Get("s", &bus_name);
+public:
+    ApplicationStateListenerImpl();
+    virtual void State(AJ_PCSTR busName, const qcc::KeyInfoNISTP256& publicKeyInfo, ajn::PermissionConfigurator::ApplicationState state);
+    bool IsClaimable(AJ_PCSTR busName);
+    bool IsClaimed(AJ_PCSTR busName);
+    bool CheckApplicationState(AJ_PCSTR busName, ajn::PermissionConfigurator::ApplicationState applicationState);
+    bool CheckEccPublicKey(AJ_PCSTR busName, const qcc::ECCPublicKey& publicKey);
 
-	deviceName = bus_name;
-}
+private:
+    std::map<std::string, ajn::PermissionConfigurator::ApplicationState> m_BusApplicationStates;
+    std::map<std::string, qcc::KeyInfoNISTP256> m_BusApplicationEccPublicKeys;
+};

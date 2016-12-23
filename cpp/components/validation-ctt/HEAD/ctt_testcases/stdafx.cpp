@@ -15,4 +15,4 @@
 ******************************************************************************/
 #include "stdafx.h"
 
-std::string CERTIFICATION_RELEASE = "16.04.00";
+std::string CERTIFICATION_RELEASE = "16.10.00";

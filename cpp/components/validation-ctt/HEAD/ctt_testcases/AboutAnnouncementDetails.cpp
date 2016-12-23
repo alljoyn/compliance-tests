@@ -21,169 +21,169 @@
 using namespace ajn;
 using namespace qcc;
 
-AboutAnnouncementDetails::AboutAnnouncementDetails(const char* t_ServiceName, const uint16_t t_Version, 
-	const uint16_t t_Port, const MsgArg& t_ObjectDescription, const MsgArg& t_AboutData) : 
-	AboutAnnouncement(t_ServiceName, t_Version, t_Port, t_ObjectDescription, t_AboutData) {}
+AboutAnnouncementDetails::AboutAnnouncementDetails(AJ_PCSTR t_ServiceName, uint16_t t_Version,
+    uint16_t t_Port, const MsgArg& t_ObjectDescription, const MsgArg& t_AboutData) : 
+    AboutAnnouncement(t_ServiceName, t_Version, t_Port, t_ObjectDescription, t_AboutData) {}
 
 std::map<String, String> AboutAnnouncementDetails::KEY_SIGNATURE_MAP = 
 {
-		{ AboutKeys::DEVICE_ID, "s" },
-		{ AboutKeys::DEVICE_NAME, "s" },
-		{ AboutKeys::DEFAULT_LANGUAGE, "s" },
-		{ AboutKeys::APP_NAME, "s" },
-		{ AboutKeys::MANUFACTURER, "s" },
-		{ AboutKeys::MODEL_NUMBER, "s" },
-		{ AboutKeys::DESCRIPTION, "s" },
-		{ AboutKeys::DATE_OF_MANUFACTURE, "s" },
-		{ AboutKeys::SOFTWARE_VERSION, "s" },
-		{ AboutKeys::AJ_SOFTWARE_VERSION, "s" },
-		{ AboutKeys::HARDWARE_VERSION, "s" },
-		{ AboutKeys::SUPPORT_URL, "s" },
-		{ AboutKeys::APP_ID, "ay" },
-		{ AboutKeys::SUPPORTED_LANGUAGES, "as" }
+        { AboutKeys::DEVICE_ID, "s" },
+        { AboutKeys::DEVICE_NAME, "s" },
+        { AboutKeys::DEFAULT_LANGUAGE, "s" },
+        { AboutKeys::APP_NAME, "s" },
+        { AboutKeys::MANUFACTURER, "s" },
+        { AboutKeys::MODEL_NUMBER, "s" },
+        { AboutKeys::DESCRIPTION, "s" },
+        { AboutKeys::DATE_OF_MANUFACTURE, "s" },
+        { AboutKeys::SOFTWARE_VERSION, "s" },
+        { AboutKeys::AJ_SOFTWARE_VERSION, "s" },
+        { AboutKeys::HARDWARE_VERSION, "s" },
+        { AboutKeys::SUPPORT_URL, "s" },
+        { AboutKeys::APP_ID, "ay" },
+        { AboutKeys::SUPPORTED_LANGUAGES, "as" }
 };
 
 bool AboutAnnouncementDetails::checkForCorrectType(String t_Key, String t_Signature)
 {
-	String expectedSignature = KEY_SIGNATURE_MAP.at(t_Key);
+    String expectedSignature = KEY_SIGNATURE_MAP.at(t_Key);
 
-	if ((expectedSignature.c_str() != NULL) && (expectedSignature != t_Signature))
-	{
-		//throw
-	}
-	return false;
+    if ((expectedSignature.c_str() != NULL) && (expectedSignature != t_Signature))
+    {
+        //throw
+    }
+    return false;
 }
 
-char* AboutAnnouncementDetails::getDeviceId() const
+AJ_PSTR AboutAnnouncementDetails::getDeviceId() const
 {
-	char* deviceId;
-	getAboutData()->GetDeviceId(&deviceId);
-	return deviceId;
+    AJ_PSTR deviceId;
+    getAboutData()->GetDeviceId(&deviceId);
+    return deviceId;
 }
 
 uint8_t* AboutAnnouncementDetails::getAppId() const
 {
-	uint8_t* appId;
-	size_t appIdSize;
-	getAboutData()->GetAppId(&appId, &appIdSize);
-	uint8_t* fixedAppId = new uint8_t[appIdSize];
+    uint8_t* appId;
+    size_t appIdSize;
+    getAboutData()->GetAppId(&appId, &appIdSize);
+    uint8_t* fixedAppId = new uint8_t[appIdSize];
 
-	for (size_t i = 0; i < appIdSize; ++i)
-	{
-		fixedAppId[i] = appId[i];
-	}
+    for (size_t i = 0; i < appIdSize; ++i)
+    {
+        fixedAppId[i] = appId[i];
+    }
 
-	return fixedAppId;
+    return fixedAppId;
 }
 
-char* AboutAnnouncementDetails::getDeviceName() const
+AJ_PSTR AboutAnnouncementDetails::getDeviceName() const
 {
-	char* deviceName;
-	getAboutData()->GetDeviceName(&deviceName);
-	return deviceName;
+    AJ_PSTR deviceName;
+    getAboutData()->GetDeviceName(&deviceName);
+    return deviceName;
 }
 
-char* AboutAnnouncementDetails::getAppName() const
+AJ_PSTR AboutAnnouncementDetails::getAppName() const
 {
-	char* appName;
-	getAboutData()->GetAppName(&appName);
-	return appName;
+    AJ_PSTR appName;
+    getAboutData()->GetAppName(&appName);
+    return appName;
 }
 
-char* AboutAnnouncementDetails::getManufacturer() const
+AJ_PSTR AboutAnnouncementDetails::getManufacturer() const
 {
-	char* manufacturer;
-	getAboutData()->GetManufacturer(&manufacturer);
-	return manufacturer;
+    AJ_PSTR manufacturer;
+    getAboutData()->GetManufacturer(&manufacturer);
+    return manufacturer;
 }
 
-char* AboutAnnouncementDetails::getModel() const
+AJ_PSTR AboutAnnouncementDetails::getModel() const
 {
-	char* model;
-	getAboutData()->GetModelNumber(&model);
-	return model;
+    AJ_PSTR model;
+    getAboutData()->GetModelNumber(&model);
+    return model;
 }
 
-const char* AboutAnnouncementDetails::getSupportedLanguages() const
+AJ_PCSTR AboutAnnouncementDetails::getSupportedLanguages() const
 {
-	const char* supportedLanguages;
-	size_t arraySize = getAboutData()->GetSupportedLanguages(&supportedLanguages);
-	return supportedLanguages;
+    AJ_PCSTR supportedLanguages;
+    size_t arraySize = getAboutData()->GetSupportedLanguages(&supportedLanguages);
+    return supportedLanguages;
 }
 
-char* AboutAnnouncementDetails::getDescription() const
+AJ_PSTR AboutAnnouncementDetails::getDescription() const
 {
-	char* description;
-	getAboutData()->GetDescription(&description);
-	return description;
+    AJ_PSTR description;
+    getAboutData()->GetDescription(&description);
+    return description;
 }
 
-char* AboutAnnouncementDetails::getManufactureDate() const
+AJ_PSTR AboutAnnouncementDetails::getManufactureDate() const
 {
-	char* manufacturerDate;
-	getAboutData()->GetDateOfManufacture(&manufacturerDate);
-	return manufacturerDate;
+    AJ_PSTR manufacturerDate;
+    getAboutData()->GetDateOfManufacture(&manufacturerDate);
+    return manufacturerDate;
 }
 
-char* AboutAnnouncementDetails::getSoftwareVersion() const
+AJ_PSTR AboutAnnouncementDetails::getSoftwareVersion() const
 {
-	char* softwareVersion;
-	getAboutData()->GetSoftwareVersion(&softwareVersion);
-	return softwareVersion;
+    AJ_PSTR softwareVersion;
+    getAboutData()->GetSoftwareVersion(&softwareVersion);
+    return softwareVersion;
 }
 
-char* AboutAnnouncementDetails::getAjSoftwareVersion() const
+AJ_PSTR AboutAnnouncementDetails::getAjSoftwareVersion() const
 {
-	char* ajSoftwareVersion;
-	getAboutData()->GetAJSoftwareVersion(&ajSoftwareVersion);
-	return ajSoftwareVersion;
+    AJ_PSTR ajSoftwareVersion;
+    getAboutData()->GetAJSoftwareVersion(&ajSoftwareVersion);
+    return ajSoftwareVersion;
 }
 
-char* AboutAnnouncementDetails::getHardwareVersion() const
+AJ_PSTR AboutAnnouncementDetails::getHardwareVersion() const
 {
-	char* hardwareVersion;
-	getAboutData()->GetHardwareVersion(&hardwareVersion);
-	return hardwareVersion;
+    AJ_PSTR hardwareVersion;
+    getAboutData()->GetHardwareVersion(&hardwareVersion);
+    return hardwareVersion;
 }
 
-char* AboutAnnouncementDetails::getSupportUrl() const
+AJ_PSTR AboutAnnouncementDetails::getSupportUrl() const
 {
-	char* supportUrl;
-	getAboutData()->GetSupportUrl(&supportUrl);
-	return supportUrl;
+    AJ_PSTR supportUrl;
+    getAboutData()->GetSupportUrl(&supportUrl);
+    return supportUrl;
 }
 
-bool AboutAnnouncementDetails::supportsInterface(char* t_InterfaceName)
+bool AboutAnnouncementDetails::supportsInterface(AJ_PSTR t_InterfaceName)
 {
-	size_t numberOfPaths = getObjectDescriptions()->GetPaths(NULL, 0);
-	const char** paths = new const char*[numberOfPaths];
-	getObjectDescriptions()->GetPaths(paths, numberOfPaths);
+    size_t numberOfPaths = getObjectDescriptions()->GetPaths(NULL, 0);
+    AJ_PCSTR* paths = new AJ_PCSTR[numberOfPaths];
+    getObjectDescriptions()->GetPaths(paths, numberOfPaths);
 
-	for (size_t i = 0; i < numberOfPaths; ++i)
-	{
-		size_t numberOfInterfaces = getObjectDescriptions()->GetInterfaces(paths[i], NULL, 0);
-		const char** intfs = new const char*[numberOfInterfaces];
-		getObjectDescriptions()->GetInterfaces(paths[i], intfs, numberOfInterfaces);
+    for (size_t i = 0; i < numberOfPaths; ++i)
+    {
+        size_t numberOfInterfaces = getObjectDescriptions()->GetInterfaces(paths[i], NULL, 0);
+        AJ_PCSTR* intfs = new AJ_PCSTR[numberOfInterfaces];
+        getObjectDescriptions()->GetInterfaces(paths[i], intfs, numberOfInterfaces);
 
-		for (size_t j = 0; j < numberOfInterfaces; ++j)
-		{
-			if (strcmp(intfs[j], t_InterfaceName) == 0)
-			{
-				delete[] intfs;
-				delete[] paths;
-				return true;
-			}
-		}
-		delete[] intfs;
-	}
-	delete[] paths;
+        for (size_t j = 0; j < numberOfInterfaces; ++j)
+        {
+            if (strcmp(intfs[j], t_InterfaceName) == 0)
+            {
+                delete[] intfs;
+                delete[] paths;
+                return true;
+            }
+        }
+        delete[] intfs;
+    }
+    delete[] paths;
 
-	return false;
+    return false;
 }
 
-char* AboutAnnouncementDetails::getDefaultLanguage() const
+AJ_PSTR AboutAnnouncementDetails::getDefaultLanguage() const
 {
-	char* defaultLanguage;
-	getAboutData()->GetDefaultLanguage(&defaultLanguage);
-	return defaultLanguage;
+    AJ_PSTR defaultLanguage;
+    getAboutData()->GetDefaultLanguage(&defaultLanguage);
+    return defaultLanguage;
 }

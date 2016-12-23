@@ -40,7 +40,7 @@ void IntrospectionArg::setDirection(string t_Direction)
 
 int IntrospectionArg::hashCode()
 {
-	//COMPLETAR
+	//COMPLETE
 	return 1;
 }
 

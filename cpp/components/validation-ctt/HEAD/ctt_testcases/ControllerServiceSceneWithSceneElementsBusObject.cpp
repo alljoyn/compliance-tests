@@ -19,8 +19,8 @@
 #define CHECK_BREAK(x) if ((status = x) != ER_OK) { break; }
 #define CHECK_RETURN(x) if ((status = x) != ER_OK) { return status; }
 
-static const char* CONTROLLERSERVICE_OBJECT_PATH = "/org/allseen/LSF/ControllerService";
-static const char* SWSE_INTERFACE_NAME = "org.allseen.LSF.ControllerService.SceneWithSceneElements";
+static AJ_PCSTR CONTROLLERSERVICE_OBJECT_PATH = "/org/allseen/LSF/ControllerService";
+static AJ_PCSTR SWSE_INTERFACE_NAME = "org.allseen.LSF.ControllerService.SceneWithSceneElements";
 
 ControllerServiceSceneWithSceneElementsBusObject::ControllerServiceSceneWithSceneElementsBusObject(ajn::BusAttachment& t_BusAttachment, const std::string& t_BusName, const ajn::SessionId t_SessionId) :
 m_BusAttachment(&t_BusAttachment), m_BusName(t_BusName), m_SessionId(t_SessionId)
@@ -70,7 +70,8 @@ QStatus ControllerServiceSceneWithSceneElementsBusObject::GetVersion(uint32_t& v
 	return status;
 }
 
-QStatus ControllerServiceSceneWithSceneElementsBusObject::CreateSceneWithSceneElements(const std::vector<const char*>& t_SceneElementIDs, const char* t_SceneName, const char* t_Language, uint32_t& t_ResponseCode, qcc::String& t_SceneID)
+QStatus ControllerServiceSceneWithSceneElementsBusObject::CreateSceneWithSceneElements(const std::vector<AJ_PCSTR>& t_SceneElementIDs,
+    AJ_PCSTR t_SceneName, AJ_PCSTR t_Language, uint32_t& t_ResponseCode, qcc::String& t_SceneID)
 {
 	QStatus status = ER_OK;
 
@@ -93,7 +94,7 @@ QStatus ControllerServiceSceneWithSceneElementsBusObject::CreateSceneWithSceneEl
 		CHECK_RETURN(proxyBusObj->MethodCall(SWSE_INTERFACE_NAME, "CreateSceneWithSceneElements", msgArg, 3, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempSceneID;
+        AJ_PSTR tempSceneID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempSceneID))
 		t_SceneID = qcc::String(tempSceneID);
 	}
@@ -101,7 +102,8 @@ QStatus ControllerServiceSceneWithSceneElementsBusObject::CreateSceneWithSceneEl
 	return status;
 }
 
-QStatus ControllerServiceSceneWithSceneElementsBusObject::GetSceneWithSceneElements(const char* t_SceneID, uint32_t& t_ResponseCode, qcc::String& t_RetrievedSceneID, std::vector<qcc::String>& t_SceneElementIDs)
+QStatus ControllerServiceSceneWithSceneElementsBusObject::GetSceneWithSceneElements(AJ_PCSTR t_SceneID, uint32_t& t_ResponseCode,
+    qcc::String& t_RetrievedSceneID, std::vector<qcc::String>& t_SceneElementIDs)
 {
 	QStatus status = ER_OK;
 
@@ -122,12 +124,12 @@ QStatus ControllerServiceSceneWithSceneElementsBusObject::GetSceneWithSceneEleme
 		CHECK_RETURN(proxyBusObj->MethodCall(SWSE_INTERFACE_NAME, "GetSceneWithSceneElements", msgArg, 1, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempSceneID;
+        AJ_PSTR tempSceneID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempSceneID))
 		t_RetrievedSceneID = qcc::String(tempSceneID);
 
 		size_t tempSceneElementIDsSize;
-		char** tempSceneElementIDs;
+        AJ_PSTR* tempSceneElementIDs;
 		CHECK_RETURN(responseMessage->GetArg(2)->Get("as", &tempSceneElementIDsSize, &tempSceneElementIDs))
 
 		t_SceneElementIDs.clear();
@@ -140,7 +142,8 @@ QStatus ControllerServiceSceneWithSceneElementsBusObject::GetSceneWithSceneEleme
 	return status;
 }
 
-QStatus ControllerServiceSceneWithSceneElementsBusObject::UpdateSceneWithSceneElements(const char* t_SceneID, const std::vector<const char*>& t_SceneElementIDs, uint32_t& t_ResponseCode, qcc::String& t_RetrievedSceneID)
+QStatus ControllerServiceSceneWithSceneElementsBusObject::UpdateSceneWithSceneElements(AJ_PCSTR t_SceneID,
+    const std::vector<AJ_PCSTR>& t_SceneElementIDs, uint32_t& t_ResponseCode, qcc::String& t_RetrievedSceneID)
 {
 	QStatus status = ER_OK;
 
@@ -163,7 +166,7 @@ QStatus ControllerServiceSceneWithSceneElementsBusObject::UpdateSceneWithSceneEl
 		CHECK_RETURN(proxyBusObj->MethodCall(SWSE_INTERFACE_NAME, "UpdateSceneWithSceneElements", msgArg, 2, responseMessage))
 		CHECK_RETURN(responseMessage->GetArg(0)->Get("u", &t_ResponseCode))
 
-		char* tempSceneID;
+        AJ_PSTR tempSceneID;
 		CHECK_RETURN(responseMessage->GetArg(1)->Get("s", &tempSceneID))
 		t_RetrievedSceneID = qcc::String(tempSceneID);
 	}

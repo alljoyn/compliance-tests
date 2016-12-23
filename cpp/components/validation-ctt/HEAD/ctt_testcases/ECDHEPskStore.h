@@ -21,8 +21,8 @@
 class ECDHEPskStore
 {
 public:
-	const char* getPassword(std::string);
-	void setPassword(std::string, const char*);
+	AJ_PCSTR getPassword(std::string);
+	void setPassword(std::string, AJ_PCSTR);
 private:
-	std::map<std::string, const char*> m_PasswordStore;
+	std::map<std::string, AJ_PCSTR> m_PasswordStore;
 };

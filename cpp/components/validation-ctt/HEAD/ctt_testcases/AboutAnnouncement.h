@@ -21,17 +21,17 @@
 
 class AboutAnnouncement
 {
-	public:
-		AboutAnnouncement(const char*, const uint16_t, const uint16_t, const ajn::MsgArg&, const ajn::MsgArg&);
-		std::string getServiceName() const;
-		uint16_t getPort() const;
-		ajn::AboutObjectDescription* getObjectDescriptions() const;
-		ajn::AboutData* getAboutData() const;
-		uint16_t getVersion() const;
-	private:
-		std::string m_ServiceName = std::string{ "" };
-		uint16_t m_Version;
-		uint16_t m_Port;
-		ajn::AboutObjectDescription* m_ObjectDescription{ nullptr };
-		ajn::AboutData* m_AboutData{ nullptr };
+    public:
+        AboutAnnouncement(AJ_PCSTR, uint16_t, uint16_t, const ajn::MsgArg&, const ajn::MsgArg&);
+        std::string getServiceName() const;
+        uint16_t getPort() const;
+        ajn::AboutObjectDescription* getObjectDescriptions() const;
+        ajn::AboutData* getAboutData() const;
+        uint16_t getVersion() const;
+    private:
+        std::string m_ServiceName = std::string{ "" };
+        uint16_t m_Version;
+        uint16_t m_Port;
+        ajn::AboutObjectDescription* m_ObjectDescription{ nullptr };
+        ajn::AboutData* m_AboutData{ nullptr };
 };

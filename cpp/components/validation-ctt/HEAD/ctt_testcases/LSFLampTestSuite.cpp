@@ -26,17 +26,17 @@
 using namespace ajn;
 using namespace std;
 
-const char* LSFLampTestSuite::BUS_APPLICATION_NAME = "LSFLampTestSuite";
-const char* LSFLampTestSuite::BUS_OBJECT_PATH = "/org/allseen/LSF/Lamp";
-const char* LSFLampTestSuite::LAMPSERVICE_INTERFACE_NAME = "org.allseen.LSF.LampService";
-const char* LSFLampTestSuite::LAMPSTATE_INTERFACE_NAME = "org.allseen.LSF.LampState";
-const char* LSFLampTestSuite::LAMPDETAILS_INTERFACE_NAME = "org.allseen.LSF.LampDetails";
-const char* LSFLampTestSuite::LAMPPARAMETERS_INTERFACE_NAME = "org.allseen.LSF.LampParameters";
-const char* LSFLampTestSuite::LAMP_STATE_FIELD_ON_OFF = "OnOff";
-const char* LSFLampTestSuite::LAMP_STATE_FIELD_BRIGHTNESS = "Brightness";
-const char* LSFLampTestSuite::LAMP_STATE_FIELD_HUE = "Hue";
-const char* LSFLampTestSuite::LAMP_STATE_FIELD_SATURATION = "Saturation";
-const char* LSFLampTestSuite::LAMP_STATE_FIELD_COLOR_TEMP = "ColorTemp";
+AJ_PCSTR LSFLampTestSuite::BUS_APPLICATION_NAME = "LSFLampTestSuite";
+AJ_PCSTR LSFLampTestSuite::BUS_OBJECT_PATH = "/org/allseen/LSF/Lamp";
+AJ_PCSTR LSFLampTestSuite::LAMPSERVICE_INTERFACE_NAME = "org.allseen.LSF.LampService";
+AJ_PCSTR LSFLampTestSuite::LAMPSTATE_INTERFACE_NAME = "org.allseen.LSF.LampState";
+AJ_PCSTR LSFLampTestSuite::LAMPDETAILS_INTERFACE_NAME = "org.allseen.LSF.LampDetails";
+AJ_PCSTR LSFLampTestSuite::LAMPPARAMETERS_INTERFACE_NAME = "org.allseen.LSF.LampParameters";
+AJ_PCSTR LSFLampTestSuite::LAMP_STATE_FIELD_ON_OFF = "OnOff";
+AJ_PCSTR LSFLampTestSuite::LAMP_STATE_FIELD_BRIGHTNESS = "Brightness";
+AJ_PCSTR LSFLampTestSuite::LAMP_STATE_FIELD_HUE = "Hue";
+AJ_PCSTR LSFLampTestSuite::LAMP_STATE_FIELD_SATURATION = "Saturation";
+AJ_PCSTR LSFLampTestSuite::LAMP_STATE_FIELD_COLOR_TEMP = "ColorTemp";
 
 LSFLampTestSuite::LSFLampTestSuite() : IOManager(ServiceFramework::LSF_LAMP)
 {
@@ -71,7 +71,13 @@ void LSFLampTestSuite::SetUp()
 
 	initProxyBusObjects();
 
-	m_ServiceHelper->enableAuthentication("/Keystore");
+	m_ServiceHelper->enableAuthentication("/Keystore",
+		m_IcsMap.at("ICSCO_SrpKeyX"), m_IxitMap.at("IXITCO_SrpKeyXPincode"),
+		m_IcsMap.at("ICSCO_SrpLogon"), m_IxitMap.at("IXITCO_SrpLogonUser"), m_IxitMap.at("IXITCO_SrpLogonPass"),
+		m_IcsMap.at("ICSCO_EcdheNull"),
+		m_IcsMap.at("ICSCO_EcdhePsk"), m_IxitMap.at("IXITCO_EcdhePskPassword"),
+		m_IcsMap.at("ICSCO_EcdheEcdsa"), m_IxitMap.at("IXITCO_EcdheEcdsaPrivateKey"), m_IxitMap.at("IXITCO_EcdheEcdsaCertChain"),
+		m_IcsMap.at("ICSCO_EcdheSpeke"), m_IxitMap.at("IXITCO_EcdheSpekePassword"));
 	m_BusIntrospector = new XMLBasedBusIntrospector(m_ServiceHelper->getBusIntrospector(*m_DeviceAboutAnnouncement));
 
 	LOG(INFO) << "test setUp done";
@@ -85,13 +91,7 @@ QStatus LSFLampTestSuite::initServiceHelper()
 	releaseResources();
 
 	m_ServiceHelper = new ServiceHelper();
-	if ((status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId,
-		m_IcsMap.at("ICSCO_SrpKeyX"), m_IxitMap.at("IXITCO_SrpKeyXPincode"),
-		m_IcsMap.at("ICSCO_SrpLogon"), m_IxitMap.at("IXITCO_SrpLogonUser"), m_IxitMap.at("IXITCO_SrpLogonPass"),
-		m_IcsMap.at("ICSCO_EcdheNull"),
-		m_IcsMap.at("ICSCO_EcdhePsk"), m_IxitMap.at("IXITCO_EcdhePskPassword"),
-		m_IcsMap.at("ICSCO_EcdheEcdsa"), m_IxitMap.at("IXITCO_EcdheEcdsaPrivateKey"), m_IxitMap.at("IXITCO_EcdheEcdsaCertChain"),
-		m_IcsMap.at("ICSCO_EcdheSpeke"), m_IxitMap.at("IXITCO_EcdheSpekePassword"))) != ER_OK)
+	if ((status = m_ServiceHelper->initializeClient(BUS_APPLICATION_NAME, m_DutDeviceId, m_DutAppId)) != ER_OK)
 	{
 		return status;
 	}
@@ -457,7 +457,7 @@ TEST_F(LSFLampTestSuite, LSF_Lamp_v1_11)
 void LSFLampTestSuite::checkForUnknownInterfacesFromAboutAnnouncement()
 {
 	size_t numPaths = m_DeviceAboutAnnouncement->getObjectDescriptions()->GetPaths(NULL, 0);
-	const char** paths = new const char*[numPaths];
+	AJ_PCSTR* paths = new AJ_PCSTR[numPaths];
 	m_DeviceAboutAnnouncement->getObjectDescriptions()->GetPaths(paths, numPaths);
 
 	for (size_t i = 0; i < numPaths; ++i)
@@ -465,7 +465,7 @@ void LSFLampTestSuite::checkForUnknownInterfacesFromAboutAnnouncement()
 		if (std::string(paths[i]).compare(BUS_OBJECT_PATH) == 0)
 		{
 			size_t numInterfaces = m_DeviceAboutAnnouncement->getObjectDescriptions()->GetInterfaces(paths[i], NULL, 0);
-			const char** interfaces = new const char*[numInterfaces];
+			AJ_PCSTR* interfaces = new AJ_PCSTR[numInterfaces];
 			m_DeviceAboutAnnouncement->getObjectDescriptions()->GetInterfaces(paths[i], interfaces, numInterfaces);
 
 			for (size_t j = 0; j < numInterfaces; ++j)

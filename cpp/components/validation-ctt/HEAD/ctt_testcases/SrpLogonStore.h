@@ -21,11 +21,11 @@
 class SrpLogonStore
 {
 public:
-	const char* getUser(const std::string&);
-	const char* getPass(const std::string&);
-	void setUser(const std::string&, const char*);
-	void setPass(const std::string&, const char*);
+	AJ_PCSTR getUser(const std::string&);
+	AJ_PCSTR getPass(const std::string&);
+	void setUser(const std::string&, AJ_PCSTR);
+	void setPass(const std::string&, AJ_PCSTR);
 private:
-	std::map<std::string, const char*> m_UserStore;
-	std::map<std::string, const char*> m_PassStore;
+	std::map<std::string, AJ_PCSTR> m_UserStore;
+	std::map<std::string, AJ_PCSTR> m_PassStore;
 };

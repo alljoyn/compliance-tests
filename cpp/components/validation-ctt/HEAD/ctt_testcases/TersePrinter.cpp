@@ -48,7 +48,7 @@ void TersePrinter::OnTestStart(const TestInfo& t_TestInfo)
 void TersePrinter::OnTestPartResult(const TestPartResult& t_TestPartResult)
 {
 	vector<string> vector = split(t_TestPartResult.message(), '\n');
-	const char* message = vector.at(vector.size() - 1).c_str();
+	AJ_PCSTR message = vector.at(vector.size() - 1).c_str();
 	CLOG(INFO, "gtest") << t_TestPartResult.file_name() << "(" << t_TestPartResult.line_number() << ") : " <<
 		"Partial Verdict: " << (t_TestPartResult.failed() ? "FAIL: " : "PASS: ") << message;
 }
