@@ -413,9 +413,9 @@ void OnboardingTestSuite::validateScanResult(const OBScanInfo& t_ScanInfo)
 
 void OnboardingTestSuite::validateAuthType(const OBAuthType& t_AuthType)
 {
-	ASSERT_LT(OBAuthType::WPA2_AUTO, t_AuthType)
+	ASSERT_LE(OBAuthType::WPA2_AUTO, t_AuthType)
 		<< "AuthType must not be lower than " << OBAuthType::WPA2_AUTO;
-	ASSERT_GT(OBAuthType::WPS, t_AuthType)
+	ASSERT_GE(OBAuthType::WPS, t_AuthType)
 		<< "AuthType must not be greater than " << OBAuthType::WPS;
 }
 
