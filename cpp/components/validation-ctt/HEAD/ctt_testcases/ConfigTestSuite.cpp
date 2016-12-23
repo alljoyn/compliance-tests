@@ -893,7 +893,7 @@ void ConfigTestSuite::changePasscodeAndReconnect(const char* t_Passcode)
 {
 	LOG(INFO) << "Calling SetPasscode() on Config with passcode " << t_Passcode;
 	QStatus status = m_ConfigClient->SetPasscode(m_DeviceAboutAnnouncement->getServiceName().c_str(),
-		"MyDaemonRealm", 6, (const uint8_t*)t_Passcode, m_SessionId);
+		"MyDaemonRealm", strlen(t_Passcode), (const uint8_t*)t_Passcode, m_SessionId);
 	ASSERT_EQ(ER_OK, status) << "Calling SetPasscode() on Config interface returned status code: "
 		<< QCC_StatusText(status);
 
