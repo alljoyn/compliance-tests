@@ -66,4 +66,4 @@ public class ResultsButtonRenderer extends JButton implements TableCellRenderer
 		
 		return this;
 	}
-}
+}

@@ -188,4 +188,4 @@ public class ResultsDetailsWindow
     	
     	backButton.setEnabled(true);
 	}
-}
+}

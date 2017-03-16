@@ -69,11 +69,11 @@ public class LoginController
 	public boolean loginWithWebServer(String userToAuthenticate, String passwordUsedInAuthentication) throws ClientHandlerException, JSONException
 	{
 		ClientResponse loginResponse = loginModel.getTokenFromWebServer(userToAuthenticate, passwordUsedInAuthentication);
+		String getTokenFromServerResponse = loginResponse.getEntity(String.class);
+		logger.debug(String.format("OAuth login response: %s", getTokenFromServerResponse));
 		
 		if (loginResponse.getStatus() == HttpStatus.SC_OK)
 		{
-			String getTokenFromServerResponse = loginResponse.getEntity(String.class);
-			logger.debug(String.format("OAuth login response: %s", getTokenFromServerResponse));
 			JSONObject receivedJson = new JSONObject(getTokenFromServerResponse);
 			loginResponse = loginModel.refreshToken(receivedJson.optString("refresh_token"));
 			

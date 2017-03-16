@@ -166,4 +166,4 @@ public class LogContentWindow extends JDialog
     	
     	add(backButton);
 	}
-}
+}

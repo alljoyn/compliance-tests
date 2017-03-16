@@ -141,4 +141,4 @@ public class TestCaseConsole implements Runnable
         TestCaseConsole console = new TestCaseConsole(displayPane, pos, executeTestCaseWindow, runningAll);
         new Thread(console).start();
     }
-}
+}

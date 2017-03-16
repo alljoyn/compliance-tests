@@ -47,4 +47,4 @@ public class UpdateTestCasesModel
 	{
 		return ModelCommons.securedGetRequest(ConfigParameter.UPDATE_TEST_CASES_URL + fullPackageVersion.replace(".", "_"), sessionToken);
 	}
-}
+}

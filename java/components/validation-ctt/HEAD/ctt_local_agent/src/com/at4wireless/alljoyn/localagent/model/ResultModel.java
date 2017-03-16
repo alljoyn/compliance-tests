@@ -47,4 +47,4 @@ public class ResultModel
 	{
 		return ModelCommons.securedGetRequest(ConfigParameter.RESULTS_LIST_URL + ModelCommons.encodePathVariable(authenticatedUser) + "/" + projectId, sessionToken);
 	}
-}
+}

@@ -236,4 +236,4 @@ public class SampleSelectionWindow extends JDialog
 	{
 		return cancelled;
 	}
-}
+}

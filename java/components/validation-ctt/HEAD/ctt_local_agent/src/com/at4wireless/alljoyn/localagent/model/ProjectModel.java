@@ -59,4 +59,4 @@ public class ProjectModel
 		return ModelCommons.securedGetRequest(ConfigParameter.CHECK_IF_VERSION_IS_UPDATED_URL + certificationRelease.replaceAll("\\.",  "_")
 				+ "_" + packageVersion, sessionToken);
 	}
-}
+}

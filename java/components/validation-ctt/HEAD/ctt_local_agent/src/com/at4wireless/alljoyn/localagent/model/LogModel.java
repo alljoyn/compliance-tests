@@ -49,4 +49,4 @@ public class LogModel
 		System.out.println(ConfigParameter.LOG_CONTENT_URL + ModelCommons.encodePathVariable(authenticatedUser) + "/" + projectId + "/" + logFileName);
 		return ModelCommons.securedGetRequest(ConfigParameter.LOG_CONTENT_URL + ModelCommons.encodePathVariable(authenticatedUser) + "/" + projectId + "/" + logFileName, sessionToken);
 	}
-}
+}

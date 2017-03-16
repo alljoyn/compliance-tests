@@ -65,4 +65,4 @@ public class FullLogButtonRenderer extends JButton implements TableCellRenderer
 		
 		return this;
 	}
-}
+}

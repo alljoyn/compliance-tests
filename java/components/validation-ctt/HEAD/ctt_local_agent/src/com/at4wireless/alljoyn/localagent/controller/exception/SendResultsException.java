@@ -50,4 +50,4 @@ public class SendResultsException extends Exception
 	{
 		super(cause);
 	}
-}
+}

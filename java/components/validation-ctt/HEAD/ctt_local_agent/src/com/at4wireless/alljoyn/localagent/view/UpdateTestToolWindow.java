@@ -198,4 +198,4 @@ public class UpdateTestToolWindow extends JDialog
     	
     	add(installButton);
 	}
-}
+}

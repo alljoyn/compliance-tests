@@ -1,22 +1,22 @@
-CTT Local Agent Installation Package Version v2.2.0 (CTT_Local_Agent_v2.2.0_Installer.exe) Release Notes
+CTT Local Agent Installation Package Version v2.3.0 (CTT_Local_Agent_v2.3.0_Installer.exe) Release Notes
 ========================================================================================================
  
 Fully Validated Platforms
 -------------------------
  1) Windows 7 (64 bit); Java 8 (64 bits)
 
-Features added in v2.2.0
+Features added in v2.3.0
 ------------------------
- 1) CTT Local Agent v2.2.0 works with CTT Web Server v1.6.0 and v1.7.0.
+ 1) CTT Local Agent v2.3.0 works with CTT Web Server v1.9.0.
+ 2) CTT Local Agent v2.3.0 adds new links to work with the new Causeway server by VTM.
  
-Issues Addressed in v2.2.0
+Issues Addressed in v2.3.0
 -------------------------- 
- ASACOMP-181   CTT Local Agent / Stop after Run All action
-
+ 
  For a complete list of fixed issues:
  https://jira.allseenalliance.org/browse/ 
  
-Known Issues in v2.2.0
+Known Issues in v2.3.0
 ----------------------
  
  For a complete list of open issues:
@@ -37,3 +37,4 @@ Change history
  [20160519] - v2.0.0 - Works with CTT Web Server v1.6.0 - Bug fixes: ASACOMP-164.
  [20160607] - v2.1.0 - Works with CTT Web Server v1.6.0 - Bug fixes: ASACOMP-167.
  [20161013] - v2.2.0 - Works with CTT Web Server v1.6.0, v1.7.0 - Bug fixes: ASACOMP-181.
+ [20170314] - v2.3.0 - Works with CTT Web Server v1.9.0 - Bug fixes:

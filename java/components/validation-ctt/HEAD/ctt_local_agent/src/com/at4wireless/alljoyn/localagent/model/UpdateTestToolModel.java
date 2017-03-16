@@ -47,4 +47,4 @@ public class UpdateTestToolModel
 	{
 		return ModelCommons.securedGetRequest(ConfigParameter.UPDATE_TEST_TOOL_URL, sessionToken);
 	}
-}
+}

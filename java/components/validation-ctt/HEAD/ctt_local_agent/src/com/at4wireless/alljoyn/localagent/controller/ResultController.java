@@ -94,4 +94,4 @@ public class ResultController
 		
 		return data;
 	}
-}
+}

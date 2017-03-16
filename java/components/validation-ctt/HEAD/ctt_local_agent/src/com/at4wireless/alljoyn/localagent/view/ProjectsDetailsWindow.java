@@ -456,4 +456,4 @@ public class ProjectsDetailsWindow extends JPanel
 		
 		return continueToTestCasesWindow;
 	}
-}
+}

@@ -79,4 +79,4 @@ public class UpdateTestToolController
 		
 		bufferedUpdate.writeTo(updateLocation);
 	}
-}
+}

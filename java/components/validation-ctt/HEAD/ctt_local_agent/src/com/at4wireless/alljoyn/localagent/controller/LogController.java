@@ -64,4 +64,4 @@ public class LogController
 		
 		return fE.decrypt(ControllerCommons.HttpResponseToString(encodedLogFromServer));
 	}
-}
+}

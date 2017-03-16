@@ -86,4 +86,4 @@ public class ControllerCommons
 		logger.debug(String.format("Cleaning file: %s", configurationFilePath));
 		ModelCommons.deleteFile(configurationFilePath);
 	}
-}
+}

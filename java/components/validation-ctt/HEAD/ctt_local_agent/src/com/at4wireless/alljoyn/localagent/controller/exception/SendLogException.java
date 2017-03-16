@@ -50,4 +50,4 @@ public class SendLogException extends Exception
 	{
 		super(cause);
 	}
-}
+}
