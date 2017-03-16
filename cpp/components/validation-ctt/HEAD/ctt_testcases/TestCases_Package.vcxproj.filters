@@ -187,6 +187,15 @@
     <Filter Include="Source Files\core.security20">
       <UniqueIdentifier>{90bb4c67-c395-418e-b37f-66c785c73478}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\testcases.conf.cdm">
+      <UniqueIdentifier>{6bb83caa-b477-45de-a655-9808714cc2c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\testcases.conf.cdm">
+      <UniqueIdentifier>{d45cd46d-ece2-4838-b4c3-1a9c81f474a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\core.cdm">
+      <UniqueIdentifier>{ccba63cd-afc3-49d5-81f0-ecfe8389a9d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -498,6 +507,12 @@
     <ClInclude Include="ServiceFramework.h">
       <Filter>Header Files\testcases.conf.commons</Filter>
     </ClInclude>
+    <ClInclude Include="CdmTestSuite.h">
+      <Filter>Header Files\testcases.conf.cdm</Filter>
+    </ClInclude>
+    <ClInclude Include="CdmSemaphore.h">
+      <Filter>Header Files\core.cdm</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -757,6 +772,147 @@
     </ClCompile>
     <ClCompile Include="ExtendedSecurityApplicationProxy.cpp">
       <Filter>Source Files\core.security20</Filter>
+    </ClCompile>
+    <ClCompile Include="CdmTestSuite.cpp">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="CdmAboutTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="AirRecirculationModeTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="AlertsTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioVideoInputTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioVolumeTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="BatteryStatusTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="ChannelTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="ClimateControlModeTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="ClosedStatusTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="CurrentAirQualityLevelTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="CurrentAirQualityTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="CurrentHumidityTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="CurrentPowerTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="CurrentTemperatureTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="CycleControlTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="DishWashingCyclePhaseTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="EnergyUsageTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="FanSpeedLevelTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="FilterStatusTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="HeatingZoneTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="HidTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="HvacFanModeTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="LanguageDisplayTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="LaundryCyclePhaseTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="MoistureOutputLevelTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="OffControlTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="OnControlTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="OnOffStatusTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="OvenCyclePhaseTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="PlugInUnitsTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="RapidModeTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="RapidModeTimedTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoteControllabilityTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="RepeatModeTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceSavingTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="RobotCleaningCyclePhaseTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="SpinSpeedLevelTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="TargetHumidityTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="TargetTemperatureLevelTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="TargetTemperatureTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="TemperatureDisplayTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeDisplayTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="WaterLevelTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="WindDirectionTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
+    </ClCompile>
+    <ClCompile Include="SoilLevelTest.cc">
+      <Filter>Source Files\testcases.conf.cdm</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

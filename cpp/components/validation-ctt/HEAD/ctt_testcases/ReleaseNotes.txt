@@ -1,4 +1,4 @@
-CTT Test Cases Package Version 16.10.00_R2 (TestCases_Package_v16.10.00_R2.jar) Release Notes
+CTT Test Cases Package Version 16.10.00_R3 (TestCases_Package_v16.10.00_R3.jar) Release Notes
 =============================================================================================
  
 Fully Validated Platforms
@@ -6,28 +6,25 @@ Fully Validated Platforms
  1) Windows 7 (64 bit)
  2) Java 8 (64 bits)
 
-Features added in Version 16.10.00_R2 
+Features added in Version 16.10.00_R3 
 -------------------------------------
- 1) Added new Security 2.0 conformance test cases. 
+ 1) Added new Base Services v16.10. 
  
-Issues Addressed in Version 16.10.00_R2 
+Issues Addressed in Version 16.10.00_R3 
 ---------------------------------------
- ASACOMP-186  CTT Base Test Cases - Config-v1-30. SetPasscode() method with a one-character value           
- ASACOMP-187  CTT Base Test Cases - Onboarding-v1-08. Using ASSERT_LT, ASSERT_GT
  
  For a complete list of fixed issues:
  https://jira.allseenalliance.org/browse/ASACOMP-63?jql=project%20%3D%20ASACOMP%20AND%20issuetype%20in%20standardIssueTypes()%20AND%20status%20in%20(Resolved%2C%20Closed) 
  
-Known Issues in Version 16.10.00_R2 
+Known Issues in Version 16.10.00_R3 
 -----------------------------------
- 
  
  For a complete list of open issues:
  https://jira.allseenalliance.org/browse/ASACOMP-66?jql=project%20%3D%20ASACOMP%20AND%20issuetype%20in%20standardIssueTypes()%20AND%20status%20in%20(Open%2C%20%22In%20Progress%22%2C%20New)
 
 Change history
 --------------
- 
+ [20170314] - 16.10.00_R3   - Core(16.10)  Base(16.10) - Bug fixes:
  [20161222] - 16.10.00_R2   - Core(16.10)  Base(16.04) - Bug fixes: ASACOMPs: 186,187.
  [20161222] - 16.04.00a_R4  - Core(16.04a) Base(16.04) Lighting(15.04) - Bug fixes: ASACOMPs: 186,187. 
  [20161222] - 16.04.00_R6   - Core(16.04)  Base(16.04) Lighting(15.04) - Bug fixes: ASACOMPs: 186,187.

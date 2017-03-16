@@ -1,0 +1,1083 @@
+<Results>
+	<TestCase>
+		<Id/>
+		<Name>CDM-v1-Alerts</Name>
+		<Description/>
+		<DateTime>2016-09-21 12:39:50</DateTime>
+		<Verdict>PASS</Verdict>
+		<Version>16.04.00</Version>
+		<LogFile>Log-CDM-v1-Alerts-20160921-123950.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>CDM-v1-CDMAbout</Name>
+		<Description/>
+		<DateTime>2016-09-22 09:40:12</DateTime>
+		<Verdict>PASS</Verdict>
+		<Version>16.04.00</Version>
+		<LogFile>Log-CDM-v1-CDMAbout-20160922-094012.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>CDM-v1-CDMAbout</Name>
+		<Description/>
+		<DateTime>2016-09-22 09:41:09</DateTime>
+		<Verdict>PASS</Verdict>
+		<Version>16.04.00</Version>
+		<LogFile>Log-CDM-v1-CDMAbout-20160922-094109.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>CDM-v1-CDMAbout</Name>
+		<Description/>
+		<DateTime>2016-09-22 09:47:25</DateTime>
+		<Verdict>PASS</Verdict>
+		<Version>16.04.00</Version>
+		<LogFile>Log-CDM-v1-CDMAbout-20160922-094725.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>CDM-v1-CDMAbout</Name>
+		<Description/>
+		<DateTime>2016-09-22 09:56:37</DateTime>
+		<Verdict>PASS</Verdict>
+		<Version>16.04.00</Version>
+		<LogFile>Log-CDM-v1-CDMAbout-20160922-095637.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>CDM-v1-Alerts</Name>
+		<Description/>
+		<DateTime>2016-09-22 10:01:13</DateTime>
+		<Verdict>PASS</Verdict>
+		<Version>16.04.00</Version>
+		<LogFile>Log-CDM-v1-Alerts-20160922-100113.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>CDM-v1-AirRecirculationMode</Name>
+		<Description/>
+		<DateTime>2016-09-22 10:05:53</DateTime>
+		<Verdict>PASS</Verdict>
+		<Version>16.04.00</Version>
+		<LogFile>Log-CDM-v1-AirRecirculationMode-20160922-100553.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>CDM-v1-ClimateControlMode</Name>
+		<Description/>
+		<DateTime>2016-09-22 10:15:20</DateTime>
+		<Verdict>PASS</Verdict>
+		<Version>16.04.00</Version>
+		<LogFile>Log-CDM-v1-ClimateControlMode-20160922-101520.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-22 11:44:08</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160922-114408.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-22 11:45:29</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160922-114529.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-22 11:46:48</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160922-114648.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-22 11:48:07</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160922-114807.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-22 12:13:04</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160922-121304.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-22 12:19:51</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160922-121951.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id>42</Id>
+		<Name>Config-v1-02</Name>
+		<Description>Call a Config interface method without proper authentication</Description>
+		<DateTime>2016-09-22 15:21:29</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Config-v1-02-20160922-152129.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id>42</Id>
+		<Name>Config-v1-02</Name>
+		<Description>Call a Config interface method without proper authentication</Description>
+		<DateTime>2016-09-22 15:41:49</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Config-v1-02-20160922-154149.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id>42</Id>
+		<Name>Config-v1-02</Name>
+		<Description>Call a Config interface method without proper authentication</Description>
+		<DateTime>2016-09-22 15:46:14</DateTime>
+		<Verdict>PASS</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Config-v1-02-20160922-154614.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-22 16:22:13</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160922-162213.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-09</Name>
+		<Description/>
+		<DateTime>2016-09-22 16:42:41</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-09-20160922-164241.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-09</Name>
+		<Description/>
+		<DateTime>2016-09-22 16:44:49</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-09-20160922-164449.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-09</Name>
+		<Description/>
+		<DateTime>2016-09-22 16:47:38</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-09-20160922-164738.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-09</Name>
+		<Description/>
+		<DateTime>2016-09-22 16:55:01</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-09-20160922-165501.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-09</Name>
+		<Description/>
+		<DateTime>2016-09-22 16:56:41</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-09-20160922-165641.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-09</Name>
+		<Description/>
+		<DateTime>2016-09-22 17:22:17</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-09-20160922-172217.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-23 08:54:36</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160923-085436.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-23 09:00:25</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160923-090025.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-23 09:42:21</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160923-094221.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-23 09:47:07</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160923-094707.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-23 09:49:03</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160923-094903.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-23 09:53:45</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160923-095345.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-23 09:58:00</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160923-095800.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-23 10:02:18</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160923-100218.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-23 10:04:35</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160923-100435.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-23 10:06:39</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160923-100639.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-02</Name>
+		<Description/>
+		<DateTime>2016-09-23 10:07:22</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-02-20160923-100722.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-02</Name>
+		<Description/>
+		<DateTime>2016-09-23 10:11:40</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-02-20160923-101140.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-23 10:12:06</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160923-101206.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-23 10:22:05</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160923-102205.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-23 10:31:05</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160923-103105.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-23 10:36:17</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160923-103617.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-23 10:38:17</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160923-103817.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-23 10:40:34</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160923-104034.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-23 10:42:41</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160923-104241.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-23 11:31:31</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160923-113131.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-23 11:44:58</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160923-114458.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-23 11:47:50</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160923-114750.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-08</Name>
+		<Description/>
+		<DateTime>2016-09-23 11:49:31</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-08-20160923-114931.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-08</Name>
+		<Description/>
+		<DateTime>2016-09-23 11:51:27</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-08-20160923-115127.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-08</Name>
+		<Description/>
+		<DateTime>2016-09-23 11:52:53</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-08-20160923-115253.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-08</Name>
+		<Description/>
+		<DateTime>2016-09-23 11:57:54</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-08-20160923-115754.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-08</Name>
+		<Description/>
+		<DateTime>2016-09-23 11:58:31</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-08-20160923-115831.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-08</Name>
+		<Description/>
+		<DateTime>2016-09-23 12:01:58</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-08-20160923-120158.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-08</Name>
+		<Description/>
+		<DateTime>2016-09-23 12:20:50</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-08-20160923-122050.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-08</Name>
+		<Description/>
+		<DateTime>2016-09-23 12:24:00</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-08-20160923-122400.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-23 12:25:24</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160923-122524.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-08</Name>
+		<Description/>
+		<DateTime>2016-09-23 12:29:26</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-08-20160923-122926.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-08</Name>
+		<Description/>
+		<DateTime>2016-09-23 12:30:00</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-08-20160923-123000.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-02</Name>
+		<Description/>
+		<DateTime>2016-09-23 12:30:46</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-02-20160923-123046.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-02</Name>
+		<Description/>
+		<DateTime>2016-09-23 12:31:20</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-02-20160923-123120.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-02</Name>
+		<Description/>
+		<DateTime>2016-09-23 12:31:44</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-02-20160923-123144.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-04</Name>
+		<Description/>
+		<DateTime>2016-09-23 12:32:31</DateTime>
+		<Verdict>PASS</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-04-20160923-123231.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-02</Name>
+		<Description/>
+		<DateTime>2016-09-23 12:33:39</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-02-20160923-123339.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-08</Name>
+		<Description/>
+		<DateTime>2016-09-23 12:34:51</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-08-20160923-123451.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-08</Name>
+		<Description/>
+		<DateTime>2016-09-23 12:36:06</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-08-20160923-123606.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-09</Name>
+		<Description/>
+		<DateTime>2016-09-23 12:46:42</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-09-20160923-124642.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-09</Name>
+		<Description/>
+		<DateTime>2016-09-23 12:51:43</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-09-20160923-125143.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-09</Name>
+		<Description/>
+		<DateTime>2016-09-23 12:54:55</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-09-20160923-125455.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-09</Name>
+		<Description/>
+		<DateTime>2016-09-23 12:55:52</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-09-20160923-125552.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-09</Name>
+		<Description/>
+		<DateTime>2016-09-23 12:58:47</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-09-20160923-125847.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-09</Name>
+		<Description/>
+		<DateTime>2016-09-23 13:00:19</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-09-20160923-130019.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-09</Name>
+		<Description/>
+		<DateTime>2016-09-23 13:01:05</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-09-20160923-130105.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-09</Name>
+		<Description/>
+		<DateTime>2016-09-23 13:11:51</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-09-20160923-131151.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-23 13:12:23</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160923-131223.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-09</Name>
+		<Description/>
+		<DateTime>2016-09-23 13:16:10</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-09-20160923-131610.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-09</Name>
+		<Description/>
+		<DateTime>2016-09-23 13:17:37</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-09-20160923-131737.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-09</Name>
+		<Description/>
+		<DateTime>2016-09-23 13:19:34</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-09-20160923-131934.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-23 13:20:29</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160923-132029.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-23 13:24:46</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160923-132446.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-09</Name>
+		<Description/>
+		<DateTime>2016-09-23 13:26:58</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-09-20160923-132658.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-09</Name>
+		<Description/>
+		<DateTime>2016-09-23 13:36:44</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-09-20160923-133644.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-09</Name>
+		<Description/>
+		<DateTime>2016-09-23 13:41:21</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-09-20160923-134121.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-09</Name>
+		<Description/>
+		<DateTime>2016-09-23 13:42:49</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-09-20160923-134249.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>About-v1-04</Name>
+		<Description/>
+		<DateTime>2016-09-23 13:45:47</DateTime>
+		<Verdict>PASS</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-About-v1-04-20160923-134547.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>About-v1-05</Name>
+		<Description/>
+		<DateTime>2016-09-23 13:47:44</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-About-v1-05-20160923-134744.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>About-v1-03</Name>
+		<Description/>
+		<DateTime>2016-09-23 13:49:53</DateTime>
+		<Verdict>PASS</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-About-v1-03-20160923-134953.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-09</Name>
+		<Description/>
+		<DateTime>2016-09-23 13:53:27</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-09-20160923-135327.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>About-v1-01</Name>
+		<Description/>
+		<DateTime>2016-09-23 13:55:54</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-About-v1-01-20160923-135554.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>About-v1-01</Name>
+		<Description/>
+		<DateTime>2016-09-23 13:58:31</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-About-v1-01-20160923-135831.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>About-v1-06</Name>
+		<Description/>
+		<DateTime>2016-09-23 14:15:42</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-About-v1-06-20160923-141542.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-09</Name>
+		<Description/>
+		<DateTime>2016-09-23 14:25:22</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-09-20160923-142522.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-09</Name>
+		<Description/>
+		<DateTime>2016-09-23 14:30:23</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-09-20160923-143023.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-09</Name>
+		<Description/>
+		<DateTime>2016-09-23 14:33:44</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-09-20160923-143344.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-09</Name>
+		<Description/>
+		<DateTime>2016-09-23 14:36:18</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-09-20160923-143618.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-09</Name>
+		<Description/>
+		<DateTime>2016-09-23 14:37:10</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-09-20160923-143710.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-09</Name>
+		<Description/>
+		<DateTime>2016-09-23 14:39:08</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-09-20160923-143908.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-09</Name>
+		<Description/>
+		<DateTime>2016-09-26 09:53:56</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-09-20160926-095356.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-26 10:23:46</DateTime>
+		<Verdict>PASS</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160926-102346.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id/>
+		<Name>Security20-v1-07</Name>
+		<Description/>
+		<DateTime>2016-09-26 10:31:43</DateTime>
+		<Verdict>PASS</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-07-20160926-103143.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id>226</Id>
+		<Name>Security20-v1-01</Name>
+		<Description>Claimable DUT emits Application.State signal</Description>
+		<DateTime>2016-09-29 12:40:17</DateTime>
+		<Verdict>PASS</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-01-20160929-124017.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id>226</Id>
+		<Name>Security20-v1-01</Name>
+		<Description>Claimable DUT emits Application.State signal</Description>
+		<DateTime>2016-09-29 12:40:28</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-01-20160929-124028.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id>226</Id>
+		<Name>Security20-v1-01</Name>
+		<Description>Claimable DUT emits Application.State signal</Description>
+		<DateTime>2016-09-29 12:41:37</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-01-20160929-124137.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id>226</Id>
+		<Name>Security20-v1-01</Name>
+		<Description>Claimable DUT emits Application.State signal</Description>
+		<DateTime>2016-09-29 12:45:49</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-01-20160929-124549.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id>226</Id>
+		<Name>Security20-v1-01</Name>
+		<Description>Claimable DUT emits Application.State signal</Description>
+		<DateTime>2016-09-29 12:46:11</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-01-20160929-124611.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id>226</Id>
+		<Name>Security20-v1-01</Name>
+		<Description>Claimable DUT emits Application.State signal</Description>
+		<DateTime>2016-09-29 12:47:49</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-01-20160929-124749.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id>226</Id>
+		<Name>Security20-v1-01</Name>
+		<Description>Claimable DUT emits Application.State signal</Description>
+		<DateTime>2016-09-29 12:49:35</DateTime>
+		<Verdict>PASS</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-01-20160929-124935.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id>231</Id>
+		<Name>Security20-v1-06</Name>
+		<Description>Verify that Security.ManagedApplication properties are read only</Description>
+		<DateTime>2016-09-29 13:02:34</DateTime>
+		<Verdict>PASS</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-06-20160929-130234.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id>226</Id>
+		<Name>Security20-v1-01</Name>
+		<Description>Claimable DUT emits Application.State signal</Description>
+		<DateTime>2016-09-29 15:44:02</DateTime>
+		<Verdict>PASS</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-01-20160929-154402.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id>41</Id>
+		<Name>Config-v1-01</Name>
+		<Description>System App AppId equals DeviceId</Description>
+		<DateTime>2016-10-03 15:51:49</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.04.00</Version>
+		<LogFile>Log-Config-v1-01-20161003-155149.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id>20</Id>
+		<Name>Onboarding-v1-02</Name>
+		<Description>Onboard the DUT</Description>
+		<DateTime>2016-10-04 09:40:38</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.04.00</Version>
+		<LogFile>Log-Onboarding-v1-02-20161004-094038.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id>5</Id>
+		<Name>About-v1-05</Name>
+		<Description>Standardized interfaces match definitions</Description>
+		<DateTime>2016-10-04 11:19:36</DateTime>
+		<Verdict>PASS</Verdict>
+		<Version>16.04.00</Version>
+		<LogFile>Log-About-v1-05-20161004-111936.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id>226</Id>
+		<Name>Security20-v1-01</Name>
+		<Description>Claimable DUT emits Application.State signal</Description>
+		<DateTime>2016-11-24 18:07:04</DateTime>
+		<Verdict>PASS</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-01-20161124-180704.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id>227</Id>
+		<Name>Security20-v1-02</Name>
+		<Description>Retrieve Security.Application properties before claiming</Description>
+		<DateTime>2016-11-24 18:16:50</DateTime>
+		<Verdict>PASS</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-02-20161124-181650.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id>227</Id>
+		<Name>Security20-v1-02</Name>
+		<Description>Retrieve Security.Application properties before claiming</Description>
+		<DateTime>2016-11-24 18:17:06</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-02-20161124-181706.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id>227</Id>
+		<Name>Security20-v1-02</Name>
+		<Description>Retrieve Security.Application properties before claiming</Description>
+		<DateTime>2016-11-24 18:17:40</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-02-20161124-181740.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id>227</Id>
+		<Name>Security20-v1-02</Name>
+		<Description>Retrieve Security.Application properties before claiming</Description>
+		<DateTime>2016-11-24 18:17:57</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-02-20161124-181757.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id>227</Id>
+		<Name>Security20-v1-02</Name>
+		<Description>Retrieve Security.Application properties before claiming</Description>
+		<DateTime>2016-11-24 18:18:37</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-02-20161124-181837.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id>227</Id>
+		<Name>Security20-v1-02</Name>
+		<Description>Retrieve Security.Application properties before claiming</Description>
+		<DateTime>2016-11-24 18:19:49</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-02-20161124-181949.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id>227</Id>
+		<Name>Security20-v1-02</Name>
+		<Description>Retrieve Security.Application properties before claiming</Description>
+		<DateTime>2016-11-24 18:23:00</DateTime>
+		<Verdict>PASS</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-Security20-v1-02-20161124-182300.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id>1</Id>
+		<Name>About-v1-01</Name>
+		<Description>About announcement received</Description>
+		<DateTime>2017-02-02 13:12:15</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-About-v1-01-20170202-131215.log</LogFile>
+	</TestCase>
+	<TestCase>
+		<Id>1</Id>
+		<Name>About-v1-01</Name>
+		<Description>About announcement received</Description>
+		<DateTime>2017-02-02 13:12:46</DateTime>
+		<Verdict>FAIL</Verdict>
+		<Version>16.10.00</Version>
+		<LogFile>Log-About-v1-01-20170202-131246.log</LogFile>
+	</TestCase>
+</Results>
+

@@ -105,13 +105,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;QCC_OS_GROUP_WINDOWS;UNICODE;ELPP_NO_DEFAULT_LOG_FILE;WIN32_LEAN_AND_MEAN;ELPP_WINSOCK2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ALLJOYN_SDK_HOME)\master\Core\Debug\cpp\inc;$(ALLJOYN_SDK_HOME)\v16.04\Base\Debug\inc;$(ALLJOYN_SDK_HOME)\v16.04\HAE\Debug\inc;..\..\..\..\xerces-c-3.1.3\src;$(GTEST_ROOT)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ALLJOYN_SDK_HOME)\v16.10\Core\Debug\cpp\inc;$(ALLJOYN_SDK_HOME)\v16.10\Base\Debug\inc;$(ALLJOYN_SDK_HOME)\v16.10\CDM\Debug\framework\inc;$(ALLJOYN_SDK_HOME)\v16.10\CDM\Debug\interfaces\inc;..\..\..\..\xerces-c-3.1.3\src;$(GTEST_ROOT)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ALLJOYN_SDK_HOME)\master\Core\Debug\cpp\lib;$(ALLJOYN_SDK_HOME)\v16.04\Base\Debug\lib;$(ALLJOYN_SDK_HOME)\v16.04\HAE\Debug\lib;..\..\..\..\xerces-c-3.1.3\Build\Win64\VC12\Debug;$(GTEST_ROOT)\msvc_2015\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>alljoyn.lib;ajrouter.lib;alljoyn_about.lib;ws2_32.lib;Secur32.lib;crypt32.lib;Bcrypt.lib;Ncrypt.lib;iphlpapi.lib;gtestd.lib;xerces-c_3D.lib;alljoyn_notification.lib;alljoyn_services_common.lib;alljoyn_config.lib;alljoyn_controlpanel.lib;alljoyn_onboarding.lib;Wlanapi.lib;alljoyn_hae.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ALLJOYN_SDK_HOME)\master\Core\Debug\cpp\lib;$(ALLJOYN_SDK_HOME)\v16.10\Base\Debug\lib;$(ALLJOYN_SDK_HOME)\v16.10\CDM\Debug\lib;..\..\..\..\xerces-c-3.1.3\Build\Win64\VC12\Debug;$(GTEST_ROOT)\msvc_2015\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>alljoyn.lib;ajrouter.lib;alljoyn_about.lib;ws2_32.lib;Secur32.lib;crypt32.lib;Bcrypt.lib;Ncrypt.lib;iphlpapi.lib;gtestd.lib;xerces-c_3D.lib;alljoyn_notification.lib;alljoyn_services_common.lib;alljoyn_config.lib;alljoyn_controlpanel.lib;alljoyn_onboarding.lib;Wlanapi.lib;alljoyn_cdm_common.lib;alljoyn_cdm_controllee.lib;alljoyn_cdm_controller.lib;alljoyn_cdm_interfaces.lib;alljoyn_cdm_util.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -140,15 +140,15 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;QCC_OS_GROUP_WINDOWS;UNICODE;ELPP_NO_DEFAULT_LOG_FILE;WIN32_LEAN_AND_MEAN;ELPP_WINSOCK2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ALLJOYN_SDK_HOME)\v16.10\Core\Release\cpp\inc;$(ALLJOYN_SDK_HOME)\v16.04\HAE\Release\inc;$(ALLJOYN_SDK_HOME)\v16.04\Base\Release\inc;..\..\..\..\xerces-c-3.1.3\src;$(GTEST_ROOT)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ALLJOYN_SDK_HOME)\v16.10\Core\Release\cpp\inc;$(ALLJOYN_SDK_HOME)\v16.10\CDM\Release\framework\inc;$(ALLJOYN_SDK_HOME)\v16.10\CDM\Release\interfaces\inc;$(ALLJOYN_SDK_HOME)\v16.10\Base\Release\inc;..\..\..\..\xerces-c-3.1.3\src;$(GTEST_ROOT)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ALLJOYN_SDK_HOME)\v16.10\Core\Release\cpp\lib;$(ALLJOYN_SDK_HOME)\v16.04\HAE\Release\lib;$(ALLJOYN_SDK_HOME)\v16.04\Base\Release\lib;..\..\..\..\xerces-c-3.1.3\Build\Win64\VC12\Release;$(GTEST_ROOT)\msvc_2015\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>alljoyn.lib;ajrouter.lib;alljoyn_about.lib;ws2_32.lib;Secur32.lib;gtest.lib;crypt32.lib;Bcrypt.lib;Ncrypt.lib;iphlpapi.lib;xerces-c_3.lib;alljoyn_notification.lib;alljoyn_services_common.lib;alljoyn_config.lib;alljoyn_onboarding.lib;Wlanapi.lib;alljoyn_hae.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ALLJOYN_SDK_HOME)\v16.10\Core\Release\cpp\lib;$(ALLJOYN_SDK_HOME)\v16.10\CDM\Release\lib;$(ALLJOYN_SDK_HOME)\v16.10\Base\Release\lib;..\..\..\..\xerces-c-3.1.3\Build\Win64\VC12\Release;$(GTEST_ROOT)\msvc_2015\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>alljoyn.lib;ajrouter.lib;alljoyn_about.lib;ws2_32.lib;Secur32.lib;gtest.lib;crypt32.lib;Bcrypt.lib;Ncrypt.lib;iphlpapi.lib;xerces-c_3.lib;alljoyn_notification.lib;alljoyn_services_common.lib;alljoyn_config.lib;alljoyn_onboarding.lib;Wlanapi.lib;alljoyn_cdm_common.lib;alljoyn_cdm_controllee.lib;alljoyn_cdm_controller.lib;alljoyn_cdm_interfaces.lib;alljoyn_cdm_util.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -165,6 +165,8 @@
     <ClInclude Include="BusAttachmentMgr.h" />
     <ClInclude Include="BusIntrospector.h" />
     <ClInclude Include="ApplicationStateListenerImpl.h" />
+    <ClInclude Include="CdmSemaphore.h" />
+    <ClInclude Include="CdmTestSuite.h" />
     <ClInclude Include="ConfigTestSuite.h" />
     <ClInclude Include="ControllerServiceBusObject.h" />
     <ClInclude Include="ControllerServiceDataSetBusObject.h" />
@@ -262,10 +264,20 @@
     <ClCompile Include="AboutAnnouncement.cpp" />
     <ClCompile Include="AboutAnnouncementDetails.cpp" />
     <ClCompile Include="AboutTestSuite.cpp" />
+    <ClCompile Include="AirRecirculationModeTest.cc" />
+    <ClCompile Include="AlertsTest.cc" />
     <ClCompile Include="ArrayParser.cpp" />
+    <ClCompile Include="AudioVideoInputTest.cc" />
+    <ClCompile Include="AudioVolumeTest.cc" />
     <ClCompile Include="AuthListeners.cpp" />
+    <ClCompile Include="BatteryStatusTest.cc" />
     <ClCompile Include="BusAttachmentMgr.cpp" />
     <ClCompile Include="ApplicationStateListenerImpl.cpp" />
+    <ClCompile Include="CdmAboutTest.cc" />
+    <ClCompile Include="CdmTestSuite.cpp" />
+    <ClCompile Include="ChannelTest.cc" />
+    <ClCompile Include="ClimateControlModeTest.cc" />
+    <ClCompile Include="ClosedStatusTest.cc" />
     <ClCompile Include="ConfigTestSuite.cpp" />
     <ClCompile Include="ControllerServiceBusObject.cpp" />
     <ClCompile Include="ControllerServiceDataSetBusObject.cpp" />
@@ -279,7 +291,14 @@
     <ClCompile Include="ControllerServiceSceneWithSceneElementsBusObject.cpp" />
     <ClCompile Include="ControllerServiceTransitionEffectBusObject.cpp" />
     <ClCompile Include="ControlPanelTestSuite.cpp" />
+    <ClCompile Include="CurrentAirQualityLevelTest.cc" />
+    <ClCompile Include="CurrentAirQualityTest.cc" />
+    <ClCompile Include="CurrentHumidityTest.cc" />
+    <ClCompile Include="CurrentPowerTest.cc" />
+    <ClCompile Include="CurrentTemperatureTest.cc" />
+    <ClCompile Include="CycleControlTest.cc" />
     <ClCompile Include="DeviceAnnouncementHandler.cpp" />
+    <ClCompile Include="DishWashingCyclePhaseTest.cc" />
     <ClCompile Include="ECDHEEcdsaHandlerImpl.cpp" />
     <ClCompile Include="ECDHEEcdsaListener.cpp" />
     <ClCompile Include="ECDHEEcdsaStore.cpp" />
@@ -291,8 +310,14 @@
     <ClCompile Include="ECDHESpekeHandlerImpl.cpp" />
     <ClCompile Include="ECDHESpekeListener.cpp" />
     <ClCompile Include="ECDHESpekeStore.cpp" />
+    <ClCompile Include="EnergyUsageTest.cc" />
     <ClCompile Include="EventsActionsTestSuite.cpp" />
     <ClCompile Include="ExtendedSecurityApplicationProxy.cpp" />
+    <ClCompile Include="FanSpeedLevelTest.cc" />
+    <ClCompile Include="FilterStatusTest.cc" />
+    <ClCompile Include="HeatingZoneTest.cc" />
+    <ClCompile Include="HidTest.cc" />
+    <ClCompile Include="HvacFanModeTest.cc" />
     <ClCompile Include="InterfaceDetail.cpp" />
     <ClCompile Include="InterfaceValidator.cpp" />
     <ClCompile Include="IntrospectionAnnotation.cpp" />
@@ -311,24 +336,40 @@
     <ClCompile Include="LampParametersBusObject.cpp" />
     <ClCompile Include="LampServiceBusObject.cpp" />
     <ClCompile Include="LampStateBusObject.cpp" />
+    <ClCompile Include="LanguageDisplayTest.cc" />
+    <ClCompile Include="LaundryCyclePhaseTest.cc" />
     <ClCompile Include="LeaderElectionAndStateSyncBusObject.cpp" />
     <ClCompile Include="LSFControllerTestSuite.cpp" />
     <ClCompile Include="LSFLampTestSuite.cpp" />
     <ClCompile Include="MessageSet.cpp" />
+    <ClCompile Include="MoistureOutputLevelTest.cc" />
     <ClCompile Include="NodeDetail.cpp" />
     <ClCompile Include="NotifConsumerTestSuite.cpp" />
     <ClCompile Include="NotificationHandler.cpp" />
     <ClCompile Include="NotificationValidator.cpp" />
     <ClCompile Include="NotifProducerTestSuite.cpp" />
+    <ClCompile Include="OffControlTest.cc" />
     <ClCompile Include="OnboardingHelper.cpp" />
     <ClCompile Include="OnboardingSignalListenerImpl.cpp" />
     <ClCompile Include="OnboardingTestSuite.cpp" />
+    <ClCompile Include="OnControlTest.cc" />
+    <ClCompile Include="OnOffStatusTest.cc" />
+    <ClCompile Include="OvenCyclePhaseTest.cc" />
     <ClCompile Include="PermissionMgmtHelper.cpp" />
+    <ClCompile Include="PlugInUnitsTest.cc" />
+    <ClCompile Include="RapidModeTest.cc" />
+    <ClCompile Include="RapidModeTimedTest.cc" />
+    <ClCompile Include="RemoteControllabilityTest.cc" />
+    <ClCompile Include="RepeatModeTest.cc" />
+    <ClCompile Include="ResourceSavingTest.cc" />
+    <ClCompile Include="RobotCleaningCyclePhaseTest.cc" />
     <ClCompile Include="ScanResult.cpp" />
     <ClCompile Include="Security20TestSuite.cpp" />
     <ClCompile Include="ServiceAvailabilityHandler.cpp" />
     <ClCompile Include="ServiceHelper.cpp" />
     <ClCompile Include="SoftAPValidator.cpp" />
+    <ClCompile Include="SoilLevelTest.cc" />
+    <ClCompile Include="SpinSpeedLevelTest.cc" />
     <ClCompile Include="SrpKeyXHandlerImpl.cpp" />
     <ClCompile Include="SrpKeyXListener.cpp" />
     <ClCompile Include="SrpKeyXStore.cpp" />
@@ -342,12 +383,20 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="TargetHumidityTest.cc" />
+    <ClCompile Include="TargetTemperatureLevelTest.cc" />
+    <ClCompile Include="TargetTemperatureTest.cc" />
+    <ClCompile Include="TemperatureDisplayTest.cc" />
     <ClCompile Include="TersePrinter.cpp" />
+    <ClCompile Include="TimeDisplayTest.cc" />
+    <ClCompile Include="TimerTest.cc" />
     <ClCompile Include="UserInputDetails.cpp" />
     <ClCompile Include="ValidationResult.cpp" />
+    <ClCompile Include="WaterLevelTest.cc" />
     <ClCompile Include="WifiHelperImpl.cpp" />
     <ClCompile Include="WifiManager.cpp" />
     <ClCompile Include="WifiNetworkConfig.cpp" />
+    <ClCompile Include="WindDirectionTest.cc" />
     <ClCompile Include="XMLBasedBusIntrospector.cpp" />
     <ClCompile Include="XMLParser.cpp" />
   </ItemGroup>
